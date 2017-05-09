@@ -1,0 +1,119 @@
+
+
+<html><head><meta charset="UTF-8"><title>android Activity之间传递数据, 通过Intent
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-activity-intent">android Activity之间传递数据, 通过Intent</h1>
+<p>MainActivity.java主Activity, AnotherActivity.java另一个Activity用来传递数据, User.java用来测试传递一个对象</p>
+<p>MainActivity.java:   主Activity</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    private TextView textView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        textView = (TextView) findViewById(R.id.textView);
+
+        findViewById(R.id.btnLaunchAnotherActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(MainActivity.this, AnotherActivity.class);
+                // 传递字符串
+                i.putExtra(&quot;data&quot;, &quot;this is a data&quot;);
+                Bundle b = new Bundle();
+                b.putString(&quot;data2&quot;, &quot;this is another data&quot;);
+                // 传递Bundle, 其实就是当前Bundle元素全部加入到Intent里的Bundle成员变量中
+                i.putExtras(b);
+                // 传递对象
+                i.putExtra(&quot;user&quot;, new User(&quot;admin&quot;, 123456));
+                // 启动需要返回值的Activity
+                startActivityForResult(i, 0);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 重写这个函数, 通过Intent获取Activity的返回数据
+        textView.setText(data.getStringExtra(&quot;resultData&quot;));
+    }
+
+}
+</code></pre>
+<p>AnotherActivity.java:   另一个Activity用来传递数据</p>
+<pre><code class="lang-java">public class AnotherActivity extends AppCompatActivity
+{
+    private TextView textViewAnotherActivity;
+    private TextView textViewAnotherActivity2;
+    private EditText editText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_another);
+        editText = (EditText) findViewById(R.id.editText);
+        textViewAnotherActivity = (TextView) findViewById(R.id.textViewAnotherActivity);
+        // 接收String类型变量
+        textViewAnotherActivity.setText(getIntent().getStringExtra(&quot;data&quot;));
+        textViewAnotherActivity2 = (TextView) findViewById(R.id.textViewAnotherActivity2);
+        // 接收Bundle里String类型变量
+        textViewAnotherActivity2.setText(getIntent().getStringExtra(&quot;data2&quot;));
+        // 接收User对象
+        User user = (User) getIntent().getSerializableExtra(&quot;user&quot;);
+        System.out.println(user);
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent();
+                i.putExtra(&quot;resultData&quot;, editText.getText().toString());
+                // 通过setResult方法, 设置返回的数据, 数据用Intent封装
+                setResult(0, i);
+                // 调用finish结束Activity
+                finish();
+            }
+        });
+    }
+}
+</code></pre>
+<p>User.java:   用来测试传递一个对象</p>
+<pre><code class="lang-java">public class User implements Serializable
+{
+    private String name;
+    private int age;
+    public User(String name, int age) { this.name = name; this.age = age; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+    @Override
+    public String toString() { return &quot;User{&quot; + &quot;name=&#39;&quot; + name + &#39;\&#39;&#39; + &quot;, age=&quot; + age + &#39;}&#39;; }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

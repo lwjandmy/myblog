@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>TCP demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tcp-demo">TCP demo</h1>
+<p>服务器端:</p>
+<pre><code class="lang-java">ServerSocket serverSocket = new ServerSocket(12345);
+Socket socket = serverSocket.accept(); // 这里会阻塞, 应放到单独线程
+// 接着是对socket的输入输出, 为保证接入多个客户端, 对socket的输入输出也应放到另一个新线程
+</code></pre>
+<p>客户端:</p>
+<pre><code class="lang-java">Socket socket = new Socket(&quot;127.0.0.1&quot;, 12345);
+// 接着对socket输入输出
+</code></pre>
+<p>Socket的输入输出:</p>
+<pre><code class="lang-java">new InputStreamReader(socket.getInputStream(), &quot;UTF-8&quot;).readLine();
+socket.getOutputStream().write(str.getBytes(&quot;UTF-8&quot;));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

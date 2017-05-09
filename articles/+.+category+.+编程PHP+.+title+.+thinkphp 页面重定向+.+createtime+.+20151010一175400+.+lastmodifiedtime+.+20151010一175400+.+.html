@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>thinkphp 页面重定向
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thinkphp-">thinkphp 页面重定向</h1>
+<p>Think\Controller 类提供了redirect方法</p>
+<p>redirect(&#39;重定向操作地址（一般为[控制器/操作]）&#39;,&#39;参数（字符串或者数组）&#39;,&#39;重定向等待时间（秒）&#39;,&#39;重定向提示信息&#39;)</p>
+<p>重定向到操作</p>
+<pre><code class="lang-php">$New = M(&#39;New&#39;); //实例化New对象
+$result = $New-&gt;add($data);
+if($result){
+// 停留5秒后跳转到New模块的category操作，并且显示页面跳转中字样
+$this-&gt;redirect(&#39;New/category&#39;, &#39;cate_id=2&amp;status=1&#39;, 5,&#39;页面跳转中...&#39;);
+} else {
+// 错误页面
+$this-&gt;redirect(&#39;New/error&#39;);
+}
+</code></pre>
+<p>重定向到URL:</p>
+<pre><code class="lang-php">$New = M(&#39;New&#39;); //实例化New对象
+$result = $New-&gt;add($data);
+if($result){
+//重定向到指定的URL地址
+redirect(&#39;/New/category/cate_id/2&#39;, 5, &#39;页面跳转中...&#39;);
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

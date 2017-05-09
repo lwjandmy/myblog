@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>chocolatey helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="chocolatey-helloworld">chocolatey helloworld</h1>
+<p><a href="https://chocolatey.org/install">Installing Chocolatey</a></p>
+<h2 id="-">安装</h2>
+<p>任务管理员身份启动cmd, 执行</p>
+<pre><code class="lang-bat">@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((New-Object System.Net.WebClient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;&amp; SET &quot;PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin&quot;
+</code></pre>
+<h2 id="-chocolatey">更新 Chocolatey</h2>
+<pre><code class="lang-bat">choco upgrade chocolatey
+</code></pre>
+<h2 id="-">查找包</h2>
+<pre><code class="lang-bat">choco search vim
+</code></pre>
+<h2 id="-">安装包</h2>
+<pre><code class="lang-bat">choco install vim-x64.portable
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

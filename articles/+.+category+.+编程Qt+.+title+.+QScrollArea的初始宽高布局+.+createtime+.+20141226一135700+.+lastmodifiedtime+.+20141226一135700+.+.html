@@ -1,0 +1,26 @@
+
+
+<html><head><meta charset="UTF-8"><title>QScrollArea的初始宽高布局
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="qscrollarea-">QScrollArea的初始宽高布局</h1>
+<p>QScrollArea的初始宽高很小，且它的大小不被子部件所影响，因为它有滚动条</p>
+<p>要想把QScrollArea的宽高调大，可以对QScrollArea的父窗口调用resize，让父窗口的布局器调整QScrollArea，</p>
+<p>更好的更量化的调整方式是调整QScrollArea的minimumSize，使QScrollArea必须大于某个尺寸。</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

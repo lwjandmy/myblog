@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>索引
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">索引</h1>
+<p>普通索引:无任何限制                    describe table显示： Key: MUL<br>添加/删除index（普通索引）</p>
+<pre><code class="lang-mysql">alter table table_name add index (col)
+alter table table_name drop index col
+</code></pre>
+<p>唯一索引:普通索引+索引列的值唯一       describe table显示： Key: UNI<br>添加/删除unique(唯一索引）</p>
+<pre><code class="lang-mysql">alter table table_name add unique (col)
+alter table table_name drop index col
+</code></pre>
+<p>主键索引:唯一索引+不允许空值           describe table显示： Key: PRI<br>添加/删除primary key(主键索引)</p>
+<pre><code class="lang-mysql">alter table table_name add primary key (col)
+alter table table_name drop index col
+alter table table_name drop primary key
+</code></pre>
+<p>全文索引:优化WHERE name LIKE “%word%&quot; describe table显示： Key: MUL<br>添加/删除fulltext（全文索引）</p>
+<pre><code class="lang-mysql">alter table table_name add fulltext (col)
+alter table table_name drop fulltext col
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

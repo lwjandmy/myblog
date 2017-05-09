@@ -1,0 +1,120 @@
+
+
+<html><head><meta charset="UTF-8"><title>grant revoke create database create table create index show describe
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="grant-revoke-create-database-create-table-create-index-show-describe">grant revoke create database create table create index show describe</h1>
+<p>创建数据库，名为‘books&#39;:</p>
+<pre><code class="lang-mysql">create database books;
+</code></pre>
+<pre><code class="lang-mysql">GRANT privileges [columns]         常规用户的权限:select,insert,update,delete,index,alter,create,drop
+ON item                                     item指某数据库或表
+TO user_name [IDENTIFIED BY &#39;password&#39;]
+[REQUIRE ssl_options]
+[WITH [GRANT OPTION | limit_options] ]
+创建用户fred,密码mnb123，权限为所有权限，数据为所有表所有表项，允许向其他人授予这些权限
+</code></pre>
+<pre><code class="lang-mysql">grant all
+on *
+to fred identified by &#39;mnb123&#39;
+with grant options;
+</code></pre>
+<p>创建一个没有任何权限的常规用户:</p>
+<pre><code class="lang-mysql">grant usage
+on books.*
+to sally identified by &#39;magic123&#39;;
+</code></pre>
+<p>授予用户权限:</p>
+<pre><code class="lang-mysql">grant select, insert, update, delete, index, alter, create, drop
+on books.*
+to sally;
+</code></pre>
+<pre><code class="lang-mysql">REVOKE privileges [(columns)]
+ON item
+FROM user_name
+</code></pre>
+<p>撤消fred用户:</p>
+<pre><code class="lang-mysql">revoke all privileges, grant
+from fred;
+</code></pre>
+<p>减少用户权限:</p>
+<pre><code class="lang-mysql">revoke alter, create, drop
+on books.*
+from sally;
+</code></pre>
+<p>指定要使用的数据库:</p>
+<pre><code class="lang-mysql">use books;
+</code></pre>
+<pre><code class="lang-mysql">CREATE TABLE tablename(columns)
+</code></pre>
+<p>创建数据库表</p>
+<pre><code class="lang-mysql">Customers(CustomerID, Name, Address, City)
+Orders(OrderID, customerID, Amount, Date)
+Books(ISBN, Author, Title, Price)
+Order_Items(OrderID, ISBN, Quantity)
+Book_Reviews(ISBN, Reviews):
+create table customers
+( customerid int unsigned not null auto_increment primary key,
+  name char(50) not null,
+  address char(100) not null,
+  city char(30) not null
+);
+create table orders
+( orderid int unsigned not null auto_increment primary key,
+  customerid int unsigned not null,
+  amount float(6,2),
+  date date not null
+);
+create table books
+( isbn char(13) not null primary key,
+  author char(50),
+  title char(100),
+  price float(4,2)
+);
+create table order_items
+( orderid int unsigned not null,
+  isbn char(13) not null,
+  quantity tinyint unsigned,
+
+  primary key (orderid, isbn)
+);
+create table book_reviews
+( isbn char(13) not null primary key,
+  review text
+);
+</code></pre>
+<p>查看所有数据库:</p>
+<pre><code class="lang-mysql">show databases;
+</code></pre>
+<p>查看books数据库中所有表:</p>
+<pre><code class="lang-mysql">use books;
+show tables;
+</code></pre>
+<p>查看books表的索引:</p>
+<pre><code class="lang-mysql">show index from books;
+</code></pre>
+<p>查看books表的所有列:</p>
+<pre><code class="lang-mysql">describe books;
+</code></pre>
+<p>创建索引</p>
+<pre><code class="lang-mysql">CREATE [UNIQUE|FULLTEXT] INDEX index_name
+ON table_name (index_column_name [(length)] [ASC|DESC], ...])
+</code></pre>
+<p>说明:FULLTEXT用来索引文本字段,length允许指定只有该字段前length个字符被索引.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

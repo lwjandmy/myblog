@@ -1,0 +1,58 @@
+
+
+<html><head><meta charset="UTF-8"><title>使用memcache
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-memcache">使用memcache</h1>
+<p>安装</p>
+<pre><code class="lang-bash">sudo pacman -S memcached python3-memcached
+</code></pre>
+<p>启动memcached, 监听本地和全网 最大内存占用1024MB</p>
+<pre><code class="lang-bash">memcached -l 127.0.0.1:11211 -l 0.0.0.0:11212 -m 1024
+</code></pre>
+<p>建立测试文件memcache_demo.py:</p>
+<pre><code class="lang-python"># encoding: utf-8
+import memcache
+
+mc = memcache.Client([&#39;127.0.0.1:11211&#39;, &#39;0.0.0.0:11212&#39;])
+
+name = mc.get(&#39;name&#39;)
+print(&#39;get name = &#39; + (name if name else &#39;None&#39;))
+
+mc.set(&#39;name&#39;, &#39;li&#39;)
+print(&#39;set name = li&#39;)
+
+name = mc.get(&#39;name&#39;)
+print(&#39;get name = &#39; + (name if name else &#39;None&#39;))
+
+mc.delete(&#39;name&#39;)
+print(&#39;delete name&#39;)
+
+name = mc.get(&#39;name&#39;)
+print(&#39;get name = &#39; + (name if name else &#39;None&#39;))
+</code></pre>
+<p>添加memcache访问层</p>
+<pre><code class="lang-python">def memcache_query(query)
+    result = mc.get(query)
+    if not result:
+        result = sql_query(query) 数据库调用
+        mc.set(query, result)
+    return result
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

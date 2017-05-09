@@ -1,0 +1,29 @@
+
+
+<html><head><meta charset="UTF-8"><title>mybatis自动加载路径下所有配置文件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-">mybatis自动加载路径下所有配置文件</h1>
+<pre><code class="lang-xml">    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;&gt;&lt;/property&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:mappers/*Mapper.xml&quot; /&gt;
+    &lt;/bean&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

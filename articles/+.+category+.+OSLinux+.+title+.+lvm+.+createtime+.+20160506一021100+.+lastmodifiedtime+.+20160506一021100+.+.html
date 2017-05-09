@@ -1,0 +1,94 @@
+
+
+<html><head><meta charset="UTF-8"><title>lvm
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="lvm">lvm</h1>
+<h2 id="-">材料</h2>
+<p>4块相等大小的硬盘:</p>
+<pre><code class="lang-text">/dev/sdb /dev/sdc /dev/sdd /dev/sde
+</code></pre>
+<p>对每个硬盘进行分区:</p>
+<p>使用cfdisk工具</p>
+<p>label type选dos</p>
+<p>新建一个primary分区, 占满整个磁盘空间</p>
+<p>设置分区type为0xFD Linux raid autodetect类型</p>
+<h2 id="mdadm-raid">mdadm建立RAID</h2>
+<p>建立RAID5:</p>
+<pre><code class="lang-bash">mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sdb1 /dev/sdc1 /dev/sdd1
+</code></pre>
+<p>查看md日志:</p>
+<pre><code class="lang-bash">cat /proc/mdstat
+</code></pre>
+<p>设置mdadm的配置文件:</p>
+<pre><code class="lang-bash">echo DEVICE partitions | sudo tee /etc/mdadm.conf
+sudo mdadm --detail --scan | sudo tee -a /etc/mdadm.conf
+</code></pre>
+<p>系统启动时, 使用mdadm(测试了下,重启后,没执行这些,自动就能用md了):</p>
+<pre><code class="lang-bash">sudo mdadm --assemble --scan /dev/md0
+</code></pre>
+<p>停止mdadm:</p>
+<pre><code class="lang-bash">sudo mdadm --stop /dev/md0
+</code></pre>
+<h2 id="-lvm">配置LVM</h2>
+<p>初始化设备, 使之支持LVM:</p>
+<pre><code class="lang-bash">sudo pvcreate /dev/md0
+</code></pre>
+<p>把设备加入卷组:</p>
+<pre><code class="lang-bash">sudo vgcreate LVM1 /dev/md0
+</code></pre>
+<p>显示卷组信息:</p>
+<pre><code class="lang-bash">sudo vgdisplay
+</code></pre>
+<p>在卷组中创建逻辑卷:</p>
+<pre><code class="lang-bash">sudo lvcreate --size 100M --name web1 LVM1
+sudo lvcreate --size 100M --name web2 LVM1
+</code></pre>
+<h2 id="-">完成, 应用此系统</h2>
+<p>建立文件系统:</p>
+<pre><code class="lang-bash">sudo mkfs -t ext4 /dev/mapper/LVM1-web1
+sudo mkfs -t ext4 /dev/mapper/LVM1-web2
+</code></pre>
+<p>挂载:</p>
+<pre><code class="lang-bash">sudo mkdir /mnt/web1 /mnt/web2
+sudo mount /dev/mapper/LVM1-web1 /mnt/web1
+sudo mount /dev/mapper/LVM1-web2 /mnt/web2
+</code></pre>
+<p>把文件系统加入/etc/fstab:</p>
+<pre><code class="lang-bash">/dev/mapper/LVM1-web1    /mnt/web1    ext4    rw    0    0
+/dev/mapper/LVM1-web2    /mnt/web2    ext4    rw    0    0
+</code></pre>
+<h2 id="mdadm-">mdadm对故障硬盘的更换步骤</h2>
+<p>模拟硬盘故障:</p>
+<pre><code class="lang-bash">sudo mdadm /dev/md0 --fail /dev/sdb1
+</code></pre>
+<p>从RAID中删除故障硬盘:</p>
+<pre><code class="lang-bash">sudo mdadm /dev/md0 --remove /dev/sdb1
+</code></pre>
+<p>向RAID添加新硬盘:</p>
+<pre><code class="lang-bash">sudo mdadm /dev/md0 --add /dev/sde1
+</code></pre>
+<h2 id="lvm-">LVM扩展分区大小</h2>
+<p>向逻辑卷增加空间:</p>
+<pre><code class="lang-bash">sudo lvextend --size +50M /dev/mapper/LVM1-web1
+</code></pre>
+<p>扩展ext4文件系统空间:</p>
+<pre><code class="lang-bash">sudo resize2fs /dev/mapper/LVM1-web1
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

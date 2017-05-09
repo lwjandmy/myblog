@@ -1,0 +1,113 @@
+
+
+<html><head><meta charset="UTF-8"><title>android Activity生命周期
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-activity-">android Activity生命周期</h1>
+<p>启动程序, HOME回桌面, 再回到程序, BACK退程序, 生命周期测试:</p>
+<p>运行程序: onCreate onStart onResume</p>
+<p>按HOME键回桌面: onPause onStop</p>
+<p>运行程序: onRestart onStart onResume</p>
+<p>按BACK键退出程序: onPause onStop onDestroy</p>
+<p>不会全覆盖父Activity的活动:</p>
+<p>启动MainActivity:   MainActivity::onCreate MainActivity::onStart MainActivity::onResume</p>
+<p>启动对话框:   MainActivity::onPause BlankActivity::onCreate BlankActivity::onStart BlankActivity::onResume</p>
+<p>关闭对话框:   BlankActivity::onPause MainActivity::onResume BlankActivity::onStop BlankActivity::onDestroy</p>
+<p>退出MainActivity:   MainActivity::onPause MainActivity::onStop MainActivity::onDestroy</p>
+<p>例子:</p>
+<p>AndroidMainfest.xml (部分):</p>
+<pre><code class="lang-xml">&lt;application
+    android:allowBackup=&quot;true&quot;
+    android:icon=&quot;@mipmap/ic_launcher&quot;
+    android:label=&quot;@string/app_name&quot;
+    android:supportsRtl=&quot;true&quot;
+    android:theme=&quot;@style/AppTheme&quot; &gt;
+    &lt;activity
+        android:name=&quot;.MainActivity&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+             &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+        &lt;/intent-filter&gt;
+    &lt;/activity&gt;
+    &lt;activity
+        android:name=&quot;.BlankActivity&quot;
+        android:label=&quot;@string/title_activity_blank&quot;
+        android:theme=&quot;@style/Base.Theme.AppCompat.Dialog&quot; &gt;
+    &lt;/activity&gt;
+&lt;/application&gt;
+</code></pre>
+<p>MainActivity.java:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.btnLaunchBlankActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(MainActivity.this, BlankActivity.class));
+            }
+        });
+        System.out.println(&quot;MainActivity::onCreate&quot;);
+    }
+    @Override
+    protected void onDestroy() { super.onDestroy(); System.out.println(&quot;MainActivity::onDestroy&quot;); }
+    @Override
+    protected void onStart() { super.onStart(); System.out.println(&quot;MainActivity::onStart&quot;); }
+    @Override
+    protected void onRestart() { super.onRestart(); System.out.println(&quot;MainActivity::onRestart&quot;); }
+    @Override
+    protected void onStop() { super.onStop(); System.out.println(&quot;MainActivity::onStop&quot;); }
+    @Override
+    protected void onResume() { super.onResume(); System.out.println(&quot;MainActivity::onResume&quot;); }
+    @Override
+    protected void onPause() { super.onPause(); System.out.println(&quot;MainActivity::onPause&quot;); }
+}
+</code></pre>
+<p>BlankActivity:</p>
+<pre><code class="lang-java">public class BlankActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_blank);
+        System.out.println(&quot;BlankActivity::onCreate&quot;);
+    }
+    @Override
+    protected void onDestroy() { super.onDestroy(); System.out.println(&quot;BlankActivity::onDestroy&quot;); }
+    @Override
+    protected void onStart() { super.onStart(); System.out.println(&quot;BlankActivity::onStart&quot;); }
+    @Override
+    protected void onRestart() { super.onRestart(); System.out.println(&quot;BlankActivity::onRestart&quot;); }
+    @Override
+    protected void onStop() { super.onStop(); System.out.println(&quot;BlankActivity::onStop&quot;); }
+    @Override
+    protected void onResume() { super.onResume(); System.out.println(&quot;BlankActivity::onResume&quot;); }
+    @Override
+    protected void onPause() { super.onPause(); System.out.println(&quot;BlankActivity::onPause&quot;); }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

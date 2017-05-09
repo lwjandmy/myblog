@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>markdown live editor</title>
+</head>
+<body>
+<textarea id="markdown_input" style='width:98%;height:40%;position:fixed;top:1px;'>
+text editor
+http://daringfireball.net/projects/markdown/dingus
+http://tool.oschina.net/markdown
+</textarea>
+<div id="markdown" style="margin-top:23%;">
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<script src="../js/marked.min.js"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script type="text/javascript">
+jQuery(function ($) {
+	marked.setOptions({
+	  highlight: function (code) {
+		return hljs.highlightAuto(code).value;
+		//return hljs.highlightBlock(code);
+	  }
+	});
+	setInterval(function () {
+	
+		$('#markdown').html(marked($('#markdown_input').val()));
+		
+		
+	}, 1000 * 3);
+});
+</script></body></html>

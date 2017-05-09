@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>android 使用fragment注意版本问题 android.support.v4.app.Fragment android.support.v7.app.AppCompatActivity
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-fragment-android-support-v4-app-fragment-android-support-v7-app-appcompatactivity">android 使用fragment注意版本问题 android.support.v4.app.Fragment android.support.v7.app.AppCompatActivity</h1>
+<pre><code class="lang-text">Fragment两个版本
+android.support.v4.app.Fragment     Android1.6之后都能用, 兼容性高, 推荐
+android.app.Fragment            Android3.0之后才能用, 兼容性低
+
+Activity两个版本
+android.support.v4.app.FragmentActivity  过时了
+android.support.v7.app.AppCompatActivity  新版本的Activity, 推荐, 功能多; 使用getSupportFragmentManager获取FragmentManager
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

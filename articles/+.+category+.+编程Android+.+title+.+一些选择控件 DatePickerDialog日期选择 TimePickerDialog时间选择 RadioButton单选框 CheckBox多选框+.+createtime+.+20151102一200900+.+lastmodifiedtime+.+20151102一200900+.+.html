@@ -1,0 +1,202 @@
+
+
+<html><head><meta charset="UTF-8"><title>一些选择控件 DatePickerDialog日期选择 TimePickerDialog时间选择 RadioButton单选框 CheckBox多选框
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-datepickerdialog-timepickerdialog-radiobutton-checkbox-">一些选择控件 DatePickerDialog日期选择 TimePickerDialog时间选择 RadioButton单选框 CheckBox多选框</h1>
+<p>trouble trouble!!!
+由于div里有html和xml代码, 浏览器解析发现嵌套代码后, 自动删除无效代码,
+之后再marked, 就有部分数据丢失了!!</p>
+<p>MainActivity.java:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.content_main);
+        // 日期选择
+        findViewById(R.id.btnChooseDate).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener()
+                {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+                    {
+                        Toast.makeText(MainActivity.this,
+                                String.format(&quot;%d/%d/%d&quot;, year, monthOfYear + 1, dayOfMonth), Toast.LENGTH_LONG).show();
+                    }
+                }, 2015, 9 - 1, 9).show();
+            }
+        });
+        // 时间选择
+        findViewById(R.id.btnChooseTime).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener()
+                {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+                    {
+                        Toast.makeText(MainActivity.this, String.format(&quot;%d-%d&quot;, hourOfDay, minute), Toast.LENGTH_LONG).show();
+                    }
+                }, 12, 0, true).show();
+            }
+        });
+        // 单选
+        findViewById(R.id.btnSubmit).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if ( ((RadioButton)findViewById(R.id.radioButtonA)).isChecked() )
+                    Toast.makeText(MainActivity.this, &quot;Correct!&quot;, Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(MainActivity.this, &quot;Error!&quot;, Toast.LENGTH_LONG).show();
+            }
+        });
+        // 多选
+        findViewById(R.id.btnSubmit2).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String str = new String();
+                CheckBox checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
+                CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+                CheckBox checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+                CheckBox checkBox4 = (CheckBox) findViewById(R.id.checkBox4);
+                if (checkBox1.isChecked())
+                    str += checkBox1.getText() + &quot;,&quot;;
+                if (checkBox2.isChecked())
+                    str += checkBox2.getText() + &quot;,&quot;;
+                if (checkBox3.isChecked())
+                    str += checkBox3.getText() + &quot;,&quot;;
+                if (checkBox4.isChecked())
+                    str += checkBox4.getText() + &quot;,&quot;;
+                Toast.makeText(MainActivity.this, str, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+}
+</code></pre>
+<p>activity_main.xml:</p>
+<pre><code class="lang-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;ScrollView
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;LinearLayout
+        xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+        xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+        xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
+        android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
+        android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
+        android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
+        android:orientation=&quot;vertical&quot;
+        app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
+        tools:showIn=&quot;@layout/activity_main&quot;
+        tools:context=&quot;.MainActivity&quot;&gt;
+
+        &lt;Button
+            android:id=&quot;@+id/btnChooseDate&quot;
+            android:text=&quot;Choose Date&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btnChooseTime&quot;
+            android:text=&quot;Choose Time&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;TextView
+            android:text=&quot;1+1?&quot;
+            android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;RadioGroup
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;&gt;
+            &lt;RadioButton
+                android:id=&quot;@+id/radioButtonA&quot;
+                android:text=&quot;A. 1&quot;
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;/&gt;
+            &lt;RadioButton
+                android:id=&quot;@+id/radioButtonB&quot;
+                android:text=&quot;B. 2&quot;
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;/&gt;
+            &lt;RadioButton
+                android:id=&quot;@+id/radioButtonC&quot;
+                android:text=&quot;C. 3&quot;
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;/&gt;
+            &lt;RadioButton
+                android:id=&quot;@+id/radioButtonD&quot;
+                android:text=&quot;D. 4&quot;
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;/&gt;
+            &lt;Button
+                android:id=&quot;@+id/btnSubmit&quot;
+                android:text=&quot;Submit&quot;
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;/RadioGroup&gt;
+        &lt;TextView
+            android:text=&quot;Favorite Fruit?&quot;
+            android:textAppearance=&quot;?android:attr/textAppearanceLarge&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;CheckBox
+            android:id=&quot;@+id/checkBox1&quot;
+            android:text=&quot;Apple&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;CheckBox
+            android:id=&quot;@+id/checkBox2&quot;
+            android:text=&quot;Banana&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;CheckBox
+            android:id=&quot;@+id/checkBox3&quot;
+            android:text=&quot;Orange&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;CheckBox
+            android:id=&quot;@+id/checkBox4&quot;
+            android:text=&quot;Watermelon&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;Button
+            android:id=&quot;@+id/btnSubmit2&quot;
+            android:text=&quot;Submit&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;/LinearLayout&gt;
+&lt;/ScrollView&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

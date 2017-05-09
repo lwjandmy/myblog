@@ -1,0 +1,33 @@
+
+
+<html><head><meta charset="UTF-8"><title>AVD 安装Intel HAXM
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="avd-intel-haxm">AVD 安装Intel HAXM</h1>
+<pre><code class="lang-text">Android Studio启动时提示:
+D:\Android_SDK\tools\emulator.exe -avd Nexus_5_API_23_x86 -netspeed full -netdelay none
+emulator: ERROR: x86 emulation currently requires hardware acceleration!
+Please ensure Intel HAXM is properly installed and usable.
+CPU acceleration status: HAX kernel module is not installed!
+
+进入Android SDK Manager, 下载Extras/Intel x86 Emulator Accelerator (HAXM installer)
+
+进入Android_SDK\extras\intel\Hardware_Accelerated_Execution_Manager, intelhaxm-android.exe安装程序
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

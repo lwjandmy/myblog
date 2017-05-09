@@ -1,0 +1,63 @@
+
+
+<html><head><meta charset="UTF-8"><title>vim配置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="vim-">vim配置</h1>
+<p>~/.vimrc</p>
+<p>&quot; 显示行号
+set number</p>
+<p>&quot; 设置顔色方案
+colorscheme torte  &quot; blue</p>
+<p>&quot; 不自动换行
+set nowrap</p>
+<p>&quot; 添加状态栏
+set laststatus=2</p>
+<p>&quot; 显示状态行
+set ruler</p>
+<p>&quot; 左下角那一行的状态
+set showmode</p>
+<p>&quot; 查找高亮
+set hlsearch</p>
+<p>&quot; 增量查找
+set incsearch</p>
+<p>&quot; 查找不区分大小写
+set ignorecase</p>
+<p>&quot; 设置编码<br>set encoding=utf-8<br>set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936<br>set fileencodings=utf-8,ucs-bom,chinese  </p>
+<p>&quot; 语言设置<br>set langmenu=zh_CN.UTF-8</p>
+<p>&quot; 智能对齐
+set smartindent</p>
+<p>&quot; 括号匹配模式
+set showmatch</p>
+<p>&quot; tab键为4个空格
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4</p>
+<p>&quot; 自动对齐
+set autoindent</p>
+<p>&quot; 与windows共享剪贴板
+set clipboard+=unnamed</p>
+<p>&quot; 打开语法高亮
+syntax on</p>
+<p>&quot; 打开文件类型自动检测
+filetype on</p>
+<p>&quot; 使用phpcomplete插件
+filetype plugin on
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

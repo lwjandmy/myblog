@@ -1,0 +1,73 @@
+
+
+<html><head><meta charset="UTF-8"><title>mysql SELECT FROM WHERE GROUP BY HAVING ORDER BY 例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mysql-select-from-where-group-by-having-order-by-">mysql SELECT FROM WHERE GROUP BY HAVING ORDER BY 例子</h1>
+<p>格式:</p>
+<pre><code class="lang-text">SELECT a, b     选择数据
+FROM tbl     选择数据
+WHERE a &gt; ?     筛选
+GROUP BY b HAVING COUNT(B) &gt;= 2     对结果聚组, 和对聚组后的筛选
+ORDER BY a;     结果排序
+</code></pre>
+<p>注意:</p>
+<p>WHERE中不能用聚集函数, 如WHERE COUNT(a) &gt; 1不对, 应放在HAVING中.</p>
+<p>HAVING属于GROUP BY</p>
+<p>例子:</p>
+<pre><code class="lang-mysql">DROP DATABASE IF EXISTS test;
+CREATE DATABASE `test`  
+CHARACTER SET &#39;utf8&#39;  
+COLLATE &#39;utf8_general_ci&#39;; 
+use test;
+
+
+DROP TABLE IF EXISTS Student;
+CREATE TABLE Student(
+    Sno INT PRIMARY KEY AUTO_INCREMENT,
+    Sname CHAR(20),
+    Ssex CHAR(2),
+    Sage SMALLINT,
+    Sdept CHAR(20)
+);
+
+
+INSERT INTO Student VALUES (NULL, &quot;李勇&quot;, &quot;男&quot;, 30, &quot;CS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;刘晨&quot;, &quot;女&quot;, 29, &quot;CS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;刘晨2&quot;, &quot;女&quot;, 29, &quot;CS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;王敏&quot;, &quot;女&quot;, 27, &quot;MA&quot;);
+INSERT INTO Student VALUES (NULL, &quot;张立&quot;, &quot;男&quot;, 27, &quot;IS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;张立2&quot;, &quot;男&quot;, 27, &quot;IS&quot;);
+
+
+SELECT * FROM Student;
+
+
+# 查询年龄20~29之间学生
+# 统计各个年龄段(段长1)人数(人数&gt;=2)
+# 按年龄段人数从大到小排列
+
+
+SELECT Sno, Sname, Ssex, Sage, Sdept, COUNT(Sage)
+FROM Student 
+WHERE Sage BETWEEN 20 AND 29
+GROUP BY Sage HAVING COUNT(Sage) &gt;= 2
+ORDER BY COUNT(Sage) DESC;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

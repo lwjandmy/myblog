@@ -1,0 +1,160 @@
+
+
+<html><head><meta charset="UTF-8"><title>ASP.NET Razor
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="asp-net-razor">ASP.NET Razor</h1>
+<pre><code class="lang-text">ASP.NET Razor - 标记
+    Razor
+        &lt;ul&gt;
+        @for (int i = 0; i &lt; 10; i++) {
+        &lt;li&gt;@i&lt;/li&gt;
+        }
+        &lt;/ul&gt;
+    PHP
+        &lt;ul&gt;
+        &lt;?php 
+        for ($i = 0; $i &lt; 10; $i++) {
+        echo(&quot;&lt;li&gt;$i&lt;/li&gt;&quot;);
+        } 
+        ?&gt;
+        &lt;/ul&gt;
+    Web Forms（以及 Classic ASP）
+        &lt;ul&gt;
+        &lt;% for (int i = 0; i &lt; 10; i++) { %&gt;
+        &lt;li&gt;&lt;% =i %&gt;&lt;/li&gt;
+        &lt;% } %&gt;
+        &lt;/ul&gt;
+    读取表单
+        @{
+        var totalMessage = &quot;&quot;;
+        if(IsPost)
+            {
+            var num1 = Request[&quot;text1&quot;];
+            var num2 = Request[&quot;text2&quot;];
+            var total = num1.AsInt() + num2.AsInt();
+            totalMessage = &quot;Total = &quot; + total;
+            }
+        }
+        &lt;html&gt;
+        &lt;body style=&quot;background-color: beige; font-family: Verdana, Arial;&quot;&gt;
+        &lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+        &lt;p&gt;&lt;label for=&quot;text1&quot;&gt;First Number:&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;text&quot; name=&quot;text1&quot; /&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;label for=&quot;text2&quot;&gt;Second Number:&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;text&quot; name=&quot;text2&quot; /&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot; Add &quot; /&gt;&lt;/p&gt;
+        &lt;/form&gt;
+        &lt;p&gt;@totalMessage&lt;/p&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+    For
+        &lt;html&gt;
+        &lt;body&gt;
+        @for(var i = 10; i &lt; 21; i++)
+            {&lt;p&gt;Line @i&lt;/p&gt;}
+        &lt;/body&gt;
+        &lt;/html&gt;
+    For Each
+        &lt;html&gt;
+        &lt;body&gt;
+        &lt;ul&gt;
+        @foreach (var x in Request.ServerVariables)
+            {&lt;li&gt;@x&lt;/li&gt;}
+        &lt;/ul&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+    While
+        &lt;html&gt;
+        &lt;body&gt;
+        @{
+        var i = 0;
+        while (i &lt; 5)
+            {
+            i += 1;
+            &lt;p&gt;Line #@i&lt;/p&gt;
+            }
+        }
+        &lt;/body&gt;
+        &lt;/html&gt;
+    数组
+        @{
+        string[] members = {&quot;Jani&quot;, &quot;Hege&quot;, &quot;Kai&quot;, &quot;Jim&quot;};
+        int i = Array.IndexOf(members, &quot;Kai&quot;)+1;
+        int len = members.Length;
+        string x = members[2-1];
+        }
+        &lt;html&gt;
+        &lt;body&gt;
+        &lt;h3&gt;Members&lt;/h3&gt;
+        @foreach (var person in members)
+        {
+        &lt;p&gt;@person&lt;/p&gt;
+        }
+        &lt;p&gt;The number of names in Members are @len&lt;/p&gt;
+        &lt;p&gt;The person at position 2 is @x&lt;/p&gt;
+        &lt;p&gt;Kai is now in position @i&lt;/p&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+    If
+        @{var price=25;}
+        &lt;html&gt;
+        &lt;body&gt;
+        @if (price&gt;=30)
+          {
+          &lt;p&gt;The price is high.&lt;/p&gt;
+          }
+        else if (price&gt;20 &amp;&amp; price&lt;30) 
+          {
+          &lt;p&gt;The price is OK.&lt;/p&gt;
+          }
+        else
+          {
+          &lt;p&gt;The price is low.&lt;/p&gt;
+          }    
+        &lt;/body&gt;
+        &lt;/html&gt;
+    Switch
+        @{
+        var weekday=DateTime.Now.DayOfWeek;
+        var day=weekday.ToString();
+        var message=&quot;&quot;;
+        }
+        &lt;html&gt;
+        &lt;body&gt;
+        @switch(day)
+        {
+        case &quot;Monday&quot;:
+            message=&quot;This is the first weekday.&quot;;
+            break;
+        case &quot;Thursday&quot;:
+            message=&quot;Only one day before weekend.&quot;;
+            break;
+        case &quot;Friday&quot;:
+            message=&quot;Tomorrow is weekend!&quot;;
+            break;
+        default:
+            message=&quot;Today is &quot; + day;
+            break;
+        }
+        &lt;p&gt;@message&lt;/p&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

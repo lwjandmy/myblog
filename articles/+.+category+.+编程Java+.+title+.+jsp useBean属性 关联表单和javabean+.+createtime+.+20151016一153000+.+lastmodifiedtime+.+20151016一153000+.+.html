@@ -1,0 +1,63 @@
+
+
+<html><head><meta charset="UTF-8"><title>jsp useBean属性 关联表单和javabean
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jsp-usebean-javabean">jsp useBean属性 关联表单和javabean</h1>
+<pre><code class="lang-text">java bean满足的条件:
+无参构造函数
+属性由get/set方法访问
+可序列化
+
+ctrl + shift + f  格式化代码
+
+useBean标签, 把表单和javabean关联起来, UserEntity类, register.jsp, do_register.jsp
+</code></pre>
+<p>src/org.learn.entity/UserEntity.java:</p>
+<pre><code class="lang-java">public class UserEntity implements Serializable
+{
+    private String username;
+    private String password;
+    public UserEntity() { super(); }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+}
+</code></pre>
+<p>register.jsp:</p>
+<pre><code class="lang-jsp">&lt;form action=&quot;do_register.jsp&quot;&gt;
+    uname:&lt;input type=&quot;text&quot; name=&quot;username&quot; /&gt;
+    upwd:&lt;input type=&quot;password&quot; name=&quot;password&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+<p>do_register.jsp:</p>
+<pre><code class="lang-jsp">&lt;jsp:useBean id=&quot;user&quot; class=&quot;org.learnjsphelloworld.entity.UserEntity&quot;&gt;&lt;/jsp:useBean&gt;
+&lt;jsp:setProperty property=&quot;username&quot; name=&quot;user&quot; /&gt;
+&lt;jsp:setProperty property=&quot;password&quot; name=&quot;user&quot; /&gt;
+&lt;jsp:getProperty property=&quot;username&quot; name=&quot;user&quot; /&gt;
+&lt;jsp:getProperty property=&quot;password&quot; name=&quot;user&quot; /&gt;
+&lt;br /&gt;
+&lt;%
+    String username = request.getParameter(&quot;username&quot;);
+    String password = request.getParameter(&quot;password&quot;);
+    out.print(username + &quot; &quot; + password);
+%&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

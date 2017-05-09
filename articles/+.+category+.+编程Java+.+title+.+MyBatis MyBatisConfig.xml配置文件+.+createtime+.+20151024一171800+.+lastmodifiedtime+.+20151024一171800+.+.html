@@ -1,0 +1,50 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis MyBatisConfig.xml配置文件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-mybatisconfig-xml-">MyBatis MyBatisConfig.xml配置文件</h1>
+<p>放单独的map包中</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+&lt;!-- 指定类型的别名, 用在parameterType,resultType属性中 --&gt;
+    &lt;typeAliases&gt;
+        &lt;typeAlias alias=&quot;User&quot; type=&quot;org.learnmybatiscrudrecord.pojo.User&quot; /&gt;
+    &lt;/typeAliases&gt;
+    &lt;environments default=&quot;development&quot;&gt;
+        &lt;environment id=&quot;development&quot;&gt;
+            &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+            &lt;dataSource type=&quot;POOLED&quot;&gt;
+                &lt;property name=&quot;driver&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
+                &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis_db&quot; /&gt;
+                &lt;property name=&quot;username&quot; value=&quot;mybatis_usr&quot; /&gt;
+                &lt;property name=&quot;password&quot; value=&quot;123456&quot; /&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/learnmybatiscrudrecord/map/User.xml&quot; /&gt;
+        &lt;mapper class=&quot;org.learnmybatiscrudrecord.map.IUser&quot; /&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

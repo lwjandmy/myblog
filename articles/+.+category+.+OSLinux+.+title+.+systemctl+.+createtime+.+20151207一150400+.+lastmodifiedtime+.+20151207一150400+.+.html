@@ -1,0 +1,67 @@
+
+
+<html><head><meta charset="UTF-8"><title>systemctl
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="systemctl">systemctl</h1>
+<h2 id="-unit-">单元(unit)概念</h2>
+<p>systemd所操作的目标是一个单元(unit),</p>
+<p>单元类型有10种, 其中一种是service</p>
+<h2 id="-">单元文件位置</h2>
+<p>/usr/lib/systemd/system  安装包提供的单元文件</p>
+<p>/etc/systemd/system  用户提供的单元文件</p>
+<h2 id="systemctl-">systemctl工具用法</h2>
+<p>UI版: systemd-ui</p>
+<p>列出已知单元(unit)</p>
+<pre><code class="lang-bash">systemctl list-units
+</code></pre>
+<p>列出所有单元文件</p>
+<pre><code class="lang-bash">systemctl list-unit-files
+</code></pre>
+<p>启动单元</p>
+<pre><code class="lang-bash">systemctl start unit-name
+</code></pre>
+<p>停止单元</p>
+<pre><code class="lang-bash">systemctl stop unit-name
+</code></pre>
+<p>重启单元</p>
+<pre><code class="lang-bash">systemctl restart unit-name
+</code></pre>
+<p>重新加载配置文件</p>
+<pre><code class="lang-bash">systemctl reload unit-name
+</code></pre>
+<p>查看单元状态</p>
+<pre><code class="lang-bash">systemctl status unit-name
+</code></pre>
+<p>查看是否启用(开机启动)</p>
+<pre><code class="lang-bash">systemctl is-enabled unit-name
+</code></pre>
+<p>启用一个单元(开机时自动启动)</p>
+<pre><code class="lang-bash">systemctl enable unit-name
+</code></pre>
+<p>禁用一个单元(开机不自动启动)</p>
+<pre><code class="lang-bash">systemctl disable unit-name
+</code></pre>
+<p>标记此单元无法启用(通过链接到/dev/null设备)</p>
+<pre><code class="lang-bash">systemctl mask unit-name
+</code></pre>
+<p>恢复被标记的单元</p>
+<pre><code class="lang-bash">systemctl unmask unit-name
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

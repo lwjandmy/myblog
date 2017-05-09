@@ -1,0 +1,328 @@
+
+
+<html><head><meta charset="UTF-8"><title>快捷键
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">快捷键</h1>
+<pre><code class="lang-text">:q    quit
+:wq    write and quit
+
+Ctrl-{        equal to ESC
+
+i    input
+
+h    left
+l    right
+j    up
+k    down
+
+0    line head
+$    line tail
+^    line head(not space word)
+
+w    move a word
+b    move back a word
+
+e    move a word(ignore ,.:[]{})
+
+(    移到当前句子开头，? . !结尾
+)    移到下一个句子开头
+
+{    移到当前段开头，段落是下一个空白行前的文本
+}    移到下一段开头
+
+[[    移到当前节的开头
+]]    移到下一节开头
+% 跳到(),[],{}对
+
+
+
+[N]X    do X N times
+
+:set nu    set line number index
+
+[N]G    goto index N line
+
+a    append
+
+c[w|b|0|$]    change [word|back-word|line-head|line-tail]
+cc    change whole line
+r    replace a word
+[N]s    replace N word
+
+d[w|b|0|$]    delete [word|back-word|line-head|line-tail]
+dd    delete whole line
+x    delete a word
+
+u    undo (only undo last change)
+&quot;[N]p    undo index N record
+
+y[w|b|0|$]    yank
+p    paste
+
+.    repeat
+
+o    new line at next line
+O    new line at previous line
++    move cursur to next line head
+-    move cursor to prev line head
+
+
+
+
+
+^F    next page
+^B    prev page
+^D    next half page
+^U    prev half page
+
+
+
+z[ENTER]    move screen, cursor at top
+z.    move screen, cursor at middle
+z-    move screen, cursor at bottom
+
+
+
+/pattern    搜索  
+?pattern    向前搜索
+n        搜索下一个
+N        搜索上一个
+
+^G        显示当前编辑位置
+
+
+vi -r [FILE]    恢复文件
+:pre        强制写入缓冲区，用于恢复文件
+
+
+
+
+v        进入选择模式
+[d|c|y|v]i[w|s|p]    [删除|改变|复制|选择]i[词|句子|段落] 这里i代表inner,能自动找到词,句子等的开头,并选中它的inner部分
+daw        和上面类似，删除一个词，不必考略当前插入符位置，它会自动找到词的开头，并选中它的all部分(all,包括周围空格;inner,不包括周围空格)
+
+
+
+:colorscheme    设置颜色方案
+:set number    加行号
+:set nonumber    去掉行号
+:set nowrap    不自动换行
+:set textwidth=80    自动换行（写文档时用）
+:set laststatus=2    添加状态栏
+
+~/.vimrc    可保存配置文件
+
+:set hlsearch    使查找高亮
+:set incsearch    增量查找
+:set ignorecase    查找不区分大小写   
+
+
+:s/Old/New/    substitude 替换
+:s/Old/New/g    substitude 替换,范围是整行
+:%s/Old/New/g    substitude 替换,范围是整个文件
+:%s/Old/New/gi    substitude 替换,范围是整个文件,忽略大小写
+:6,8s/Old/New/g    substitude 替换,范围是6到8行
+替换命令也可结合选择模式,选择要替换的范围
+:%s//New/g    要替换的内容使用上次搜索的结果(/OR?)
+
+:ls        查看buffer列表
+:bnext        进入下一个buffer文件
+:bprevious    进入上一个buffer文件
+
+C-^, :b#    切换到上次buffer文件
+:b[N]        切换到第N个buffer文件
+:bdelete    删除buffer
+
+
+f[CHAR]        查找字符位置
+;        f查找下一个
+,        f查找上一个
+
+
+ct[CHAR]    从当前位置修改到字符CHAR,t = till
+
+&quot;+p 从系统的剪切板粘贴
+
+
+
+
+
+
+
+
+
+
+
+
+C-] 进入链接
+C-o 回到之前的插入符位置, 回到搜索前的插入符位置
+C-i 回到之后的插入符位置
+% 跳到(),[],{}对
+
+:w file-name 写入文件
+:setfiletype cpp 设置文件类型
+
+C-g 查看当前所在行
+g C-g 查看当前插入符位置
+
+
+:read 从其它文件读到当前文件
+:open 像ex一样工作，用edit替代
+:edit 编辑一个文件
+:find 查找一个文件并编辑
+:write 写入文凭
+:close 关闭文件（和窗格）
+
+:split 分割窗口
+:vsplit 垂直分割窗口
+C-w j/k/h/l 切换窗口
+:close 关闭窗口
+:only 仅保留当前窗口
+C-w + 增加窗口高度
+C-w - 减小窗口高度
+C-w = 使所有窗口高度一致
+
+q{a-z} 开始记录输入
+q      结束记录i
+@{a-z} 播放记录
+
+zt 当前行滚动到顶部（top）
+zz 当前行滚动到中央
+zb 当前行滚动到底部（bottom）
+
+使用自带的.vimrc文件:
+vim /usr/share/vim/vim74/vimrc_example.vim
+:write ~/.vimrc
+
+补全命令：
+C-x C-f 补全文件名
+C-n / C-p 补全候选中切换
+C-x C-l 补全重复行
+C-x C-n 向前搜索可补全内容
+C-x C-k 用dictionary选项中关键字补全
+C-x C-t 用thesaures选项定义的文件来补全
+C-x C-i 用包含文件(include&lt;&gt;)补全
+C-x C-j 用标签补全
+C-x C-d 用宏(define)补全
+C-x C-v 用Vim命令补全
+C-x C-u 以用户函数补全
+C-x C-o 以用户函数补全，文件类型不同，函数也不同
+C-x C-s 以vim建议（suggest）内容补全
+C-n 以complete选项关键字补全，可结合其它所有搜索
+
+:TOhtml 转换成HTML
+
+
+
+:mkview 记录折叠,以备后来load
+:loadview 加载折叠
+
+zf 创建折叠
+zo 打开一个折叠
+zc 关闭一个折叠
+zd 删除一个折叠
+
+:set foldmethod=indent 设置折叠方案
+:set foldcolumn=5 设置左侧折叠线索列数（宽度）
+:set foldlevel=2 设置可见折叠层次
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+帮助技巧:
+
+:help c_CTRL+D  在命令输入状态下, 按CTRL+D可查看相关命令
+
+CTRL+] 进入链接
+CTRL+O 退出链接
+
+
+行内定位:
+
+g0 gm g^ 移动到屏幕的行前/中/后, 在设置wrap line时有作用
+
+3| 5| 移动到第几个字符
+
+fx Fx 向右/左查找字符x
+
+tx Tx 向右/左查找字符x的前一个字符(插入符在x前面)
+
+3; 5; 再次执行3/5次f/t查找
+
+3, 5, 再次执行3/5次f/t查找 按反方向
+
+
+
+行间定位:
+
+gj gk 向下/上移动, 在设置wrap line时有作用
+
+
+单词定位:
+
+w b 向前/后定位单词
+e b 在某单词上定位首/尾字母
+
+
+搜索:
+
+* 对当前插入符所在单词进行搜索
+g* 对当前插入符所在单词进行搜索 部分匹配搜索
+
+gd gD 搜索当前插入符所在单词的本地/全局声明
+
+
+
+
+CTRL-O 在插入模式中, 可临时切换到命令模式, 命令执行完后自动恢复插入模式
+
+de 删除到单词最后一字符
+
+s 把插入符所在字符删掉并进入插入模式
+
+U/u 在选择模式下,把被选字符变大写/小写
+
+CTRL-A CTRL-X 在插入符所在的数字中, 加/减1
+
+&gt;&gt; &lt;&lt; 向右/左平移TAB
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

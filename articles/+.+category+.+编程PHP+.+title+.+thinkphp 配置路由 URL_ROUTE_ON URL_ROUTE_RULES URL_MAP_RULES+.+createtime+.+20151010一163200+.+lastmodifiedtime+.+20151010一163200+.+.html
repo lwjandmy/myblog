@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>thinkphp 配置路由 URL_ROUTE_ON URL_ROUTE_RULES URL_MAP_RULES
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thinkphp-url_route_on-url_route_rules-url_map_rules">thinkphp 配置路由 URL_ROUTE_ON URL_ROUTE_RULES URL_MAP_RULES</h1>
+<h2 id="-">开启路由</h2>
+<pre><code class="lang-php">&#39;URL_ROUTER_ON&#39; =&gt; true,
+</code></pre>
+<p>配置路由规则    &#39;路由表达式&#39;=&gt;&#39;路由地址和额外参数&#39;</p>
+<pre><code class="lang-php">&#39;URL_ROUTE_RULES&#39;=&gt;array(
+    &#39;news/:year/:month/:day&#39; =&gt; array(&#39;News/archive&#39;, &#39;status=1&#39;),
+    &#39;news/:id&#39; =&gt; &#39;News/read&#39;,
+    &#39;news/read/:id&#39; =&gt; &#39;/news/:1&#39;,
+),
+</code></pre>
+<p>路由表达式</p>
+<pre><code class="lang-text">正则表达式  /^blog\/(\d+)$/       必须以“/”开头，否则就视为规则表达式
+规则表达式  blog/:id   :id表示参数，对应$_GET[&#39;id&#39;]
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,27 @@
+
+
+<html><head><meta charset="UTF-8"><title>不调用Thread对象的wait notify notifyAll方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-thread-wait-notify-notifyall-">不调用Thread对象的wait notify notifyAll方法</h1>
+<p>一个线程对象有方法wait, notify和notifyAll, 它们由Object继承而来</p>
+<p>但不要调用这些方法, 因为:</p>
+<p>调用这些方法容易产生歧义: 在线程对象上调用wait(), 是想达到什么效果? 使线程暂停? 还是使对象监听信号?</p>
+<p>从底层来说, JVM依赖这些方法改变线程的状态(BLOCKED, WAITING), 因此直接调用这些方法将扰乱JVM的操作.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

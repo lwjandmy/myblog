@@ -1,0 +1,56 @@
+
+
+<html><head><meta charset="UTF-8"><title>pro工程文件设置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="pro-">pro工程文件设置</h1>
+<pre><code class="lang-conf"># 添加Qt库：
+QT += network
+
+# 添加调试信息：
+CONFIG += debug
+
+# 使用c++11特性（shared_ptr等）：
+QMAKE_CXXFLAGS += -std=gnu++11
+
+# 支持guile：
+QMAKE_CFLAGS +=   -pthread
+QMAKE_CXXFLAGS +=   -pthread
+LIBS +=  -pthread  -lguile -lltdl -lgmp -lcrypt -lm -lltdl
+# 其中flags由guile-config compile命令得到，libs由guile-config link得到
+
+# 指定生成的应用程序放置的目录
+DESTDIR = compile
+
+# 指定生成的应用程序名
+TARGET =
+
+# 指定uic命令将.ui文件转化成ui_*.h文件的存放的目录
+UI_DIR = compile
+
+# 指定rcc命令将.qrc文件转换成qrc_*.h文件的存放目录
+RCC_DIR = compile
+
+# 指定moc命令将含Q_OBJECT的头文件转换成标准.h文件的存放目录
+MOC_DIR = compile
+
+# 指定目标文件(obj)的存放目录
+OBJECTS_DIR = compile
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

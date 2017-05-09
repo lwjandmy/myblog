@@ -1,0 +1,122 @@
+
+
+<html><head><meta charset="UTF-8"><title>drools Hello World  与spring集成
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="drools-hello-world-spring-">drools Hello World  与spring集成</h1>
+<p>applicationContext.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot; 
+    xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;  
+    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; 
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot; 
+    xmlns:util=&quot;http://www.springframework.org/schema/util&quot; 
+    xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot;  
+    xmlns:cache=&quot;http://www.springframework.org/schema/cache&quot;  
+    xmlns:drools=&quot;http://drools.org/schema/drools-spring&quot; 
+    xmlns:camel=&quot;http://camel.apache.org/schema/spring&quot;
+    xsi:schemaLocation=&quot;  
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context.xsd  
+    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+    http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans.xsd  
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx.xsd  
+    http://www.springframework.org/schema/jdbc  
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd  
+    http://www.springframework.org/schema/cache  
+    http://www.springframework.org/schema/cache/spring-cache-3.1.xsd  
+    http://www.springframework.org/schema/aop  
+    http://www.springframework.org/schema/aop/spring-aop.xsd  
+    http://www.springframework.org/schema/util  
+    http://www.springframework.org/schema/util/spring-util.xsd
+    http://drools.org/schema/drools-spring
+    http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-container/drools-spring/src/main/resources/org/drools/container/spring/drools-spring-1.0.0.xsd
+    http://camel.apache.org/schema/spring
+    http://camel.apache.org/schema/spring/camel-spring.xsd&quot;&gt;
+
+    &lt;drools:kbase id=&quot;kbase1&quot;&gt;
+        &lt;drools:resources&gt;
+            &lt;drools:resource type=&quot;DRL&quot; source=&quot;classpath:rule1.drl&quot;/&gt;
+        &lt;/drools:resources&gt;
+    &lt;/drools:kbase&gt;
+
+    &lt;drools:ksession id=&quot;ksession1&quot; type=&quot;stateful&quot; kbase=&quot;kbase1&quot;/&gt;
+
+&lt;/beans&gt;
+</code></pre>
+<p>resources/rule1.drl</p>
+<pre><code class="lang-drl">package com.cvicse.cxzx.testdrools;
+
+import com.cvicse.cxzx.testdrools_spring_integration.App;
+
+rule &quot;Hello World&quot;
+      dialect &quot;mvel&quot;
+  when
+      m : App( status == 123, message : message )
+  then
+      modify ( m ) { message = &quot;Goodbye world&quot;,
+                     status = 456 };
+end
+</code></pre>
+<p>App.java</p>
+<pre><code class="lang-java">public class App 
+{
+    private String message;
+    private int status;
+
+    public String getMessage() { return message; }
+
+    public void setMessage(String message) { this.message = message; }
+
+    public int getStatus() { return status; }
+
+    public void setStatus(int status) { this.status = status; }
+
+    public static void main( String[] args )
+    {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+        StatefulKnowledgeSession session = (StatefulKnowledgeSession) context.getBean(&quot;ksession1&quot;);
+
+        App app = new App();
+        app.setMessage(&quot;Hello World&quot;);
+        app.setStatus(123);
+        session.insert(app);
+
+        System.out.println(String.format(&quot;Message: %s&quot;, app.getMessage().toString()));
+        System.out.println(String.format(&quot;Status: %s&quot;, new Integer(app.getStatus()).toString()));
+        System.out.println();
+
+        session.fireAllRules();
+
+        System.out.println(String.format(&quot;Message: %s&quot;, app.getMessage().toString()));
+        System.out.println(String.format(&quot;Status: %s&quot;, new Integer(app.getStatus()).toString()));
+        System.out.println();
+
+        session.dispose();
+
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

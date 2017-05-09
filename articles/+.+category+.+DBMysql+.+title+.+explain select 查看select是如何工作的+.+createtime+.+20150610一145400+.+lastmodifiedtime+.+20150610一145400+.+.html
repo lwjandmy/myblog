@@ -1,0 +1,92 @@
+
+
+<html><head><meta charset="UTF-8"><title>explain select 查看select是如何工作的
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="explain-select-select-">explain select 查看select是如何工作的</h1>
+<pre><code class="lang-text">explain
+select customers.name
+from customers, orders, order_items, books
+where customers.customerid = orders.customerid
+and orders.orderid = order_items.orderid
+and order_items.isbn = books.isbn
+and books.title like &#39;%Java%&#39; \G;
+
+\G  因输出表格太宽,输出调整为一行一行的输入出
+
+*************************** 1. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: orders
+         type: ALL
+possible_keys: PRIMARY
+          key: NULL
+      key_len: NULL
+          ref: NULL
+         rows: 4
+        Extra: 
+*************************** 2. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: order_items
+         type: ref
+possible_keys: PRIMARY
+          key: PRIMARY
+      key_len: 4
+          ref: booksDB.orders.orderid
+         rows: 1
+        Extra: Using index
+*************************** 3. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: customers
+         type: ALL
+possible_keys: PRIMARY
+          key: NULL
+      key_len: NULL
+          ref: NULL
+         rows: 3
+        Extra: Using where; Using join buffer
+*************************** 4. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: books
+         type: eq_ref
+possible_keys: PRIMARY
+          key: PRIMARY
+      key_len: 13
+          ref: booksDB.order_items.isbn
+         rows: 1
+        Extra: Using where
+4 rows in set (0.00 sec)
+
+
+输出说明:
+id: 该行所引用的查询语句的id号
+select_type: simple,原来的select语句
+table: 查询使用的表
+type: eq_ref(书上说的不清楚);ref(书上说的不清楚);index,通过索引;ALL,扫描每一行
+rows: 执行查询所必须扫描的行数
+possible_keys:列出可能用来连接表的关键字. 如何包含一些NULL值,考虑添加一个索引.
+key: 实际使用的关键字
+key_len: 所用关键字的长度,可用来判别是否只使用了关键字的一部分
+ref: 用来从表中选择列而必须与关键字一起使用的列
+extra: 连接是如何执行的,以及其它信息
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

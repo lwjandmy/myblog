@@ -1,0 +1,42 @@
+
+
+<html><head><meta charset="UTF-8"><title>js把json数据转成字符串
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-json-">js把json数据转成字符串</h1>
+<p>使用</p>
+<pre><code class="lang-js">JSON.stringify({&#39;k&#39;: &#39;v&#39;})
+</code></pre>
+<p><a href="http://stackoverflow.com/questions/11616630/json-stringify-avoid-typeerror-converting-circular-structure-to-json">JSON.stringify, avoid TypeError: Converting circular structure to JSON</a></p>
+<p>当存在json循环数据时, 用:</p>
+<pre><code class="lang-js">var cache = [];
+JSON.stringify(obj, function(key, value) {
+    if (typeof value === &#39;object&#39; &amp;&amp; value !== null) {
+        if (cache.indexOf(value) !== -1) {
+            // Circular reference found, discard key
+            return;
+        }
+        // Store value in our collection
+        cache.push(value);
+    }
+    return value;
+});
+cache = null; // Enable garbage collection
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

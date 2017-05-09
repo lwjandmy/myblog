@@ -1,0 +1,65 @@
+
+
+<html><head><meta charset="UTF-8"><title>写bash脚本技巧
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-bash-">写bash脚本技巧</h1>
+<p>参考: <code>&lt;unix linux系统管理技术手册 第4版&gt;</code></p>
+<p>例子:</p>
+<p>处理一些日志, 把后缀&#39;.log&#39;改成大写&#39;.LOG&#39;.</p>
+<ol>
+<li><p>先查找日志文件</p>
+<pre><code class="lang-bash">$ find . -name &#39;*.log&#39;
+./.do-not-touch/important.log
+./access.log
+./lvm.log
+./nginx.log
+</code></pre>
+</li>
+<li><p>微调/纠正命令: 排除.do-not-touch目录</p>
+<pre><code class="lang-bash">$ find . -name &#39;*.log&#39; | grep -v &#39;.do-not-touch&#39;
+./access.log
+./lvm.log
+./nginx.log
+</code></pre>
+</li>
+<li><p>使用while处理每行文件, 命令前加echo防止执行</p>
+<pre><code class="lang-bash">$ find . -name &#39;*.log&#39; | grep -v &#39;.do-not-touch&#39; | while read file_name
+&gt; do
+&gt; file_name_rename=$(echo $file_name | sed &#39;s/\.log$/\.LOG/&#39;)
+&gt; echo mv $file_name $file_name_rename
+&gt; done
+mv ./access.log ./access.LOG
+mv ./lvm.log ./lvm.LOG
+mv ./nginx.log ./nginx.LOG
+</code></pre>
+</li>
+<li><p>检查命令输出是否正确, 之后加一个管道给<code>bash -x</code></p>
+<pre><code class="lang-bash">$ find . -name &#39;*.log&#39; | grep -v &#39;.do-not-touch&#39; | while read file_name; do file_name_rename=$(echo $file_name | sed &#39;s/\.log$/\.LOG/&#39;); echo mv $file_name $file_name_rename; done | bash -x
++ mv ./access.log ./access.LOG
++ mv ./lvm.log ./lvm.LOG
++ mv ./nginx.log ./nginx.LOG
+</code></pre>
+</li>
+<li><p>把命令保存到文件</p>
+<pre><code class="lang-bash">history | vim -
+</code></pre>
+</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

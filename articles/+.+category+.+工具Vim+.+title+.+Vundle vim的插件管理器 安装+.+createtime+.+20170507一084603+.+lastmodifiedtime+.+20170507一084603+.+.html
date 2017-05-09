@@ -1,0 +1,82 @@
+
+
+<html><head><meta charset="UTF-8"><title>
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="vundle-vim-">Vundle vim的插件管理器 安装</h1>
+<p><a href="https://github.com/VundleVim/Vundle.vim">Vundle.vim</a></p>
+<h2 id="-">下载&amp;安装</h2>
+<pre><code class="lang-bash">git clone --depth 1 https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+</code></pre>
+<h2 id="-vim-">编辑vim配置</h2>
+<pre><code class="lang-bash">vim ~/.vimrc
+</code></pre>
+<pre><code class="lang-ini">set nocompatible              &quot; be iMproved, required
+filetype off                  &quot; required
+
+&quot; set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+&quot; alternatively, pass a path where Vundle should install plugins
+&quot;call vundle#begin(&#39;~/some/path/here&#39;)
+
+&quot; let Vundle manage Vundle, required
+Plugin &#39;VundleVim/Vundle.vim&#39;
+
+&quot; The following are examples of different formats supported.
+&quot; Keep Plugin commands between vundle#begin/end.
+&quot; plugin on GitHub repo
+Plugin &#39;tpope/vim-fugitive&#39;
+&quot; plugin from http://vim-scripts.org/vim/scripts.html
+&quot; Plugin &#39;L9&#39;
+&quot; Git plugin not hosted on GitHub
+Plugin &#39;git://git.wincent.com/command-t.git&#39;
+&quot; git repos on your local machine (i.e. when working on your own plugin)
+Plugin &#39;file:///home/gmarik/path/to/plugin&#39;
+&quot; The sparkup vim script is in a subdirectory of this repo called vim.
+&quot; Pass the path to set the runtimepath properly.
+Plugin &#39;rstacruz/sparkup&#39;, {&#39;rtp&#39;: &#39;vim/&#39;}
+&quot; Install L9 and avoid a Naming conflict if you&#39;ve already installed a
+&quot; different version somewhere else.
+&quot; Plugin &#39;ascenator/L9&#39;, {&#39;name&#39;: &#39;newL9&#39;}
+
+&quot; All of your Plugins must be added before the following line
+call vundle#end()            &quot; required
+filetype plugin indent on    &quot; required
+&quot; To ignore plugin indent changes, instead use:
+&quot;filetype plugin on
+&quot;
+&quot; Brief help
+&quot; :PluginList       - lists configured plugins
+&quot; :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+&quot; :PluginSearch foo - searches for foo; append `!` to refresh local cache
+&quot; :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+&quot;
+&quot; see :h vundle for more details or wiki for FAQ
+&quot; Put your non-Plugin stuff after this line
+</code></pre>
+<h2 id="-">安装插件</h2>
+<p>vim中执行</p>
+<pre><code class="lang-bash">:PluginInstall
+</code></pre>
+<h2 id="-">查看文档</h2>
+<p>vim中执行</p>
+<pre><code class="lang-bash">:h vundle
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

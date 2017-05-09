@@ -1,0 +1,69 @@
+
+
+<html><head><meta charset="UTF-8"><title>PhantomJs Hello World
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="phantomjs-hello-world">PhantomJs Hello World</h1>
+<h2 id="hello-world">Hello World</h2>
+<pre><code class="lang-js">var webPage = require(&#39;webpage&#39;), 
+    page = webPage.create(), 
+    system = require(&#39;system&#39;);
+
+// 网页中日志打印到控制台
+page.onConsoleMessage = function (msg) {
+    console.log(&#39;ConsoleMessage: [&#39; + msg + &#39;]&#39;);
+};
+
+// 资源请求
+page.onResourceRequested = function (request) {
+//    console.log(&#39;Request [&#39; + JSON.stringify(request, undefined, 4) + &#39;]&#39;);
+};
+
+// 资源响应
+page.onResourceReceived = function (response) {
+//    console.log(&#39;Receive [&#39; + JSON.stringify(response, undefined, 4) + &#39;]&#39;);
+};
+
+page.open(&#39;http://baidu.com&#39;, function () {
+
+    // 在页面中执行js
+    var title = page.evaluate(function () {
+        return document.title;
+    });
+    console.log(&#39;PageTitle: &#39; + title);
+
+    // 添加js
+    page.includeJs(&quot;http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js&quot;, function() {
+
+        console.log(&quot;Included jquery.min.js&quot;);
+
+        // 网页截图
+        page.render(&#39;render.png&#39;);
+
+        phantom.exit();
+    });
+
+});
+</code></pre>
+<h2 id="-">调试</h2>
+<pre><code class="lang-bash">phantomjs --remote-debugger-port=9000 test1.js
+</code></pre>
+<p>chrome访问 <a href="http://vmware-archlinux:9000/">http://vmware-archlinux:9000/</a></p>
+<p>Console运行__run()</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

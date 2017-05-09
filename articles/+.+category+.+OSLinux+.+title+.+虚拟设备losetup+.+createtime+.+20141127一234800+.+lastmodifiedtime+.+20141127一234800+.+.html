@@ -1,0 +1,47 @@
+
+
+<html><head><meta charset="UTF-8"><title>虚拟设备losetup
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-losetup">虚拟设备losetup</h1>
+<p>列出所有虚拟设备</p>
+<pre><code class="lang-bash">losetup -l
+</code></pre>
+<p>建立虚拟设备</p>
+<pre><code class="lang-bash">dd if=/dev/zero of=test.img bs=1024 count=1024
+sudo losetup --find test.img 找到第一个空闲loop设备来使用
+sudo mkfs -t ext4 /dev/loop0
+sudo mount /dev/loop0 /mnt
+# operate with /mnt ...
+sudo umount /mnt
+sudo losetup --detach /dev/loop0 释放设备
+</code></pre>
+<hr>
+<p>挂载一个含有mbr的img文件:</p>
+<ol>
+<li>fdisk 查看img的分区，每个区的开始block位置</li>
+<li>执行<pre><code class="lang-bash">losetup -o OFS /dev/loopN xxx.img
+</code></pre>
+其中OFS是img的偏移, 字节为单位, 由上面的区的block*512得到, loopN中的N可以由losetup -f得到，最后一个参数是img位置</li>
+<li>mount /dev/loopN /mnt/xxx</li>
+</ol>
+<p>其中的步骤2和步骤3可以合并到mount:</p>
+<pre><code class="lang-bash">mount -o loop,offset=OFS xxx.img /mnt/xxx
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

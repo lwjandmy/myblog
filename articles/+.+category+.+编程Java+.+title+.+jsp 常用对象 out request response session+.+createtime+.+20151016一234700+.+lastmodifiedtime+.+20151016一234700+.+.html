@@ -1,0 +1,176 @@
+
+
+<html><head><meta charset="UTF-8"><title>jsp 常用对象 out request response session
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jsp-out-request-response-session">jsp 常用对象 out request response session</h1>
+<p>out对象</p>
+<p>输出各种数据</p>
+<pre><code class="lang-jsp">&lt;%@ page buffer=&quot;10kb&quot;%&gt;
+&lt;%
+    out.println(&quot;line with \r\n&quot;);
+    out.print(&quot;line &lt;br /&gt;&quot;);
+    out.newLine();
+    // out.flush();
+    out.clearBuffer();
+    out.print(&quot;getBufferSize(): &quot; + out.getBufferSize() + &quot;&lt;br /&gt;&quot;);
+    out.print(&quot;getRemaining(): &quot; + out.getRemaining() + &quot;&lt;br /&gt;&quot;);
+%&gt;
+</code></pre>
+<p>request对象</p>
+<p>来自客户端的各种信息</p>
+<pre><code class="lang-jsp">&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+    uname:&lt;input type=&quot;text&quot; name=&quot;username&quot; /&gt;
+    &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;
+getMethod():&lt;%= request.getMethod() %&gt;&lt;br /&gt;
+getRequestURI():&lt;%= request.getRequestURI() %&gt;&lt;br /&gt;
+getProtocol():&lt;%= request.getProtocol() %&gt;&lt;br /&gt;
+getServerName():&lt;%= request.getServerName() %&gt;&lt;br /&gt;
+getSeverPort():&lt;%= request.getServerPort() %&gt;&lt;br /&gt;
+getRemoteAddr():&lt;%= request.getRemoteAddr() %&gt;&lt;br /&gt;
+getRemoteHost():&lt;%= request.getRemoteHost() %&gt;&lt;br /&gt;
+getParameter():&lt;%= request.getParameter(&quot;username&quot;) %&gt;&lt;br /&gt;
+
+
+处理数组, 引用其它jsp方法, register.jsp, do_register.jsp, welcome.jsp
+
+register.jsp:
+```jsp
+&lt;form action=&quot;do_register.jsp&quot; method=&quot;post&quot;&gt;
+    uname:&lt;input type=&quot;text&quot; name=&quot;username&quot; /&gt;&lt;br /&gt;
+    skills:
+    &lt;input type=&quot;checkbox&quot; name=&quot;skills&quot; value=&quot;java&quot; /&gt;java
+    &lt;input type=&quot;checkbox&quot; name=&quot;skills&quot; value=&quot;python&quot; /&gt;python
+    &lt;input type=&quot;checkbox&quot; name=&quot;skills&quot; value=&quot;ruby&quot; /&gt;ruby
+    &lt;input type=&quot;checkbox&quot; name=&quot;skills&quot; value=&quot;golang&quot; /&gt;golang
+    &lt;br /&gt;
+    &lt;input type=&quot;submit&quot; /&gt;
+    &lt;input type=&quot;reset&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+<p>do_register.jsp:</p>
+<pre><code class="lang-jsp">&lt;%
+    String username = request.getParameter(&quot;username&quot;); // from web form
+    String skills = &quot;&quot;;
+    String[] skillArr = request.getParameterValues(&quot;skills&quot;);
+    if (skillArr != null &amp;&amp; skillArr.length &gt; 0)
+        for (String skill : skillArr)
+            skills = skills + skill + &quot; &quot;;
+    request.setAttribute(&quot;username&quot;, username); // to java beans
+    request.setAttribute(&quot;skills&quot;, skills);
+%&gt;
+&lt;jsp:forward page=&quot;welcome.jsp&quot;&gt;&lt;/jsp:forward&gt;
+</code></pre>
+<p>welcome.jsp:</p>
+<pre><code class="lang-jsp">uname:&lt;%= request.getAttribute(&quot;username&quot;) %&gt;
+skills:&lt;%= request.getAttribute(&quot;skills&quot;) %&gt;
+</code></pre>
+<p>response对象</p>
+<p>服务器的响应信息</p>
+<p>设置返回头</p>
+<pre><code class="lang-jsp">response.setHeader(&quot;Cache-Control&quot;, &quot;no-cahce&quot;);
+response.setIntHeader(&quot;Refresh&quot;, 2);
+response.setHeader(&quot;refresh&quot;, &quot;2;URL=welcome.jsp&quot;); // 实现延时跳转
+</code></pre>
+<p>重定向</p>
+<pre><code class="lang-jsp">response.sendRedirect(&quot;http://www.baidu.com&quot;);
+</code></pre>
+<p>设置Cookie</p>
+<pre><code class="lang-jsp">Cookie myCookie = new Cookie(&quot;name&quot;, &quot;value&quot;);
+myCookie.setMaxAge(3600); // 3600 seconds
+response.addCookie(myCookie);
+</code></pre>
+<p>exception对象</p>
+<p>jsp发生的异常</p>
+<p>config对象</p>
+<p>配置信息, 很少使用</p>
+<pre><code class="lang-xml">web.xml:
+  &lt;servlet&gt;
+      &lt;servlet-name&gt;config&lt;/servlet-name&gt;
+      &lt;jsp-file&gt;/17/config.jsp&lt;/jsp-file&gt;
+      &lt;init-param&gt;
+          &lt;param-name&gt;username&lt;/param-name&gt;
+          &lt;param-value&gt;admin&lt;/param-value&gt;
+      &lt;/init-param&gt;
+      &lt;init-param&gt;
+          &lt;param-name&gt;password&lt;/param-name&gt;
+          &lt;param-value&gt;123456&lt;/param-value&gt;
+      &lt;/init-param&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+      &lt;servlet-name&gt;config&lt;/servlet-name&gt;
+      &lt;url-pattern&gt;/17/*&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+</code></pre>
+<p>17/config.jsp:</p>
+<pre><code class="lang-jsp">uname:&lt;%= config.getInitParameter(&quot;username&quot;) %&gt;&lt;br /&gt;
+upwd:&lt;%= config.getInitParameter(&quot;password&quot;) %&gt;&lt;br /&gt;
+</code></pre>
+<p>page对象</p>
+<p>jsp程序本身</p>
+<pre><code class="lang-jsp">page.toString():&lt;%= page.toString() %&gt;&lt;br /&gt;
+page.getClass():&lt;%= page.getClass() %&gt;&lt;br /&gt;
+page.hashCode():&lt;%= page.hashCode() %&gt;&lt;br /&gt;
+</code></pre>
+<p>session对象</p>
+<p>保存会话信息</p>
+<p>---获取session信息---</p>
+<pre><code class="lang-jsp">getId():&lt;%= session.getId() %&gt;&lt;br /&gt;
+getCreationTime():&lt;%= new java.util.Date(session.getCreationTime()).toString() %&gt;&lt;br /&gt;
+getLastAccessedTime():&lt;%= new java.util.Date(session.getLastAccessedTime()).toString() %&gt;&lt;br /&gt;
+getMaxInactiveInterval():&lt;%= session.getMaxInactiveInterval() %&gt;&lt;br /&gt;
+</code></pre>
+<p>---调整session最长有效时间, web.xml文件, 单位分钟, ttl time to live---</p>
+<pre><code class="lang-xml">&lt;web-app ...&gt;
+  &lt;session-config&gt;
+      &lt;session-timeout&gt;10&lt;/session-timeout&gt;
+  &lt;/session-config&gt;
+&lt;/web-app&gt;
+
+为使web.xml生效, 需清除tomcat缓存:
+
+Eclipse -&gt; Servers, 右键Tomcat, Clean Tomcat Work Directory
+
+---访问session中内容---
+
+```java
+if (session.getAttribute(&quot;username&quot;) != null)
+   var = session.getAttribute(&quot;username&quot;); // 读取session
+session.setAttribute(&quot;username&quot;, username); // 写入session
+session.invalidate(); // 使session无效, 此时服务器会销毁session对象, 并重新创建一个session给客户端
+</code></pre>
+<p>application对象</p>
+<p>当前应用程序上下文</p>
+<pre><code class="lang-jsp">getServerInfo():&lt;%= application.getServerInfo() %&gt;&lt;br /&gt;
+getServletContextName():&lt;%= application.getServletContextName() %&gt;&lt;br /&gt;
+getVirtualServerName():&lt;%= application.getVirtualServerName() %&gt;&lt;br /&gt;
+&lt;%
+    Integer cnt = (Integer)application.getAttribute(&quot;counter&quot;);
+    if (cnt == null)
+        cnt = new Integer(1);
+    else
+        cnt = cnt + 1;
+    application.setAttribute(&quot;counter&quot;, cnt);
+    out.print(&quot;this page has viewed &quot; + cnt + &quot; times&quot;);
+%&gt;
+</code></pre>
+<p>pageContext对象</p>
+<p>提供了所有对象和命名空间的访问</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

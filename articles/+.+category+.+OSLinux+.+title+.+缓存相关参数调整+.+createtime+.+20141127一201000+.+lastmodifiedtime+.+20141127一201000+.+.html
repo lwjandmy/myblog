@@ -1,0 +1,64 @@
+
+
+<html><head><meta charset="UTF-8"><title>缓存相关参数调整
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">缓存相关参数调整</h1>
+<p><a href="http://www.178-go.com/archives/linux-proces.html">Linux文件系统缓存进程</a></p>
+<p><a href="http://blog.sina.com.cn/s/blog_448574810101k1va.html">文件系统缓存dirty_ratio与dirty_background_ratio两个参数区别</a></p>
+<hr>
+<p>几个系统参数说明</p>
+<pre><code class="lang-bash">$ sysctl -a | grep &quot;dirty*&quot;
+vm.dirty_background_ratio = 10
+vm.dirty_ratio = 20
+vm.dirty_background_bytes = 0
+vm.dirty_bytes = 0
+vm.dirty_expire_centisecs = 3000
+vm.dirty_writeback_centisecs = 500
+</code></pre>
+<p>vm.dirty_background_ratio和vm.dirty_ratio:</p>
+<ul>
+<li>当待写入的数据超过内存大小的vm.dirty_background_ratio比例时 pdflush进程开始写入数据，但此时其它IO仍然正常执行</li>
+<li>若写入数据时数据的产生比写入快，当待写入数据超过内存大小的vm.dirty_rator(&gt;vm.dirty_background_ratio)比例时，其它IO会阻塞，系统全力写入待写数据。</li>
+</ul>
+<p>vm.dirty_background_bytes和vm_dirty_bytes:</p>
+<p>与上面的类似，只是不是用占内存的百分比来衡量内存中待写数据，而是用字节</p>
+<p>vm.dirty_expire_centisecs:</p>
+<p>待写数据停留在内存中最长时间，超过这个时间，强制写入数据，单位是百分之一秒。</p>
+<p>vm.dirty_writeback_centisecs:</p>
+<p>pdflush进程醒来的间隔时间，单位是百分之一秒。</p>
+<hr>
+<p>设置参数, 下次启动后恢复</p>
+<pre><code class="lang-bash">sysctl -w variable=value
+</code></pre>
+<p>把设置保存到文件, 下次启动时自动应用</p>
+<p>编辑文件/etc/sysctl.conf:</p>
+<pre><code class="lang-text">variable=value
+</code></pre>
+<hr>
+<p>立刻写入缓存到磁盘</p>
+<pre><code class="lang-bash">$ sync
+</code></pre>
+<p>例子, 降低磁盘工作频率:</p>
+<pre><code class="lang-ini">vm.dirty_background_ratio = 30
+vm.dirty_expire_centisecs = 6000000
+vm.dirty_ratio = 60
+vm.dirty_writeback_centisecs = 500
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

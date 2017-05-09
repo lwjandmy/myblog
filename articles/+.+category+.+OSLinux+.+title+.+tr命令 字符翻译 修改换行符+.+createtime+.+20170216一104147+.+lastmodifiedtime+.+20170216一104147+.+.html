@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>tr命令 字符翻译 修改换行符
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tr-">tr命令 字符翻译 修改换行符</h1>
+<p>环境变量的输出, 无换行, 将\0替换成\n</p>
+<pre><code class="lang-bash">cat /proc/29989/environ | tr &#39;\0&#39; &#39;\n&#39;
+</code></pre>
+<p>空格替换成换行</p>
+<pre><code class="lang-bash">tr &#39; &#39; &#39;\n&#39;
+</code></pre>
+<p>大写转小写</p>
+<pre><code class="lang-bash">tr &#39;[:upper:]&#39; &#39;[:lower:]&#39;
+</code></pre>
+<p>删除标点符号</p>
+<pre><code class="lang-bash">tr -d &#39;[:punct:]&#39;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

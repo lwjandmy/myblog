@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>无法创建快捷方式原因的猜测
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">无法创建快捷方式原因的猜测</h1>
+<pre><code class="lang-text">关于沙箱无法创建快捷方式原因的猜测
+
+对真实存在的文件可以创建快捷方式
+但沙箱里创建的文件无法创建快捷方式
+
+可能原因是创建快捷方式的过程是交给其它函数来完成的
+但那些函数仅看见真实系统的文件,发现找不到我们要创建快捷方式的文件
+所以提示错误
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

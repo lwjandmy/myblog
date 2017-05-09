@@ -1,0 +1,50 @@
+
+
+<html><head><meta charset="UTF-8"><title>require r.js 压缩网站
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="require-r-js-">require r.js 压缩网站</h1>
+<p>使用r.js压缩网站：</p>
+<pre><code class="lang-js">node tools/r.js -o tools/build.js
+</code></pre>
+<p>当前r.js所在文件结构：</p>
+<pre><code class="lang-text">./www     网站根目录
+./www/app    网站js脚本，main.js等
+./www/lib      网站要用到的模块
+./tools/r.js     r.js脚本位置
+./tools/build.js    r.js的配置文件
+</code></pre>
+<p>build.js:</p>
+<pre><code class="lang-js">{
+    &quot;appDir&quot;: &quot;../www&quot;,     
+    &quot;mainConfigFile&quot;: &quot;../www/app.js&quot;,   
+    &quot;dir&quot;: &quot;../www-built&quot;,      
+    &quot;modules&quot;: [             
+        {
+            &quot;name&quot;: &quot;app&quot;,
+            &quot;include&quot;: [&quot;jquery&quot;, &quot;app/base&quot;]
+        }
+        {
+            &quot;name&quot;: &quot;app2&quot;,
+            &quot;include&quot;: [&quot;jquery2&quot;, &quot;app/base2&quot;]
+        }
+    ]
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

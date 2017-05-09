@@ -1,0 +1,34 @@
+
+
+<html><head><meta charset="UTF-8"><title>Thread Simple HelloWorld java多线程
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thread-simple-helloworld-java-">Thread Simple HelloWorld java多线程</h1>
+<p>public class ThreadDemo {
+    public static void main(String[] args) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(String.format(&quot;%s: %s&quot;, Thread.currentThread().getName(), &quot;Thread running&quot;));
+            }
+        }, &quot;thread1&quot;);
+        thread.start();
+    }
+}</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

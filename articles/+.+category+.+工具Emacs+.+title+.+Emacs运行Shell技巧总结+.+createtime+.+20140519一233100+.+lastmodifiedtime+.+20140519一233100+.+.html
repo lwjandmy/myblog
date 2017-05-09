@@ -1,0 +1,47 @@
+
+
+<html><head><meta charset="UTF-8"><title>Emacs运行Shell技巧总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="emacs-shell-">Emacs运行Shell技巧总结</h1>
+<pre><code class="lang-text">Emacs运行Shell技巧总结
+
+M-! shell-command 运行一句shell指令
+M-| shell-command-on-region 以选定区域为输入运行一句shell命令
+  补充: 
+M-h mark-paragraph 标记一个段落
+C-x h mark-whole-buffer 标记所有缓冲区文字
+
+ shell 启动shell buffer(*shell*)
+C-c C-c comint-get-old-input 向shell传递C-c命令,其它命令传递类似,需先C-c
+
+M-p comint-previous-input 传递上一次的指令
+M-n comint-next-input 传递下一次的指令
+
+C-c C-o comint-delete-output 清除最后一次命令回显
+
+C-c C-r comint-show-output 仅使输出中最后一条命令显示在屏幕,让屏幕只显示最后命令,给输入留屏幕
+C-c C-e comint-show-maximum-output 使输出占满屏幕
+
+C-c C-p comint-previous-prompt 向前找命令历史,来重新编辑并执行
+C-c C-n comint-next-prompt 向后找命令历史,来重新编辑并执行
+
+rename-uniquely 修改当前缓冲区名字,用于运行多个shell
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

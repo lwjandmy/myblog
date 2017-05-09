@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>xfce4启动过程 脚本互相调用过程
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="xfce4-">xfce4启动过程 脚本互相调用过程</h1>
+<pre><code class="lang-text">startxfce4 脚本:
+    设置环境变量
+    调用xinit 程序
+    调用/etc/xdg/xfce4/xinitrc 脚本
+
+xinit 程序:
+    X, 启动X server
+    /etc/xdg/xfce4/xinitrc, 执行脚本. 当脚本退出时, 关闭X server
+
+/etc/xdg/xfce4/xinitrc 脚本:
+    设置环境变量
+    xfce4-session, 执行session程序, session会记录上次xfce4的会话, 如打开了某程序
+</code></pre>
+<p>手动启动xfce4方法:</p>
+<pre><code class="lang-base">X &amp;
+DISPLAY=:0 xfce4-session &amp;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,219 @@
+
+
+<html><head><meta charset="UTF-8"><title>Oracle启动
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="oracle-">Oracle启动</h1>
+<h2 id="linux-oracle">linux下启动oracle</h2>
+<pre><code class="lang-sql">su - oracle 
+sqlplus /nolog 
+conn /as sysdba 
+startup 
+exit 
+lsnrctl start 
+exit
+</code></pre>
+<h2 id="-">解锁用户</h2>
+<pre><code class="lang-sql">su - oracle
+sqlplus &#39;/as sysdba&#39;
+alter user xxxx account unlock;
+</code></pre>
+<h2 id="linux-oracle">linux下关闭oracle</h2>
+<pre><code class="lang-sql">su - oracle 
+
+sqlplus /nolog 
+
+conn /as sysdba 
+
+shutdown immediate 
+
+exit 
+
+lsnrctl stop 
+
+exit
+</code></pre>
+<h2 id="-">启动监听器</h2>
+<pre><code class="lang-sql">lsnrctl start
+</code></pre>
+<h2 id="-">停止监听器</h2>
+<pre><code class="lang-sql">lsnrctl stop
+</code></pre>
+<h2 id="-">查看监听器状态</h2>
+<pre><code class="lang-sql">lsnrctl 
+status 
+exit
+</code></pre>
+<h2 id="-">创建用户并授予权限</h2>
+<pre><code class="lang-sql">create user lwjtest indentified by lwjtest;
+grant CREATE USER,DROP USER,ALTER USER ,CREATE ANY VIEW , DROP ANY VIEW,EXP_FULL_DATABASE,IMP_FULL_DATABASE, DBA,CONNECT,RESOURCE,CREATE SESSION  TO lwjtest
+
+
+
+## 导出全部
+```sql
+exp system/manager file=c:\dump.dump full=y
+</code></pre>
+<h2 id="-">导出某用户</h2>
+<pre><code class="lang-sql">exp user1/user1 file=c:\dump.dump owner=user1
+</code></pre>
+<h2 id="-">导出某用户某表</h2>
+<pre><code class="lang-sql">exp user1/user1 file=c:\dump.dump tables=(user1.table1,user1.table2)
+</code></pre>
+<h2 id="-">导入全部</h2>
+<pre><code class="lang-sql">imp system/manager file=c:\dump.dump full=y
+</code></pre>
+<h2 id="-">导入某用户</h2>
+<pre><code class="lang-sql">imp user1/user1 file=c:\dump.dump fromuser=user1 touser=user2
+</code></pre>
+<h2 id="-">导入某用户某表</h2>
+<pre><code class="lang-sql">imp user2/user2 file=c:\dump.dump fromuser=user1 tables=(table1,table2)
+</code></pre>
+<h2 id="-">删除用户的所有数据</h2>
+<pre><code class="lang-sql">drop user user_name cascade;
+</code></pre>
+<h2 id="-">删除表空间</h2>
+<pre><code class="lang-sql">drop tablespace tablespace_name INCLUDING CONTENTS;
+</code></pre>
+<h1 id="impdp-expdp-">impdp expdp数据泵导入导出数据库</h1>
+<h2 id="-">创建逻辑目录</h2>
+<pre><code class="lang-sql">create directory db_back as &#39;d:\&#39;
+</code></pre>
+<h2 id="-">查看管理员目录是否存在</h2>
+<pre><code class="lang-sql">select * from dba_directories;
+</code></pre>
+<h2 id="-system-">给system用户赋予目录操作权限</h2>
+<pre><code class="lang-sql">grant read,write on directory db_back to system;
+</code></pre>
+<hr>
+<h2 id="-">导出用户数据</h2>
+<pre><code class="lang-sql">expdp system/manager schemas=system directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<h2 id="-">并行导出用户数据</h2>
+<pre><code class="lang-sql">expdp lwjtest/lwjtest schemas=lwjtest directory=db_back dumpfile=lwjtest_%U.dmp parallel=4
+</code></pre>
+<h2 id="-">导出低版本高兼容性的用户数据</h2>
+<pre><code class="lang-sql">expdp lwjtest/lwjtest schemas=lwjtest directory=db_back dumpfile=lwjtest.dmp version=10
+</code></pre>
+<h2 id="-">导出表数据</h2>
+<pre><code class="lang-sql">expdp system/manager tables=a,b directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<h2 id="-">按表空间导出</h2>
+<pre><code class="lang-sql">expdp system/manager tablespaces=c,d directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<h2 id="-">导出整个数据库</h2>
+<pre><code class="lang-sql">expdp system/manager full=y directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<hr>
+<h2 id="-">导入用户数据</h2>
+<pre><code class="lang-sql">impdp system/manager remap_schema=systemfrom:systemto directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<h2 id="-">并行导入用户数据</h2>
+<pre><code class="lang-sql">impdp lwjtest2/lwjtest2 remap_schema=lwjtest:lwjtest2 directory=db_back dumpfile=lwjtest_%U.dmp parallel=4
+</code></pre>
+<h2 id="-">导入表数据</h2>
+<pre><code class="lang-sql">impdp system/manager tables=a,b directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<h2 id="-">按表空间导入</h2>
+<pre><code class="lang-sql">impdp system/manager tablespaces=c,d directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<h2 id="-">导入整个数据库</h2>
+<pre><code class="lang-sql">impdp system/manager full=y directory=db_back dumpfile=expdp.dmp
+</code></pre>
+<hr>
+<h2 id="-">查看用户权限</h2>
+<pre><code class="lang-sql">SELECT * FROM DBA_SYS_PRIVS where grantee = &#39;CPTEST&#39;;
+</code></pre>
+<hr>
+<h2 id="-">查看表属于哪个表空间</h2>
+<pre><code class="lang-sql">select * from user_tables;
+</code></pre>
+<h2 id="-">查看用户属哪个表空间</h2>
+<pre><code class="lang-sql">select * from dba_segments where owner = &#39;ZR1234&#39;;
+</code></pre>
+<h2 id="-">查看表空间总磁盘空间</h2>
+<pre><code class="lang-sql">select * from DBA_DATA_FILES;
+</code></pre>
+<h2 id="-">查看表空间剩余磁盘空间</h2>
+<pre><code class="lang-sql">select * from DBA_FREE_SPACE;
+
+select * from dba_segments;
+</code></pre>
+<h2 id="-">查表空间所在文件路径</h2>
+<pre><code class="lang-sql">select * from dba_data_files;
+</code></pre>
+<h2 id="-">扩展表空间大小</h2>
+<pre><code class="lang-sql">alter database datafile &#39;D:\Oracle\PRODUCT\ORADATA\TEST\USERS01.DBF&#39; resize 50m;
+alter database datafile &#39;D:\ORACLE\PRODUCT\ORADATA\TEST\USERS01.DBF&#39; autoextend on next 50m maxsize 500m; 
+alter tablespace yourtablespacename add datafile &#39;d:\newtablespacefile.dbf&#39; size 5m;
+</code></pre>
+<hr>
+<h2 id="-exp-imp-">解决exp/imp无法导出空表</h2>
+<h3 id="-1-">方法1 对空表分配空间</h3>
+<pre><code class="lang-sql">SELECT &#39;alter table &#39;||table_name||&#39; allocate extent;&#39; FROM user_tables WHERE num_rows=0;
+</code></pre>
+<p>执行生成出来的sql</p>
+<h3 id="-2-deferred_segment_creation-">方法2 设置deferred_segment_creation 参数</h3>
+<pre><code class="lang-sql">alter system set deferred_segment_creation=false;
+
+show parameter deferred_segment_creation;
+</code></pre>
+<p>改为FALSE后, 无论是空表还是非空表，都分配segment, 但只对修改参数后新创建的空表有效, 之前的空表还是不分配空间, 无法导出.</p>
+<hr>
+<h2 id="-">锁表问题解决, 删表删不掉问题解决</h2>
+<p>查找当前锁表的ORACLE_USERNAME用户名, SESSION_ID会话id</p>
+<pre><code class="lang-sql">select * from v$locked_object;
+</code></pre>
+<p>查找登录用户的USERNAME, SID, SERIAL#;</p>
+<pre><code class="lang-sql">select * from v$session where username = &#39;LWJTEST1&#39;;
+</code></pre>
+<p>补充: SID是会话id, SERIAL#是某个会话的序列号, 因为会话可能回收后再重用, 此时会话id相同, SERIAL#递增;</p>
+<p>kill此会话;</p>
+<pre><code class="lang-sql">alter system kill session &#39;150,52883&#39;;
+</code></pre>
+<p>生成kill会话的sql;</p>
+<pre><code class="lang-sql">select &#39;alter system kill session &#39;&#39;&#39;||SID||&#39;,&#39;||SERIAL#||&#39;&#39;&#39;;&#39; from v$session where username = &#39;LWJTEST1&#39;;
+</code></pre>
+<hr>
+<h2 id="-">修改数据库最大游标</h2>
+<pre><code class="lang-sql">alter system set open_cursors=1000 scope=both;
+</code></pre>
+<hr>
+<h1 id="-">例子</h1>
+<h2 id="-">用户数据导入导出</h2>
+<pre><code class="lang-sql">exp cptest/cptest file=c:\cptest owner=cptest
+
+drop user lwjtest cascade;
+create user lwjtest identified by lwjtest;
+grant all privilege, dba to lwjtest;
+
+imp lwjtest/lwjtest file=c:\cptest fromuser=cptest touser=lwjtest
+</code></pre>
+<h2 id="-">关闭现有连接, 否则无法删用户, 也用来解决锁表问题</h2>
+<pre><code class="lang-sql">select username,sid,serial# from v$session;
+
+alter system kill session&#39;10,600&#39;;
+</code></pre>
+<h2 id="-">表数据导入导出</h2>
+<pre><code class="lang-sql">exp cptest/cptest file=c:\cptest.dmp tables=(cptest.cont_contractext_h_temp,cptest.cont_contractext_h_history)
+drop table cont_contractext_h_temp;
+drop table cont_contractext_h_history;
+imp lwjprivate/lwjprivate file=c:\cptest.dmp fromuser=cptest tables=(cont_contractext_h_temp,cont_contractext_h_history)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

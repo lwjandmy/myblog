@@ -1,0 +1,54 @@
+
+
+<html><head><meta charset="UTF-8"><title>d3 手动放大scaleBy后 再次响应zoom事件时d3.event.transform还原了放大尺寸 原因及解决方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="d3-scaleby-zoom-d3-event-transform-">d3 手动放大scaleBy后 再次响应zoom事件时d3.event.transform还原了放大尺寸 原因及解决方法</h1>
+<p><a href="http://stackoverflow.com/questions/40246196/d3-v4-zoom-with-buttons-in-conflicts-with-zoom-behaviour">d3 v4 - zoom with buttons in conflicts with zoom behaviour</a></p>
+<p>错误例子:</p>
+<pre><code class="lang-js">            var zoom = d3.zoom();
+
+            // svg收到鼠标缩放事件, 应用到g节点; g节点只有鼠标在group内元素上才能收到事件, 所以不能在g上监听
+            svg.call(zoom.on(&#39;zoom&#39;, function zoomed() {
+                    g.attr(&quot;transform&quot;, d3.event.transform);
+                }));
+
+            // 测试
+            setInterval(function () {
+                zoom.scaleBy(g, 1.1);
+            }, 1000);
+</code></pre>
+<p>正确例子:</p>
+<pre><code class="lang-js">            var zoom = d3.zoom();
+
+            // svg收到鼠标缩放事件, 应用到g节点; g节点只有鼠标在group内元素上才能收到事件, 所以不能在g上监听
+            svg.call(zoom.on(&#39;zoom&#39;, function zoomed() {
+                    g.attr(&quot;transform&quot;, d3.event.transform);
+                }));
+
+            // 初始化视口坐标映射
+            svg.call(zoom.translateBy, width / 2, height / 2);
+
+            // 测试
+            setInterval(function () {
+                zoom.scaleBy(svg, 1.1);
+            }, 1000);
+</code></pre>
+<p>注意, 必须保存下zoom变量=d3.zoom(), 不要在&quot;测试&quot;中d3.zoom().scaleBy(...), 会使缩放不会及时显示, 不明原因, 可能是zoom变量保存了节点的数据, 直接d3.zoom().scaleBy(...)不会触发节点事件</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

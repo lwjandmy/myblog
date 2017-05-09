@@ -1,0 +1,138 @@
+
+
+<html><head><meta charset="UTF-8"><title>jQuery AJAX
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jquery-ajax">jQuery AJAX</h1>
+<p>AJAX = Asynchronous JavaScript And XML  异步Javascript和XML</p>
+<p>在不重载网页的情况下, AJAX通过后台加载数据, 并显示在网页上.</p>
+<hr>
+<p>$(selector).load(URL,data,callback);</p>
+<p>从服务器加载数据，并把返回的数据放入被选元素中</p>
+<p>必需的: URL 参数规定您希望加载的 URL。</p>
+<p>可选的: data 参数规定与请求一同发送的查询字符串键/值对集合。</p>
+<p>可选的: callback 参数是 load() 方法完成后所执行的函数名称。</p>
+<p>示例:</p>
+<p>把文件 &quot;demo_test.txt&quot; 的内容加载到指定的 <div> 元素中:</p>
+<p>$(&quot;#div1&quot;).load(&quot;demo_test.txt&quot;);</p>
+<p>把 &quot;demo_test.txt&quot; 文件中 id=&quot;p1&quot; 的元素的内容，加载到指定的 <div> 元素中</p>
+<p>$(&quot;#div1&quot;).load(&quot;demo_test.txt #p1&quot;);</p>
+<p>回调:</p>
+<pre><code class="lang-js">  $(&quot;#div1&quot;).load(&quot;demo_test.txt&quot;,function(responseTxt,statusTxt,xhr){
+    if(statusTxt==&quot;success&quot;)
+      alert(&quot;外部内容加载成功！&quot;);
+    if(statusTxt==&quot;error&quot;)
+      alert(&quot;Error: &quot;+xhr.status+&quot;: &quot;+xhr.statusText);
+  });
+</code></pre>
+<hr>
+<p>$.get(URL,callback);</p>
+<p>通过 HTTP GET 请求从服务器上请求数据</p>
+<p>callback回调函数的 第一个回调参数存有被请求页面的内容，第二个回调参数存有请求的状态</p>
+<p>示例:  </p>
+<pre><code class="lang-js">  $.get(&quot;demo_test.asp&quot;,function(data,status){
+    alert(&quot;Data: &quot; + data + &quot;\nStatus: &quot; + status);
+  });
+</code></pre>
+<hr>
+<p>$.post(URL,data,callback);</p>
+<p>通过 HTTP POST 请求从服务器上请求数据</p>
+<p>示例:</p>
+<pre><code class="lang-js">  $.post(&quot;demo_test_post.asp&quot;,
+  {
+    name:&quot;Donald Duck&quot;,
+    city:&quot;Duckburg&quot;
+  },
+  function(data,status){
+    alert(&quot;Data: &quot; + data + &quot;\nStatus: &quot; + status);
+  });
+</code></pre>
+<hr>
+<pre><code class="lang-js">$.ajax({
+    accepts: {
+        mycustomtype: &#39;application/x-some-custom-type&#39;
+    }, // 希望服务返回什么类型的数据, 会由DataType自动设置
+    async: true, // 是否异步调用
+    beforeSend: function (jqXHR, settings ) {
+
+    }, // 发送数据前的回调函数, 可修改请求头, 返回false终止数据发送
+    cache: false, // 是否使用缓存. dataType为&#39;script&#39;和&#39;jsonp&#39;时, 默认为false, 其它默认为true
+    complete: function (jqXHR, textStatus) {
+
+    }, // 请求完成时回调函数, textStatus为&quot;success&quot;, &quot;notmodified&quot;, &quot;nocontent&quot;, &quot;error&quot;, &quot;timeout&quot;, &quot;abort&quot;, or &quot;parsererror&quot;, 不推荐使用, 以后将去掉, 用always替代
+    contentType: &#39;application/x-www-form-urlencoded; charset=UTF-8&#39;, // 发送数据时, head头中contentType的值
+    context: {
+
+    }, // 所有ajax回调函数的this环境, 默认是Ajax settings对象
+    converters: {
+        &quot;* text&quot;: window.String,
+        &quot;text html&quot;: true,
+        &quot;text json&quot;: jQuery.parseJSON,
+        &quot;text xml&quot;: jQuery.parseXML
+    }, // 包含了dateType到dateType的map映射, 每个value是个函数, 用来返回服务器返回数据的转换后的值(不是太清楚)
+    crossDomain: true, // 设置为true, 允许跨域调用(如JSONP). 同域调用请求, 默认为false, 跨域调用请求, 默认为true(不是太清楚)
+    data: {
+
+    }, // 将发送给后台的数据
+    dataFilter: function (data, type) {
+
+    }, // data: 服务器返回的原始数据, type: 服务器返回的dataType参数, 用于对返回数据的处理, 需返回处理后数据
+    dataType: &#39;&#39;, // 期望服务器返回的数据类型, 会根据MIME类型自动设置此值, 可用的配置有: &quot;xml&quot;, &quot;html&quot;, &quot;script&quot;, &quot;json&quot;, &quot;jsonp&quot;, &quot;text&quot;, 以上可组合使用, 空格隔开
+    error: function (jqXHR, textStatus, errorThrown) {
+
+    }, // 请求失败的处理函数, textStatus可能的值: &quot;timeout&quot;, &quot;error&quot;, &quot;abort&quot;, &quot;parsererror&quot;, 不推荐使用, 以后将去掉, 用fail替代
+    global: true, // 是否出发全局Ajax事件处理函数, 设为false可防止ajaxStart,ajaxStop等全局事件处理函数
+    headers: {
+
+    }, // 发送数据的head的附加值, X-Requested-With头总会存在
+    ifModified: false, // 只有响应值与上一次返回的响应值不同, 此次请求才算成功. 通过检查Last-Modified头来实现的
+    jsonp: &#39;&#39;, // 正常jsonp调用, 发送到服务器的url为xxx.js?callback=fun, 配置jsonp=&#39;onJSONPLoad&#39;后发送到服务器的url为xxx.js?onJSONPLoad=fun
+    jsonpCallback: &#39;&#39;, // 指定jsonp回调的函数名, 默认是jquery生成的随机函数名
+    method: &#39;GET&#39;, // HTTP请求类型, 可选值: &#39;GET&#39;, &#39;POST&#39;, &#39;PUT&#39;, &#39;DELETE&#39;等
+    mimeType: &#39;&#39;, // 定义新mimeType覆盖XHR mime type
+    username: &#39;&#39;, // 发送HTTP授权请求用到的用户名
+    password: &#39;&#39;, // 发送HTTP授权请求用到的密码
+    processData: true, // 将发送到数据data转换成请求字符(k1=v1&amp;k2=v2)
+    scriptCharset: &#39;&#39;, // 设置请求的charset属性, 用于当本地页面的字符集与服务器字符集不同时, 仅在返回类型为&#39;script&#39;有效
+    statusCode: {
+        404: function() {
+            alert( &quot;page not found&quot; );
+        }
+    }, // HTTP相应代码和响应处理函数
+    success: function (data, textStatus, jqXHR) {
+
+    }, // 请求成功的回调函数, 不推荐使用, 以后将去掉, 用done替代
+    timeout: 0, // 请求超时时间(单位: 毫秒), 0表示无超时时间
+    url: &#39;&#39;, // 请求地址
+    xhr: XMLHttpRequest, // 创建XMLHttpRequest的回调函数
+    xhrFields: {
+        withCredentials: true
+    } // 设置xhr的参数(不清楚)
+})
+    .done(function(data, textStatus, jqXHR) {
+        alert( &quot;success&quot; );
+    }) // 成功时回调函数, data: 服务器返回的数据, textStatus: 状态, jqXHR: jQuery封装的XmlHttpRequest
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        alert( &quot;error&quot; );
+    }) // 失败时回调函数, jqXHR: jQuery封装的XmlHttpRequest, textStatus: 状态, errorThrown: HTTP状态码的文字说明, 如服务器返回404, 则为&quot;Not Found&quot;
+    .always(function(data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+        alert( &quot;complete&quot; );
+    }); // 不论成功失败都回调的函数
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

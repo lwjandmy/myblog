@@ -1,0 +1,69 @@
+
+
+<html><head><meta charset="UTF-8"><title>expect 自动执行shell命令交互
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="expect-shell-">expect 自动执行shell命令交互</h1>
+<p><a href="https://en.wikipedia.org/wiki/Expect#Basics">wikipedia-Expect</a></p>
+<p><a href="http://www.mojidong.com/linux/2013/04/14/expect-detail/">expect自动交互详解</a></p>
+<hr>
+<h2 id="git-push-">git push时自动输入用户名密码</h2>
+<p>文件gitpush.sh</p>
+<pre><code class="lang-bash">#!/usr/bin/env expect
+
+set timeout -1
+
+set GITPASSWORD [lindex $argv 0]
+
+spawn git push origin_oschina gh-pages origin_oschina/gh-pages
+
+expect {
+  &quot;Username&quot; {
+    send &quot;$env(GITUSERNAME)\r&quot;
+    expect {
+      &quot;Password&quot; {
+        send &quot;$GITPASSWORD\r&quot;
+        expect {
+          eof
+        }
+      }
+    }
+  }
+}
+
+spawn git push origin_github gh-pages origin_github/gh-pages
+
+expect {
+  &quot;Username&quot; {
+    send &quot;$env(GITUSERNAME)\r&quot;
+    expect {
+      &quot;Password&quot; {
+        send &quot;$GITPASSWORD\r&quot;
+        expect {
+          eof
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>用法</p>
+<pre><code class="lang-bash">GITUSERNAME=lwjandmy ./gitpush.sh mypassword
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

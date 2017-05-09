@@ -1,0 +1,43 @@
+
+
+<html><head><meta charset="UTF-8"><title>go 并发demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="go-demo">go 并发demo</h1>
+<p>main.go</p>
+<pre><code class="lang-go">package main
+
+import &quot;fmt&quot;
+
+func Add(x int, y int, result chan int) {
+    result &lt;- x + y;
+}
+
+func main() {
+    chs := make([]chan int, 10)
+    for i := 0; i != 10; i++ {
+        chs[i] = make(chan int)
+        go Add(i, i, chs[i])
+    }
+    for _, ch := range chs {
+        fmt.Println(&lt;- ch)
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

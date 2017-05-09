@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>不定参数的处理方式测试(不足32位, 补足; 超过32位, 入栈两次)
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-32-32-">不定参数的处理方式测试(不足32位, 补足; 超过32位, 入栈两次)</h1>
+<pre><code class="lang-c++">// 以下测试说明了不定参数的处理方式(不足32位, 补足; 超过32位, 入栈两次) 
+    int i;
+    printf(&quot;&quot;, i); // push eax 直接入栈
+    char c;  
+    printf(&quot;&quot;, c); // movsx eax, BYTE; push eax 先扩充后入栈
+    double d;
+    printf(&quot;&quot;, d); // push eax push eax 入栈了两次
+    short s;
+    printf(&quot;&quot;, s); // movsx eax, WORD; push eax 先扩展后入栈 
+    float f;
+    printf(&quot;&quot;, f); // fld fstp 不清楚
+    bool b;
+    printf(&quot;&quot;, b); // movzx eax, BYTE; push eax 先扩展后入栈
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

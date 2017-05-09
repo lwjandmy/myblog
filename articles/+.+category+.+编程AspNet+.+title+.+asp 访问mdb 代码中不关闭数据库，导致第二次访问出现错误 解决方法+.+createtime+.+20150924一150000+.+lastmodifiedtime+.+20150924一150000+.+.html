@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>asp 访问mdb 代码中不关闭数据库，导致第二次访问出现错误 解决方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="asp-mdb-">asp 访问mdb 代码中不关闭数据库，导致第二次访问出现错误 解决方法</h1>
+<pre><code class="lang-text">IIS管理器-&gt;应用程序池-&gt;高级设置-&gt;托管管道模式-&gt;Classic    IIS6中用的这种模式
+
+后来发现不是这个问题，也不知道怎么好的，只设置了这些地方：
+
+mdb数据库文件，添加IUSER_XXX，添加写入和修改权限。
+
+然后又好了。。。。
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

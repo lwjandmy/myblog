@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>browserify 打包node项目
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="browserify-node-">browserify 打包node项目</h1>
+<p>nodejs项目用到许多require引入的依赖文件, browserify可将所有依赖文件收集打成一个js文件, 方便后续压缩.</p>
+<h2 id="-">安装</h2>
+<pre><code class="lang-bash">cnpm install -g browserify
+</code></pre>
+<h2 id="-browserify-">使用browserify打包</h2>
+<pre><code class="lang-bash">browserify --node main.js &gt; bundle.js
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

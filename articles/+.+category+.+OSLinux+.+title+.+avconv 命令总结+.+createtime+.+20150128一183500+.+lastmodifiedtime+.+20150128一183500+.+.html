@@ -1,0 +1,116 @@
+
+
+<html><head><meta charset="UTF-8"><title>avconv 命令总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="avconv-">avconv 命令总结</h1>
+<p><a href="http://www.libav.org/avconv.html">avconv Documentation</a></p>
+<hr>
+<h2 id="-avconv-flv-">用avconv把优酷下载的分割的flv拼接并提取音频的过程</h2>
+<p>在下载的flv文件目录下，执行flvtoaac脚本</p>
+<p>flvtoaac.sh，用于flv转aac（提取音频），用到了bash里字符截取和拼接：</p>
+<pre><code class="lang-bash">for f in *.flv; do
+    avconv -i $f -c copy -map 0:a:0 aac/${f%&#39;.&#39;*}.aac
+done
+</code></pre>
+<p>在aac目录下，执行aactowhole脚本</p>
+<p>aactowhole.sh，用于所有aac合成为whole.aac：</p>
+<pre><code class="lang-bash">cmd=&quot;concat:&quot;
+for f in *.aac; do
+    cmd=$cmd$f&quot;|&quot;
+done
+cmd=${cmd%&quot;|&quot;*}
+avconv -i $cmd -c copy whole.aac
+</code></pre>
+<p>生成的whole.aac就是拼接的音频。</p>
+<hr>
+<p>屏幕录像专家生成的avi，音频转成mp3</p>
+<pre><code class="lang-bash">ffmpeg -i &quot;D:\ls\ok\1.1 优势.avi&quot; -c:0:0 copy -c:a:0 libmp3lame -ab 20000 -ac 1 &quot;D:\ls\transform\1.1 优势.avi&quot;
+</code></pre>
+<hr>
+<p>语法：</p>
+<pre><code class="lang-bash">avconv [global options] [[infile options][‘-i’ infile]]... {[outfile options] outfile}...
+</code></pre>
+<p>对数据流的标识：</p>
+<pre><code class="lang-text">&#39;file_id:stream_index&#39; 2:4 第3个输入文件的第5个数据流
+&#39;stream_index&#39; 1 第2个数据流
+&#39;stream_type:stream_index&#39; v:1 a:2 视频流中的第2个数据流 音频流中的第3个数据流
+</code></pre>
+<hr>
+<p>帮助：</p>
+<pre><code class="lang-text">‘-h, -?, -help, --help [arg]’
+arg可以是：
+‘decoder=decoder_name’ 查看解码器帮助，用-decoders参数得到所有解码器
+‘encoder=encoder_name’ 查看编码器帮助，用-encoders参数得到所有编码器
+‘demuxer=demuxer_name’ 查看demuxer帮助，用-formats参数得到所有demuxer和muxer
+‘muxer=muxer_name’ 查看muxer帮助，用-formats参数得到所有demuxer和muxer
+‘filter=filter_name’ 查看过滤器帮助，用-filters参数得到所有过滤器
+
+-codecs 查看所有支持的编码
+-bsfs 查看所有数据流过滤器
+-protocols 查看所有协议
+-pix_fmts 查看所有像素格式
+-sample_fmts 查看所有简单格式
+
+编解码器参数（Codec AVOptions）：
+‘-b[:stream_specifier] integer (output,audio,video)’  set bitrate (in bits/s)
+‘-threads[:stream_specifier] integer (input/output,video)’  integer可取 ‘auto’ autodetect a suitable number of threads to use
+
+主要参数（Main options）：
+‘-f fmt (input/output)’  指定文件格式，用-formats参数可以得到所有文件格式，默认从文件扩展名自动匹配格式
+‘-codec[:stream_specifier] codec (input/output,per-stream)’  指定编码格式，用-codecs参数可以得到所有编码格式
+
+‘-q[:stream_specifier] q (output,per-stream)’  设置质量（quality），具体含义视编码而定
+‘-filter[:stream_specifier] filter_graph (output,per-stream)’  指定过滤器图，用-filters参数可以得到所有过滤器
+‘-ss position (input/output)’  指定起始时间，可以是一个数（秒），也可以是hh:mm:ss[.xxx]格式
+‘-t duration (output)’  指定持续时间，可以是一个数（秒），也可以是hh:mm:ss[.xxx]格式
+‘-y (global)’ ‘-n (global)’  覆盖已有的文件 不覆盖已有的文件
+
+
+
+‘-itsoffset offset (input)’
+
+    Set the input time offset in seconds. [-]hh:mm:ss[.xxx] syntax is also supported. The offset is added to the timestamps of the input files. Specifying a positive offset means that the corresponding streams are delayed by offset seconds.
+
+
+视频参数（Video Options）：
+‘-r[:stream_specifier] fps (input/output,per-stream)’  指定帧率
+‘-vcodec codec (output)’  等价于 -codec:v
+‘-vf filter_graph (output)’  等价于 -filter:v.
+
+音频参数（Audio Options）：
+‘-ar[:stream_specifier] freq (input/output,per-stream)’  设置音频频率
+‘-aq q (output)’  设置音频质量（VBR），等价于-q:a.
+‘-ac[:stream_specifier] channels (input/output,per-stream)’  设置声道数
+‘-acodec codec (input/output)’   等价于 -codec:a
+‘-af filter_graph (output)’  等价于 -filter:a.
+
+高级参数（Advanced options）：
+‘-map [-]input_file_id[:stream_specifier][,sync_file_id[:stream_specifier]] | [linklabel] (output)’
+指明输出文件的数据流是从哪映射来的，一条map参数指明一个输出文件的数据流
+例子：
+avconv -i INPUT -map 0 OUTPUT  映射输入文件所有数据流到输出文件
+avconv -i INPUT -map 0:1 OUTPUT  映射第2个数据流到输出文件
+avconv -i INPUT1 -i INPUT2 -map 0:0 -map 1:0 OUTPUT  映射第1个文件第1个数据流，第2个文件第1个数据流到输出文件
+avconv -i INPUT -map 0:v -map 0:a:0 OUTPUT 映射所有视频和第1个音频到输出文件
+avconv -i INPUT -map 0 -map -0:a:0 OUTPUT 映射除了第1个音频外的所有数据流到输出文件
+‘-benchmark (global)’  编码完成后输出资源消耗，显示CPU使用时间，最大内存消耗。
+‘-filter_complex filtergraph (global)’  不感兴趣，以后再补充
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

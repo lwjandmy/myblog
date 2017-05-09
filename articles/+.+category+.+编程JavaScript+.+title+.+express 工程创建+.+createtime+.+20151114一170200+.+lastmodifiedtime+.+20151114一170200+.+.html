@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>express 工程创建
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="express-">express 工程创建</h1>
+<p>express 工程创建</p>
+<p>安装express:</p>
+<p>创建工程文件夹learnexpress/</p>
+<p>执行npm init, 提问全部默认回车, 之后会创建package.json</p>
+<p>执行npm install express --save, 安装express包, --save用于把express的dependency加入package.json</p>
+<p>express的HelloWorld:</p>
+<p>创建文件: learnexpress/app.js, 写代码:</p>
+<pre><code class="lang-js">var express = require(&#39;express&#39;);
+var app = express();
+app.get(&#39;/&#39;, function(req, res)
+    {
+        res.send(&#39;Hello World!&#39;);
+    });
+var server = app.listen(3000, function()
+    {
+        var host = server.address().address;
+        var port = server.address().port;
+        console.log(&#39;Example app listening at http://%s:%s&#39;, host, port);
+});
+</code></pre>
+<p>启动应用:
+node app.js</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

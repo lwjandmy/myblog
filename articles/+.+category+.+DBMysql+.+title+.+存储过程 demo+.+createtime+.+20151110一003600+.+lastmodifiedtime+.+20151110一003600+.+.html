@@ -1,0 +1,133 @@
+
+
+<html><head><meta charset="UTF-8"><title>存储过程 demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-demo">存储过程 demo</h1>
+<p>基本语法</p>
+<pre><code class="lang-mysql">CREATE OR REPLACE PROCEDURE 存储过程名
+(
+  参数1 IN NUMBER,
+  参数2 IN NUMBER
+) IS
+变量1 INTEGER := 0;
+变量2 DATE;
+BEGIN
+    xxx;
+END 存储过程名
+</code></pre>
+<p>SELECT INTO 语句</p>
+<pre><code class="lang-mysql">SELECT col1, col2 INTO 变量1, 变量2 FROM table1 where xxx;
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+    xxx;
+END;
+</code></pre>
+<p>IF语句</p>
+<pre><code class="lang-mysql">IF VAR1 = 1 THEN
+    BEGIN
+        xxx;
+    END;
+END IF;
+</code></pre>
+<p>WHILE语句</p>
+<pre><code class="lang-mysql">WHILE VAR1 = 1 LOOP
+    BEGIN
+        xxx;
+    END;
+END LOOP;
+</code></pre>
+<p>变量赋值</p>
+<pre><code class="lang-mysql">VAR1 := 123;
+</code></pre>
+<hr>
+<pre><code class="lang-mysql">drop procedure if exists proc1;
+delimiter //
+create procedure proc1(in p1 int, out p2 int)
+begin
+    select count(*) into p2 from money_place_tbl;
+    set p2 = p1 + p2;
+    if p1 = 0 then
+        set p1 = 0;
+    end if;
+    while p1 &gt; 0 do
+        set p1 = 0;
+    end while;
+    select * into p3 from money_place_tbl;
+    select p3;
+end
+//
+delimiter ;
+
+set @p1 = 1;
+call proc1(@p1, @p2);
+select @p1, @p2;
+</code></pre>
+<p>定义:</p>
+<pre><code class="lang-mysql">CREATE PROCEDURE procedure_name(IN arg_name INT)
+BEGIN
+  DECLARE var_name INT;
+  SELECT var INTO var_name FROM tbl WHERE id = 1;
+  IF var_name &gt; 0 THEN
+    ROLLBACK;
+  END IF;
+  COMMIT;
+END;
+</code></pre>
+<p>调用:</p>
+<pre><code class="lang-mysql">Call procedure_name(param1, param2);
+</code></pre>
+<p>例子:</p>
+<pre><code class="lang-mysql">DROP DATABASE IF EXISTS test;
+CREATE DATABASE `test` 
+CHARACTER SET &#39;utf8&#39; 
+COLLATE &#39;utf8_general_ci&#39;;
+use test;
+
+DROP TABLE IF EXISTS Account;
+CREATE TABLE Account(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    total INT NOT NULL
+);
+
+INSERT INTO Account VALUES(NULL, 100);
+INSERT INTO Account VALUES(NULL, 100);
+SELECT * FROM Account;
+
+DROP PROCEDURE IF EXISTS Transfer;
+CREATE PROCEDURE Transfer(in outAccount INT, in inAccount INT, in amount INT)
+BEGIN
+    DECLARE totalDeposit INT;
+    SELECT total INTO totalDeposit FROM Account WHERE id = outAccount;
+    IF totalDeposit = NULL THEN
+        ROLLBACK;
+    END IF;
+    IF totalDeposit &lt; amount THEN
+        ROLLBACK;
+    END IF;
+    UPDATE Account SET total = total - amount WHERE id = outAccount;
+    UPDATE Account SET total = total + amount WHERE id = inAccount;
+    COMMIT;
+END;
+
+SELECT * FROM Account;
+CALL Transfer(1, 2, 10);
+SELECT * FROM Account;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

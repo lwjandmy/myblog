@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>无线网卡灯停止闪烁
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">无线网卡灯停止闪烁</h1>
+<p><a href="https://wiki.archlinux.org/index.php/Wireless_network_configuration#Disabling_LED_blink">Disabling_LED_blink</a></p>
+<p>编辑<code>/etc/tmpfiles.d/phy0-led.conf</code>, 不存在就创建
+加入:</p>
+<pre><code class="lang-conf">w /sys/class/leds/phy0-led/trigger - - - - phy0radio
+</code></pre>
+<p>执行:</p>
+<pre><code class="lang-bash">systemd-tmpfiles --create phy0-led.conf
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

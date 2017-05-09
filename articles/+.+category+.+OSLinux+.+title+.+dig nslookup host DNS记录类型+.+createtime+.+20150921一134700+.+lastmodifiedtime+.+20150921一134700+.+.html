@@ -1,0 +1,102 @@
+
+
+<html><head><meta charset="UTF-8"><title>dig nslookup host DNS记录类型
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="dig-nslookup-host-dns-">dig nslookup host DNS记录类型</h1>
+<h2 id="nslookup">nslookup</h2>
+<p>语法</p>
+<pre><code class="lang-bash">nslookup host-name dns-server
+</code></pre>
+<p>例子</p>
+<pre><code class="lang-bash">nslookup www.baidu.com 114.114.114.114
+</code></pre>
+<hr>
+<h2 id="host">host</h2>
+<p>语法</p>
+<pre><code class="lang-bash">host url dns-server
+</code></pre>
+<p>例子</p>
+<pre><code class="lang-bash">host baidu.com 114.114.114.114
+</code></pre>
+<hr>
+<h2 id="dig">dig</h2>
+<p>语法</p>
+<pre><code class="lang-bash">dig @dns-server url dns-type
+</code></pre>
+<p>例子</p>
+<pre><code class="lang-bash">dig baidu.com  查询baidu.com的A类地址
+dig @a.gtld-servers.net baidu.com ANY  从通用顶级域(Generic Top-Level Domain, gtld)服务器查询baidu.com的所有地址
+dig @dns.baidu.com baidu.com ANY  从百度的dns服务器插叙baidu.com的所有地址
+</code></pre>
+<hr>
+<h2 id="dns-">DNS解析过程</h2>
+<table>
+<thead>
+<tr>
+<th>发送方</th>
+<th>接收方</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本地</td>
+<td>DNS服务器</td>
+<td>DNS查询请求</td>
+</tr>
+<tr>
+<td>DNS服务器</td>
+<td></td>
+<td>查询缓存, 若有, 标记为&quot;非权威服务器的应答&quot;并返回; 若没有, 继续向下执行</td>
+</tr>
+<tr>
+<td>DNS服务器</td>
+<td>13个根域名服务器其中一个</td>
+<td>DNS查询请求, 此时DNS服务器扮演了客户角色</td>
+</tr>
+<tr>
+<td>根域名服务器</td>
+<td>DNS服务器</td>
+<td>返回NS记录(name server, ns)</td>
+</tr>
+<tr>
+<td>DNS服务器</td>
+<td>NS记录其中一个</td>
+<td>DNS查询请求</td>
+</tr>
+<tr>
+<td>NS服务器</td>
+<td>DNS服务器</td>
+<td>A记录或NS记录</td>
+</tr>
+<tr>
+<td>DNS服务器</td>
+<td></td>
+<td>返回ip地址, 或继续请求NS记录, 直到找到A记录.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="dns-">DNS服务器常见记录类型</h2>
+<p>NS记录，name server，查询此域提供DNS解析的服务器列表</p>
+<p>A记录，address，最常用，查询此域名指向的IP地址，可以多域名指向一IP</p>
+<p>CNAME别名记录，指A记录的另外一个名称</p>
+<p>MX邮件交换记录，mail，和A记录类似，SMTP服务器到IP地址</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

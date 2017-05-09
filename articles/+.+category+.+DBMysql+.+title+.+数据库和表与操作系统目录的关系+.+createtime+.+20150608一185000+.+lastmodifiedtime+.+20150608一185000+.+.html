@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>数据库和表与操作系统目录的关系
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">数据库和表与操作系统目录的关系</h1>
+<pre><code class="lang-text">数据库被映射到操作系统中的目录，表则映射到文件，
+所以如果操作系统中目录不区分大小写，则数据库和表也不区分大小写。
+数据库表中的列不区分大小写。
+</code></pre>
+<p>查看当前数据库存储位置:</p>
+<pre><code class="lang-bash">mysqladmin -u root -p variables | grep datadir
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

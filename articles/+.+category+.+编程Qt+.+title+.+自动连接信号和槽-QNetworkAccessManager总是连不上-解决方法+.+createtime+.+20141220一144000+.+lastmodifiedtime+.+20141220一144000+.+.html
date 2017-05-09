@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>自动连接信号和槽-QNetworkAccessManager总是连不上-解决方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-qnetworkaccessmanager-">自动连接信号和槽-QNetworkAccessManager总是连不上-解决方法</h1>
+<pre><code class="lang-c++">QMetaObject::connectSlotsByName(TestWidget);
+</code></pre>
+<p>这个函数对TestWidget的所有槽函数，自动匹配上信号函数，信号函数的选择由槽函数名决定，槽函数名：</p>
+<pre><code class="lang-c++">on_&lt;signal object name&gt;_&lt;signal function&gt;(&lt;signal parameters&gt;)
+</code></pre>
+<hr>
+<p>注意：</p>
+<p>对象必须有object name，才能被函数findChild找到，进而完成信号-槽自动匹配</p>
+<p>setObjectName可以设置对象名</p>
+<hr>
+<p>QNetworkAccessManager总是连不上的原因：</p>
+<p>一个是没有设置对象名</p>
+<p>另一个是，在QtDesigner中生成的ui文件，编译成头文件后，setupUi函数末尾会自动调用这个connectSlotsByName函数，</p>
+<p>所以setObjectName一定要在setupUi函数之前调用，否则连不上信号和槽</p>
+<p>或者setObjectName调用之后，再调用一次connectSlotsByName</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

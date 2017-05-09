@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>spring 获取context, 执行sql
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="spring-context-sql">spring 获取context, 执行sql</h1>
+<p>获取spring容器</p>
+<pre><code class="lang-java">DataSource dataSource = ((DataSource) ContextLoader.getCurrentWebApplicationContext().getBean(&quot;dataSource&quot;));
+JdbcTemplate jdbcTemplate = new JdbcTemplate();
+jdbcTemplate.setDataSource(dataSource);
+
+Long long = (Long) jdbcTemplate.queryForObject(&quot;select long from table&quot;, Long.class);
+</code></pre>
+<p>通过配置文件, 获取spring容器</p>
+<pre><code class="lang-java">BeanFactory context = new ClassPathXmlApplicationContext(&quot;components.batch.xml&quot;);
+jobRegistry = (JobRegistry) context.getBean(&quot;jobRegistry&quot;);
+jobExplorer = (JobExplorer) context.getBean(&quot;jobExplorer&quot;);
+</code></pre>
+<hr>
+<p>ClassPathXmlApplicationContext多种调法, 路径配置</p>
+<p><a href="http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/resources.html">Spring Resources 4.7.2</a></p>
+<p>路径可配成:</p>
+<pre><code class="lang-ini">classpath*:conf/**/*.xml
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

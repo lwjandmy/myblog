@@ -1,0 +1,55 @@
+
+
+<html><head><meta charset="UTF-8"><title>使用session
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-session">使用session</h1>
+<p>会话ID:<br>一个加密的随机数字,由PHP生成,保存于用户cookie中或URL中,<br>真正变量保存在服务器,会话ID用于区分不同客户端的变量</p>
+<p>查看由会话控制设置的cookie内容</p>
+<pre><code class="lang-PHP">session_get_cookie_params()
+</code></pre>
+<p>设置会话cookie参数</p>
+<pre><code class="lang-PHP">session_set_cookie_params()
+</code></pre>
+<p>php.ini:</p>
+<pre><code class="lang-ini">session.use_trans_sid: 将会话ID添加到URL中
+session.auto_start: 有用户访问网站时,自动启动一个会话
+</code></pre>
+<p>检查是否有一个会话ID,没有就创建, 有就载入会话变量</p>
+<pre><code class="lang-PHP">session_start()
+</code></pre>
+<p>注册一个会话变量</p>
+<pre><code class="lang-PHP">$_SESSION[&#39;myvar&#39;] = 5;
+</code></pre>
+<p>访问一个会话变量</p>
+<pre><code class="lang-PHP">_$SESSION[&#39;myvar&#39;]
+</code></pre>
+<p>检查是否存在一个会话变量</p>
+<pre><code class="lang-PHP">if (isset($_SESSION[&#39;myvar&#39;]) ...
+</code></pre>
+<p>注销变量</p>
+<pre><code class="lang-PHP">unset($_SESSION[&#39;myvar&#39;])
+</code></pre>
+<p>销毁所有会话变量:</p>
+<pre><code class="lang-PHP">$_SESSION = array();
+</code></pre>
+<p>清除会话ID:</p>
+<pre><code class="lang-PHP">session_destroy();
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,169 @@
+
+
+<html><head><meta charset="UTF-8"><title>获取网络信息的函数 GetIfTable
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-getiftable">获取网络信息的函数 GetIfTable</h1>
+<p>The GetIfTable function retrieves the MIB-II interface table. </p>
+<p>From MSDN:</p>
+<pre><code class="lang-c++">  #include &lt;winsock2.h&gt;
+  #include &lt;ws2tcpip.h&gt;
+  #pragma comment(lib, &quot;IPHLPAPI.lib&quot;)
+  #include &lt;iphlpapi.h&gt;
+
+  #include &lt;stdio.h&gt;
+  #include &lt;stdlib.h&gt;
+  #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+  #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
+  /* Note: could also use malloc() and free() */
+
+  int main()
+  {
+
+      // Declare and initialize variables.
+
+      DWORD dwSize = 0;
+      DWORD dwRetVal = 0;
+
+      int i, j;
+
+      /* variables used for GetIfTable and GetIfEntry */
+      MIB_IFTABLE *pIfTable;
+      MIB_IFROW *pIfRow;
+
+      // Allocate memory for our pointers.
+      pIfTable = (MIB_IFTABLE *) MALLOC(sizeof (MIB_IFTABLE));
+      if (pIfTable == NULL) {
+          printf(&quot;Error allocating memory needed to call GetIfTable\n&quot;);
+          return 1;
+      }
+      // Make an initial call to GetIfTable to get the
+      // necessary size into dwSize
+      dwSize = sizeof (MIB_IFTABLE);
+      if (GetIfTable(pIfTable, &amp;dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
+          FREE(pIfTable);
+          pIfTable = (MIB_IFTABLE *) MALLOC(dwSize);
+          if (pIfTable == NULL) {
+              printf(&quot;Error allocating memory needed to call GetIfTable\n&quot;);
+              return 1;
+          }
+      }
+      // Make a second call to GetIfTable to get the actual
+      // data we want.
+      if ((dwRetVal = GetIfTable(pIfTable, &amp;dwSize, FALSE)) == NO_ERROR) {
+          printf(&quot;\tNum Entries: %ld\n\n&quot;, pIfTable-&gt;dwNumEntries);
+          for (i = 0; i &lt; (int) pIfTable-&gt;dwNumEntries; i++) {
+              pIfRow = (MIB_IFROW *) &amp; pIfTable-&gt;table[i];
+              printf(&quot;\tIndex[%d]:\t %ld\n&quot;, i, pIfRow-&gt;dwIndex);
+              printf(&quot;\tInterfaceName[%d]:\t %ws&quot;, i, pIfRow-&gt;wszName);
+              printf(&quot;\n&quot;);
+              printf(&quot;\tDescription[%d]:\t &quot;, i);
+              for (j = 0; j &lt; (int) pIfRow-&gt;dwDescrLen; j++)
+                  printf(&quot;%c&quot;, pIfRow-&gt;bDescr[j]);
+              printf(&quot;\n&quot;);
+              printf(&quot;\tType[%d]:\t &quot;, i);
+              switch (pIfRow-&gt;dwType) {
+              case IF_TYPE_OTHER:
+                  printf(&quot;Other\n&quot;);
+                  break;
+              case IF_TYPE_ETHERNET_CSMACD:
+                  printf(&quot;Ethernet\n&quot;);
+                  break;
+              case IF_TYPE_ISO88025_TOKENRING:
+                  printf(&quot;Token Ring\n&quot;);
+                  break;
+              case IF_TYPE_PPP:
+                  printf(&quot;PPP\n&quot;);
+                  break;
+              case IF_TYPE_SOFTWARE_LOOPBACK:
+                  printf(&quot;Software Lookback\n&quot;);
+                  break;
+              case IF_TYPE_ATM:
+                  printf(&quot;ATM\n&quot;);
+                  break;
+              case IF_TYPE_IEEE80211:
+                  printf(&quot;IEEE 802.11 Wireless\n&quot;);
+                  break;
+              case IF_TYPE_TUNNEL:
+                  printf(&quot;Tunnel type encapsulation\n&quot;);
+                  break;
+              case IF_TYPE_IEEE1394:
+                  printf(&quot;IEEE 1394 Firewire\n&quot;);
+                  break;
+              default:
+                  printf(&quot;Unknown type %ld\n&quot;, pIfRow-&gt;dwType);
+                  break;
+              }
+              printf(&quot;\tMtu[%d]:\t\t %ld\n&quot;, i, pIfRow-&gt;dwMtu);
+              printf(&quot;\tSpeed[%d]:\t %ld\n&quot;, i, pIfRow-&gt;dwSpeed);
+              printf(&quot;\tPhysical Addr:\t &quot;);
+              if (pIfRow-&gt;dwPhysAddrLen == 0)
+                  printf(&quot;\n&quot;);
+              for (j = 0; j &lt; (int) pIfRow-&gt;dwPhysAddrLen; j++) {
+                  if (j == (pIfRow-&gt;dwPhysAddrLen - 1))
+                      printf(&quot;%.2X\n&quot;, (int) pIfRow-&gt;bPhysAddr[j]);
+                  else
+                      printf(&quot;%.2X-&quot;, (int) pIfRow-&gt;bPhysAddr[j]);
+              }
+              printf(&quot;\tAdmin Status[%d]:\t %ld\n&quot;, i, pIfRow-&gt;dwAdminStatus);
+              printf(&quot;\tOper Status[%d]:\t &quot;, i);
+              switch (pIfRow-&gt;dwOperStatus) {
+              case IF_OPER_STATUS_NON_OPERATIONAL:
+                  printf(&quot;Non Operational\n&quot;);
+                  break;
+              case IF_OPER_STATUS_UNREACHABLE:
+                  printf(&quot;Unreachable\n&quot;);
+                  break;
+              case IF_OPER_STATUS_DISCONNECTED:
+                  printf(&quot;Disconnected\n&quot;);
+                  break;
+              case IF_OPER_STATUS_CONNECTING:
+                  printf(&quot;Connecting\n&quot;);
+                  break;
+              case IF_OPER_STATUS_CONNECTED:
+                  printf(&quot;Connected\n&quot;);
+                  break;
+              case IF_OPER_STATUS_OPERATIONAL:
+                  printf(&quot;Operational\n&quot;);
+                  break;
+              default:
+                  printf(&quot;Unknown status %ld\n&quot;, pIfRow-&gt;dwAdminStatus);
+                  break;
+              }
+              printf(&quot;\n&quot;);
+          }
+      } else {
+          printf(&quot;GetIfTable failed with error: \n&quot;, dwRetVal);
+          if (pIfTable != NULL) {
+              FREE(pIfTable);
+              pIfTable = NULL;
+          }  
+          return 1;
+          // Here you can use FormatMessage to find out why 
+          // it failed.
+      }
+      if (pIfTable != NULL) {
+          FREE(pIfTable);
+          pIfTable = NULL;
+      }
+      return 0;
+  }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>缓存
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">缓存</h1>
+<p>由服务端发出, 指明资源是否需缓存, 资源有效期:  </p>
+<ul>
+<li>Expires: Mon, 09 May 2016 07:09:41 GMT  HTTP/1.0<br>有效期, 使用绝对时间 | 由于服务器与客户端时间不一致, 因此被Cache-Control替代  </li>
+<li>Cache-Control: max-age=86400  HTTP/1.1<br>有效期, 使用相对时间(单位秒)  </li>
+<li>Last-Modified: Thu, 23 Jul 2015 01:47:11 GMT  HTTP/1.1<br>资源最后修改时间 | 由于文件被重新写入更新了写入时间, 但文件内容可能没变, 会导致重复读取内容不变但修改时间变换的文件, 因此被Etag取代  </li>
+<li>Etag: &quot;55b0479f-2f22&quot;  HTTP/1.1<br>资源唯一标识</li>
+</ul>
+<p>客户端通过资源的Last-Modified&amp;Cache-Control | Expires判断资源是否过期, 过期了就执行以下查询, 否则使用原资源.  </p>
+<p>由客户端发出, 询问资源是否被修改:  </p>
+<ul>
+<li>If-Modified-Since: $(Last-Modified)<br>询问自上次修改时间后, 是否又出现了变动 | 当文件修改时间变动, 但内容未变时, 会再次请求, 因此被If-None-Match取代  </li>
+<li>If-None-Match: $(Etag)<br>询问资源是否变动</li>
+</ul>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

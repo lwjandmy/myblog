@@ -1,0 +1,110 @@
+
+
+<html><head><meta charset="UTF-8"><title>JDBC CRUD demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jdbc-crud-demo">JDBC CRUD demo</h1>
+<pre><code class="lang-text">下载MySQL库
+MySQL 主页 -&gt; Download -&gt; Community -&gt; MySQL Connectors -&gt; Connector/J
+</code></pre>
+<p>插入C 读取R 修改U 删除D:</p>
+<pre><code class="lang-java">    public static void Insert() throws ClassNotFoundException, SQLException
+    {
+        Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        Connection conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/jsp_db&quot;, &quot;jsp_usr&quot;, &quot;123456&quot;);
+        String sql = &quot;insert into user_tbl(name, password, email) values(&#39;Tom&#39;, &#39;123456&#39;, &#39;tom@gmail.com&#39;)&quot;;
+        Statement st = conn.createStatement();
+        int count = st.executeUpdate(sql);
+        System.out.println(&quot;插入了&quot; + count + &quot;条记录&quot;);
+    }
+
+    public static void Select() throws ClassNotFoundException, SQLException
+    {
+        String sql = &quot;select * from user_tbl&quot;;
+        Connection conn;
+        Statement st;
+        ResultSet rs;
+        Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/jsp_db&quot;, &quot;jsp_usr&quot;, &quot;123456&quot;);
+        st = conn.createStatement();
+        rs = st.executeQuery(sql);
+        while (rs.next())
+        {
+            System.out.print(rs.getInt(&quot;id&quot;) + &quot; &quot;);
+            System.out.print(rs.getString(&quot;name&quot;) + &quot; &quot;);
+            System.out.print(rs.getString(&quot;password&quot;) + &quot; &quot;);
+            System.out.print(rs.getString(&quot;email&quot;) + &quot; &quot;);
+            System.out.println();
+        }
+    }
+
+    public static void Update() throws ClassNotFoundException, SQLException
+    {
+        Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        Connection conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/jsp_db&quot;, &quot;jsp_usr&quot;, &quot;123456&quot;);
+        String sql = &quot;update user_tbl set email=&#39;tom@126.com&#39; where name = &#39;Tom&#39;&quot;;
+        Statement st = conn.createStatement();
+        int count = st.executeUpdate(sql);
+        System.out.println(&quot;更新了&quot; + count + &quot;条记录&quot;);
+    }
+
+    public static void Delete() throws ClassNotFoundException, SQLException
+    {
+        Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        Connection conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/jsp_db&quot;, &quot;jsp_usr&quot;, &quot;123456&quot;);
+        String sql = &quot;delete from user_tbl where name=&#39;Tom&#39;&quot;;
+        Statement st = conn.createStatement();
+        int count = st.executeUpdate(sql);
+        System.out.println(&quot;删除了&quot; + count + &quot;条记录&quot;);
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException
+    {
+        Insert();
+        Select();
+
+        Update();
+        Select();
+
+        Delete();
+        Select();
+    }
+</code></pre>
+<p>使用预编译SQL:</p>
+<pre><code class="lang-java">Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/jsp_db&quot;, &quot;jsp_usr&quot;, &quot;123456&quot;);
+conn.setAutoCommit(false);
+PreparedStatement ps = conn.prepareStatement(&quot;INSERT INTO user_tbl(name, password, email) VALUES (?,?,?)&quot;);
+ps.setString(1, user.getName());
+ps.setString(2, user.getPassword());
+ps.setString(3, user.getEmail());
+ps.execute();
+conn.commit();
+</code></pre>
+<p>动态加载mysql驱动</p>
+<pre><code class="lang-java">// 方法一
+Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+
+// 方法二
+com.mysql.jdbc.Driver driver = new com.mysql.jdbc.Driver();
+
+// 方法三
+new com.mysql.jdbc.Driver();
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

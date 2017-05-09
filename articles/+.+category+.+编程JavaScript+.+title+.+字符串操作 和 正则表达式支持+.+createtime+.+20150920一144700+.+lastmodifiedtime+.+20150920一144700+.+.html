@@ -1,0 +1,53 @@
+
+
+<html><head><meta charset="UTF-8"><title>字符串操作 和 正则表达式支持
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">字符串操作 和 正则表达式支持</h1>
+<pre><code class="lang-js">var s = &quot;hello,world&quot;;
+
+获取长度，获取某个字符，下标从0开始
+s.charAt(s.length-1);
+s[s.length-1];
+
+拆分字符串
+s.split(&quot;,&quot;);     返回[&quot;hello&quot;, &quot;world&quot;]
+
+替换
+s.replace(&quot;h&quot;, &quot;H&quot;);
+</code></pre>
+<pre><code class="lang-js">var pattern = /\d+/g     匹配一个或多个数组，对全部文字
+var text = &quot;test: 1, 2, 3&quot;;
+
+正则匹配（测试？）：
+pattern.test(text);   // return truen
+
+正则查找
+text.search(pattern); // return 9
+
+正则匹配：
+text.match(pattern); // return [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]
+
+正则替换：
+text.replace(pattern, &quot;0&quot;); // return &quot;test: 0, 0, 0&quot;
+
+正则分割字符串：（以非数字的字符，来分割字符串）
+text.split(/\D+/); // return [&quot;&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;]
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

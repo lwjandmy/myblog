@@ -1,0 +1,68 @@
+
+
+<html><head><meta charset="UTF-8"><title>用更合理的方式写 JavaScript
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-javascript">用更合理的方式写 JavaScript</h1>
+<p><a href="https://github.com/yuche/javascript">Airbnb JavaScript Style Guide</a></p>
+<h2 id="-const-var">对变量定义使用const, 而不是var</h2>
+<pre><code class="lang-js">const a = {}
+const b = 1
+</code></pre>
+<p>可确保无法对变量重新赋值, 避免出现bug或难以理解的现象.</p>
+<h2 id="-let-var">定义可变变量, 使用let而不是var</h2>
+<pre><code class="lang-js">if (true) { var a = 1; let b = 2; }
+a  --&gt;  1
+b  --&gt;  ReferenceError: b is not defined
+</code></pre>
+<p>因为let是块级作用域, var是函数作用域, let定义的变量在多个if块中互不相关.</p>
+<h2 id="-key-">对象key是动态的, 可使用中括号括起来的语法</h2>
+<pre><code class="lang-js">function getKey() { return &quot;key&quot;; }
+const obj = { [getKey()]: &quot;value&quot; }
+</code></pre>
+<p>对象的定义都放在大括号, 而不是各处都有.</p>
+<h2 id="-">复制数组, 使用扩展运算符</h2>
+<pre><code class="lang-js">const arr1 = [1, 2, 3];
+const arr2 = [...arr1];
+</code></pre>
+<p>简洁, 不用写循环</p>
+<h2 id="-">字符串连接, 使用模板字符串</h2>
+<pre><code class="lang-js">const name = &#39;world&#39;;
+`Hello, ${name}`
+</code></pre>
+<p>简单, 不易出错</p>
+<h2 id="-">不定个数参数, 使用...语法</h2>
+<pre><code class="lang-js">function concat(...args) { return args.join(&#39; &#39;) }
+concat(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)
+</code></pre>
+<p>使读者明确需要传入不定个数的参数</p>
+<h2 id="-">有默认值的参数, 直接加上默认值定义, 而不是在代码里判断</h2>
+<pre><code class="lang-js">function fun1(arg1 = {}) { console.log(arg1) }
+fun1()
+fun1(&#39;hello&#39;)
+</code></pre>
+<p>简单清晰, 无需读代码</p>
+<h2 id="-">使用箭头函数符号传递函数</h2>
+<pre><code class="lang-js">const obj1 = { fun: function () {[1, 2, 3].map(function (i) { console.log(`${this} ${i}`) })} }
+const obj2 = { fun: function () {[1, 2, 3].map((i) =&gt; { console.log(`${this.fun} ${i}`) })} }
+obj1.fun()
+obj2.fun()
+</code></pre>
+<p>箭头函数自动绑定this到当前调用环境(obj2), 而不是调用环境代码所在的调用环境(Window)</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

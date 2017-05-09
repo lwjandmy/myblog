@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>thinkphp 循环输出 volist foreach
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thinkphp-volist-foreach">thinkphp 循环输出 volist foreach</h1>
+<p>---volist---</p>
+<p>控制器中对模板赋值：</p>
+<pre><code class="lang-php">$User = M(&#39;User&#39;);
+$list = $User-&gt;limit(10)=&gt;select();
+$this-&gt;assign(&#39;list&#39;, $list);
+</code></pre>
+<p>模板中循环输出：</p>
+<pre><code class="lang-php">&lt;volist name=&#39;list&#39; id=&#39;vo&#39;&gt;   name模板赋值的变量名称  id 当前的循环变量
+    {$vo.id} --- {$vo.name} &lt;br/&gt;
+&lt;/volist&gt;
+&lt;volist name=&quot;list&quot; id=&quot;vo&quot; empty=&quot;暂时没有数据&quot; &gt;  为空的时候输出提示
+......
+</code></pre>
+<p>---foreach---</p>
+<pre><code class="lang-php">&lt;foreach name=&quot;list&quot; item=&quot;vo&quot;&gt;    foreach更加简单，没有太多额外的属性
+    {$vo.id}:{$vo.name}
+&lt;/foreach&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

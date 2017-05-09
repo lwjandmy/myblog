@@ -1,0 +1,94 @@
+
+
+<html><head><meta charset="UTF-8"><title>greasemonkey 12306找出车次和历时 用来分析所有车次信息 分析乘坐路线方案
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="greasemonkey-12306-">greasemonkey 12306找出车次和历时 用来分析所有车次信息 分析乘坐路线方案</h1>
+<pre><code class="lang-js">// ==UserScript==
+// @name        12306找出车次和历时 用来分析所有车次信息 分析乘坐路线方案
+// @namespace   my
+// @description 在12306主页, 进入&#39;旅客列车时刻表查询&#39;. 在车票预订页面, 当点击&#39;查询&#39;按钮后, 5s等待数据加载, 5s后读取table中车次和历时信息到左上角的表格里, 方便采集
+// @include     https://kyfw.12306.cn/otn/leftTicket/init
+// @version     1
+// @grant       none
+// ==/UserScript==
+
+
+
+
+
+// 所有内容都写在main中, main把$设置参数设置为jQuery, 防止与外界库互相干扰
+function main($)
+{
+
+    // 定义一个自己的空间:
+    //   在这里定义其它需要的页面控件
+    $(&quot;body&quot;).prepend(&quot;\
+        &lt;div id=&#39;myspace&#39; style=&#39;position:absolute;z-index:9999;left:10px;top:10px;border:2px solid red;&#39;&gt;\
+            &lt;div id=&#39;output&#39;&gt;&lt;/div&gt;\
+        &lt;/div&gt;\
+        &quot;);
+
+
+    // 分析结果的一行
+    function analysis_tr(tr)
+    {
+        // 车次
+        a = tr.children().first().children().first().children().first().children().first().children().first().text()
+
+        // 历时
+        b = jQuery(tr.children().first().children().first().children()[3]).children().first().text()
+
+        // 加入输出
+        $(&quot;#output&quot;).append(a + &quot;\t&quot; + b + &quot;&lt;p/&gt;&quot;);
+    }
+
+    // 按下查询按钮时, 等待5s查询结果, 然后获取结果
+    jQuery(&quot;#query_ticket&quot;).click(function(){
+        setTimeout(function(){
+            // 找到结果表, 遍历每一行
+            jQuery(&quot;#queryLeftTable&quot;).children().each(
+                function(){ analysis_tr($(this)) });
+        }, 5000);
+    });
+}
+
+// 回调调用时, jQuery加载完成, 这里使用函数参数赋值$, 防止符号冲突
+function onload_jquery()
+{
+    jQuery.noConflict();
+    main(jQuery)
+}
+
+// 加载jquery
+function load_js(url, onload_function)
+{
+    var jquery_tag_for_inject = document.createElement(&#39;script&#39;); // 创建script标签
+    jquery_tag_for_inject.src = url; // 设置src属性
+    jquery_tag_for_inject.type = &quot;text/javascript&quot;; // 设置type属性
+    typeof onload_function != &quot;undefined&quot; &amp;&amp; (jquery_tag_for_inject.onload = onload_function); // 设置回调
+    (
+        document.getElementsByTagName(&#39;head&#39;)[0] ||
+        document.getElementsByTagName(&#39;body&#39;)[0]
+    ).appendChild(jquery_tag_for_inject); // 注入网页
+}
+
+load_js(&#39;https://code.jquery.com/jquery-1.11.2.js&#39;, onload_jquery);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

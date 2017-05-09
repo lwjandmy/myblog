@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>go的包路径总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="go-">go的包路径总结</h1>
+<p>包名, 不存在分层, 只有一个名字</p>
+<p>包名, 由package语句定义, 与go文件所在文件路径无关(即package关键字对应包名)</p>
+<p>路径名对应import语句, import path, 引入path路径下所有go文件, 这些go文件中定义的package包名必须相同, 但不必和路径名path相同, 由于go文件包名相同, 因此go文件中不能存在同名函数</p>
+<p>官方建议, 路径名path和包名pkg最好一致, 特殊情况是main方法所在的go文件, 它的包名为main, 而不是路径名path.</p>
+<p>例子:</p>
+<p>gopath/src/github.com/lwjandmy/demo_goproject_layout/path/codefile.go</p>
+<p>``go
+package pkg</p>
+<p>import &quot;fmt&quot;</p>
+<p>func Fun() {
+    fmt.Println(&quot;路径: path  代码: codefile.go  包名: pkg&quot;)
+}</p>
+<p>gopath/src/github.com/lwjandmy/demo_goproject_layout/main.go</p>
+<p>package main</p>
+<p>import (
+    &quot;github.com/lwjandmy/demo_goproject_layout/path&quot; // 导入此路径下所有库 注意包名不是path 是定义在各个go文件中的package语句
+)</p>
+<p>func main() {
+    pkg.Fun()
+}
+```</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

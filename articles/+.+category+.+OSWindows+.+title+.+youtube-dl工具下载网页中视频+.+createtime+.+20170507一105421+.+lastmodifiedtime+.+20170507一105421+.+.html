@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>youtube-dl工具下载网页中视频
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="youtube-dl-">youtube-dl工具下载网页中视频</h1>
+<p><a href="https://rg3.github.io/youtube-dl/">youtube-dl</a></p>
+<pre><code class="lang-bash"># 列出可下载的媒体文件格式
+youtube-dl.exe -v --proxy 127.0.0.1:63253 --socket-timeout 120 --list-formats https://www.youtube.com/watch?v=Vlie-srOU8c
+
+# 下载244格式的媒体文件
+youtube-dl.exe -v --proxy 127.0.0.1:63253 --socket-timeout 120 --format 244 https://www.youtube.com/watch?v=Vlie-srOU8c
+</code></pre>
+<p>如果报错：</p>
+<pre><code class="lang-text">ERROR: Unable to download webpage: &lt;urlopen error [WinError 10054] 远程主机强迫
+关闭了一个现有的连接。&gt; (caused by URLError(ConnectionResetError(10054, &#39;远程主
+机强迫关闭了一个现有的连接。&#39;, None, 10054, None),))
+</code></pre>
+<p>尝试重新执行命令, 原因是代理未连接成功.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

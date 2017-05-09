@@ -1,0 +1,240 @@
+
+
+<html><head><meta charset="UTF-8"><title>poi框架总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="poi-">poi框架总结</h1>
+<p><a href="http://wanghongxu.iteye.com/blog/1879893">HSSF，XSSF和SXSSF的区别</a></p>
+<p><a href="http://blog.csdn.net/lee0723/article/details/39853429">poi中getPhysicalNumberOfRows()和getLastRowNum()区别</a></p>
+<p><a href="http://poi.apache.org/spreadsheet/quick-guide.html#Getting+the+cell+contents">Getting the cell contents</a></p>
+<p><a href="http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/ss/examples/LoanCalculator.java">Simple Loan Calculator</a></p>
+<p><a href="http://poi.apache.org/spreadsheet/examples.html">HSSF and XSSF Examples</a></p>
+<hr>
+<h2 id="workbook-">Workbook接口</h2>
+<p>代表一个excel文件</p>
+<p>实现类HSSFWorkbook, XSSFWorkbook, SXSSFWorkbook</p>
+<h3 id="hssfworkbook-">HSSFWorkbook类</h3>
+<p>对Excel 97(-2007)文件操作的纯Java实现</p>
+<h3 id="xssfworkbook-">XSSFWorkbook类</h3>
+<p>对Excel 2007 OOXML (.xlsx)文件操作的纯Java实现</p>
+<h3 id="sxssfworkbook-">SXSSFWorkbook类</h3>
+<p>基于XSSF的低内存占用的API----SXSSF</p>
+<pre><code class="lang-java">workbook.getSheetAt(0); 获取表单
+workbook.getNumberOfSheets(); 获取表单数量
+workbook.getCreationHelper().createFormulaEvaluator().evaluateAll(); 重算所有单元格
+</code></pre>
+<hr>
+<h2 id="sheel-">Sheel接口</h2>
+<p>代表一个工作表</p>
+<p>实现类HSSFSheet, XSSFSheet, SXSSFSheet</p>
+<pre><code class="lang-java">sheet.getRow(0) 获取行
+sheet.getFirstRowNum() 获取第一行行数
+sheet.getLastRowNum() 获取最后一行行数
+sheet.getPhysicalNumberOfRows() 获取物理行数(不包括那些空行隔行的情况)
+sheet.getTopRow() 获取焦点行数
+</code></pre>
+<hr>
+<h2 id="row-">Row接口</h2>
+<p>代表一行</p>
+<p>实现类HSSFRow, XSSFRow, SXSSFRow</p>
+<pre><code class="lang-java">row.getCell(0) 获取单元格
+row.getFirstCellNum() 获取第一单元格列数
+row.getLastCellNum() 获取最后一单元格列数
+row.getPhysicalNumberOfCells() 获取单元格数量
+</code></pre>
+<hr>
+<h2 id="cell-">Cell接口</h2>
+<p>代表单元格</p>
+<p>实现类HSSFCell, XSSFCell, SXSSFCell</p>
+<pre><code class="lang-java">cell.getCellType() 获取单元格类型(数字,字符,公式等), 返回int
+cell.getCellTypeEnum() 获取单元格类型(数字,字符,公式等), 返回CellType枚举
+cell.getCellStyle() 获取单元格样式
+cell.getCellFormula() 获取单元格公式
+cell.getNumericCellValue() 获取数值格式的值
+cell.getDateCellValue() 获取日期格式的值
+cell.getRichStringCellValue() 获取富文本格式的值
+cell.getStringCellValue() 获取文本格式的值
+cell.getBooleanCellValue() 获取布尔类型的值
+cell.getErrorCellValue() 获取错误格式的值
+</code></pre>
+<p>注意: 日期格式, getCellTypeEnum返回的也是NUMERIC, DateUtil.isCellDateFormatted(cell)可以判断是否为日期, </p>
+<p>它内部会cell.getCellStyle().getDataFormatString()判断单元格的显示格式是否是日期</p>
+<hr>
+<h2 id="celltype-">CellType枚举</h2>
+<p>定义了NUMERIC, STRING, FORMULA, BLANK, BOOLEAN, ERROR</p>
+<hr>
+<h2 id="cellstyle-">CellStyle接口</h2>
+<p>代表单元格样式</p>
+<p>实现类HSSFCellStyle, XSSFCellStyle</p>
+<pre><code class="lang-java">cellStyle.getDataFormatString() 获取数据格式
+cellStyle.getFillBackgroundColorColor() 获取背景色
+cellStyle.getFillForegroundColorColor() 获取前景色
+</code></pre>
+<hr>
+<h2 id="color-">Color接口</h2>
+<p>代表颜色</p>
+<p>实现类HSSFColor, XSSFColor</p>
+<pre><code class="lang-java">fillBackgroundColorColor.getTriplet() 获取颜色rgb值
+</code></pre>
+<hr>
+<h2 id="-xls-">读取xls例子</h2>
+<pre><code class="lang-java">public static void dumpcell(Cell cell) throws Exception {
+
+    System.out.print(&quot; 值=&quot;);
+    switch (cell.getCellTypeEnum()) {
+        case STRING:
+            System.out.print(cell.getRichStringCellValue().getString());
+            break;
+        case NUMERIC:
+            if (DateUtil.isCellDateFormatted(cell)) {
+                System.out.print(cell.getDateCellValue());
+            } else {
+                System.out.print(cell.getNumericCellValue());
+            }
+            break;
+        case BOOLEAN:
+            System.out.print(cell.getBooleanCellValue());
+            break;
+        case FORMULA:
+            System.out.print(&quot; &quot;);
+            if (DateUtil.isCellDateFormatted(cell)) {
+                System.out.print(cell.getDateCellValue());
+            } else {
+                System.out.print(cell.getNumericCellValue());
+            }
+            break;
+        case BLANK:
+            System.out.print(&quot;&quot;);
+            break;
+        default:
+            System.out.print(&quot;&quot;);
+    }
+
+    CellStyle cellStyle = cell.getCellStyle();
+
+    String dataFormatString = cellStyle.getDataFormatString();
+    System.out.println(&quot; 值格式=&quot; + dataFormatString);
+
+}
+
+public static void main( String[] args ) throws Exception
+{
+    FileInputStream fileInputStream = new FileInputStream(&quot;test.xls&quot;);
+    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+    HSSFWorkbook workbook = new HSSFWorkbook(bufferedInputStream);
+    for (Sheet sheet : workbook) {
+        for (Row row : sheet) {
+            for (Cell cell : row) {
+                System.out.print(String.format(&quot;坐标(%d, %d)&quot;, cell.getAddress().getRow(), cell.getAddress().getColumn()));
+                dumpcell(cell);
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="-cell-">复制cell例子, 公式可跟随单元格而变化</h2>
+<pre><code>public static void copyCellFormula(Cell srcCell, Cell destCell) {
+
+    Workbook workbook = srcCell.getSheet().getWorkbook();
+
+    FormulaParsingWorkbook formulaParsingWorkbook = null;
+    FormulaRenderingWorkbook formulaRenderingWorkbook = null;
+
+    if (workbook instanceof HSSFWorkbook) {
+        formulaParsingWorkbook = HSSFEvaluationWorkbook.create((HSSFWorkbook) workbook);
+        formulaRenderingWorkbook = HSSFEvaluationWorkbook.create((HSSFWorkbook) workbook);
+    }
+
+    String srcFormula = srcCell.getCellFormula();
+
+    Ptg[] ptgs = FormulaParser.parse(srcFormula, formulaParsingWorkbook, FormulaType.CELL, 0);
+
+    int rowOffset = destCell.getAddress().getRow() - srcCell.getAddress().getRow();
+    int colOffset = destCell.getAddress().getColumn() - srcCell.getAddress().getColumn();
+
+    for (Ptg ptg_ : ptgs) {
+        if (ptg_ instanceof RefPtgBase) {
+            RefPtgBase ptg = (RefPtgBase) ptg_;
+            if (ptg.isRowRelative())
+                ptg.setRow(ptg.getRow() + rowOffset);
+            if (ptg.isColRelative())
+                ptg.setColumn(ptg.getColumn() + colOffset);
+        }
+    }
+
+    String destFormula = FormulaRenderer.toFormulaString(formulaRenderingWorkbook, ptgs);
+
+    destCell.setCellFormula(destFormula);
+
+}
+
+public static void copyCell(Cell srcCell, Cell destCell) {
+    destCell.setCellStyle(srcCell.getCellStyle());
+    destCell.setCellType(srcCell.getCellTypeEnum());
+
+    switch (srcCell.getCellTypeEnum()) {
+        case STRING:
+            destCell.setCellValue(srcCell.getRichStringCellValue());
+            break;
+        case NUMERIC:
+            if (DateUtil.isCellDateFormatted(srcCell)) {
+                destCell.setCellValue(srcCell.getDateCellValue());
+            } else {
+                destCell.setCellValue(srcCell.getNumericCellValue());
+            }
+            break;
+        case BOOLEAN:
+            destCell.setCellValue(srcCell.getBooleanCellValue());
+            break;
+        case FORMULA:
+            copyCellFormula(srcCell, destCell);
+            break;
+        case ERROR:
+            destCell.setCellValue(srcCell.getErrorCellValue());
+            break;
+    }
+}
+
+public static void main(String[] args) throws Exception {
+
+    FileInputStream fileInputStream = new FileInputStream(&quot;test.xls&quot;);
+    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+
+    Workbook workbook = new HSSFWorkbook(bufferedInputStream);
+
+    int sheetIndex = 0;
+    int rowIndex = 11;
+
+    Sheet sheet = workbook.getSheetAt(sheetIndex);
+
+    Row row = sheet.getRow(rowIndex);
+    Row newRow = sheet.createRow(rowIndex + 1);
+
+    for (Cell cell : row) {
+        Cell newCell = newRow.createCell(cell.getAddress().getColumn());
+        copyCell(cell, newCell);
+    }
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    File file = new File(&quot;test_output.xls&quot;);
+    FileOutputStream fileOutputStream = new FileOutputStream(file);
+    workbook.write(fileOutputStream);
+}
+</code></pre>
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,54 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker 使用 阿里云 镜像
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-">docker 使用 阿里云 镜像</h1>
+<p><a href="https://dev.aliyun.com/">dev-aliyun</a></p>
+<p><a href="https://docs.docker.com/engine/reference/commandline/dockerd/#windows-configuration-file">dockerd</a></p>
+<hr>
+<p>产品 -&gt; 云计算基础服务 -&gt; 弹性计算 -&gt; 容器服务 -&gt; 开启容器服务</p>
+<p>控制台 -&gt; 云计算基础服务(右侧设置按钮) -&gt; 弹性计算下&quot;容器服务&quot;打勾, 保存</p>
+<p>控制台 -&gt; 云计算基础服务 -&gt; 容器服务 -&gt; 镜像与方案 -&gt; 镜像 -&gt; 镜像仓库控制台 -&gt; 加速器, 得到&quot;您的专属加速器地址&quot;</p>
+<hr>
+<h2 id="linux">Linux</h2>
+<pre><code class="lang-bash">sudo tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39;
+{
+  &quot;registry-mirrors&quot;: [&quot;https://xxx.mirror.aliyuncs.com&quot;]
+}
+EOF
+</code></pre>
+<hr>
+<h2 id="windows">Windows</h2>
+<p>windows下的daemon.json:</p>
+<p>%programdata%\docker\config\daemon.json</p>
+<p>windows下配置daemon.json无效</p>
+<ol>
+<li><p>创建一台安装有Docker环境的Linux虚拟机，指定机器名称为default，同时配置Docker加速器地址。</p>
+<pre><code class="lang-bash">docker-machine create --engine-registry-mirror=https://xxx.mirror.aliyuncs.com -d virtualbox default
+</code></pre>
+</li>
+<li><p>查看机器的环境配置，并配置到本地，并通过Docker客户端访问Docker服务。</p>
+<pre><code class="lang-bash">docker-machine env default
+eval &quot;$(docker-machine env default)&quot;
+docker info
+</code></pre>
+</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

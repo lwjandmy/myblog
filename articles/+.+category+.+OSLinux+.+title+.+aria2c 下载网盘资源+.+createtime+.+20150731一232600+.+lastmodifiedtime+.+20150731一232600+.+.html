@@ -1,0 +1,75 @@
+
+
+<html><head><meta charset="UTF-8"><title>aria2c 下载网盘资源
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="aria2c-">aria2c 下载网盘资源</h1>
+<p><a href="https://github.com/acgotaku/BaiduExporter">百度云插件</a></p>
+<p><a href="http://bbs.swdyz.com/thread155sw1dyz1.shtml">aria2中文配置指南</a></p>
+<p><a href="http://aria2c.com/usage.html">其它网盘的插件(最底下)</a></p>
+<p>安装完插件后,进入百度云个人主页,在最上面,&quot;我的设备&quot;右边会出现&quot;导出下载&quot;, 点&quot;导出下载&quot;,得到aria2c.down</p>
+<p>命令:</p>
+<pre><code class="lang-bash">aria2c -i aria2c.down  下载文件
+</code></pre>
+<hr>
+<p>上面是用命令下载的方式,后来发现可以直接用rpc服务的方式</p>
+<p>打开rpc服务</p>
+<pre><code class="lang-bash">aria2c --enable-rpc --rpc-allow-origin-all=true --rpc-listen-all=true      这里打开rpc-allow-origin-all才能用yaaw
+</code></pre>
+<p>后来用这个命令</p>
+<pre><code class="lang-bash">aria2c --enable-rpc --rpc-allow-origin-all --rpc-listen-all --listen-port=6881 --dht-listen-port=6881  这个让bt监听端口和dht网络监听端口设置到6881，路由器里要设置端口的tcp和udp都透明到外网，能加速bt下载。
+</code></pre>
+<p>打开<a href="http://aria2c.com/">http://aria2c.com/</a>   这个是进入yaaw, 网页版的控制器, 调用rpc服务控制aria2</p>
+<p>安装完插件,进入百度云后,直接选&quot;导出下载&quot;-&gt;Aria2 RPC</p>
+<hr>
+<p>下载种子文件</p>
+<pre><code class="lang-bash">aria2c --show-files xxxx.torrent   显示种子包含的文件和序号
+aria2c --select-file=29,30 xxx.torrent 只下载序号是29和30的文件
+</code></pre>
+<p>再后来，发现每次运行aria2c 命令行太多，开始放到配置文件里了，文件位置</p>
+<pre><code class="lang-bash">~/.aria2/aria2.conf
+</code></pre>
+<p>文件内容</p>
+<pre><code class="lang-ini"># 技巧，在man aria2c里，搜索timeout,max,limit,min这种词，能快速找到想要的选项
+
+
+
+# Rpc:
+# 这里为了在命令行下运行aria2c能下载完成后自动退出,不打开这个选项,需要打开时手动添加这个选项.
+# enable-rpc
+
+
+rpc-allow-origin-all
+rpc-listen-all
+
+# Bt:
+listen-port=6881
+bt-enable-lpd=true
+bt-request-peer-speed-limit=500K
+bt-save-metadata=true
+dht-listen-port=6881
+dht-message-timeout=60
+bt-max-peers=200
+max-overall-upload-limit=100K
+
+continue
+
+disable-ipv6=true
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

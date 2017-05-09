@@ -1,0 +1,62 @@
+
+
+<html><head><meta charset="UTF-8"><title>guile demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="guile-demo">guile demo</h1>
+<pre><code class="lang-c++">#include &lt;libguile.h&gt;
+#include &lt;stdio.h&gt;
+
+static void *inner_main(void *param)
+{
+    SCM scmRtn;
+    int iRtn;
+
+    // test return int
+    scmRtn = scm_c_eval_string(&quot;(+ 1 2)&quot;);
+    iRtn = scm_to_int(scmRtn);
+    printf(&quot;%d\n&quot;, iRtn);
+
+    // test return pair
+    scmRtn = scm_c_eval_string(&quot;&#39;(1 . 2)&quot;); // (&quot;(cons 1 2)&quot;);
+    iRtn = scm_to_int(scm_car(scmRtn));
+    printf(&quot;%d &quot;, iRtn);
+    iRtn = scm_to_int(scm_cdr(scmRtn));
+    printf(&quot;%d\n&quot;, iRtn);
+
+    // test return list
+    scmRtn = scm_c_eval_string(&quot;(list 1 2 3)&quot;);
+    for (int i = 0; i != scm_to_int(scm_length(scmRtn)); ++i)
+        printf(&quot;%d &quot;, scm_to_int(scm_list_ref(scmRtn, scm_from_int(i))));
+    //  这四行可以看出，scm的所有参数都是SCM类型，包括k（list下标），scm_length等
+    //   除非是scm_to_xxx会转换成locale data type
+    printf(&quot;\n&quot;);
+
+
+
+    return 0;
+}
+
+int main(int argc, char **argv)
+{
+    scm_with_guile(inner_main, 0);
+    return 0;
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

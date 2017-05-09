@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>myblog -- lwjandmy</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+	<style>
+		body{
+			font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
+			position: "relative"
+		}
+		.nav .active .nav {
+			display: block;
+		}
+		.nav .nav {
+			display : none;
+		}
+	</style>
+    <link href="css/prettify.css" rel="stylesheet">
+</head>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="">
+							<a href="#">首页</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<header class="jumbotron subhead" id="overview">
+		<div class="container">
+			<h1>静态日志系统</h1>
+			<p class="lead">lwjandmy</p>
+		</div>
+	</header>
+	
+	<div class="container">
+	
+		<div class="row">
+			<div class="span3 bs-docs-sidebar">
+				<ul id="category_ul" class="nav nav-list bs-docs-sidenav">
+
+				</ul>
+			</div>
+			<div id="category_div" class="span9">
+
+			</div>
+		</div>
+	
+	</div>
+	
+	<footer class="footer">
+		<div class="container">
+			<p>Create by lwjandmy.</p>
+		</div>
+	</footer>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/holder.min.js"></script>
+    <script src="js/prettify.js"></script>
+    <script src="js/application.js"></script>
+	
+	<script src="js/categoried_article_list.js" charset="utf-8"></script>
+	
+	<script type="text/javascript">
+		jQuery(function ($) {
+		
+			// 日期格式化工具函数
+			Date.prototype.format = function (format) {  
+				var o = {  
+					"M+": this.getMonth() + 1,  //month   
+					"d+": this.getDate(),     //day   
+					"h+": this.getHours(),    //hour   
+					"m+": this.getMinutes(),  //minute   
+					"s+": this.getSeconds(), //second   
+					"q+": Math.floor((this.getMonth() + 3) / 3),  //quarter   
+					"S": this.getMilliseconds() //millisecond   
+				}  
+				var week=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];  
+				if (/(y+)/.test(format)) {  
+					format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+				}  
+				if (/(w+)/.test(format)){  
+					format = format.replace(RegExp.$1, week[this.getDay()]);  
+				}  
+				for (var k in o) {  
+					if (new RegExp("(" + k + ")").test(format)) {  
+						format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));  
+					}  
+				}  
+				return format;  
+			}
+			
+			// 字符串转日期格式, 字符串格式: 20160101一010101
+			var readDate = function (str)
+			{
+				var res = str.match(new RegExp(/(\d{4})(\d{2})(\d{2})一(\d{2})(\d{2})(\d{2})/));
+				var date = new Date();
+				date.setFullYear(res[1]);
+				date.setMonth(res[2] - 1);
+				date.setDate(res[3]);
+				date.setHours(res[4]);
+				date.setMinutes(res[5]);
+				date.setSeconds(res[6]);
+				return date;
+			};
+			// 日期转字符串格式, 字符串格式: 20160101一010101
+			var writeDate = function (date)
+			{
+				// 把1位的数字前面加上0
+				var int2Date = function (i) {
+					var s = '' + i;
+					if (s.length == 1)
+						s = '0' + s;
+					return s;
+				};
+				var str = '' + int2Date(date.getFullYear()) + int2Date(date.getMonth() + 1) + int2Date(date.getDate()) + '一' + 
+						int2Date(date.getHours()) + int2Date(date.getMinutes()) + int2Date(date.getSeconds());
+				return str;
+			};
+			
+			// 通过名字, 获取id, 用来处理id中不允许出现的字符
+			var getId = function (name) {
+				return name
+					.replace(/ /g, '_')   // id中不应含空格, 这里替换一下
+					.replace(/\+/g, '加') // id中'+'换成'加'
+					.replace(/\-/g, '减') // id中'-'换成'减'
+					.replace(/\*/g, '乘') // id中'*'换成'乘'
+					.replace(/\//g, '除') // id中'/'换成'除'
+					.replace(/\(/g, '') // id中括号去掉
+					.replace(/\)/g, '') // id中括号去掉
+					;
+			}
+			
+			// categoried_article_list是从js/categoried_article_list.js加载出来的
+			// categoried_article_list结构: {"OSLinux (74)":[
+			// 		{"path":"articles/x.html","title":"x","createtime":"x","lastmodifiedtime":"x"},
+			// 		{}...],
+			//		"OSWindows (1)":[],...}
+			var categoried_article_list = window.categoried_article_list;
+			
+			// 把categoried_article_list再分到各个父分组, 父分组的名字是子分组的前2个字
+			// parent_category_categoried_article_list结构: 
+			//		{"OS":{"OSLinux (74)":[
+			// 			{"path":"articles/x.html","title":"x","createtime":"x","lastmodifiedtime":"x"},
+			// 			{}...],
+			//			"OSWindows (1)":[],...}, "编程":{},...}
+			var parent_category_categoried_article_list = {};
+			for (var category in categoried_article_list) {
+				var parent_category = category.substr(0, 2);
+				if (undefined == parent_category_categoried_article_list[parent_category])
+					parent_category_categoried_article_list[parent_category] = {};
+				parent_category_categoried_article_list[parent_category][category] = categoried_article_list[category];
+			}
+			
+			for (var parent_category in parent_category_categoried_article_list) {
+				var categoried_article_list = parent_category_categoried_article_list[parent_category];
+				
+				// 左侧菜单加上父分类
+				// <li><a href="#OS">OS</a>
+				//	<ul class="nav nav-list">
+				//	</ul>
+				// </li>
+				$("#category_ul").append('<li><a href="#' + getId(parent_category) + '">' + parent_category + '</a><ul class="nav nav-list"></ul></li>');
+				
+				// 右侧加上父section
+				// <section id="OTHER">
+				// 	<h1>OTHER</h1>
+				// </section>
+				$("#category_div").append('<section id="' + getId(parent_category) + '"><h1>' + parent_category + '</h1></section>');
+				
+				for (var category in categoried_article_list) {
+					var article_list = categoried_article_list[category];
+					
+					// 左侧菜单加上子分类
+					// <li><a href="#OSLinux"><i class="icon-chevron-right"></i>OSLinux</a></li>
+					$('[href="#' + getId(parent_category) + '"]').next().append('<li><a href="#' + getId(category) + '"><i class="icon-chevron-right"></i>' + category + '</a></li>');
+					
+					// 右侧加上子section
+					// <section id="OSLinux">
+					// 	<div class="page-header">
+					// 		<h1>OSLinux</h1>
+					// 	</div>
+					// 	<table class="table table-bordered table-hover table-striped">
+					// 		<thead>
+					// 			<tr>
+					// 			<th>标题</th>
+					// 			<th>创建时间</th>
+					// 			<th>修改时间</th>
+					// 			</tr>
+					// 		</thead>
+					// 		<tbody>
+					// 			<tr>
+					// 				<td><a href="http://192.168.102.15:10000/lbms">租赁系统lbms</a></td>
+					// 				<td>2016-01-01 12:13:14</td>
+					// 				<td>2016-01-01 12:13:14</td>
+					// 			</tr>
+					// 			<tr>
+					// 				<td><a href="http://192.168.102.15:10000/lbms">租赁系统lbms</a></td>
+					// 				<td>2016-01-01 12:13:14</td>
+					// 				<td>2016-01-01 12:13:14</td>
+					// 			</tr>
+					// 		</tbody>
+					// 	</table>
+					// </section>
+				//	$("#category_div").append('<section id="OSLinux"><div class="page-header"><h1>OSLinux</h1></div><table class="table table-bordered table-hover table-striped"><thead><tr><th>标题</th><th>创建时间</th><th>修改时间</th></tr></thead><tbody><tr><td><a href="http:192.168.102.15:10000/lbms">租赁系统lbms</a></td><td>2016-01-01 12:13:14</td><td>2016-01-01 12:13:14</td></tr><tr><td><a href="http:192.168.102.15:10000/lbms">租赁系统lbms</a></td><td>2016-01-01 12:13:14</td><td>2016-01-01 12:13:14</td></tr></tbody></table></section>');
+					
+					
+					
+					var table_tag = '';
+					table_tag += '';
+					table_tag += '<table class="table table-bordered table-hover table-striped">';
+					table_tag += '	<thead>';
+					table_tag += '		<tr>';
+					table_tag += '		<th>标题</th>';
+					table_tag += '		<th style="width: 140px;">创建时间</th>';
+					table_tag += '		<th style="width: 140px;">修改时间</th>';
+					table_tag += '		</tr>';
+					table_tag += '	</thead>';
+					table_tag += '	<tbody>';
+					
+					for (var i in article_list) {
+						var article = article_list[i];
+						var url = article.path;
+						var title = article.title;
+						var cdate = readDate(article.createtime).format('yyyy-MM-dd hh:mm:ss');
+						var mdate = readDate(article.lastmodifiedtime).format('yyyy-MM-dd hh:mm:ss');;
+						table_tag += '		<tr>';
+						table_tag += '			<td><a href="' + url + '">' + title + '</a></td>';
+						table_tag += '			<td>' + cdate + '</td>';
+						table_tag += '			<td>' + mdate + '</td>';
+						table_tag += '		</tr>';
+					}
+					table_tag += '	</tbody>';
+					table_tag += '</table>';
+					
+					// section内加上文章table, 例:
+					// <section id="OSLinux">
+					// 	<div class="page-header">
+					// 		<h1>OSLinux</h1>
+					// 	</div>
+					// 	<table class="table table-bordered table-hover table-striped">
+					// 		......
+					// 	</table>
+					// </section>
+					//$("#" + getId(category)).append(table_tag);
+					$("#category_div").append('<section id="' + getId(category) + '"><div class="page-header"><h1>' + category + '</h1></div>' + table_tag + '</section>');
+				}
+				
+			}
+		});
+	</script>
+
+</body>
+</html>
+

@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>log4qt demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="log4qt-demo">log4qt demo</h1>
+<p>下载&amp;解压 <a href="https://github.com/devbean/log4qt">log4qt-master.zip</a></p>
+<p>pro文件 增加:</p>
+<pre><code class="lang-ini">include($$PWD/../log4qt-master/src/log4qt/log4qt.pri)
+</code></pre>
+<p>main.cpp:</p>
+<pre><code class="lang-c++">#include &quot;log4qt/log4qt.h&quot;
+#include &quot;log4qt/logmanager.h&quot;
+#include &quot;log4qt/consoleappender.h&quot;
+#include &quot;log4qt/logger.h&quot;
+#include &quot;log4qt/ttcclayout.h&quot;
+
+using namespace Log4Qt;
+
+int main(int argc, char *argv[])
+{
+    // 创建输出格式
+    TTCCLayout *p_layout = new TTCCLayout();
+    p_layout-&gt;activateOptions();
+
+    // 创建添加器
+    ConsoleAppender *p_appender = new ConsoleAppender(p_layout, ConsoleAppender::STDOUT_TARGET);
+    p_appender-&gt;activateOptions();
+
+    // 给根logger设置添加器, 调试信息输出等级
+    Logger::rootLogger()-&gt;addAppender(p_appender);
+    Logger::rootLogger()-&gt;setLevel(Level::ALL_INT);
+
+    // 获取main方法的logger
+    Logger &amp;logger = *Logger::logger(&quot;main&quot;);
+
+    // 输出debug调试信息
+    logger.debug(&quot;hello log4qt&quot;);
+
+    return 0;
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

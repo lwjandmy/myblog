@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>引导外部硬盘上的系统
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">引导外部硬盘上的系统</h1>
+<pre><code class="lang-text">下载berryboot 解压到内存卡第一个分区，分区格式vfat
+启动pi，进入berryboot后，按提示，格式化内存卡
+
+在hard disk上建ext4分区，容量大些
+复制内存卡的第二个分区全部内容到hd上的ext4
+删除内存卡的第二个分区，修改内存卡的cmdline.txt和uEnv.txt  把mmcblk0p2改到hd上的ext4
+重启pi，提示要修复，确定修复，就完成了hd的扩展
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

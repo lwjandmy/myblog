@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>用div做多个版面效果
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-div-">用div做多个版面效果</h1>
+<pre><code class="lang-text">JS:
+    $(&quot;#page1&quot;).click(function(){
+        $(&quot;#content&quot;).load(&quot;function_1.php&quot;);
+    });
+    $(&quot;#page2&quot;).click(function(){
+        $(&quot;#content&quot;).load(&quot;function_2.php&quot;);
+    });
+    $(&quot;#page3&quot;).click(function(){
+        $(&quot;#content&quot;).load(&quot;function_3.php&quot;);
+    });
+
+HTML:
+        &lt;ul&gt;
+            &lt;li&gt;&lt;a id=&quot;page1&quot;&gt;商户导入&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a id=&quot;page2&quot;&gt;数据导入导出&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a id=&quot;page3&quot;&gt;功能3&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+&lt;div id=&quot;content&quot;&gt;
+empty for load
+&lt;/div&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

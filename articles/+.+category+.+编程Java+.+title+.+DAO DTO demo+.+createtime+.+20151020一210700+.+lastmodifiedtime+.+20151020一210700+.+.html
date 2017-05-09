@@ -1,0 +1,42 @@
+
+
+<html><head><meta charset="UTF-8"><title>DAO DTO demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="dao-dto-demo">DAO DTO demo</h1>
+<pre><code class="lang-text">DAO 数据访问对象(Data Access Object) 封装对数据库的访问 可把表转化为DTO类
+DTO 数据传输对象(Data Transfer Object)  用于需要大量传输对象的地方 只有成员变量的get,set方法,不包含业务逻辑
+</code></pre>
+<p>DAO 数据访问对象(Data Access Object) 封装数据库访问, 数据层和数据库层的接口, 起到分层作用</p>
+<pre><code class="lang-java">public interface UserDao
+{
+    public void save(Connection conn, User user) throws SQLException;
+    public void update(Connection conn, Long id, User user) throws SQLException;
+    public void delete(Connection conn, User user) throws SQLException;
+}
+</code></pre>
+<p>DTO 数据传输对象(Data Transfer Object) 代表着数据, 仅存储数据, 对应着一条记录的一部分, 通过传给DAO来持久化</p>
+<pre><code class="lang-java">public class User
+{
+    private String name;
+    private String password;
+    private String email;
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

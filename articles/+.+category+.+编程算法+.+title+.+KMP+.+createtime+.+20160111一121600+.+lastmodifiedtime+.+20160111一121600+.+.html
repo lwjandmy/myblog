@@ -1,0 +1,74 @@
+
+
+<html><head><meta charset="UTF-8"><title>KMP
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="kmp">KMP</h1>
+<pre><code class="lang-text">
+
+设:
+
+全部文本: ABABAB……
+
+匹配文本: ABABC
+
+在下标4位置出现不匹配,
+
+那么 匹配文本[0-3] == 全部文本[0-3] == &#39;ABAB&#39;.
+
+
+下面对 &#39;ABAB&#39; 做分析:
+
+此字符的所有前缀和所有后缀中, 前缀与后缀若相等则为一组, 长度最长的组合, 长度为2.
+
+解释:
+
+此字符的所有前缀: &#39;A&#39;, &#39;AB&#39;, &#39;ABA&#39;
+
+此字符的所有后缀: &#39;B&#39;, &#39;AB&#39;, &#39;BAB&#39;
+
+只有前缀&#39;AB&#39;和后缀&#39;AB&#39;这一个组合, 长度是2(字符).
+
+有了长度2, 让下标4减去2, 计算结果的涵义是后缀的起始下标! (下标4是后缀的结尾坐标, 长度2是后缀的长度, 4-2=2是后缀的起始下标)
+
+起始下标就应作为全部文本的下一个测试起点.
+
+
+找字符串的前缀后缀相等组合的最长长度方法:
+
+从此文本的中间位置同时向两边方向遍历字符,
+
+左边方向作为前缀结尾(含), 右边方向作为后缀起始(含)
+
+每进行到一个新位置, 判断一次前缀和后缀是否相等
+
+
+补充(不存在前缀等于后缀的情况):
+
+如:
+
+全部文本: &#39;ABCDE&#39;
+
+匹配文本: &#39;ABCDF&#39;
+
+此时全部文本的下一个测试起点应为4.
+
+而此时获取的后缀长度为0, 不匹配位置下标为4, 4-0=4, 同样可以计算正确下一位置.
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

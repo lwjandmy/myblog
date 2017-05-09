@@ -1,0 +1,113 @@
+
+
+<html><head><meta charset="UTF-8"><title>nodejs http请求 正则表达式筛选字符
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="nodejs-http-">nodejs http请求 正则表达式筛选字符</h1>
+<pre><code class="lang-js">var querystring = require(&#39;querystring&#39;);
+var http = require(&#39;http&#39;);
+
+/**
+ * do GET, then call: callback(response)
+ * @param hostname etc: hostname=&#39;www.baidu.com&#39;
+ * @param path etc: path=&#39;/&#39;
+ * @param callback etc: function(response) { console.log(response); }
+ */
+function get(hostname, path, callback)
+{
+    var response = &#39;&#39;;
+    var options = {
+        hostname: hostname,
+        port: 80,
+        path: path,
+        method: &#39;GET&#39;,
+        headers: {
+            &#39;User-Agent&#39;: &#39;Mozilla&#39;
+        }
+    };
+    var req = http.request(options, function (res)
+    {
+        res.setEncoding(&#39;utf8&#39;);
+        res.on(&#39;data&#39;, function (chunk)
+        {
+            response += chunk;
+        });
+        res.on(&#39;end&#39;, function ()
+        {
+            callback(response);
+        })
+    });
+    req.on(&#39;error&#39;, function (e)
+    {
+        console.log(&#39;problem with request: &#39; + e.message);
+    });
+    req.end();
+}
+
+/**
+ * do POST, then call: callback(response)
+ * @param hostname etc: hostname=&#39;www.baidu.com&#39;
+ * @param path etc: path=&#39;/&#39;
+ * @param postData etc: postData={ &#39;name1&#39;: &#39;value1&#39;... }
+ * @param callback etc: function(response) { console.log(response); }
+ */
+function post(hostname, path, postData, callback)
+{
+    var response = &#39;&#39;;
+    var postData_ = querystring.stringify(postData);
+    var options = {
+        hostname: hostname,
+        port: 80,
+        path: path,
+        method: &#39;POST&#39;,
+        headers: {
+            &#39;User-Agent&#39;: &#39;Mozilla&#39;,
+            &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;,
+            &#39;Content-Length&#39;: postData_.length
+        }
+    };
+    var req = http.request(options, function (res)
+    {
+        res.setEncoding(&#39;utf8&#39;);
+        res.on(&#39;data&#39;, function (chunk)
+        {
+            response += chunk;
+        });
+        res.on(&#39;end&#39;, function ()
+        {
+            callback(response);
+        })
+    });
+    req.on(&#39;error&#39;, function (e)
+    {
+        console.log(&#39;problem with request: &#39; + e.message);
+    });
+    req.write(postData_);
+    req.end();
+}
+
+function match(str)
+{
+    var array = str.match(/id=&quot;[^&quot;]*&quot;/g);
+    console.log(array);
+}
+
+get(&#39;www.baidu.com&#39;, &#39;/&#39;, match);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

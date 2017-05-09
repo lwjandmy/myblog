@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>下载URL数据模块 urllib
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-url-urllib">下载URL数据模块 urllib</h1>
+<p>下载一个网页:</p>
+<pre><code class="lang-Python">urllib.open(url)
+
+Example:
+webfile = urllib.urlopen(&#39;http://www.baidu.com&#39;)
+webdata = webfile.read()
+print(webdata)
+</code></pre>
+<p>对字符编码，来在web上传输:</p>
+<pre><code class="lang-Python">urllib.urlencode(query)
+
+Example:
+&gt;&gt;&gt; query = { &#39;Accept&#39;: &#39;*.*&#39;, &#39;Referer&#39;: &#39;http://www.baidu.com&#39; }
+</code></pre>
+<p>对字符编码, 以便在web上传输:</p>
+<pre><code class="lang-Python">&gt;&gt;&gt; urllib.quote(&#39;http://www.baidu.com&#39;)
+&#39;http%3A//www.baidu.com&#39;
+</code></pre>
+<p>和urllib.quote(s)类似，并将空格转换成&#39;＋&#39;:</p>
+<pre><code class="lang-Python">urllib.quote_plus(s)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>HttpServletResponse返回json
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="httpservletresponse-json">HttpServletResponse返回json</h1>
+<pre><code class="lang-java">    public ActionForward execute_getJsonData(ActionMapping mapping, ActionForm form,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        response.setCharacterEncoding(&quot;UTF-8&quot;);  
+        response.setContentType(&quot;application/json; charset=utf-8&quot;);  
+
+        PrintWriter writer = null;
+
+        try {
+            writer = response.getWriter();
+            writer.append(&quot;{&#39;k&#39;: &#39;v&#39;}&quot;);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != writer) {
+                writer.close();
+                writer = null;
+            }
+        }
+
+
+
+        return null;
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

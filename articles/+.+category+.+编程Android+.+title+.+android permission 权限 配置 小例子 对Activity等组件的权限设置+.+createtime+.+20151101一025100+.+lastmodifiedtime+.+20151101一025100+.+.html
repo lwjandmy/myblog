@@ -1,0 +1,58 @@
+
+
+<html><head><meta charset="UTF-8"><title>android permission 权限 配置 小例子 对Activity等组件的权限设置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-permission-activity-">android permission 权限 配置 小例子 对Activity等组件的权限设置</h1>
+<p>AndroidManifest.xml:</p>
+<pre><code class="lang-xml">    &lt;!-- 配置权限, 才能在WebView中访问Internet --&gt;
+    &lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;
+        &lt;!-- 对Activity组件添加权限要求, 和本程序没关系, 只是例子 --&gt;
+        &lt;activity
+            android:name=&quot;.PermissionedActivity&quot;
+            android:label=&quot;@string/title_activity_permissioned&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot;
+            android:permission=&quot;com.learnandroid.componentpermission.permission.PermissionedActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;com.learnandroid.componentpermission.intent.action.PermissionedActivity&quot;/&gt;
+                &lt;category android:name=&quot;ANDROID.INTENT.CATEGORY.DEFAULT&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+</code></pre>
+<p>activity_main.xml:</p>
+<pre><code class="lang-xml">    &lt;WebView
+        android:id=&quot;@+id/webView&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;&gt;&lt;/WebView&gt;
+</code></pre>
+<p>MainActivity.java:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    private WebView webView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        webView = (WebView) findViewById(R.id.webView);
+        webView.loadUrl(&quot;http://m.baidu.com&quot;);
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

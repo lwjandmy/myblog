@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>window.open居中显示窗口
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="window-open-">window.open居中显示窗口</h1>
+<pre><code class="lang-js">var iWidth = 700;
+var iHeight = 300;
+var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+window.open(&#39;${pageContext.request.contextPath}/batch/batchImportXml.do&#39;,&#39;&#39;,&#39;height=&#39; + iHeight + &#39;,innerHeight=&#39; + iHeight + &#39;,width=&#39; + iWidth + &#39;,innerWidth=&#39; + iWidth + &#39;,top=&#39; + iTop + &#39;,left=&#39; + iLeft + &#39;,status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no&#39;);
+</code></pre>
+<p>新窗口打开url</p>
+<pre><code class="lang-js">window.open(&#39;http://www.baidu.com&#39;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,57 @@
+
+
+<html><head><meta charset="UTF-8"><title>javascript 中闭包的总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="javascript-">javascript 中闭包的总结</h1>
+<p><a href="http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html">http://www.cnblogs.com/lhb25/archive/2011/09/06/javascript-scope-chain.html</a></p>
+<p>代码例子:</p>
+<pre><code class="lang-js">(function(){
+
+    var v1 = &#39;var1 &#39;;
+    (function(){
+        console.log(&#39;closure1 &#39; + v1);
+
+        var v2 = &#39;var2 &#39;;
+        (function(){
+            console.log(&#39;closure2 &#39; + v2 + v1);
+
+            var v3 = &#39;var3 &#39;;
+            (function(){
+                console.log(&#39;closure3 &#39; + v3 + v2 + v1);
+            }).call();
+
+        }).call();
+
+    }).call();
+
+}).call();
+</code></pre>
+<p>总结:</p>
+<p>先从c/c++开始说, c/c++中有栈的概念: 上层的函数调用, 能访问下层函数中的局部变量(通过指针);</p>
+<p>而动态语言(js)中, 只要有变量的引用(通常是在某函数的局部变量域中), 变量就始终能访问(通过垃圾回收机制);</p>
+<p>js中函数的闭包中究竟有哪些变量, 取决于此函数定义时的作用域, 此作用域组成此函数的闭包, 如:</p>
+<pre><code class="lang-js">var v1 = &#39;var1&#39;; // 当前作用域, 有一个v1变量
+function(){
+    console.log(v1); // 此函数定义时, 作用域中有v1变量, 因此闭包中有v1
+};
+</code></pre>
+<p>所以, 我觉得闭包机制, 是个静态机制: 编译时, 某函数所在作用域, 以及此作用域有哪些变量, 都是可知的, 因此闭包就静态生成了, </p>
+<p>除非, 当前作用域可动态加入变量. 是否作用域可动态加入变量? 需深究, ,,,</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

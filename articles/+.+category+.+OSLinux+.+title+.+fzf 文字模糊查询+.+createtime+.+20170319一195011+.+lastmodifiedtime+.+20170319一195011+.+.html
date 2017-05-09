@@ -1,0 +1,63 @@
+
+
+<html><head><meta charset="UTF-8"><title>fzf 文字模糊查询
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="fzf-">fzf 文字模糊查询</h1>
+<p><a href="https://github.com/junegunn/fzf">fzf</a></p>
+<p>FuZzy Finder 文字模糊查询</p>
+<pre><code class="lang-bash"># 安装
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
+# 配置zsh的自动完成和快捷键CTRL-T 从文件路径补全, CTRL-R 从历史命令补全, ALT-C 进入目录
+echo &#39;source ~/.fzf/shell/completion.zsh&#39; | tee -a ~/.zshrc
+echo &#39;source ~/.fzf/shell/key-bindings.zsh&#39; | tee -a ~/.zshrc
+source ~/.zshrc
+
+# 修改completion.zsh和key-bindings.zsh, 解决*illegal option: --height问题
+因为cygwin用的fzf是ruby写的, 版本老, 不支持--height参数, 需要在zsh中删掉--height
+completion.zsh和key-bindings.zsh分别替换--height ${FZF_TMUX_HEIGHT:-40%}为空
+
+# 从STDIN读入字符, 进入交互模式用户选择某行, 输出行到STDOUT
+echo &#39;1.txt\n2.txt&#39; | fzf
+
+# 不提供STDIN, 默认调用find当作STDIN
+fzf
+
+# 多选
+fzf -m
+
+# 自动补充文件路径 **[TAB]
+vim **[TAB]
+
+# 自动输入文件路径 CTRL-T
+CTRL-T
+
+# 自动补充历史命令 CTRL-R
+CTRL-R
+
+# 进入目录
+ALT-C
+
+# 需要用户选择的情况, 管道上加上fzf, 替代grep
+netstat -anp | grep 8080 | xxx
+netstat -anp | fzf | xxx
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

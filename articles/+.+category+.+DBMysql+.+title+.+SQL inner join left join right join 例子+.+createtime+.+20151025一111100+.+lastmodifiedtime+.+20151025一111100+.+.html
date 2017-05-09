@@ -1,0 +1,80 @@
+
+
+<html><head><meta charset="UTF-8"><title>SQL inner join left join right join 例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="sql-inner-join-left-join-right-join-">SQL inner join left join right join 例子</h1>
+<pre><code class="lang-mysql"># 创建测试数据库
+create database test_innerjoin_leftjoin_rightjoin;
+use test_innerjoin_leftjoin_rightjoin;
+
+# 用户表, 记录了用户名
+create table user(
+id int primary key,
+username char(20)
+);
+
+# 两个用户, id和用户名相同, 便于查看
+insert into user values(1, &quot;usr1&quot;);
+insert into user values(2, &quot;usr2&quot;);
+
+# 读者表, 记录了哪个用户, 读了哪本书
+create table reader(
+user_id int,
+bookname char(20)
+);
+
+# 两个读者, user id为2的读者和用户表关联, user id为3的读者无关. 用于测试
+insert into reader values(2, &quot;book2&quot;);
+insert into reader values(3, &quot;book3&quot;);
+
+
+
+
+
+# 内连接联合查找, 仅返回两个表同时包含的记录
+select user.username, reader.bookname
+from user
+inner join reader
+on user.id = reader.user_id;
+# RETURN:
+# username    bookname
+# usr2        book2
+
+# 左连接联合查找, 会返回左表所有记录, 右表若无匹配用null填充
+select user.username, reader.bookname
+from user
+left join reader
+on user.id = reader.user_id;
+# RETURN:
+# username    bookname
+# usr2        book2
+# usr1        NULL
+
+# 右连接联合查找, 会返回右表所有记录, 左表若无匹配用null填充
+select user.username, reader.bookname
+from user
+right join reader
+on user.id = reader.user_id;
+# RETURN:
+# username    bookname
+# usr2        book2
+# NULL        book3
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>Chrome 打开GPU硬件加速
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="chrome-gpu-">Chrome 打开GPU硬件加速</h1>
+<p><a href="http://blog.csdn.net/chromeblog/article/details/6828924">Chrome 打开GPU硬件加速</a></p>
+<pre><code class="lang-text">以下是一位Chrome用户发表的使用技巧，希望对广大读者有帮助。
+
+这里普及一下开启硬件加速和预先渲染的方法： 
+
+
+通过 Chrome 地址栏进入 about:flags，在页面中往下拉找到 GPU Accelerated Compositing 和GPU Accelerated Canvas 2D，将这两项启用，Chrome 11 没有 GPU Accelerated Compositing 这个选项，因为它已经默认开启了，Mac 版 Chrome 只有 GPU Accelerated Compositing，因为 GPU Accelerated Canvas 2D还不支持。 
+
+上面两个地方都启用之后，再稍微往下拉一点就可以找到 Web Page Prerendering(中文版中的名字是：正在预呈现网页)，这就是网页预先渲染的选项，将其设置为启用。最后点击页面底部的重启按钮，搞定。 
+
+
+
+重启浏览器之后，当你在浏览一些图片比较多的网站，就会发现页面滚动会明显流畅一些了。
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

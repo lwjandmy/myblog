@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>gdb debug helper function
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="gdb-debug-helper-function">gdb debug helper function</h1>
+<p>查看QString的调试辅助函数</p>
+<pre><code class="lang-java">const char *d_QString(const QString &amp;str)
+{
+    static QByteArray ba;
+    ba = str.toLatin1();
+    return ba.constData();
+}
+</code></pre>
+<pre><code class="lang-java">const char *d_QStringRef(const QStringRef &amp;str)
+{
+    return d_QString(*str.string());
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

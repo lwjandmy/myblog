@@ -1,0 +1,57 @@
+
+
+<html><head><meta charset="UTF-8"><title>Servlet Filter过滤器实现字符编码转换
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="servlet-filter-">Servlet Filter过滤器实现字符编码转换</h1>
+<p>EncodingFilter.java过滤器, web.xml部署描述文件</p>
+<p>EncodingFilter.java:</p>
+<pre><code class="lang-java">public class EncodingFilter implements Filter {
+    private String charEncoding = null; // 保存配置文件中编码类型
+    public void init(FilterConfig fConfig) throws ServletException {
+        charEncoding = fConfig.getInitParameter(&quot;encoding&quot;); // 读取配置文件
+    }
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (!charEncoding.equals(request.getCharacterEncoding()))
+        {
+            request.setCharacterEncoding(charEncoding); // 转码
+        }
+        response.setCharacterEncoding(charEncoding); // 转码
+        chain.doFilter(request, response);
+    }
+}
+</code></pre>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot; xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot; version=&quot;3.1&quot;&gt;
+  &lt;filter&gt;
+      &lt;filter-name&gt;EncodingFilter&lt;/filter-name&gt;
+      &lt;filter-class&gt;org.learnjsphelloworld.filter.EncodingFilter&lt;/filter-class&gt;
+      &lt;init-param&gt;
+          &lt;param-name&gt;encoding&lt;/param-name&gt;   指定参数, 编码类型
+          &lt;param-value&gt;UTF-8&lt;/param-value&gt;
+      &lt;/init-param&gt;
+  &lt;/filter&gt;
+  &lt;filter-mapping&gt;
+      &lt;filter-name&gt;EncodingFilter&lt;/filter-name&gt;
+      &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+  &lt;/filter-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

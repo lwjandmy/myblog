@@ -1,0 +1,95 @@
+
+
+<html><head><meta charset="UTF-8"><title>archlinux安装
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="archlinux-">archlinux安装</h1>
+<h2 id="-">准备磁盘</h2>
+<pre><code class="lang-bash">fdisk -l # 查看磁盘空间等
+
+cfdisk # 分配分区
+
+mkfs -t ext4 /mnt # 格式化分区
+
+mount /dev/sda1 /mnt # 挂载分区
+</code></pre>
+<h2 id="-">准备安装源安装系统</h2>
+<pre><code class="lang-bash">vim /etc/pacman.d/mirrorlist # 编辑镜像, 把中国的镜像放在前面
+
+pacstrap /mnt # 安装arch
+
+cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist # 镜像放到安装的系统里一份
+
+arch-chroot /mnt # 切换到系统
+</code></pre>
+<h2 id="-">配置网络</h2>
+<pre><code class="lang-bash">sudo systemctl enable dhcpcd # 开启dhcpcd客户端
+sudo systemctl start dhcpcd
+vi /etc/resolv.conf # 配置dns地址 8.8.8.8
+</code></pre>
+<h2 id="-">系统基础软件安装</h2>
+<pre><code class="lang-bash">pacman -S grub sudo vim samba git npm # 安装基础软件
+</code></pre>
+<h2 id="-grub">配置grub</h2>
+<pre><code class="lang-bash">grub-install /mnt/sda # 安装grub引导
+
+grub-mkconfig &gt; /boot/grub/grub.cfg # 生成grub配置
+</code></pre>
+<h2 id="-sudo">配置sudo</h2>
+<pre><code class="lang-bash">visudo -f /etc/sudoer # 配置sudo用户组
+
+groupadd sudo # 添加sudo用户组
+</code></pre>
+<h2 id="-">配置用户</h2>
+<pre><code class="lang-bash">useradd li # 添加用户
+
+passwd li # 配置用户密码
+
+usermod li -G sudo # 配置用户属sudo用户组
+
+mkdir -p /home/li # 建立用户目录
+
+cp /etc/skel/.bash_profile /home/li # 初始化用户bash配置
+</code></pre>
+<h2 id="-vim">配置vim</h2>
+<pre><code class="lang-bash">cp /usr/share/vim/vim80/vimrc_example.vim ~/.vimrc
+
+vim ~/.vimrc # 末尾添加set mouse=c, 在xshell中方便复制粘贴文字
+
+sudo cp ~/.vimrc /root # vim配置给root一份, sudo vim时会用
+</code></pre>
+<h2 id="-">配置语言</h2>
+<pre><code class="lang-bash">vim /etc/locale.gen # 配置zh_CN.UTF-8 UTF-8
+
+sudo locale-gen
+
+vim ~/.bash_profile # 末尾加declare -x LANG=zh_CN.UTF-8
+</code></pre>
+<h2 id="-samba">配置samba</h2>
+<pre><code class="lang-bash">sudo systemctl enable smbd # 开启启动samba服务
+
+sudo cp /etc/samba/smb.conf.default /etc/samba/smb.conf # 使用默认smb配置
+
+sudo vim /etc/samba/smb.conf # 在comment = Home Directories配置处, 最后添加path = /, 让路径转到根路径
+
+sudo smbpasswd -a li # 添加samba用户, 及配置用户密码
+
+sudo systemctl start smbd # 启动samba服务
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

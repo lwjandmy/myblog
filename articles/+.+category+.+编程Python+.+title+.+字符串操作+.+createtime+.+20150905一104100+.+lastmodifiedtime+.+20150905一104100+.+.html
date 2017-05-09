@@ -1,0 +1,128 @@
+
+
+<html><head><meta charset="UTF-8"><title>字符串操作
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">字符串操作</h1>
+<pre><code class="lang-Python">s=&#39;span&#39;
+
+获取长度
+len(s)
+
+获取第1个字符
+s[0]
+
+获取倒数第1个字符
+s[-1]
+
+生成子字符串
+s[0:3]
+
+字符串不能修改, 只能用新字符串覆盖旧字符串
+s[1] = &#39;a&#39;                 error
+s = s[:1] + &#39;a&#39; + s[2:]    success
+
+查找和替换
+s.find(&#39;pa&#39;)
+s.replace(&#39;pa&#39;,&#39;replace&#39;)
+
+分割字符串
+s=&#39;a,b,c&#39;
+s.split(&#39;,&#39;)
+output: [&#39;a&#39;,&#39;b&#39;,&#39;c&#39;]
+
+大写
+s.upper()
+
+小写
+s.lower()
+
+是否是字符
+s.isalpha()
+
+是否以xxx开头/结尾
+s.endswith(&#39;end&#39;)
+s.startswith(&#39;start&#39;)
+
+去除全侧/左侧/右侧空白符
+s=&#39;a,b,c\n&#39;
+s.strip()
+s.lstrip()
+s.rstrip()
+
+字符串格式化
+&#39;{0}{1}&#39;.format(&#39;a&#39;, &#39;b&#39;)
+
+字符串 数字转换
+int(&#39;123&#39;) 字符串转数字
+str(123)   数字转字符串
+float(&#39;1.5&#39;) 字符串转小数
+str(1.5)   小数转字符串
+ord(&#39;s&#39;)   字符转ascii码
+chr(115)   ascii码转字符
+
+
+替换例子1
+S1=&#39;xxxxSPAMxxxxSPAMxxxx&#39;
+where=S.find(&#39;SPAM&#39;)
+S=S[:where] + &#39;EGGS&#39; + S[(where+len(&#39;EGGS&#39;):]     学习字符串处理方法
+output: S=&#39;xxxxEGGSxxxxSPAMxxxx&#39;
+
+替换例子2
+S1=&#39;xxxxSPAMxxxxSPAMxxxx&#39;
+S.replace(&#39;SPAM&#39;,&#39;EGGS&#39;)    替换全部
+output: S=&#39;xxxxEGGSxxxxEGGSxxxx&#39;
+
+替换例子3
+S1=&#39;xxxxSPAMxxxxSPAMxxxx&#39;
+S.replace(&#39;SPAM&#39;,&#39;EGGS&#39;,1)  只替换一次
+output: S=&#39;xxxxEGGSxxxxSPAMxxxx&#39;
+
+
+使字符串支持原处修改，优化性能
+S=&#39;spammy&#39;
+L=list(S)    list以任意序列中元素创立一个新的列表
+L[3]=&#39;s&#39;    在列表中直接修改，优化性能
+S=&#39;&#39;.join(L)    用字符串方法join将列表合成字符串
+
+join 拼接字符串
+&#39; &#39;.join([&#39;1&#39;,&#39;2&#39;,&#39;3&#39;,&#39;4&#39;])   output: 1 2 3 4
+
+
+实例，文本解析
+对固定偏移的数据，用分片
+&#39;aaa bb ccc&#39;[0;3]  output: &#39;aaa&#39;
+用分割符分开的数据，用split
+&#39;aaa bbb ccc&#39;.split()    outtput: [&#39;aaa&#39;,&#39;bbb&#39;,&#39;ccc&#39;]
+
+
+
+基于字典的字符串格式化
+reply=&quot;&quot;&quot;
+Greeting...
+Hello %(name)s!
+Your age squared is %(age)s
+&quot;&quot;&quot;
+reply % {&#39;name&#39;:&#39;Bob&#39;,&#39;age&#39;:40}
+
+food=&#39;spam&#39;
+age=40
+&#39;%(age)d %(food)s&#39; % vars()   vars()返回字典，包含了函数内的变量
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>QListWidget 使用例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="qlistwidget-">QListWidget 使用例子</h1>
+<pre><code class="lang-c++">// QListWidget example
+
+// create
+    QListWidgetItem *item = new QListWidgetItem(&quot;test1&quot;);
+    item-&gt;setData(Qt::UserRole, QVariant((int)1));
+    ui-&gt;listWidget-&gt;addItem(item);
+
+// visit
+    qDebug() &lt;&lt; ui-&gt;listWidget-&gt;item(0)-&gt;
+        data(Qt::UserRole).toInt(); // 下标从0开始，到count()
+
+// delete
+    item = ui-&gt;listWidget-&gt;takeItem(0);
+    qDebug() &lt;&lt; item-&gt;data(Qt::UserRole).toInt();
+    delete item;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

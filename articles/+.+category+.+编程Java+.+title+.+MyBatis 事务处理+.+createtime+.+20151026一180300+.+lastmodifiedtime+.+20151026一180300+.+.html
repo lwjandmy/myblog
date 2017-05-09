@@ -1,0 +1,153 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis 事务处理
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-">MyBatis 事务处理</h1>
+<p>log4j.property忽略, MyBatisConfig.xml配置, User.xml用户表的映射, Author.xml作者表的映射, User.java用户类, Author.java作者类, TestMyBatisTransactionProcess.java主方法</p>
+<p>数据库:</p>
+<pre><code class="lang-sql">create table `user_tbl` (
+  `id` int(10) not null auto_increment,
+  `username` varchar(20) not null,
+  `password` varchar(20) not null,
+  primary key (`id`)
+);
+
+insert into `user_tbl` values
+(1,&#39;test1&#39;,&#39;test1&#39;),
+(2,&#39;test2&#39;,&#39;test2&#39;);
+
+
+create table `author_tbl` (
+  `id` int(11) not null auto_increment,
+  `user_id` int(11) not null,
+  `real_name` varchar(20) not null,
+  `id_card` varchar(20) default null,
+  primary key (`id`)
+);
+
+insert into `author_tbl` values (1,14,&#39;an programmer&#39;,null);
+</code></pre>
+<p>MyBatisConfig.xml:   配置</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+    &lt;typeAliases&gt;
+        &lt;typeAlias type=&quot;org.learnmybatistransactionprocessing.pojo.User&quot; alias=&quot;User&quot; /&gt;
+        &lt;typeAlias type=&quot;org.learnmybatistransactionprocessing.pojo.Author&quot; alias=&quot;Author&quot; /&gt;
+    &lt;/typeAliases&gt;
+    &lt;environments default=&quot;development&quot;&gt;
+        &lt;environment id=&quot;development&quot;&gt;
+            &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+            &lt;dataSource type=&quot;POOLED&quot;&gt;
+                &lt;property name=&quot;driver&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
+                &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis_db&quot; /&gt;
+                &lt;property name=&quot;username&quot; value=&quot;mybatis_usr&quot; /&gt;
+                &lt;property name=&quot;password&quot; value=&quot;123456&quot; /&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/learnmybatistransactionprocessing/map/User.xml&quot; /&gt;
+        &lt;mapper resource=&quot;org/learnmybatistransactionprocessing/map/Author.xml&quot; /&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>User.xml:   用户表的映射</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn.User&quot;&gt;
+    &lt;select id=&quot;findById&quot; parameterType=&quot;int&quot; resultType=&quot;org.learnmybatistransactionprocessing.pojo.User&quot;&gt;
+        select * from user where id=#{id}
+    &lt;/select&gt;
+    &lt;insert id=&quot;insertUser&quot; parameterType=&quot;User&quot; useGeneratedKeys=&quot;true&quot; keyProperty=&quot;id&quot;&gt;
+        insert into user_tbl(username,password)
+            values(#{username},#{password})
+    &lt;/insert&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>Author.xml:   作者表的映射</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn.Author&quot;&gt;
+    &lt;select id=&quot;findById&quot; parameterType=&quot;int&quot; resultType=&quot;org.learnmybatistransactionprocessing.pojo.User&quot;&gt;
+        select * from user where id=#{id}
+    &lt;/select&gt;
+    &lt;select id=&quot;insertAuthor&quot; parameterType=&quot;Author&quot;&gt;
+        insert into author_tbl(real_name,user_id,id_card)
+            values(#{realName},#{user.id},#{IDCard})
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>User.java:   用户类</p>
+<pre><code class="lang-java">public class User {
+    private int id;
+    private String username;
+    private String password;
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+}
+</code></pre>
+<p>Author.java:   作者类</p>
+<pre><code class="lang-java">public class Author {
+    private int id;
+    private String realName;
+    private User user;
+    private String IDCard;
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getRealName() { return realName; }
+    public void setRealName(String realName) { this.realName = realName; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public String getIDCard() { return IDCard; }
+    public void setIDCard(String iDCard) { IDCard = iDCard; }
+}
+</code></pre>
+<p>TestMyBatisTransactionProcess.java:   主方法</p>
+<pre><code class="lang-java">public class TestMyBatisTransactionProcess {
+    public static void main(String[] args) {
+        InputStream inputStream = TestMyBatisTransactionProcess.class.getResourceAsStream(&quot;../../../org/learnmybatistransactionprocessing/map/MyBatisConfig.xml&quot;);
+        SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlMapper.openSession();
+
+        User user = new User();
+        user.setUsername(&quot;testTransaction&quot;);
+        user.setPassword(&quot;testTransaction&quot;);
+        session.insert(&quot;insertUser&quot;, user);
+
+        Author author = new Author();
+        author.setUser(user);
+        author.setRealName(&quot;An Programmer&quot;);
+        session.insert(&quot;insertAuthor&quot;, author);
+        session.commit();
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

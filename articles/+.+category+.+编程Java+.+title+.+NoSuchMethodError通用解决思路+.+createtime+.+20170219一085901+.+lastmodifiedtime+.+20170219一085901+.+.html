@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>NoSuchMethodError通用解决思路
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="nosuchmethoderror-">NoSuchMethodError通用解决思路</h1>
+<p><a href="http://www.tuicool.com/articles/iIVbuuZ">遇到NoSuchMethodError通用解决思路</a></p>
+<p>在NoSuchMethodError异常处设断点</p>
+<p>Display中执行:</p>
+<pre><code class="lang-java">xxx.class.getProtectionDomain().getCodeSource()
+</code></pre>
+<p>可找到当前类在哪个jar下</p>
+<p>Eclipse中Ctrl+Shift+T, 找这个类, 看是否存在于多个jar下</p>
+<p>可得出结论, 多个jar下出现同名同路径类, 导致加载了错误的类.</p>
+<p>修改方法:</p>
+<p>非maven项目: 配置项目依赖, 去掉无用的jar</p>
+<p>maven项目: 配置要排除的jar依赖</p>
+<pre><code class="lang-xml">&lt;dependency&gt;
+    &lt;groupId&gt;xx&lt;/groupId&gt;
+    &lt;artifactId&gt;xx&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;groupId&gt;xx&lt;/groupId&gt;
+            &lt;artifactId&gt;xx&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,193 @@
+
+
+<html><head><meta charset="UTF-8"><title>信号量 互斥量 读写互斥量 条件变量 线程策略方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">信号量 互斥量 读写互斥量 条件变量 线程策略方法</h1>
+<h2 id="-">名词</h2>
+<p>信号量</p>
+<p>互斥量</p>
+<p>读写互斥量</p>
+<p>条件变量</p>
+<h2 id="-">关系</h2>
+<p>信号量是个总称, 互斥量,读写互斥量,条件变量都属于信号量.</p>
+<hr>
+<h2 id="-">信号量</h2>
+<p>信号量Mutex是一个整型变量(如int,能够递增递减), 只能通过P,V操作来访问它(不能直接递增,递减).</p>
+<p>信号量初始值为1, 取值范围[0, 正无穷), 0代表此信号量不可获得, 大于0代表此信号量可获得.</p>
+<p>P操作执行递减, 试图获得信号量.</p>
+<pre><code class="lang-c">P(Mutex) {
+    if (Mutex &gt; 0) { // 信号量可获得
+        Mutex--; // 获得成功
+    } else { // 信号量不可获得
+        阻塞进程, 直到Mutex&gt;0恢复阻塞; // 等待获得
+        Mutex--; // 获得成功
+    }
+}
+</code></pre>
+<p>V操作执行递增, 归还信号量.</p>
+<pre><code class="lang-c">V(Mutex) {
+    Mutex++; // 归还信号量, 其它等待获得信号量的进程恢复阻塞
+}
+</code></pre>
+<hr>
+<h2 id="-">互斥量</h2>
+<p>与信号量类似, 唯一区别: 归还互斥量必须由获得互斥量的进程来完成, 其它进程不能归还互斥量.</p>
+<hr>
+<h2 id="-">读写互斥量</h2>
+<p>读写互斥量的获得分两种, 获得读互斥量, 获得写互斥量.</p>
+<h3 id="lock_read-">lock_read获得读互斥量</h3>
+<p>如果没有其它线程持有写锁, 则会得到</p>
+<p>如果有其它线程持有写锁, 则线程阻塞</p>
+<h3 id="lock_write-">lock_write获得写互斥量</h3>
+<p>如果没有其它线程持有读锁或写锁, 则会得到</p>
+<p>否则, 线程阻塞</p>
+<p>读写互斥量Mutex初始值0, Mutex=-1, 写占用, Mutex&gt;0, 读占用, Mutex=0, 无占用.</p>
+<pre><code class="lang-c">lock_read(Mutex) { // 试图获得读信号量
+    if (Mutex &gt;= 0) { // 读占用, 或无占用
+        Mutex++; // 获得成功
+    } else { // 写占用
+        阻塞进程, 直到Mutex&gt;=0恢复阻塞; // 等待获得读占用
+        Mutex++; // 获得读占用成功
+    }
+}
+</code></pre>
+<pre><code class="lang-c">unlock_read(Mutex) {
+    Mutex--;
+}
+</code></pre>
+<pre><code class="lang-c">lock_write(Mutex) { // 试图获得写信号量
+    if (Mutex == 0) { // 无占用
+        Mutex--; // 获得成功
+    } else { // 读占用或写占用
+        阻塞进程, 直到Mutex==0恢复阻塞; // 等到获得写占用
+        Mutex--; // 获得写占用成功
+    }
+}
+</code></pre>
+<pre><code class="lang-c">unlock_write(Mutex) {
+    Mutex++;
+}
+</code></pre>
+<p>Qt例子</p>
+<pre><code class="lang-c++">#include &lt;QtGui&gt;
+#include &lt;QApplication&gt;
+#include &lt;QDialog&gt;
+#include &lt;QLabel&gt;
+#include &lt;QThread&gt;
+#include &lt;QReadWriteLock&gt;
+
+int number = 0;
+QReadWriteLock rwLock;
+
+class ReadThread1 : public QThread
+{
+    void run()
+    {
+        while (true)
+        {
+            QReadLocker rLocker(&amp;rwLock);
+            msleep(100);
+            qDebug() &lt;&lt; &quot;读线程1: 读取到 number = &quot; &lt;&lt; number;
+        }
+    }
+};
+
+class ReadThread2 : public QThread
+{
+    void run()
+    {
+        while (true)
+        {
+            QReadLocker rLocker(&amp;rwLock);
+            msleep(200);
+            qDebug() &lt;&lt; &quot;读线程2: 读取到 number = &quot; &lt;&lt; number;
+        }
+    }
+};
+
+class WriteThread : public QThread
+{
+public:
+    WriteThread() : iNumber(0) {}
+    void write()
+    {
+        QWriteLocker wLocker(&amp;rwLock);
+        qDebug() &lt;&lt; &quot;写线程: 开始写, 耗时5000ms&quot;;
+        msleep(5000);
+        number = ++iNumber;
+        qDebug() &lt;&lt; &quot;写线程: 结束写 写入 number = &quot; &lt;&lt; number;
+    }
+    void run()
+    {
+        while (true)
+        {
+            msleep(1000);
+            write();
+        }
+    }
+    int iNumber;
+};
+
+int main(int argc,char* argv[])
+{
+    ReadThread1 readThread1;
+    ReadThread2 readThread2;
+    WriteThread writeThread;
+    qDebug() &lt;&lt; &quot;读线程1耗时100ms, 读线程2耗时200ms, 写线程每隔1000ms写一次且耗时5000ms&quot;;
+    readThread1.start();
+    readThread2.start();
+    writeThread.start();
+    readThread1.wait();
+    readThread2.wait();
+    writeThread.wait();
+    return 0;
+}
+</code></pre>
+<hr>
+<h2 id="-">条件变量</h2>
+<p>条件变量是当一个事件(即下面的通知)发生时, 发送信号(即解除阻塞)的信号量.</p>
+<p>条件变量Mutex初始值0, Mutex=0未被通知, Mutex&gt;0已被通知.</p>
+<p>wait等待被通知.</p>
+<p>notify通知.</p>
+<pre><code class="lang-c">wait(Mutex) {
+    if (Mutex &gt; 0) { // 已被通知
+        Mutex--; // 收到通知
+    } else { // 未被通知
+        阻塞, 直到Mutex&gt;0时解除阻塞; // 等待通知
+        Mutex--; // 收到通知
+    }
+}
+</code></pre>
+<pre><code class="lang-c">notify(Mutex) {
+    Mutex++; // 通知
+}
+</code></pre>
+<hr>
+<h2 id="-">线程策略方法</h2>
+<h3 id="-">委托</h3>
+<p>一个线程(boss)创建其它线程(worker), 给每个线程指派任务.</p>
+<p>boss线程执行一个事件循环, 当事件发生时, 创建worker线程并赋予职责</p>
+<h3 id="-">对等</h3>
+<p>其中一个线程会最初创建其余线程, 每个线程都可处理被所有线程共享的事件流</p>
+<h3 id="-">流水线</h3>
+<p>工作被分阶段处理, 每个线程负责一个工作, 当单元经过所有阶段, 则工作完成, </p>
+<h3 id="-">生产者-消费者</h3>
+<p>生产者生产数据到共享内存, 消费者从共享内存消费数据, 强调的是数据双方都有, 从生产者流到消费者.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

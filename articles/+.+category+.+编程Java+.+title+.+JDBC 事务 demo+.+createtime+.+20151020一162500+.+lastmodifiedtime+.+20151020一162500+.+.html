@@ -1,0 +1,79 @@
+
+
+<html><head><meta charset="UTF-8"><title>JDBC 事务 demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jdbc-demo">JDBC 事务 demo</h1>
+<pre><code class="lang-text">事务的四个特征
+原子性 事务中的操作被看作一个逻辑单元, 操作要么全部成功, 要么全部失败
+一致性 事务开始前, 事务开始后, 数据库处于一致状态
+隔离性 多个事务之间彼此隔离, 事务之间是独立的,一个事务不能影响另一个事务
+持久性 指事务完成后, 对系统的影响是永久的, 修改真实的修改了数据库, 系统出现故障, 数据也被保留
+
+BEGIN TRANSACTION 开始事务
+COMMIT TRANSACTION 提交事务
+ROLLBACK TRANSACTION 回滚事务
+</code></pre>
+<pre><code class="lang-java">    public static void main(String[] args) throws ClassNotFoundException
+    {
+        Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        Connection conn = null;
+        try
+        {
+            conn = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/jsp_db&quot;, &quot;jsp_usr&quot;, &quot;123456&quot;);
+            conn.setAutoCommit(false);
+            insertUserData(conn); // 进行数据库操作
+            insertAddressData(conn); // 进行数据库操作
+            conn.commit(); // 提交事务
+        } catch (SQLException e)
+        {
+            System.out.println(&quot;捕获到SQL异常:&quot;);
+            e.printStackTrace(System.out);
+            try
+            {
+                System.out.println(&quot;回滚事务&quot;); // 数据库操作异常,回滚事务
+                conn.rollback();
+                System.out.println(&quot;回滚事务成功&quot;);
+            } catch (SQLException e1)
+            {
+                System.out.println(&quot;回滚事务失败:&quot;);
+                e1.printStackTrace(System.out);
+            }
+        }
+    }
+
+    // 数据库操作, 插入的数据中有关键字, 因此多次插入同一个关键字, 会导致关键字重复异常
+    public static void insertUserData(Connection conn) throws ClassNotFoundException, SQLException
+    {
+        String sql = &quot;insert into user_tbl(id, name, password, email) values(10, &#39;Tom&#39;, &#39;123456&#39;, &#39;tom@gmail.com&#39;)&quot;;
+        Statement st = conn.createStatement();
+        int count = st.executeUpdate(sql);
+        System.out.println(&quot;向用户表插入了&quot; + count + &quot;条记录&quot;);
+    }
+
+    // 数据库操作, 插入的数据中有关键字, 因此多次插入同一个关键字, 会导致关键字重复异常
+    public static void insertAddressData(Connection conn) throws ClassNotFoundException, SQLException
+    {
+        String sql = &quot;insert into address_tbl(id, city, country, user_id) values(1, &#39;shanghai&#39;, &#39;China&#39;, &#39;10&#39;)&quot;;
+        Statement st = conn.createStatement();
+        int count = st.executeUpdate(sql);
+        System.out.println(&quot;向地址表插入了&quot; + count + &quot;条记录&quot;);
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

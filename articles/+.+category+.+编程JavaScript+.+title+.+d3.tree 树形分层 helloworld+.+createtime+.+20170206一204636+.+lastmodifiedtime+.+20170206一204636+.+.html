@@ -1,0 +1,193 @@
+
+
+<html><head><meta charset="UTF-8"><title>d3.tree 树形分层 helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="d3-tree-helloworld">d3.tree 树形分层 helloworld</h1>
+<h2 id="d3-hierarchy">d3.hierarchy</h2>
+<p>对分层数据进行分层初始化</p>
+<pre><code class="lang-js">var data_hierarchy = d3.hierarchy(data, children_fn)
+</code></pre>
+<pre><code class="lang-js">d3.hierarchy({
+    &quot;name&quot;: &quot;name1&quot;,
+    &quot;child&quot;: [
+        {
+            &quot;name&quot;: &quot;name2&quot;
+        }
+    ]
+}, function (d) { return d.child });
+返回:
+{
+    &quot;data&quot;: {
+        &quot;name&quot;: &quot;name1&quot;
+        &quot;child&quot;: [
+            {
+                &quot;name&quot;: &quot;name2&quot;
+            }
+        ]
+    }
+    &quot;children&quot;: [
+        {
+            &quot;data&quot;: ...
+            &quot;depth&quot;: 1
+            &quot;height&quot;: 0
+            &quot;parent&quot;: 
+        }
+    ]
+    &quot;depth&quot;: 0
+    &quot;height&quot;: 1
+    &quot;parent&quot;: null
+}
+返回的数据格式:
+{
+    data 当前节点的数据
+    depth 0是根, 每向下一级加1
+    height 0是叶, 每向上一级加1
+    parent 根为null, 其它为父节点
+    children 叶为undefined, 其它为子节点数组
+}
+</code></pre>
+<h2 id="data_hierarchy-descendants">data_hierarchy.descendants</h2>
+<pre><code class="lang-js">d3.hierarchy({
+    &quot;name&quot;: &quot;name1&quot;,
+    &quot;child&quot;: [
+        {
+            &quot;name&quot;: &quot;name2&quot;
+        }
+    ]
+}, function (d) { return d.child }).descendants();
+返回:[
+    {
+        &quot;data&quot;:
+        &quot;depth&quot;:
+        &quot;height&quot;:
+        &quot;parent&quot;:
+        &quot;children&quot;:
+    },
+    {
+        &quot;data&quot;:
+        &quot;depth&quot;:
+        &quot;height&quot;:
+        &quot;parent&quot;:
+        &quot;children&quot;:
+    }
+]
+</code></pre>
+<p>提取数组部分值</p>
+<pre><code class="lang-js">Array.slice(start[,end])
+</code></pre>
+<h2 id="d3-tree">d3.tree</h2>
+<p>创建默认配置的树形布局, 返回一个布局函数</p>
+<pre><code class="lang-js">var tree_fn = d3.tree()
+</code></pre>
+<p>将分层数据root进行树形布局</p>
+<pre><code class="lang-js">tree_fn(root)
+</code></pre>
+<pre><code class="lang-js">d3.tree()(d3.hierarchy({
+    &quot;name&quot;: &quot;name1&quot;,
+    &quot;child&quot;: [
+        {
+            &quot;name&quot;: &quot;name2&quot;
+        }
+    ]
+}, function (d) { return d.child }))
+返回:
+{
+    原成员变量...
+    &quot;x&quot;: 节点x坐标
+    &quot;y&quot;: 节点y坐标
+}
+</code></pre>
+<h2 id="d3-tree-helloworld">d3.tree 树形分层 helloworld</h2>
+<p>index.html</p>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;测试分层布局&lt;/title&gt;
+    &lt;script src=&quot;js/d3.v4.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;js/jquery.1.9.1.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;svg width=&quot;100%&quot; height=&quot;700px&quot;&gt;
+    &lt;/svg&gt;
+
+    &lt;script&gt;
+        function draw(data) {
+            // 数据分层初始化, 得到根
+            var root = d3.hierarchy(data, function (d) { return d.child });
+
+            // 用默认配置, 得到树形分层函数
+            var tree_fn = d3.tree();
+
+            // 进行树形分层
+            // x 根据同一depth的节点数, 均分区间[0,1]. 如第一个节点, x=0; 第二个节点, x=0.5; 第三个节点, x=1
+            // y 根据树的depth, 均分区间[0,1]. 如depth=0, y=0; depth=1, y=0.5; depth=2, y=1
+            root = tree_fn(root);
+
+            // 绘图
+            d3.select(&#39;svg&#39;)
+                .selectAll(&#39;circle&#39;)
+                .data(root.descendants())
+                .enter()
+                .append(&#39;circle&#39;)
+                .attr(&#39;i&#39;, function (d, i) { return i })
+                .attr(&#39;cx&#39;, function (d, i) { return d.x * 100 })
+                .attr(&#39;cy&#39;, function (d, i) { return d.y * 100 })
+                .attr(&#39;r&#39;, function (d) { return 3 });
+        }
+
+        d3.json(&#39;data.json&#39;, draw);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>data.json</p>
+<pre><code class="lang-js">{
+  &quot;k&quot;: &quot;1&quot;,
+  &quot;child&quot;: [
+    {
+      &quot;k&quot;: &quot;1.1&quot;,
+      &quot;child&quot;: [
+        {&quot;k&quot;: &quot;1.1.1&quot;},
+        {&quot;k&quot;: &quot;1.1.2&quot;},
+        {&quot;k&quot;: &quot;1.1.3&quot;}
+      ]
+    },
+    {
+      &quot;k&quot;: &quot;1.2&quot;,
+      &quot;child&quot;: [
+        {&quot;k&quot;: &quot;1.2.1&quot;},
+        {&quot;k&quot;: &quot;1.2.2&quot;},
+        {&quot;k&quot;: &quot;1.2.3&quot;}
+      ]
+    },
+    {
+      &quot;k&quot;: &quot;1.3&quot;,
+      &quot;child&quot;: [
+        {&quot;k&quot;: &quot;1.3.1&quot;},
+        {&quot;k&quot;: &quot;1.3.2&quot;},
+        {&quot;k&quot;: &quot;1.3.3&quot;}
+      ]
+    }
+  ]
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

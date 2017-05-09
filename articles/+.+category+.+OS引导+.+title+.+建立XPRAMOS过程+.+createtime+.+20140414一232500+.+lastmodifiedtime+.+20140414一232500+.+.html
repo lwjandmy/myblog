@@ -1,0 +1,88 @@
+
+
+<html><head><meta charset="UTF-8"><title>建立XPRAMOS过程
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-xpramos-">建立XPRAMOS过程</h1>
+<pre><code class="lang-text">准备系统:
+
+装精简xp, 
+
+在xp里装firedisk驱动(控制面板-&gt;添加硬件-&gt;&quot;是,我已连接&quot;-&gt;最下面&quot;添加新的硬件
+
+设备&quot;-&gt;&quot;手动&quot;...
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services 下面,把firedisk的Group
+
+名改成&quot;Boot Bus Extender&quot;, 这样早于其它驱动加载, 组名字是来自于
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GroupOrderList第二项
+
+删掉HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices里C盘的那一项, 让ramos重新建立c
+
+盘项, 不会被之前系统的c盘项占用
+
+
+
+准备img文件:
+
+用VirtualDiskManager建立一个img文件,大小估计一下,多了浪费,小了不够..
+
+对img整理碎片
+
+
+
+写入img文件:
+
+用VirtualDiskManager映射img文件到盘符
+
+格式化NTFS, 加上压缩选项(下一步完成之后手动把ntldr的压缩属性去掉)
+
+复制操作系统盘Docum...  Win... Use.. 文件夹 和根目录下文件到(建议FastCopy,
+
+手动调整成相同硬盘模式)
+
+ntldr属性去掉压缩
+
+检查boot.ini里是不是multi(0)disk(0)rdisk(0)partition(1)\WINDOWS
+
+
+
+grub引导指令:
+
+map --mem xxx.img (hd0)
+map (hd0) (hd1)
+map --hook
+chainloader (hd0,0)+1
+boot
+
+第一句读img到内存,
+第二句把之前hd0放到hd1(此时hd0不会丢失, 在后面的grub命令中或许有用,但这里没用,进入操作系统后,系统会自动发现覆盖的hd)
+第三句锁定,其实就是确认前两步并执行, 此时hd0是img, hd1是硬盘
+第四句和一般的引导差不多了
+第五句启动
+
+
+
+ramos的调整:
+
+起初系统和img都留着, 需要修改时进系统修改, 然后退系统用其他系统或pe,结合fastcopy的&quot;同步&quot;选项, 在wdm虚拟的磁盘里同步文件
+离开系统前，记得删除MountedDevice,Prefetch,检查Boot.ini
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

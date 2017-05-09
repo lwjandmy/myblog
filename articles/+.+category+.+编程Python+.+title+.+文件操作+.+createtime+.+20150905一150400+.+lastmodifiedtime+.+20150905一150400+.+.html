@@ -1,0 +1,95 @@
+
+
+<html><head><meta charset="UTF-8"><title>文件操作
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">文件操作</h1>
+<pre><code class="lang-Python"># 写入
+f=open(&#39;data.txt&#39;,&#39;w&#39;)
+f.write(&#39;Hello\n&#39;)
+f.write(&#39;world\n&#39;)
+f.close()
+
+# 读取
+f=open(&#39;data.txt&#39;)
+text=f.read()
+text.split()  output: [&#39;Hello&#39;,&#39;world&#39;]
+
+# open函数的参数
+&#39;r&#39; read, 读取模式
+&#39;w&#39; write,写入模式
+&#39;a&#39; append,尾部追加
+&#39;b&#39; binary, 二进制模式
+&#39;+&#39; 读写模式，用于对文件的查找和修改操作
+
+# 用文件迭代器一行一行扫描文件
+for line in open(&#39;myfile&#39;):....   open函数返回的对象支持迭代, 内存占用小
+
+
+# 保存python对象到文件
+X,X,Y=43,44,45
+S=&#39;Spam&#39;
+L=[1,2,3]
+D={&#39;a&#39;:1,&#39;b&#39;:2}
+
+F=open(&#39;datafile.txt&#39;,&#39;w&#39;)
+F.write(S+&#39;\n&#39;)
+F.write(&#39;%s,%s,%s\n&#39; % (X,Y,Z))   数字对象转换成字符串
+F.write(str(L) + &#39;$&#39; + str(D) + &#39;\n&#39;)   转换列表和字典成字符串
+F.close()
+
+
+# 从文件读取python对象
+F=open(&#39;datafile.txt&#39;)
+读取包含字符串的行
+line=F.readline()
+line.rstrip()  去掉多余行终止符
+读取包含数字的行
+line=F.readline()
+parts=line.split(&#39;,&#39;)
+int(parts[0])
+X,Y,Z=[int(P) for P in parts]
+读取列表和字典
+line=F.readline()
+parts=line.split(&#39;$&#39;)
+L=eval(parts[0])
+D=eval(parts[1])
+
+
+# pickle存储原生对象
+# 存储:
+D={&#39;a&#39;:1,&#39;b&#39;:2}
+F=open(&#39;datafile.pkl&#39;,&#39;wb&#39;)
+import pickle
+pickle.dump(D,F)     dump(python对象,文件handle)
+F.close
+# 读取:
+F=open(&#39;datafile.pkl&#39;,&#39;rb&#39;)
+D=pickle.load(F)
+
+
+
+# 文件上下文管理器
+with open(r&#39;C:\data.txt&#39;) as myfile:
+  for line in my file:
+    ......
+  finally:
+    myfile.close()
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

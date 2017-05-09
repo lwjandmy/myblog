@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>ajax向后台传输数据 后台收到百分号组成的乱码 问题解决
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ajax-">ajax向后台传输数据 后台收到百分号组成的乱码 问题解决</h1>
+<p>ajax加参数contentType: &#39;application/x-www-form-urlencoded; charset=UTF-8&#39;</p>
+<pre><code class="lang-js">$.ajax({
+    cache: false, // 是否使用缓存. dataType为&#39;script&#39;和&#39;jsonp&#39;时, 默认为false, 其它默认为true
+    data: {
+    }, // 将发送给后台的数据
+    method: &#39;PUT&#39;, // HTTP请求类型, 可选值: &#39;GET&#39;, &#39;POST&#39;, &#39;PUT&#39;, &#39;DELETE&#39;等
+    contentType: &#39;application/x-www-form-urlencoded; charset=UTF-8&#39;, // 发送数据时, head头中contentType的值
+    url: &#39;url&#39; // 请求地址
+})
+</code></pre>
+<p>后台代码:</p>
+<pre><code class="lang-java">value = URLDecoder.decode(req.getParameter(&quot;xxx&quot;), &quot;UTF-8&quot;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>总结用scanf读取未知个数的整数的方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-scanf-">总结用scanf读取未知个数的整数的方法</h1>
+<pre><code class="lang-c++">        // 总结用scanf读取未知个数的整数的方法:
+        //  首先, scanf的返回值作用不大, 因格式字符中若有普通字符, 
+        //   不算在读取的字符数里, 也就不算在返回值, 因此返回值不能当作某字符串下标
+        //   这也就限制了scanf只适合读取流, sscanf对字符串的读取必须一次完成(返回值不能当下标)
+        //  因此只能
+        //   1. 用%[^XXX]的方式读出单个数的字符形式
+        //   2. 用atoi等转换函数
+        //   3. 用getchar()判断是空格, 还是tab, 还是\n
+        //  缺点: 因为没使用到scanf对泛空格符的过滤, 因此若数据中间存在多个泛空格符,
+        //   代码需要更细的逻辑 
+        int iLineCnt;
+        scanf(&quot;%d &quot;, &amp;iLineCnt); // 用一个泛空格符, 去掉输入流后面的换行符 
+        char ch[10]; // 存储每个数的字符表示 
+        for (int i = 0; i != iLineCnt; ++i)
+        {
+            for (;;) // 读取这一行, 遇到换行符就退出循环 
+            {
+                scanf(&quot;%[^ \n]&quot;, ch); // 读一个数 
+                intVector.push_back(atoi(ch)); // 转换格式并保存 
+                if (getchar() == &#39;\n&#39;) // 判断是否行尾 这里若有多个泛空格符, 就出错了 
+                    break;
+            }
+
+        }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

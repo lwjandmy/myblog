@@ -1,0 +1,61 @@
+
+
+<html><head><meta charset="UTF-8"><title>js prototype总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-prototype-">js prototype总结</h1>
+<h2 id="prototype-">prototype是什么</h2>
+<p>定义一个function Class1(){}, 那么Class1自动有属性prototype, map类型, 里面有constructor属性, 函数类型, 值为Class1.</p>
+<p>结构为</p>
+<pre><code class="lang-js">Class1 = {
+    prototype: {
+        constructor: Class1
+    }
+}
+</code></pre>
+<hr>
+<h2 id="prototype-">prototype有什么用</h2>
+<p>var obj1 = new Class1(), new表达式后跟函数调用, 产生的效果是, new自动创建一个新对象obj1, 赋予新对象obj1的原型为Class1.prototype, 执行: obj1.Class1(). 注意, new内部赋予了新对象的原型, js中无法访问新对象的原型属性. Class1.prototype的作用仅仅是让new能访问到, new内部会用它赋值给新对象的原型.</p>
+<p>obj1.xxx, 访问obj1的属性xxx(可为函数也可为变量)时, 搜索顺序是: obj1对象, obj1的原型对象(js代码中无法访问), obj1原型对象的原型对象, obj1原型对象的原型对象的原型对象, ...</p>
+<p><img src="pictures/395386c6e5bf531c00f52869af2cdf24df014126.png" alt="内存结构图"></p>
+<hr>
+<h2 id="prototype-new-">prototype与new的总结</h2>
+<p>总结起来就是, 首先设置Class1的prototype属性, 增加一些函数, 然后调用new Class1(), 产生新对象, 新对象的原型就是Class1的prototype, 新对象的原型在js中是无法访问的.</p>
+<hr>
+<h2 id="-">多级继承</h2>
+<p>多级继承, 原理就是, 让new Class1()生成一个对象, 它的原型为Class1.prototype. 然后把这个对象赋给Class2.prototype</p>
+<pre><code class="lang-js">function Class1() {}
+Class1.prototype.fun1 = function () { console.log(&#39;Class1 fun1&#39;); }
+function Class2() {}
+Class2.prototype = new Class1();
+Class2.prototype.fun2 = function () { console.log(&#39;Class2 fun2&#39;); }
+var obj2 = new Class2();
+</code></pre>
+<p>执行</p>
+<pre><code class="lang-js">obj2.fun1()
+</code></pre>
+<p>输出</p>
+<p>Class1 fun1</p>
+<p>执行</p>
+<pre><code class="lang-js">obj2.fun2()
+</code></pre>
+<p>输出</p>
+<p>Class2 fun2</p>
+<p><img src="pictures/9057b73c7ee42dfefea4b16653247f0714fc533c.png" alt="内存结构图"></p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

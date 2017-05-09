@@ -1,0 +1,52 @@
+
+
+<html><head><meta charset="UTF-8"><title>mysql inner join嵌套 注意 项名不要重名
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mysql-inner-join-">mysql inner join嵌套 注意 项名不要重名</h1>
+<p>一个inner join查询</p>
+<pre><code class="lang-mysql">select tbl1.id as &#39;tbl1.id&#39;, tbl2.id as &#39;tbl2.id&#39;   这里id会重名, 所以使用别名. 注意一定要使用别名, 否则嵌套查询会提示id重复! @1
+  from tbl1
+  inner join tbl2
+  on tbl1.id = tbl2.id
+</code></pre>
+<p>下面的嵌套查询, 演示了子查询必须使用一个别名, 注意子查询中不要有重名项, 外部访问的正是子查询暴露的类别名</p>
+<pre><code class="lang-mysql">select *
+  from (
+  select tbl1.id as &#39;tbl1.id&#39;, tbl2.id as &#39;tbl2.id&#39;    这是一个子查询, 子查询向外暴露的是&#39;tbl1.id&#39;, &#39;tbl2.id&#39;!  @2
+    from tbl1
+    inner join tbl2
+    on tbl1.id = tbl2.id
+  ) as origin      嵌套查询必须使用一个别名  @3
+  inner join tbl3
+  on origin.&#39;tbl1.id&#39; = tbl3.id      注意这里origin.&#39;tbl1.id&#39;访问的正是子查询暴露的&#39;tbl1.id&#39;!  @2
+
+`flow`.`id`, `flow`.`from_place_id`, `flow`.`to_place_id`, `from`.`id` as &#39;from_id&#39; from money_flow_tbl as `flow`
+        inner join money_place_tbl as `from`
+        on flow.from_place_id = `from`.id
+
+select * from (
+        select `flow`.`id`, `flow`.`from_place_id`, `flow`.`to_place_id`, `from`.`id` as &#39;from_id&#39; from money_flow_tbl as `flow`
+        inner join money_place_tbl as `from`
+        on flow.from_place_id = `from`.id
+    ) as origin
+    inner join money_place_tbl as `to`
+    on origin.`to_place_id` = `to`.id;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

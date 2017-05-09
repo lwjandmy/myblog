@@ -1,0 +1,60 @@
+
+
+<html><head><meta charset="UTF-8"><title>kie workbench 在tomcat下环境搭建
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="kie-workbench-tomcat-">kie workbench 在tomcat下环境搭建</h1>
+<p>kie-drools-wb-6.5.0.Final-tomcat7.man 放到 Tomcat7/webapps, 改名成kie-wb.war</p>
+<p>起一次tomcat, 让项目解压, 再关闭tomcat</p>
+<p>按照Tomcat7/webapps/kie-wb/README.txt做调整:</p>
+<pre><code class="lang-bash">mvn dependency:get -Dartifact=org.codehaus.btm:btm:2.1.4
+mvn dependency:get -Dartifact=org.codehaus.btm:btm-tomcat55-lifecycle:2.1.4
+mvn dependency:get -Dartifact=com.h2database:h2:1.3.161
+mvn dependency:get -Dartifact=javax.transaction:jta:1.1
+mvn dependency:get -Dartifact=org.slf4j:slf4j-api:1.7.2
+mvn dependency:get -Dartifact=org.slf4j:slf4j-jdk14:1.7.2
+</code></pre>
+<p>用maven下载得到这6个包放到Tomcat7/lib</p>
+<p>分别创建Tomcat7/conf/btm-config.properties, Tomcat7/conf/resources.properties, 配置文件内容在Tomcat7/webapps/kie-wb/README.txt</p>
+<p>创建Tomcat7/bin/setenv.bat, 内容为:</p>
+<pre><code class="lang-bat">set CATALINA_OPTS=-Xmx1024m -XX:MaxPermSize=256m -Dbtm.root=%CATALINA_HOME%   -Dbitronix.tm.configuration=%CATALINA_HOME%\conf\btm-config.properties   -Djbpm.tsr.jndi.lookup=java:comp/env/TransactionSynchronizationRegistry   -Djava.security.auth.login.config=%CATALINA_HOME%\webapps\kie-wb\WEB-INF\classes\login.config   -Dorg.jboss.logging.provider=jdk -Dorg.jboss.logging.provider=jdk
+</code></pre>
+<p>或</p>
+<p>创建Tomcat7/bin/setenv.sh, 内容为:</p>
+<p>CATALINA_OPTS=&quot;-Xmx1024m -XX:MaxPermSize=256m -Dbtm.root=$CATALINA_HOME \
+-Dbitronix.tm.configuration=$CATALINA_HOME/conf/btm-config.properties \
+-Djbpm.tsr.jndi.lookup=java:comp/env/TransactionSynchronizationRegistry \
+-Djava.security.auth.login.config=$CATALINA_HOME/webapps/kie-drools-wb/WEB-INF/classes/login.config \
+-Dorg.jboss.logging.provider=jdk&quot;</p>
+<pre><code class="lang-bash">mvn dependency:get -Dartifact=org.kie:kie-tomcat-integration:6.5.0.Final
+mvn dependency:get -Dartifact=javax.security.jacc:javax.security.jacc-api
+mvn dependency:get -Dartifact=org.jboss.spec.javax.security.jacc:jboss-jacc-api_1.4_spec:1.0.3.Final
+</code></pre>
+<p>用maven下载得到这3个包放到Tomcat7/lib</p>
+<p>Tomcat7/conf/server.xml在Host元素底部加</p>
+<pre><code class="lang-xml">&lt;Valve className=&quot;org.kie.integration.tomcat.JACCValve&quot; /&gt;
+</code></pre>
+<p>Tomcat7/conf/tomcat-users.xml增加admin账号</p>
+<pre><code class="lang-xml">&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;tomcat-users&gt;
+    &lt;role rolename=&quot;admin&quot;/&gt;
+    &lt;user username=&quot;admin&quot; password=&quot;admin&quot; roles=&quot;admin&quot;/&gt;
+&lt;/tomcat-users&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

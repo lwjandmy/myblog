@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>tomcat安装和配置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tomcat-">tomcat安装和配置</h1>
+<pre><code class="lang-bash">sudo pacman -S jdk8-openjdk tomcat8 # 安装jdk和tomcat
+
+sudo systemctl start tomcat8 # 启动tomcat服务
+
+sudo ln -s /home/li/myblog /usr/share/tomcat8/webapps # 把web项目映射到tomcat的webapps
+
+sudo vim /etc/tomcat8/server.xml # 配置URIEncoding=&quot;UTF-8&quot;
+</code></pre>
+<pre><code class="lang-xml">&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;
+           URIEncoding=&quot;UTF-8&quot;
+           connectionTimeout=&quot;20000&quot;
+           redirectPort=&quot;8443&quot; /&gt;
+</code></pre>
+<pre><code class="lang-bash">sudo vim /etc/tomcat8/web.xml # 配置listings可列出目录文件, 方便调试
+</code></pre>
+<pre><code class="lang-xml">&lt;init-param&gt;
+    &lt;param-name&gt;listings&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+&lt;/init-param&gt;
+</code></pre>
+<p><a href="http://vmware-archlinux:8080/myblog">http://vmware-archlinux:8080/myblog</a> 访问tomcat服务</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

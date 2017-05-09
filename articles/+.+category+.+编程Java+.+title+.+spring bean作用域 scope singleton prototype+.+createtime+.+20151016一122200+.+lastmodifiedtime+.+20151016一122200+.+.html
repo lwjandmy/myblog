@@ -1,0 +1,78 @@
+
+
+<html><head><meta charset="UTF-8"><title>spring bean作用域 scope singleton prototype
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="spring-bean-scope-singleton-prototype">spring bean作用域 scope singleton prototype</h1>
+<p>singleton 共享同一bean, defalut, spring保证线程安全</p>
+<p>prototype 每次创建新的bean</p>
+<p>request 每次http request请求, 共享一个bean</p>
+<p>session 每个会话, 共享一个bean</p>
+<p>global session 特殊的, 用于port light的</p>
+<p>例子:
+Car类, Boss类, conf-scope配置文件, Main入口函数</p>
+<p>Car.java:</p>
+<pre><code class="lang-java">public class Car {
+    private String color;
+    private String brand; // 品牌
+    private String price;
+}
+</code></pre>
+<p>Boss.java:</p>
+<pre><code class="lang-java">public class Boss {
+    private String name; // 用不到的变量, 只是为了演示, 好看; 哪有一个Boss类, 只有辆车, 连名都没有的??..
+    private Car car;
+    public Car getCar() { return car; }
+    public void setCar(Car car) { this.car = car; }
+}
+</code></pre>
+<p>conf-scope.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;beans
+    xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xsi:schemaLocation=&quot;
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/context/spring-aop-3.0.xsd&quot;&gt;
+    &lt;!-- bean id=&quot;car&quot; class=&quot;org.learnspringbeanscope.Car&quot; scope=&quot;singleton&quot; / --&gt;
+    &lt;bean id=&quot;car&quot; class=&quot;org.learnspringbeanscope.Car&quot; scope=&quot;prototype&quot; /&gt;
+    &lt;bean id=&quot;boss1&quot; class=&quot;org.learnspringbeanscope.Boss&quot; p:car-ref=&quot;car&quot; /&gt;
+    &lt;bean id=&quot;boss2&quot; class=&quot;org.learnspringbeanscope.Boss&quot; p:car-ref=&quot;car&quot; /&gt;
+    &lt;bean id=&quot;boss3&quot; class=&quot;org.learnspringbeanscope.Boss&quot; p:car-ref=&quot;car&quot; /&gt;
+&lt;/beans&gt;
+</code></pre>
+<p>Main.java:</p>
+<pre><code class="lang-java">public class Main {
+    public static void main(String[] args) {
+        BeanFactory beanFactory = (BeanFactory) new ClassPathXmlApplicationContext(&quot;conf-scope.xml&quot;);
+        Boss boss1 = (Boss)beanFactory.getBean(&quot;boss1&quot;);
+        Boss boss2 = (Boss)beanFactory.getBean(&quot;boss2&quot;);
+        Boss boss3 = (Boss)beanFactory.getBean(&quot;boss3&quot;);
+        System.out.println(&quot;pay attention to car&#39;s memory point:&quot;);
+        System.out.println(boss1.getCar());
+        System.out.println(boss2.getCar());
+        System.out.println(boss3.getCar());
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

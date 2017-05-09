@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>sudo配置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="sudo-">sudo配置</h1>
+<p>编辑配置文件:</p>
+<pre><code class="lang-bash">visudo -f /etc/sudoers
+</code></pre>
+<p>修改配置, 允许sodu组用户获得sudo权限:</p>
+<pre><code class="lang-ini">%sudo ALL=(ALL) ALL
+</code></pre>
+<p>创建sudo组:</p>
+<pre><code class="lang-bash">groupadd sudo
+</code></pre>
+<p>加入用户到sudo组:</p>
+<pre><code class="lang-bash">usermod li -G sudo
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

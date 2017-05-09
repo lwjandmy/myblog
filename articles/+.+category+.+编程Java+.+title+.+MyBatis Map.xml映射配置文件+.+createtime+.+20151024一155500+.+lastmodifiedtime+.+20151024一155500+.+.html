@@ -1,0 +1,34 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis Map.xml映射配置文件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-map-xml-">MyBatis Map.xml映射配置文件</h1>
+<p>放单独的map包中</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn.UserMapper&quot;&gt;
+    &lt;select id=&quot;findById&quot; parameterType=&quot;int&quot; resultType=&quot;org.learnmybatis.pojo.User&quot;&gt;
+        select * from user where id=#{id}
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>U盘引导GRUB总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="u-grub-">U盘引导GRUB总结</h1>
+<pre><code class="lang-text">[BOOT.INI引导GRUB]
+c:\grldr=grub
+
+[BCD引导GRUB]
+BCD Edit中
+Application objects下
+右键 新建 实模式启动项
+ApplicationPath必须是\grldr.mbr 不能是grldr(boot.ini中可以不要扩展名)
+
+[GRUB获得]
+下载grub4dos(grub for dos),复制其中grldr.mbr grldr两个文件
+
+[GRUB兼容的U盘分区格式]
+由于使用Windows Loader进入GRUB,
+所以进入GRUB时,FDD分区是可以兼容的(由Windows Loader兼容)
+但进入GRUB后,找不到U盘,看来GRUB是不兼容FDD格式的
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

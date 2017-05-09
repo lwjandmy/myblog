@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>QWebView 调试js 查看js错误输出
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="qwebview-js-js-">QWebView 调试js 查看js错误输出</h1>
+<p>有一个虚函数</p>
+<p>void QWebPage::javaScriptConsoleMessage(const QString &amp; message, int lineNumber, const QString &amp; sourceID)</p>
+<p>默认是不对js消息处理</p>
+<p>为了看到js输出，可以写一个mywebpage，重写这个函数，函数内qDebug输出。</p>
+<p>然后不调用WebView的load，而是</p>
+<pre><code>    MyWebPage *page = new MyWebPage(ui-&gt;webView);
+
+    page-&gt;mainFrame()-&gt;load(QUrl(&quot;http://2.taobao.com/item.htm?spm=2007.1000337.16.4.qAiQjt&amp;amp;id=38787274946&quot;));
+
+    ui-&gt;webView-&gt;setPage(page);
+</code></pre><p>像这样自己new一个webpage，调用webpage的mainframe的load，之后再把webpage给webview显示出来。</p>
+<hr>
+<p>另一个附加工具：</p>
+<p>QWebSettings::globalSettings()-&gt;setAttribute(QWebSettings::DeveloperExtrasEnabled, true);</p>
+<p>可以在qt程序里调试网页</p>
+<p>Now by right clicking-&gt;inspect, console, you would have seen the JS interpret error.</p>
+<p><a href="http://stackoverflow.com/questions/12578377/how-to-call-evaluatejavascript-function-from-qt">http://stackoverflow.com/questions/12578377/how-to-call-evaluatejavascript-function-from-qt</a></p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,42 @@
+
+
+<html><head><meta charset="UTF-8"><title>mysql demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mysql-demo">mysql demo</h1>
+<pre><code class="lang-PHP">&lt;?php
+    $db = new mysqli(&quot;localhost&quot;, &quot;learn_usr&quot;, &quot;123456&quot;, &quot;learn_db&quot;);
+
+    $res = $db-&gt;query(&quot;select userid,username,password from register
+        where username=&#39;$username&#39; and password=&#39;$password&#39;&quot;);
+
+    if (mysqli_num_rows($res) &gt; 0)
+    {
+        $row = mysqli_fetch_array($res); // 读取返回结果的一行,当都读出时,返回null. 可放到循环中
+        echo $row[&quot;userid&quot;];
+    }
+
+?&gt;
+</code></pre>
+<ul>
+<li>mysqli_fetch_row 用数字下标索引的数组</li>
+<li>mysqli_fetch_assoc 用字符下标索引的数组</li>
+<li>mysqli_fetch_array 用数字和字符下标(同时,都能)索引的数组   是前两个的结合, 且效率不会降低,推荐使用</li>
+</ul>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

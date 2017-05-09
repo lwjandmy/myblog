@@ -1,0 +1,80 @@
+
+
+<html><head><meta charset="UTF-8"><title>js 变量模型 循环中的异步函数 陷阱与改进
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-">js 变量模型 循环中的异步函数 陷阱与改进</h1>
+<p><a href="http://www.cnblogs.com/gaojun/p/4157684.html">http://www.cnblogs.com/gaojun/p/4157684.html</a></p>
+<pre><code class="lang-js">/*
+js中变量的物理模型:
+变量都是c语言中的指针,
+因此改变变量的值, 就是把变量指向的位置, 由原来的位置, 改成新变量的位置.
+如
+*/
+var i1 = 1; //           ===&gt;  int *i1 = new int(1);
+var i2 = i1; //          ===&gt;  int *i2 = i1;
+
+i1 = 2; //               ===&gt;  i1 = new int(2);
+console.log(&#39;should output 1: &#39; + i2); // OUTPUT: 1
+
+var obj1 = { a: 1 }; //  ===&gt;  struct OBJ{int *a}; OBJ *obj1 = new OBJ; obj1-&gt;a = new int(1);
+var obj2 = obj1; //      ===&gt;  OBJ *obj2 = obj1;
+
+obj1.a = 9; //           ===&gt;  obj1-&gt;a = new int(9);
+console.log(&#39;should output 9: &#39; + obj2.a); // OUTPUT: 9
+
+
+
+
+
+
+
+
+
+
+// js中异步函数中变量的值, 也遵循指针的物理模型, 如:
+var i = 1; //  ===&gt;  int *i = new int(1);
+setTimeout(function () {console.log(&#39;should output 2: &#39; + i);}, 100);
+i = 2; //  ===&gt;  i = new int(2);
+
+// 如果想让变量的值保持住, 用指针的模型考虑, 应该新增一个指针, 仅使用这个新指针
+var i = 1; //  ===&gt;  int *i = new int(1);
+var i_new = i; //  ===&gt;  int *i_new = i;
+setTimeout(function () {console.log(&#39;should output 1: &#39; + i_new);}, 200);
+i = 2; //  ===&gt;  i = new int(2);
+
+// 为简化新增指针的做法, 可用闭包, 包住一个新增的指针
+var i = 1; //  ===&gt;  int *i = new int(1);
+(function(i) {
+    setTimeout(function () {console.log(&#39;should output 1: &#39; + i);}, 300);
+})(i); // 利用函数作用域, 这里传入的i, 进入函数内后, 会新出现一个变量i. 新变量i会覆盖外部的变量i, 且值不变
+i = 2; //  ===&gt;  i = new int(2);
+
+// 当在遍历数组中需要异步函数时, 就需要新建一个变量, 仅操作新变量, 防止异步函数执行时, 循环变量已到尾部的情况
+// 而数组有内置方法forEach, 直接调用它, 免去了自己定义新变量, 定义闭包函数的麻烦:
+var list = [0, 1, 2];
+list.forEach(function (i) {
+    var v = list[i];
+    console.log(&#39;normal: &#39; + v);
+    setTimeout(function () {
+        console.log(&#39;delay: &#39; + v);
+    }, 1000);
+});
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

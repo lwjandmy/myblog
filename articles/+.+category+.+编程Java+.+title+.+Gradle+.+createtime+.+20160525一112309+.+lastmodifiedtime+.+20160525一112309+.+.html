@@ -1,0 +1,49 @@
+
+
+<html><head><meta charset="UTF-8"><title>Gradle
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="gradle">Gradle</h1>
+<h2 id="-">初始化新工程</h2>
+<pre><code class="lang-bash">gradle init --type java-library
+</code></pre>
+<h2 id="-eclipse-">添加eclipse支持</h2>
+<h3 id="-build-gradle">配置build.gradle</h3>
+<pre><code class="lang-groovy">apply plugin: &#39;eclipse&#39;
+</code></pre>
+<pre><code class="lang-bash">gradle eclipse
+</code></pre>
+<h3 id="eclipse-">Eclipse中导入工程</h3>
+<p>Eclipse: File -&gt; Import..., General -&gt; Existing Projects into Workspace.</p>
+<h2 id="-main-class">设置Main-Class</h2>
+<pre><code class="lang-groovy">jar {
+    manifest {
+        attributes &#39;Main-Class&#39;: &#39;org.test.HelloWorld&#39;
+    }
+}
+</code></pre>
+<h2 id="-">构建工程</h2>
+<p>gradle build</p>
+<h2 id="-">下载依赖</h2>
+<pre><code class="lang-bash">gradle dependencies
+</code></pre>
+<h2 id="-">清理</h2>
+<pre><code class="lang-bash">gradle clean
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

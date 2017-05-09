@@ -1,0 +1,64 @@
+
+
+<html><head><meta charset="UTF-8"><title>excel自定义函数
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="excel-">excel自定义函数</h1>
+<p>Excel -&gt; 菜单 -&gt; Excel选项 -&gt; 常用 -&gt; 在功能区显示&quot;开发工具&quot;选项卡</p>
+<p>Excel -&gt; 宏 -&gt; Visual Basic</p>
+<p>右键&quot;VBAProject&quot; -&gt; 插入 -&gt; 模块</p>
+<pre><code class="lang-vb">Function 三项合并计算(a, b, c)
+    三项合并计算 = a * b + c
+End Function
+</code></pre>
+<p>Excel单元格公式</p>
+<pre><code class="lang-excel">=三项合并计算(2,3,5)
+</code></pre>
+<p>例子:</p>
+<pre><code class="lang-vb">Function 生成参数获取和校验代码(参数名, 类型, 最大长度, 必填选填, 默认值)
+    If 类型 = &quot;字符串&quot; Then
+
+        If 必填选填 = &quot;必填&quot; Then
+            生成参数获取和校验代码 = &quot;String &quot; &amp; 参数名 &amp; &quot; = req.getParameter(&quot;&quot;&quot; &amp; 参数名 &amp; &quot;&quot;&quot;); if (null == &quot; &amp; 参数名 &amp; &quot;) { return new Gson().toJson(Error.error__2); }; if (&quot; &amp; 参数名 &amp; &quot;.length() &gt; &quot; &amp; 最大长度 &amp; &quot;) { return new Gson().toJson(Error.error__5); }&quot;
+        Else
+            生成参数获取和校验代码 = &quot;String &quot; &amp; 参数名 &amp; &quot; = ObjectUtils.defaultIfNull(req.getParameter(&quot;&quot;&quot; &amp; 参数名 &amp; &quot;&quot;&quot;), &quot;&quot;&quot; &amp; 默认值 &amp; &quot;&quot;&quot;).toString();&quot;
+        End If
+
+    ElseIf 类型 = &quot;布尔&quot; Then
+
+        If 必填选填 = &quot;必填&quot; Then
+            生成参数获取和校验代码 = &quot;&quot;
+        Else
+            生成参数获取和校验代码 = &quot;Boolean &quot; &amp; 参数名 &amp; &quot; = Boolean.parseBoolean(ObjectUtils.defaultIfNull(req.getParameter(&quot;&quot;&quot; &amp; 参数名 &amp; &quot;&quot;&quot;), &quot;&quot;&quot; &amp; 默认值 &amp; &quot;&quot;&quot;).toString());&quot;
+        End If
+
+    ElseIf 类型 = &quot;整形&quot; Then
+
+        If 必填选填 = &quot;必填&quot; Then
+            生成参数获取和校验代码 = &quot;&quot;
+        Else
+            生成参数获取和校验代码 = &quot;&quot;
+            生成参数获取和校验代码 = &quot;Integer &quot; &amp; 参数名 &amp; &quot; = Integer.parseInt(ObjectUtils.defaultIfNull(req.getParameter(&quot;&quot;&quot; &amp; 参数名 &amp; &quot;&quot;&quot;), &quot;&quot;&quot; &amp; 默认值 &amp; &quot;&quot;&quot;).toString());&quot;
+        End If
+
+    End If
+
+End Function
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

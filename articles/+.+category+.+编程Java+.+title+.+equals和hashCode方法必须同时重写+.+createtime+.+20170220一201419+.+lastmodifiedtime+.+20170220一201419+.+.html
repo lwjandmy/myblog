@@ -1,0 +1,27 @@
+
+
+<html><head><meta charset="UTF-8"><title>equals和hashCode方法必须同时重写
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="equals-hashcode-">equals和hashCode方法必须同时重写</h1>
+<p>java语言定义: equals和hashCode有如下关联:</p>
+<p>两个对象, 如果equals方法返回true, hashCode必须相同. 即对象相同, hash也必须相同.</p>
+<p>两个对象, 如果equals方法返回false, hashCode可以相同也可以不同. 即对象不同, 但允许hash相同, 鸽巢原理. 但会影响hashtable的性能.</p>
+<p>所以为了满足以上语言定义, equals和hashCode方法要么全部继承, 要么全部重写.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,74 @@
+
+
+<html><head><meta charset="UTF-8"><title>Struts 属性驱动
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="struts-">Struts 属性驱动</h1>
+<p>web.xml配置描述文件, struts.xml配置文件, index.jsp登陆页面, LoginAction.java登陆控制</p>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot; xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot; version=&quot;3.1&quot;&gt;
+  &lt;filter&gt;
+      &lt;filter-name&gt;Struts2Filter&lt;/filter-name&gt;
+      &lt;filter-class&gt;org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter&lt;/filter-class&gt;
+  &lt;/filter&gt;
+  &lt;filter-mapping&gt;
+      &lt;filter-name&gt;Struts2Filter&lt;/filter-name&gt;
+      &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+  &lt;/filter-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>struts.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE struts PUBLIC
+    &quot;-//Apache Software Foundation//DTD Struts Configuration 2.3//EN&quot;
+    &quot;http://struts.apache.org/dtds/struts-2.3.dtd&quot;&gt;
+&lt;struts&gt;
+    &lt;constant name=&quot;struts.devMode&quot; value=&quot;true&quot; /&gt;
+    &lt;package name=&quot;userlogin&quot; extends=&quot;struts-default&quot;&gt;
+        &lt;action name=&quot;loginAction&quot; class=&quot;org.learnstruts2propertydriven.action.LoginAction&quot;&gt;
+            &lt;result name=&quot;success&quot;&gt;/index.jsp&lt;/result&gt;
+        &lt;/action&gt;
+    &lt;/package&gt;
+&lt;/struts&gt;
+</code></pre>
+<p>index.jsp:</p>
+<pre><code class="lang-jsp">&lt;form action=&quot;&lt;%= request.getContextPath() %&gt;/loginAction.action&quot; method=&quot;post&quot;&gt;
+    username:&lt;input type=&quot;text&quot; name=&quot;username&quot; /&gt;&lt;br /&gt;
+    password:&lt;input type=&quot;password&quot; name=&quot;password&quot; /&gt;&lt;br /&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;login&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+<p>LoginAction.java:</p>
+<pre><code class="lang-java">public class LoginAction
+{
+    private String username;
+    private String password;
+    public String execute() {
+        System.out.println(username);
+        System.out.println(password);
+        return &quot;success&quot;;
+    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

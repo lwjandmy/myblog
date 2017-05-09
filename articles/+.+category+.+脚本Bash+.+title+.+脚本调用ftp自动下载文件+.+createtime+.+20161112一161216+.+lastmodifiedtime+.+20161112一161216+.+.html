@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>脚本调用ftp自动下载文件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-ftp-">脚本调用ftp自动下载文件</h1>
+<pre><code class="lang-bash">
+if [ &quot;$#&quot; != &quot;2&quot; ]
+then
+    echo &#39;Usage: ftp_download /remote/path /local/path&#39;
+    exit 1
+fi
+
+ftp -n &lt;&lt;- EOF
+open 192.168.1.1 8021
+user username password
+binary
+get $1 $2
+quit
+EOF
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

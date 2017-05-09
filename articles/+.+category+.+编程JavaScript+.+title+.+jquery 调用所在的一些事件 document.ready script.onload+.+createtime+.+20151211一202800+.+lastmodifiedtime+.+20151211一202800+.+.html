@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>jquery 调用所在的一些事件 document.ready script.onload
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jquery-document-ready-script-onload">jquery 调用所在的一些事件 document.ready script.onload</h1>
+<p>$(document).ready()事件是当html下载完成并解析成dom树之后执行的.</p>
+<p>动态加载js时, 应设置onload属性, 用来回调, 例子:</p>
+<p>高级的, 支持回调的. 便于网页动态加载js</p>
+<pre><code class="lang-js">function load_js(url, onload_function)
+{
+    var jquery_tag_for_inject = document.createElement(&#39;script&#39;); // 创建script标签
+    jquery_tag_for_inject.src = url; // 设置src属性
+    typeof onload_function != &quot;undefined&quot; &amp;&amp; (jquery_tag_for_inject.onload = onload_function); // 设置回调
+    (
+        document.getElementsByTagName(&#39;head&#39;)[0] ||
+        document.getElementsByTagName(&#39;body&#39;)[0]
+    ).appendChild(jquery_tag_for_inject); // 注入网页
+}
+
+load_js(&#39;https://code.jquery.com/jquery-1.11.2.js&#39;);
+</code></pre>
+<p>补充:回调函数要首先执行$ = jQuery;  因为jQuery为兼容其它js库, 未主动设置$符号</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

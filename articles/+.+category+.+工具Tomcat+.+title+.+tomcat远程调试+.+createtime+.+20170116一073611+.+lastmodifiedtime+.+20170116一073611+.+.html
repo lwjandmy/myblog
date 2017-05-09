@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>tomcat远程调试
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tomcat-">tomcat远程调试</h1>
+<h2 id="-xdebug-">增加Xdebug启动参数</h2>
+<p>编辑catalina.bat, 在以下代码之后:</p>
+<pre><code class="lang-bat">if not &quot;%JPDA%&quot; == &quot;&quot; goto doJpda
+if not &quot;%SECURITY_POLICY_FILE%&quot; == &quot;&quot; goto doSecurity
+</code></pre>
+<p>原代码</p>
+<pre><code class="lang-bat">%_EXECJAVA% %JAVA_OPTS% %CATALINA_OPTS% %DEBUG_OPTS% -Djava.endorsed.dirs=&quot;%JAVA_ENDORSED_DIRS%&quot; -classpath &quot;%CLASSPATH%&quot; -Dcatalina.base=&quot;%CATALINA_BASE%&quot; -Dcatalina.home=&quot;%CATALINA_HOME%&quot; -Djava.io.tmpdir=&quot;%CATALINA_TMPDIR%&quot; %MAINCLASS% %CMD_LINE_ARGS% %ACTION%
+</code></pre>
+<p>改成</p>
+<pre><code class="lang-bat">%_EXECJAVA% %JAVA_OPTS% %CATALINA_OPTS% -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=9527,suspend=n %DEBUG_OPTS% -Djava.endorsed.dirs=&quot;%JAVA_ENDORSED_DIRS%&quot; -classpath &quot;%CLASSPATH%&quot; -Dcatalina.base=&quot;%CATALINA_BASE%&quot; -Dcatalina.home=&quot;%CATALINA_HOME%&quot; -Djava.io.tmpdir=&quot;%CATALINA_TMPDIR%&quot; %MAINCLASS% %CMD_LINE_ARGS% %ACTION%
+</code></pre>
+<p>即在<code>%CATALINA_OPTS% %DEBUG_OPTS%</code>中间加<code>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=9527,suspend=n</code></p>
+<p>Eclipse -&gt; Run -&gt; Debug Configurations</p>
+<p>在&#39;Remote Java Application&#39;下新建:</p>
+<pre><code class="lang-text">Project: 现有项目
+Host: localhost
+Port: 9527
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,70 @@
+
+
+<html><head><meta charset="UTF-8"><title>视图 demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-demo">视图 demo</h1>
+<p>定义:</p>
+<pre><code class="lang-mysql">CREATE VIEW view_name
+AS
+SELECT ...;
+</code></pre>
+<p>使用:</p>
+<pre><code class="lang-mysql">SELECT *
+FROM view_name;
+</code></pre>
+<p>更新:<br>视图的INSERT, UPDATE, DELETE统称更新.<br>对视图的更新最终会转换到对基本表的更新, 所以视图的更新并不是一定可行的.<br>如视图提供了COUNT(XX), 那么更新这个视图, 也就是更新COUNT(XX)值, 是不可能做到的.</p>
+<p>作用:<br>在基本表和使用者之间加了一个层, 这样对数据的组合和分离无需占用存储空间, 同时隔离了查询细节, 也能保护私密数据  </p>
+<p>例子:</p>
+<pre><code class="lang-mysql">DROP DATABASE IF EXISTS test;
+CREATE DATABASE `test` 
+CHARACTER SET &#39;utf8&#39; 
+COLLATE &#39;utf8_general_ci&#39;;
+use test;
+
+DROP TABLE IF EXISTS Student;
+CREATE TABLE Student(
+    Sno INT PRIMARY KEY AUTO_INCREMENT,
+    Sname CHAR(20),
+    Ssex CHAR(2),
+    Sage SMALLINT,
+    Sdept CHAR(20)
+);
+
+INSERT INTO Student VALUES (NULL, &quot;李勇&quot;, &quot;男&quot;, 30, &quot;CS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;刘晨&quot;, &quot;女&quot;, 29, &quot;CS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;刘晨2&quot;, &quot;女&quot;, 29, &quot;CS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;王敏&quot;, &quot;女&quot;, 27, &quot;MA&quot;);
+INSERT INTO Student VALUES (NULL, &quot;张立&quot;, &quot;男&quot;, 27, &quot;IS&quot;);
+INSERT INTO Student VALUES (NULL, &quot;张立2&quot;, &quot;男&quot;, 27, &quot;IS&quot;);
+
+SELECT * FROM Student;
+
+# 定义视图, 内容为AS + SELECT语句
+CREATE VIEW StudentAge
+AS
+SELECT Sname, Sage
+FROM Student;
+
+# 使用视图, 把视图当作一个基本表, 来SELECT
+SELECT *
+FROM StudentAge
+WHERE Sage &lt; 30;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

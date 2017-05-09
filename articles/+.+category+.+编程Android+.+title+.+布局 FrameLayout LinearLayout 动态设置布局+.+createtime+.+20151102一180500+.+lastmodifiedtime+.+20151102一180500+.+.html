@@ -1,0 +1,169 @@
+
+
+<html><head><meta charset="UTF-8"><title>布局 FrameLayout LinearLayout 动态设置布局
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-framelayout-linearlayout-">布局 FrameLayout LinearLayout 动态设置布局</h1>
+<p>FrameLayout布局, 只能放置在9个位置上, 能完全被RelativeLayout替代, 但FrameLayout更轻量级, 切换组件速度更快.</p>
+<p>View::getVisibility() == View.INVISITLBE, View::setVisibility 能 获取/设置 视图 显示/隐藏 状态</p>
+<p>注意以下配置的字符串, 前面android.intent...都是小写, IDE有时会生成大写的, 配置会失败, 启动不起来</p>
+<pre><code class="lang-xml">&lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+</code></pre>
+<p>AndroidMainifest.xml:</p>
+<pre><code class="lang-xml">        &lt;activity
+            android:name=&quot;.FrameLayoutActivity&quot;
+            android:label=&quot;FrameLayoutActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+</code></pre>
+<p>FrameLayoutActivity.java:</p>
+<pre><code class="lang-java">public class FrameLayoutActivity extends AppCompatActivity
+{
+    FrameLayout frameLayout;
+    private ImageView imageView1;
+    private ImageView imageView2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_framelayout);
+        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
+        imageView1 = (ImageView) findViewById(R.id.imageView1);
+        imageView2 = (ImageView) findViewById(R.id.imageView2);
+        showImg1();
+        frameLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (imageView1.getVisibility() == View.VISIBLE)
+                    showImg2();
+                else
+                    showImg1();
+            }
+        });
+    }
+    private void showImg1()
+    {
+        imageView1.setVisibility(View.VISIBLE);
+        imageView2.setVisibility(View.INVISIBLE);
+    }
+    private void showImg2()
+    {
+        imageView2.setVisibility(View.VISIBLE);
+        imageView1.setVisibility(View.INVISIBLE);
+    }
+}
+</code></pre>
+<p>activity_framelayout.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+             android:id=&quot;@+id/frameLayout&quot;
+             android:layout_width=&quot;match_parent&quot;
+             android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;ImageView
+        android:id=&quot;@+id/imageView1&quot;
+        android:src=&quot;@drawable/img1&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;/&gt;
+    &lt;ImageView
+        android:id=&quot;@+id/imageView2&quot;
+        android:src=&quot;@drawable/img2&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;/&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<hr>
+<p>LinearLayout可设置水平或垂直的线形布局, LinearLayout互相组合, 可以设计类似表格的布局</p>
+<p>AndroidManifest.xml:</p>
+<pre><code class="lang-xml">        &lt;activity android:name=&quot;.LinearLayoutActivity&quot;
+                 android:label=&quot;LinearLayoutActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+</code></pre>
+<p>LinearLayoutActivity.java:</p>
+<pre><code class="lang-java">public class LinearLayoutActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_linearlayout);
+    }
+}
+</code></pre>
+<p>activity_linearlayout.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+              android:orientation=&quot;vertical&quot;
+              android:layout_width=&quot;match_parent&quot;
+              android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;!-- background背景色; layout_weight尺寸比重 --&gt;
+    &lt;LinearLayout
+        android:background=&quot;#4bf7&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;&gt;
+        &lt;EditText
+            android:layout_weight=&quot;1&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;Button
+            android:text=&quot;Go&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;/LinearLayout&gt;
+    &lt;WebView
+        android:layout_weight=&quot;1&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<hr>
+<p>动态设置布局</p>
+<pre><code class="lang-java">    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        // 初始化布局
+        root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        setContentView(root);
+        // 初始化组件
+        btnClickme = new Button(this);
+        btnClickme.setText(&quot;Click me&quot;);
+        btnClickme.setOnClickListener(new View.OnClickListener() // 设置响应事件, 点击就消失
+        {
+            @Override
+            public void onClick(View v)
+            {
+                root.removeView(v); // 移出按钮
+            }
+        });
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT); // 设置宽高
+        layoutParams.weight = 1; // 设置尺寸比重
+        root.addView(btnClickme, layoutParams);
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,54 @@
+
+
+<html><head><meta charset="UTF-8"><title>form legend fieldset
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="form-legend-fieldset">form legend fieldset</h1>
+<pre><code class="lang-text">普通表单
+&lt;form action=&quot;process.php&quot; method=&quot;post&quot;&gt;
+ &lt;label for=&quot;username&quot;&gt;用户名&lt;/label&gt;
+ &lt;input id=&quot;username&quot; type=&quot;text&quot; name=&quot;username&quot;/&gt;
+ &lt;input type=&quot;submit&quot; value=&quot;Click&quot; /&gt;
+&lt;/form&gt;
+
+文件表单
+&lt;form action=&quot;on_face_register.php&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+ &lt;label for=&quot;username&quot;&gt;用户名&lt;/label&gt;
+ &lt;input type=&quot;text&quot; name=&quot;username&quot; id=&quot;username&quot; /&gt;
+ &lt;label for=&quot;image&quot;&gt;头像&lt;/label&gt;
+ &lt;input type=&quot;file&quot; name=&quot;image&quot; id=&quot;image&quot; /&gt;
+ &lt;input type=&quot;submit&quot; value=&quot;注册&quot; /&gt;
+ &lt;/form&gt;
+
+
+form  定义表单
+fieldset  组合表单中的元素
+legend   为fieldset定义标题
+input  定义一个输入元素
+
+
+&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;健康信息&lt;/legend&gt;
+    身高：&lt;input type=&quot;text&quot; /&gt;
+    体重：&lt;input type=&quot;text&quot; /&gt;
+  &lt;/fieldset&gt;
+&lt;/form&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

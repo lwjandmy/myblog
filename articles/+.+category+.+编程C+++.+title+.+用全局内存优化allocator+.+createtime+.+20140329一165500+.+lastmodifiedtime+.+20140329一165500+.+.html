@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>用全局内存优化allocator
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-allocator">用全局内存优化allocator</h1>
+<p>用全局内存优化allocator的内存分配</p>
+<p>内存不会被释放</p>
+<pre><code class="lang-java">char chMemoryPool[10000000]; // 10MB
+char *chMemoryPoolEnd = chMemoryPool;
+
+template &lt;typename _Tp&gt;
+class myallocator : public std::allocator&lt;_Tp&gt;
+{
+    typedef size_t     size_type;
+    typedef _Tp*       pointer;
+    typedef const _Tp* const_pointer;
+
+public:
+    pointer allocate(size_type n, allocator&lt;void&gt;::const_pointer hint=0)
+    {
+        pointer pt = (pointer)chMemoryPoolEnd;
+        chMemoryPoolEnd += n;
+        return pt;
+    }
+};
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

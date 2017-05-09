@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>git本地仓库搭建
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="git-">git本地仓库搭建</h1>
+<pre><code class="lang-bash"># 建立git仓库文件夹
+mkdir -p /cygdrive/d/GitRepositorys
+
+# 创建一个仓库
+cd /cygdrive/d/GitRepositorys
+mkdir repo1
+cd repo1
+git init --bare
+
+# 在项目下, git中增加远程仓库
+cd /cygdrive/d/test-project
+git remote add LocalGitRepository /cygdrive/d/GitRepositorys/repo1
+
+# 提交代码到本地仓库
+git push LocalGitRepository master
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>backward-cpp 打印c堆栈
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="backward-cpp-c-">backward-cpp 打印c堆栈</h1>
+<p>下载&amp;解压<a href="https://github.com/bombela/backward-cpp">backward-cpp-master.zip</a></p>
+<p>拷贝backward.hpp和backward.cpp当项目中</p>
+<p>pro文件 增加:</p>
+<pre><code class="lang-ini">SOURCES += backward.cpp
+HEADERS += backward.hpp
+</code></pre>
+<p>main.cpp:</p>
+<pre><code class="lang-java">#include &quot;backward.hpp&quot;
+
+int main(int argc, char *argv[]) {
+
+    return 0;
+}
+</code></pre>
+<p>backward-cpp只能在linux平台上用, 没有环境可测, 先到这</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

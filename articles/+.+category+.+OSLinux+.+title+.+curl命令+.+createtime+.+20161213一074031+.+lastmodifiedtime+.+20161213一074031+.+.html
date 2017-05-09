@@ -1,0 +1,50 @@
+
+
+<html><head><meta charset="UTF-8"><title>curl命令
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="curl-">curl命令</h1>
+<h2 id="curl-ssl">curl不验证ssl</h2>
+<pre><code class="lang-bash">curl -k &#39;https://192.168.102.214/sdfae/index.php/jbackend/get/content/articles?catid=80&amp;limit=4&amp;offset=0&#39;
+</code></pre>
+<h2 id="get">GET</h2>
+<pre><code class="lang-bash">curl http://www.linuxidc.com/test.cgi?param1=nickwolfe&amp;param2=12345
+</code></pre>
+<h2 id="post">POST</h2>
+<pre><code class="lang-bash">curl -d &quot;param2=nickwolfe&amp;param2=12345&quot; http://www.linuxidc.com/login.cgi
+</code></pre>
+<h2 id="referer">Referer</h2>
+<pre><code class="lang-bash">curl -e &#39;http://www.baidu.com&#39;
+</code></pre>
+<h2 id="user-agent">User Agent</h2>
+<pre><code class="lang-bash">curl -A &#39;Mozilla&#39;
+</code></pre>
+<h2 id="x-requested-with">X-Requested-With</h2>
+<pre><code class="lang-bash">curl -H &#39;X-Requested-With: XMLHttpRequest&#39;
+</code></pre>
+<h2 id="cookie">Cookie</h2>
+<pre><code class="lang-bash">curl -H &#39;Cookie: hover_page_cookie=HomePage; lms-sid=l2a45qainu4ku8t8t0r5moo0q2&#39;
+</code></pre>
+<h2 id="-">下载文件</h2>
+<p>-L 自动跟踪重定向</p>
+<p>-O 保存的文件名与远程服务器中文件名一致</p>
+<p>-C - 自动续传, 自动解析续传开始位置</p>
+<pre><code class="lang-bash">curl -L -O -C - https://download.cometd.org/cometd-3.1.1-distribution.tar.gz
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

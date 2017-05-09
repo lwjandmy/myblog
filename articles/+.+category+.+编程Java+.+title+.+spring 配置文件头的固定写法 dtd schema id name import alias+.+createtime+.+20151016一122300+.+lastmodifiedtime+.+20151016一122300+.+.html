@@ -1,0 +1,47 @@
+
+
+<html><head><meta charset="UTF-8"><title>spring 配置文件头的固定写法 dtd schema id name import alias
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="spring-dtd-schema-id-name-import-alias">spring 配置文件头的固定写法 dtd schema id name import alias</h1>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE beans PUBLIC &quot;-//SPRING/DTD BEAN/EN&quot;
+    &quot;http://www.springframework.org/dtd/spring-beans.dtd&quot;&gt;
+
+Schema:
+    xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xsi:schemaLocation=&quot;
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/context/spring-aop-3.0.xsd&quot;&gt;
+
+&lt;/beans&gt;
+
+
+
+&lt;!-- 引入其它配置文件 --&gt;
+&lt;import resource=&quot;resource1.xml&quot; /&gt;
+&lt;!-- 设置别名 --&gt;
+&lt;alias alias=&quot;another_name&quot; name=&quot;bean1&quot;&gt;&lt;/alias&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>babel ecmascript 6 转为 ecmascript 5 使代码被uglify解析
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="babel-ecmascript-6-ecmascript-5-uglify-">babel ecmascript 6 转为 ecmascript 5 使代码被uglify解析</h1>
+<h2 id="-babel">安装babel</h2>
+<pre><code class="lang-bash">cnpm install -g babel-cli 
+cnpm install --save-dev babel-preset-latest # 会使webstorm内存泄漏..
+</code></pre>
+<h2 id="-es6-es5">执行ES6转ES5</h2>
+<pre><code class="lang-bash">babel ./bundle.js --presets=es2015 -o babel.js
+</code></pre>
+<p>如果提示未找到es2015, 删除node_modules, 再cnpm install下载依赖</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

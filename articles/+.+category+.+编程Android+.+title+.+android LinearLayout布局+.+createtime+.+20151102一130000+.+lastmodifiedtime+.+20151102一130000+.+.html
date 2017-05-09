@@ -1,0 +1,70 @@
+
+
+<html><head><meta charset="UTF-8"><title>android LinearLayout布局
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-linearlayout-">android LinearLayout布局</h1>
+<p>LinearLayout可设置水平或垂直的线形布局, LinearLayout互相组合, 可以设计类似表格的布局</p>
+<p>AndroidManifest.xml:</p>
+<pre><code class="lang-xml">        &lt;activity android:name=&quot;.LinearLayoutActivity&quot;
+                  android:label=&quot;LinearLayoutActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+</code></pre>
+<p>LinearLayoutActivity.java:</p>
+<pre><code class="lang-java">public class LinearLayoutActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_linearlayout);
+    }
+}
+</code></pre>
+<p>activity_linearlayout.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+              android:orientation=&quot;vertical&quot;
+              android:layout_width=&quot;match_parent&quot;
+              android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;!-- background背景色; layout_weight尺寸比重 --&gt;
+    &lt;LinearLayout
+        android:background=&quot;#4bf7&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;&gt;
+        &lt;EditText
+            android:layout_weight=&quot;1&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+        &lt;Button
+            android:text=&quot;Go&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;/LinearLayout&gt;
+    &lt;WebView
+        android:layout_weight=&quot;1&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,27 @@
+
+
+<html><head><meta charset="UTF-8"><title>Dev-Cpp出现C++98mode错误
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="dev-cpp-c-98mode-">Dev-Cpp出现C++98mode错误</h1>
+<pre><code class="lang-text">Dev-Cpp出现C++98mode错误的解决办法
+正常 编译的话，系统返回这样的错误信息： range-based-for loops are not allowed in C++98 mode
+新特点从gcc 4.60以后的版本都填加了支持，所以不需要升级到gcc 4.7.0版 也能应用C++11的新特点,而且C++兼容之前的标准。办法是在编译时加上参数 -std=c++0x
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

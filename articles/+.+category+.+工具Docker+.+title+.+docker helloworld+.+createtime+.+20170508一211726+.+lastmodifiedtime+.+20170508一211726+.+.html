@@ -1,0 +1,90 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-helloworld">docker helloworld</h1>
+<p><a href="http://www.docker.org.cn/book/docker/prepare-docker-5.html">prepare-docker</a></p>
+<p><a href="http://www.runoob.com/docker/docker-image-usage.html">docker-image-usage</a></p>
+<hr>
+<h2 id="docker">docker</h2>
+<p>查找镜像</p>
+<pre><code class="lang-bash">docker search tutorial
+docker search httpd
+</code></pre>
+<p>列出本地镜像</p>
+<pre><code class="lang-bash">docker images
+</code></pre>
+<p>下载镜像</p>
+<pre><code class="lang-bash">docker pull learn/tutorial
+docker pull ubuntu:13.10
+</code></pre>
+<p>在镜像中执行命令</p>
+<pre><code class="lang-bash">docker run learn/tutorial echo &quot;hello word&quot;
+</code></pre>
+<hr>
+<h2 id="docker-machine">docker machine</h2>
+<p><a href="https://docs.docker.com/machine/overview/">docker machine</a></p>
+<p>管理员身份进入powershell</p>
+<p>列出docker机器</p>
+<pre><code class="lang-bash">docker-machine ls
+</code></pre>
+<p>手动下载boot2docker到C:\Windows\System32\config\systemprofile.docker\machine\cache\boot2docker.iso</p>
+<p>断网</p>
+<p>创建docker机器</p>
+<pre><code class="lang-bash">docker-machine create --driver hyperv default
+</code></pre>
+<p>获取docker机器的环境变量设置命令</p>
+<pre><code class="lang-bash">docker-machine env default
+docker-machine env --shell powershell default
+</code></pre>
+<p>输出</p>
+<pre><code class="lang-bash">$Env:DOCKER_TLS_VERIFY = &quot;1&quot;
+$Env:DOCKER_HOST = &quot;tcp://[fe80::215:5dff:fe20:1f03]:2376&quot;
+$Env:DOCKER_CERT_PATH = &quot;C:\Windows\system32\config\systemprofile\.docker\machine\machines\default&quot;
+$Env:DOCKER_MACHINE_NAME = &quot;default&quot;
+$Env:COMPOSE_CONVERT_WINDOWS_PATHS = &quot;true&quot;
+# Run this command to configure your shell:
+# &amp; &quot;C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe&quot; env default | Invoke-Expression
+</code></pre>
+<p>可复制这些命令, 直接在powershell中执行</p>
+<pre><code class="lang-bash">$Env:DOCKER_TLS_VERIFY = &quot;1&quot;
+$Env:DOCKER_HOST = &quot;tcp://[fe80::215:5dff:fe20:1f03]:2376&quot;
+$Env:DOCKER_CERT_PATH = &quot;C:\Windows\system32\config\systemprofile\.docker\machine\machines\default&quot;
+$Env:DOCKER_MACHINE_NAME = &quot;default&quot;
+$Env:COMPOSE_CONVERT_WINDOWS_PATHS = &quot;true&quot;
+</code></pre>
+<p>也可以复制最后一行注释掉的代码, 在powershell中执行</p>
+<pre><code class="lang-bash">eval &quot;$(docker-machine env default)&quot;
+docker-machine.exe env default | Invoke-Expression
+</code></pre>
+<p>查看docker状态, 测试docker机器是否可访问</p>
+<pre><code class="lang-bash">docker info
+</code></pre>
+<p>之后使用docker访问docker机器</p>
+<hr>
+<h2 id="-error-checking-tls-connection-host-is-not-running">错误: Error checking TLS connection: Host is not running</h2>
+<p>重启docker机器</p>
+<pre><code class="lang-bash">docker-machine restart default
+</code></pre>
+<p>用管理员进入powershell, 删除并重装docker机器</p>
+<pre><code class="lang-bash">docker-machine rm default
+docker-machine create --driver hyperv default
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

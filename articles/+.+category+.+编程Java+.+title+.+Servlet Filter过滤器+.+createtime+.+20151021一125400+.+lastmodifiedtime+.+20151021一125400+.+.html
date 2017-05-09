@@ -1,0 +1,56 @@
+
+
+<html><head><meta charset="UTF-8"><title>Servlet Filter过滤器
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="servlet-filter-">Servlet Filter过滤器</h1>
+<p>过滤器功能: 修改请求的参数信息, 权限控制, 日志记录, 图像转换, 数据压缩</p>
+<p>右键src, New -&gt; Other -&gt; Web -&gt; filter</p>
+<p>Filter.java:</p>
+<pre><code class="lang-java">public class FilterOne implements Filter {
+    public void init(FilterConfig fConfig) throws ServletException {
+        String param = fConfig.getInitParameter(&quot;param&quot;); // 读取web.xml中的初始参数
+        System.out.println(&quot;param = &quot; + param);
+    }
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println(&quot;FilterOne::doFilter() begin&quot;);
+        chain.doFilter(request, response); // 可控制是否继续向下, 截断网页处理
+        System.out.println(&quot;FilterOne::doFilter() end&quot;);
+    }
+}
+</code></pre>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot; xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot; version=&quot;3.1&quot;&gt;
+  &lt;filter&gt;
+      &lt;filter-name&gt;FilterOne&lt;/filter-name&gt;
+      &lt;filter-class&gt;org.learnjsphelloworld.filter.FilterOne&lt;/filter-class&gt;
+      &lt;init-param&gt;   指定初始化参数
+          &lt;param-name&gt;param&lt;/param-name&gt;
+          &lt;param-value&gt;test param&lt;/param-value&gt;
+      &lt;/init-param&gt;
+  &lt;/filter&gt;
+
+  &lt;filter-mapping&gt;
+      &lt;filter-name&gt;FilterOne&lt;/filter-name&gt;
+      &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+  &lt;/filter-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

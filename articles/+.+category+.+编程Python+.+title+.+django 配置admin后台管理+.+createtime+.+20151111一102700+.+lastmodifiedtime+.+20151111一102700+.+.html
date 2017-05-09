@@ -1,0 +1,88 @@
+
+
+<html><head><meta charset="UTF-8"><title>django 配置admin后台管理
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="django-admin-">django 配置admin后台管理</h1>
+<p>配置admin后台管理:<br>创建一个超级用户(管理员):</p>
+<pre><code class="lang-shell">python manage.py createsuperuser
+</code></pre>
+<p>访问管理后台:<br><a href="http://localhost:8000/admin">http://localhost:8000/admin</a></p>
+<p>配置admin组建, 使Question可以被后台管理:<br>polls/admin.py:</p>
+<pre><code class="lang-Python">admin.site.register(polls.models.Question)
+</code></pre>
+<p>点击表名Question, 进入配置界面</p>
+<p>Question列表中显示的, 就是Question类的<strong>str</strong>方法</p>
+<p>点击&quot;What&#39;s up&quot;, 进入记录配置界面</p>
+<p>自定义配置界面:<br>polls/admin.py:</p>
+<pre><code class="lang-Python">class QuestionAdmin(admin.ModelAdmin):
+    fields = [&#39;pub_date&#39;, &#39;question_text&#39;]
+    admin.site.register(polls.models.Question, QuestionAdmin)
+</code></pre>
+<p>自定义界面, 按不同数据类型分成不同区域:</p>
+<pre><code class="lang-Python">class QuestionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, { &#39;fields&#39;: [&#39;question_text&#39;]}),
+        (&#39;Date information&#39;, {&#39;fields&#39;: [&#39;pub_date&#39;]}),
+    ]
+admin.site.register(polls.models.Question, QuestionAdmin)
+</code></pre>
+<p>自定义界面, 加入html的class属性, 对用不到的区域进行隐藏(collapse):</p>
+<pre><code class="lang-Python">class QuestionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, { &#39;fields&#39;: [&#39;question_text&#39;]}),
+        (&#39;Date information&#39;, {&#39;fields&#39;: [&#39;pub_date&#39;], &#39;classes&#39;: [&#39;collapse&#39;]}),
+    ]
+admin.site.register(polls.models.Question, QuestionAdmin)
+</code></pre>
+<p>加入Choice的管理到admin后台管理:</p>
+<pre><code class="lang-Python">admin.site.register(polls.models.Choice)
+</code></pre>
+<p>Choice添加页面中, Question项会使用html中select来选择一个, 因为Choice使用了Question外键<br><a href="http://localhost:8000/admin/polls/choice/add/">http://localhost:8000/admin/polls/choice/add/</a></p>
+<p>将Choice的添加集成到Question的添加中:</p>
+<pre><code class="lang-Python">class ChoiceInline(admin.StackedInline):
+    model = polls.models.Choice
+    extra = 3
+class QuestionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, { &#39;fields&#39;: [&#39;question_text&#39;]}),
+        (&#39;Date information&#39;, {&#39;fields&#39;: [&#39;pub_date&#39;], &#39;classes&#39;: [&#39;collapse&#39;]}),
+    ]
+    inlines = [ChoiceInline]
+admin.site.register(polls.models.Question, QuestionAdmin)
+</code></pre>
+<p>通过使Choice继承自admin.TabularInline, 实现每个choice呈现于表格内, 节省网页显示空间:</p>
+<pre><code class="lang-Python">class ChoiceInline(admin.TabularInline): ...
+</code></pre>
+<p>在记录管理页面, 改变记录显示方式,  替换默认的str调用, 变成多列显示:</p>
+<pre><code class="lang-Python">class QuestionAdmin(admin.ModelAdmin):
+    # ...
+    list_display = (&#39;question_text&#39;, &#39;pub_date&#39;)
+</code></pre>
+<p>在记录管理页面, 添加过滤功能:</p>
+<pre><code class="lang-Python">class QuestionAdmin(admin.ModelAdmin):
+    # ...
+    list_filter = [&#39;pub_date&#39;]
+</code></pre>
+<p>在记录管理页面, 添加查找功能:</p>
+<pre><code class="lang-Python">class QuestionAdmin(admin.ModelAdmin):
+    # ...
+    search_fields = [&#39;question_text&#39;]
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

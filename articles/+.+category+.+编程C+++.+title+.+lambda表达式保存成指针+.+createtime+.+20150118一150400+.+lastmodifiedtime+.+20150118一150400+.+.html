@@ -1,0 +1,28 @@
+
+
+<html><head><meta charset="UTF-8"><title>lambda表达式保存成指针
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="lambda-">lambda表达式保存成指针</h1>
+<pre><code class="lang-C++">QMap&lt;int, void (*)(int) &gt; map1;
+QMap&lt;int, void (A::*)(int) &gt; map2;
+map1[0] = [](int i) { int j = i; };  正确，因为没有this作为可见的外部变量，这个lambda函数当作非成员函数处理，它的函数指针类型就是普通的指针
+map2[0] = [this](int i) { };  错误，因为由this作为可见的外部变量，lambda函数成为了成员函数，此时没有固定的函数指针类型，所以无法保存指针。
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

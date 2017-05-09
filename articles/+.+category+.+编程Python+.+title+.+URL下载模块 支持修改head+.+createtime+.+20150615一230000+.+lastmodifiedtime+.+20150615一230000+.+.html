@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>URL下载模块 支持修改head
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="url-head">URL下载模块 支持修改head</h1>
+<p>用Request类实现更灵活的web请求:</p>
+<pre><code class="lang-Python">request = urllib2.Request(&#39;http://www.baidu.com&#39;) # 创建一个Request类, 构造函数参数分别为url,[data,headers]
+request.add_header(&#39;Referer&#39;, &#39;http://www.baidu.com&#39;) # 添加其它header
+request.add_data(urllib.urlencode({&#39;key&#39;:&#39;123&#39;, &#39;pass&#39;:&#39;abc&#39;})) # 添加其它附加数据
+webfile = urllib2.urlopen(request) # 使用Request打开URL
+webdata = webfile.read() # 读取内容
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

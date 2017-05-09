@@ -1,0 +1,46 @@
+
+
+<html><head><meta charset="UTF-8"><title>Sql Server 2005   ASP下载安装
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="sql-server-2005-asp-">Sql Server 2005   ASP下载安装</h1>
+<p>SQLServer 2005 Express 下载地址:</p>
+<p><a href="http://c1.cr173.com/soft1/NetFx20SP2_x86.zip">.NetFx2.0</a></p>
+<p><a href="http://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x86.msi">msxml6</a></p>
+<p><a href="http://download.microsoft.com/download/5/4/F/54F476B4-2348-4D4A-B705-0C8C9AB2A14A/SQLServer2005_SSMSEE.msi">SQLServer2005 Client</a></p>
+<p><a href="http://dd.jb51.net:81/201102/tools/SQLEXPR32_CHS_jb51.rar">SQLServer2005 Native</a></p>
+<p>ASP安装：</p>
+<pre><code class="lang-text">控制面板，程序和功能，打开或关闭Windows功能，Internet信息服务，子类全部打勾。
+</code></pre>
+<p>IIS下ASP配置：</p>
+<pre><code class="lang-text">控制面板 IIS管理器
+ASP，启用父路径-&gt;True
+</code></pre>
+<p>Ms Sql 2005配置:</p>
+<pre><code class="lang-text">开始菜单-&gt;Sql Server Configuration Manager
+Server 网络配置，协议，TCP/IP-&gt;启用
+右键TCP/IP,属性,端口设为1433。
+开始菜单-&gt;SQL Server Management Studio Express
+以Windows认证方式登陆
+右键localhost,属性，安全性
+SQL和windows方式。
+还是Managerment Studio，Security，Logins，sa
+右键属性，Status，设置允许登陆。
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

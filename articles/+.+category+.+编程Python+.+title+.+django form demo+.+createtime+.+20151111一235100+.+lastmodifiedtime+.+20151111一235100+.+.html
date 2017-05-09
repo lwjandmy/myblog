@@ -1,0 +1,64 @@
+
+
+<html><head><meta charset="UTF-8"><title>django form demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="django-form-demo">django form demo</h1>
+<p>polls/templates/polls/detail.html:  一个form表单, 提交到vote表单</p>
+<pre><code class="lang-Html">&lt;h1&gt;{{ question.question_text }}&lt;/h1&gt;
+{% if error_message %}
+    &lt;p&gt;&lt;strong&gt;{{ error_message }}&lt;/strong&gt;&lt;/p&gt;
+{% endif %}
+&lt;form action=&quot;{% url &#39;polls:vote&#39; question.id %}&quot; method=&quot;post&quot;&gt;
+    {% csrf_token %}  Cross-site request forgery跨站请求伪造 这里能避免外部站点的访问, 但其实也可以伪造的, 只要获取下上一个页面就行了
+    {% for choice in question.choice_set.all %}
+        &lt;input type=&quot;radio&quot; name=&quot;choice&quot;
+               id=&quot;choice{{ forloop.counter }}&quot; value=&quot;{{ choice.id }}&quot; /&gt;  forloop.counter指明for循环了多少次
+        &lt;label for=&quot;choice{{ forloop.counter }}&quot;&gt;{{ choice.choice_text }}&lt;/label&gt;
+    {% endfor %}
+    &lt;input type=&quot;submit&quot; value=&quot;Vote&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+<p>polls/urls.py:  配置vote的url, vote用于接收表单</p>
+<pre><code class="lang-Python">url(r&#39;^(?P&lt;question_id&gt;[0-9]+)/vote/$&#39;, views.vote, name=&#39;vote&#39;),
+</code></pre>
+<p>polls/views.py:  编写vote, 接收表单数据; 表单处理完成后, 跳到results, 若表单处理异常, 回到detail</p>
+<pre><code class="lang-Python">def vote(request, question_id):
+    p = get_object_or_404(polls.models.Question, pk = question_id)
+    try:
+        selected_choice = p.choice_set.get(pk = request.POST[&#39;choice&#39;])  request.POST为post发送的数据, 如果键不在会抛出KeyError异常
+        selected_choice.votes += 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse(&#39;polls:results&#39;, args = (p.id,)))  发送一个redirection页面跳转; reverse是类似模板中的url标记, 用来通过url的name获取url地址, 避免硬编码, 不要和url函数混了, url函数是生成urlpattern的
+    except (KeyError, polls.models.Choice.DoesNotExist):
+        return render(request, &#39;polls/detail.html&#39;, { &#39;question&#39;: p, &#39;error_message&#39;: &quot;You didn&#39;t select a choice.&quot; })
+def results(request, question_id):  显示投票结果
+    question = get_object_or_404(polls.models.Question, pk = question_id)
+    return render(request, &#39;polls/results.html&#39;, { &#39;question&#39;: question})
+</code></pre>
+<p>polls/templates/polls/results.html:  投票结果页面模板</p>
+<pre><code class="lang-Html">&lt;h1&gt;{{ question.question_text }}&lt;/h1&gt;
+&lt;ul&gt;
+    {% for choice in question.choice_set.all %}
+        &lt;li&gt;{{ choice.choice_text }} -- {{  choice.votes }} vote{{ choice.votes|pluralize }}&lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+&lt;a href=&quot;{% url &#39;polls:detail&#39; question.id %}&quot;&gt;Vote again?&lt;/a&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

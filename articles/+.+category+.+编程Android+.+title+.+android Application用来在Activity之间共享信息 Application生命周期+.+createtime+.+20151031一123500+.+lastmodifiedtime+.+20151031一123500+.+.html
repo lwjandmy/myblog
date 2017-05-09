@@ -1,0 +1,159 @@
+
+
+<html><head><meta charset="UTF-8"><title>android Application用来在Activity之间共享信息 Application生命周期
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-application-activity-application-">android Application用来在Activity之间共享信息 Application生命周期</h1>
+<pre><code class="lang-text">AndroidManifest.xml,配置应用程序类,设置多个启动图标Activity
+MainActivity:   activity_main.xml  MainActivity.java   一个activity, 用来和另一个activity共享数据
+Activity2:   activity2.xml  Activity2.java    一个activity, 用来和另一个activity共享数据
+Application:   App.java   应用程序类, 通过在AndroidManifest.xml配置android:name=&quot;.App&quot;, 来变成应用程序类, 可存放共享数据
+
+Application生命周期:  Application启动时, 会调用onCreate(), 但即使所有Activity都结束, Application也不会结束, 所以保存的共享信息, 还可以在Application启动时继续获取. 结束Application的方法是, 安卓HOME长按, 清除最近运行的程序
+</code></pre>
+<p>AndroidManifest.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.learnandroid.learncontext&quot; &gt;
+    &lt;!--  这里android:name=&quot;.App&quot; 指定了Application的类是App, 这样App就是应用程序类, 可在App类中存放信息, 供Activity之间共享信息 --&gt;
+    &lt;application
+    android:name=&quot;.App&quot;   
+        android:allowBackup=&quot;true&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/AppTheme&quot; &gt;
+        &lt;activity
+            android:name=&quot;.MainActivity&quot;
+            android:label=&quot;@string/app_name&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+        &lt;!-- android:label指定了启动图标的标签名 --&gt;
+        &lt;activity
+            android:name=&quot;.Activity2&quot;
+            android:label=&quot;Main2&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;!-- 加上以下两行, 就可以有第二个启动图标 --&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>activity_main.xml:</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;This is MainActivity&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;EditText
+        android:id=&quot;@+id/editText&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btnSaveData&quot;
+        android:text=&quot;Save&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity.java:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    private EditText editText;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        editText = (EditText) findViewById(R.id.editText);
+        App app = (App) getApplicationContext();
+        Toast.makeText(MainActivity.this, &quot;读取数据: &quot; + app.getTextData(), Toast.LENGTH_LONG).show();
+        findViewById(R.id.btnSaveData).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                App app = (App) getApplicationContext();
+                app.setTextData(editText.getText().toString());
+                Toast.makeText(MainActivity.this, &quot;保存数据: &quot; + app.getTextData(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+}
+</code></pre>
+<p>activity2.xml:</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;This is Activity2&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;EditText
+        android:id=&quot;@+id/editText&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btnSaveData&quot;
+        android:text=&quot;Save&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>Activity2.java:</p>
+<pre><code class="lang-java">public class Activity2 extends Activity
+{
+    private EditText editText;
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity2);
+        editText = (EditText) findViewById(R.id.editText);
+        App app = (App) getApplicationContext();
+        Toast.makeText(Activity2.this, &quot;读取数据: &quot; + app.getTextData(), Toast.LENGTH_LONG).show();
+        findViewById(R.id.btnSaveData).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                App app = (App) getApplicationContext();
+                app.setTextData(editText.getText().toString());
+                Toast.makeText(Activity2.this, &quot;保存数据: &quot; + app.getTextData(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+}
+</code></pre>
+<p>App.java:   存放共享数据</p>
+<pre><code class="lang-java">public class App extends Application
+{
+    private String textData = &quot;defalut&quot;;
+    public String getTextData() { return textData; }
+    public void setTextData(String textData) { this.textData = textData; }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

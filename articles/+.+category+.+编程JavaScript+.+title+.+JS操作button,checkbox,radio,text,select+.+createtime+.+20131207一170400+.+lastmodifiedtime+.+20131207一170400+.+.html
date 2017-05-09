@@ -1,0 +1,72 @@
+
+
+<html><head><meta charset="UTF-8"><title>JS操作button,checkbox,radio,text,select
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-button-checkbox-radio-text-select">JS操作button,checkbox,radio,text,select</h1>
+<p>被操作的界面:</p>
+<pre><code class="lang-html">&lt;html&gt;
+&lt;head&gt;
+&lt;script&gt;
+function OnBtnClick(){alert(&quot;OnBtnClick&quot;);}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;input type=&quot;button&quot; value=&quot;Btn&quot; onclick=&quot;OnBtnClick()&quot;&gt;&lt;/input&gt;
+&lt;input type=&quot;checkbox&quot; &gt;&lt;/input&gt;
+&lt;input type=&quot;file&quot; &gt;&lt;/input&gt;
+&lt;input type=&quot;radio&quot; &gt;&lt;/input&gt;
+&lt;input type=&quot;text&quot; value=&quot;text&quot; &gt;&lt;/input&gt;
+&lt;select&gt;
+&lt;option value =&quot;1&quot;&gt;1&lt;/option&gt;
+&lt;option value =&quot;2&quot;&gt;2&lt;/option&gt;
+&lt;option value=&quot;3&quot;&gt;3&lt;/option&gt;
+&lt;option value=&quot;4&quot;&gt;4&lt;/option&gt;
+&lt;/select&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>操作的JS脚本:</p>
+<pre><code class="lang-js">var temp = document.getElementsByTagName(&quot;input&quot;);
+var button = temp[0];
+var checkbox = temp[1];
+var file = temp[2];
+var radio = temp[3];
+var text = temp[4];
+var select = document.getElementsByTagName(&quot;select&quot;)[0];
+
+// 按下button
+button.click();
+
+// 选中checkbox
+checkbox.checked = 1;
+
+// 打开文件选择对话框
+//file.click();
+
+// 选中radio
+radio.checked = 1;
+
+// 设置text文本
+text.value = &quot;ChangeText&quot;;
+
+// 选择select,2
+select.options[1].selected = 1;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>for else 语句
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="for-else-">for else 语句</h1>
+<p>当for全部循环后退出(非执行break导致的中途循环退出), 则进入else语句.<br>好处是不必像C中通过if i == end()来判断循环退出情况了.</p>
+<pre><code class="lang-Python">lst = [ &#39;data1&#39;]
+
+def fun():
+    data_be_finding = None
+    for v in lst:
+        if v == &#39;data1&#39;:
+            data_be_finding = v
+            print(&#39;Find &#39; + finding )
+            break
+    else:
+        print(&#39;Not found.&#39;)
+        return # 直接返回, 不向下执行
+
+    # 处理data_be_finding:
+    print(&#39;dealing data_be_finding...&#39; + data_be_finding)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

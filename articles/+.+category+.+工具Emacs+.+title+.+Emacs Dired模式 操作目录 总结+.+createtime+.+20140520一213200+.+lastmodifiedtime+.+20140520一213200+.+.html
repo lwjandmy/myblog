@@ -1,0 +1,64 @@
+
+
+<html><head><meta charset="UTF-8"><title>Emacs Dired模式 操作目录 总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="emacs-dired-">Emacs Dired模式 操作目录 总结</h1>
+<pre><code class="lang-text">Emacs Dired模式 操作目录 总结
+
+s dired-sort-toggle-or-edit 切换到按时间/文件名排序
+
+v dired-view-file 查看文件,无法修改
+q View-quit 退出查看模式
+
+d dired-flag-file-deletion 设置删除标记
+D dired-do-delete 直接删除文件
+
+u dired-unmark 取消标记
+x dired-do-flagged-delete 删除有删除标记的文件
+
+# 批量标记auto-save产生的#XXX#文件
+~ 批量标记backup files,其名字为XXX~
+
+C 复制当前的文件
+R 重命名
+
+m dired-mark 设置标记
+%l %u 转换标记的文件名为全小写/大写
+! 以文件内容为输入执行shell命令
+M-Del dired-unmark-all-files 移除所有文件的标记
+t dired-toggle-marks 使含标记的文件去掉标记,无标记的加上标记
+** dired-mark-executables 标记所有可执行文件
+*/ dired-mark-directories 标记所有目录
+*@ dired-mark-symlinks 标记所有symbolic links
+%m dired-mark-files-regexp 用正则表达式来匹配文件
+%g dired-mark-files-containing-regexp 用正则表达式来匹配文件内容
+
++ dired-create-directory 创建文件夹
+R dired-do-rename 当选中多个文件时,移动这些文件
+Q dired-do-query-replace-regexp 对选中的所有文件内容执行替换
+A dired-do-search 对选中的所有文件内容执行查找
+
+^ dired-up-directory 来到父目录
+&lt; dired-prev-dirline 来到前一个目录
+&gt; dired-next-dirline 来到下一个目录
+
+i dired-maybe-insert-subdir 插入此文件夹到Dired中一同编辑
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

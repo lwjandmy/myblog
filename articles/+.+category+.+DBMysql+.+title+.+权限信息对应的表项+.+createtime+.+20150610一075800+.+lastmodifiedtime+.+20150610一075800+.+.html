@@ -1,0 +1,66 @@
+
+
+<html><head><meta charset="UTF-8"><title>权限信息对应的表项
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">权限信息对应的表项</h1>
+<p>user, host, db, tables_priv, columns_priv 共5个表, 统称grant</p>
+<table>
+<thead>
+<tr>
+<th>表名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>user表</td>
+<td>确定一个用户是否的权连接MySQL</td>
+</tr>
+<tr>
+<td>db表</td>
+<td>用户可访问哪些数据库</td>
+</tr>
+<tr>
+<td>host表</td>
+<td>从多个主机连接的用户可访问哪些数据库</td>
+</tr>
+<tr>
+<td>tables_priv(privilege)</td>
+<td>表授予的权限</td>
+</tr>
+<tr>
+<td>columns_priv</td>
+<td>列授予的权限</td>
+</tr>
+</tbody>
+</table>
+<p>访问控制流程:</p>
+<ol>
+<li>连接验证:通过user表,判断用户是否有权连接数据库</li>
+<li>请求验证:判断是否有权执行该请求,首先通过全局权限user表,<ol>
+<li>若无权,则通过db表和host表,</li>
+<li>若无权,则通过tables_priv表,</li>
+<li>若无权,则通过columns_priv表,</li>
+<li>若无权,则拒约.</li>
+</ol>
+</li>
+</ol>
+<p>更新权限:<br>调用grant和revoke时,系统自动记录并应用权限<br>手动修改grant表时,flush privileges;</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

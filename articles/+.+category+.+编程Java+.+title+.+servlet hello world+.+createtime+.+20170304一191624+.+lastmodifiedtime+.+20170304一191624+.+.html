@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>servlet hello world
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="servlet-hello-world">servlet hello world</h1>
+<pre><code class="lang-xml">    &lt;servlet&gt;
+        &lt;servlet-name&gt;test-servlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;com.TestServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;test-servlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/TestServlet&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+</code></pre>
+<pre><code class="lang-java">public class TestServlet extends HttpServlet {
+    // ...
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,61 @@
+
+
+<html><head><meta charset="UTF-8"><title>IPConnectTest模块 使用异步asyncore 测试ip&port的connect是否成功
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ipconnecttest-asyncore-ip-port-connect-">IPConnectTest模块 使用异步asyncore 测试ip&amp;port的connect是否成功</h1>
+<pre><code class="lang-Python">import asyncore
+import socket
+
+
+class IPConnectTest(asyncore.dispatcher):
+    # @param callback_success(sock_id, hostname, port)
+    # @param callback_fail(sock_id, hostname, port, error_id)
+    def __init__(self, hostname, port, callback_success, callback_fail):
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connect((hostname, port))
+        self.hostname = hostname
+        self.port = port
+        self.callback_success = callback_success
+        self.callback_fail = callback_fail
+
+    def handle_connect(self):
+        self.callback_success(self._fileno, self.hostname, self.port)
+        self.close()
+
+    def handle_close(self):
+        self.callback_fail(self._fileno, self.hostname, self.port, self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR))
+        self.close()
+
+
+if __name__ == &#39;__main__&#39;:
+    def callback_success(sock_id, hostname, port):
+        print(&#39;success sock_id={0}, hostname={1}, port={2}&#39;.format(sock_id, hostname, port))
+
+    def callback_fail(sock_id, hostname, port, error_id):
+        print(&#39;fail sock_id={0}, hostname={1}, port={2}, error_id={3}&#39;.format(sock_id, hostname, port, error_id))
+
+    print(&#39;Test for class Scan&#39;)
+    IPConnectTest(&#39;www.google.com&#39;, 80, callback_success, callback_fail)
+    IPConnectTest(&#39;www.baidu.com&#39;, 80, callback_success, callback_fail)
+    IPConnectTest(&#39;8.8.8.8&#39;, 53, callback_success, callback_fail)
+    asyncore.loop()
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

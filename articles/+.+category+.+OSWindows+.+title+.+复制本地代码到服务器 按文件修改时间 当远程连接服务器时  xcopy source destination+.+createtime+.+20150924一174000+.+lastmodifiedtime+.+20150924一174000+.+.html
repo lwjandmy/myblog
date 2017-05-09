@@ -1,0 +1,52 @@
+
+
+<html><head><meta charset="UTF-8"><title>复制本地代码到服务器 按文件修改时间 当远程连接服务器时  xcopy source destination
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-xcopy-source-destination">复制本地代码到服务器 按文件修改时间 当远程连接服务器时  xcopy source destination</h1>
+<pre><code class="lang-text">参数说明：
+/Y  默认选y，确认覆盖旧文件
+/D 仅复制较新文件
+/E 循环复制子目录。包括空目录
+/S 循环复制子目录。不包括空目录
+/T 只复制文件夹，不复制文件。用来创建目录结构
+</code></pre>
+<p>本地到服务器，我写了新代码:</p>
+<p>me2srv.bat:</p>
+<pre><code class="lang-bash">@echo off
+
+echo 用于更新本地代码到服务器，任意键继续，或关闭窗口停止。
+pause
+
+xcopy \\tsclient\D\wamp\www\learn C:\WWW\protect\learn /E /D /Y
+
+pause
+</code></pre>
+<p>服务器到本地，别人在服务器上放了新代码，我下载下来：</p>
+<p>srv2me.bat:</p>
+<pre><code class="lang-bash">@echo off
+
+echo 用于更新服务器代码到本地，任意键继续，或关闭窗口停止。
+pause
+
+xcopy C:\WWW\protect\learn \\tsclient\D\wamp\www\learn /E /D /Y
+
+pause
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

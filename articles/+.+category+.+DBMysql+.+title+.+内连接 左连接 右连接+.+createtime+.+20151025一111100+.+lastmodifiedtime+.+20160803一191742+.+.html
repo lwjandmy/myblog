@@ -1,0 +1,101 @@
+
+
+<html><head><meta charset="UTF-8"><title>内连接 左连接 右连接
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">内连接 左连接 右连接</h1>
+<h2 id="-">创建测试数据库</h2>
+<pre><code class="lang-sql">create database test_innerjoin_leftjoin_rightjoin;
+use test_innerjoin_leftjoin_rightjoin;
+</code></pre>
+<h2 id="-">用户表, 记录了用户名</h2>
+<pre><code class="lang-sql">create table user(
+id int primary key,
+username char(20)
+);
+</code></pre>
+<h2 id="-id-">两个用户, id和用户名相同, 便于查看</h2>
+<pre><code class="lang-sql">insert into user values(1, &quot;usr1&quot;);
+insert into user values(2, &quot;usr2&quot;);
+</code></pre>
+<h2 id="-">读者表, 记录了哪个用户, 读了哪本书</h2>
+<pre><code class="lang-sql">create table reader(
+user_id int,
+bookname char(20)
+);
+</code></pre>
+<h2 id="-user-id-2-user-id-3-">两个读者, user id为2的读者和用户表关联, user id为3的读者无关. 用于测试</h2>
+<pre><code class="lang-sql">insert into reader values(2, &quot;book2&quot;);
+insert into reader values(3, &quot;book3&quot;);
+</code></pre>
+<h2 id="-">内连接联合查找, 仅返回两个表同时包含的记录</h2>
+<pre><code class="lang-sql">select user.username, reader.bookname
+from user
+inner join reader
+on user.id = reader.user_id;
+</code></pre>
+<pre><code class="lang-text">RETURN:
+username    bookname
+usr2        book2
+</code></pre>
+<h2 id="-null-">左连接联合查找, 会返回左表所有记录, 右表若无匹配用null填充</h2>
+<pre><code class="lang-mysql">select user.username, reader.bookname
+from user
+left join reader
+on user.id = reader.user_id;
+</code></pre>
+<pre><code class="lang-text">RETURN:
+username    bookname
+usr2        book2
+usr1        NULL
+</code></pre>
+<h2 id="-null-">右连接联合查找, 会返回右表所有记录, 左表若无匹配用null填充</h2>
+<pre><code class="lang-mysql">select user.username, reader.bookname
+from user
+right join reader
+on user.id = reader.user_id;
+</code></pre>
+<pre><code class="lang-text">RETURN:
+username    bookname
+usr2        book2
+NULL        book3
+</code></pre>
+<hr>
+<h1 id="select-">select 连接</h1>
+<h2 id="-where-">内连接, 只返回满足where条件的记录</h2>
+<pre><code class="lang-sql">select * from a b;
+select * from a join b;
+select * from a inner join b;
+</code></pre>
+<h2 id="-a-b-">左连接, 返回全部左侧(a)表的记录, 若右侧(b)表无记录, 用空代替</h2>
+<pre><code class="lang-sql">select * from a left join b;
+select * from a left outer join b;
+</code></pre>
+<h2 id="-a-b-">左连接, 返回全部右侧(a)表的记录, 若左侧(b)表无记录, 用空代替</h2>
+<pre><code class="lang-sql">select * from a right join b;
+select * from a right outer join b;
+</code></pre>
+<h2 id="-a-b-">全连接, 返回a表和b表全部记录, 若无匹配记录, 用空代替</h2>
+<pre><code class="lang-sql">select * from a full join b;
+select * from a full outer join b;
+</code></pre>
+<h2 id="-a-b-a-">交叉连接, 返回笛卡尔积, 即一个a表的记录拼接b表所有记录, 并对a表所有记录都进行处理</h2>
+<pre><code class="lang-sql">select * from a cross join b;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

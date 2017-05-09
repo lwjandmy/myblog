@@ -1,0 +1,49 @@
+
+
+<html><head><meta charset="UTF-8"><title>uwsgi demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="uwsgi-demo">uwsgi demo</h1>
+<pre><code class="lang-shell">sudo pip install uwsgi
+</code></pre>
+<p>建立测试文件foobar.py:</p>
+<pre><code class="lang-Python">def application(env, start_response):
+    start_response(&#39;200 ok&#39;, [(&#39;Content-Type&#39;, &#39;text/html&#39;)])
+    return [b&#39;Hello World&#39;]
+</code></pre>
+<pre><code class="lang-shell">uwsgi --http 0.0.0.0:9090 --wsgi-file foobar.py --master --processes 1 --threads 2 --stats 127.0.0.1:9191
+</code></pre>
+<p>查看uwsgi状态: uwsgitop 127.0.0.1:9191</p>
+<pre><code class="lang-shell">ab -c 100 -n 500 http://192.168.137.102:9191/  95 req per sec
+</code></pre>
+<p>搭配nginx:<br>配置nginx.conf:</p>
+<pre><code class="lang-conf">upstream uwsgi {
+    server 10.0.2.15:3031;
+}
+server {
+    location / {
+        include uwsgi_params;
+        uwsgi_pass uwsgi;
+    }
+}
+</code></pre>
+<pre><code class="lang-shell">sudo systemctl reload nginx
+uwsgi --socket 0.0.0.0:3031 --wsgi-file foobar.py  --stats 127.0.0.1:9191&amp;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,80 @@
+
+
+<html><head><meta charset="UTF-8"><title>jar打包发布
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jar-">jar打包发布</h1>
+<h2 id="-">工程目录结构:</h2>
+<pre><code class="lang-text">.
+|-- Manifest.txt        包配置文件
+|-- lib        依赖库文件
+|   |-- commons-io.jar
+`-- org        源码
+    `-- test
+        `-- HelloWorld.java
+</code></pre>
+<hr>
+<h2 id="-java-class-">编译java到class文件</h2>
+<pre><code class="lang-bash">javac -d classes/ -classpath lib/spring-webmvc.jar:lib/commons-io.jar org/test/HelloWorld.java
+</code></pre>
+<p>说明:</p>
+<ul>
+<li>-d 指定class文件输出路径, 方便归类</li>
+<li>-classpath 指定外部依赖库路径</li>
+</ul>
+<hr>
+<h2 id="-class">执行class</h2>
+<pre><code class="lang-bash">java org.test.HelloWorld
+</code></pre>
+<p>注意:</p>
+<ul>
+<li>java执行的是一个类, 而不是一个class文件, 后跟类的路径org.test.HelloWorld.</li>
+</ul>
+<hr>
+<h2 id="-jar-http-docs-oracle-com-javase-tutorial-deployment-jar-modman-html-">工程打包jar <a href="http://docs.oracle.com/javase/tutorial/deployment/jar/modman.html">转</a></h2>
+<pre><code class="lang-bash">jar cfm test.jar Manifest.txt -C classes/ .
+</code></pre>
+<p>说明:</p>
+<ul>
+<li>参数类似tar的参数</li>
+<li>m表示后面跟一个Manifest文件</li>
+<li>-C指明class文件所在路径</li>
+</ul>
+<p>Manifest.txt内容 <a href="http://docs.oracle.com/javase/tutorial/deployment/jar/appman.html">Main-Class</a> <a href="http://docs.oracle.com/javase/tutorial/deployment/jar/downman.html">Class-Path</a>:</p>
+<pre><code class="lang-manifest">Main-Class: org.test.HelloWorld        指定主类
+Class-Path: lib/spring-webmvc.jar lib/commons-io.jar        指定依赖类路径
+</code></pre>
+<p>注意:</p>
+<ul>
+<li>Manifest.txt最后一行为空行</li>
+</ul>
+<hr>
+<h2 id="-jar">执行jar</h2>
+<pre><code>java -jar test.jar
+</code></pre><p>注意:</p>
+<ul>
+<li>lib文件夹不能打包到jar中, 否则执行jar时提示找不到类.</li>
+</ul>
+<hr>
+<h2 id="-">程序最终发布时, 目录结构如下:</h2>
+<pre><code class="lang-text">程序名
+|-- lib        (文件夹, 包含依赖库)
+`-- 程序名.jar        (程序)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

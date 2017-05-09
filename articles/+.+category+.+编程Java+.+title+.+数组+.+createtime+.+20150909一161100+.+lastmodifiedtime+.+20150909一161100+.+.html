@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>数组
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">数组</h1>
+<p>声明整形数组</p>
+<pre><code class="lang-java">int[] a;
+</code></pre>
+<p>创建数组</p>
+<pre><code class="lang-java">int[] a = new int[100];
+int[] a = { 2, 3, 5, 7, 11, 13 };   创建并初始化
+int[] a = new int[] { 1, 2, 3 };
+</code></pre>
+<p>访问数组</p>
+<pre><code class="lang-java">a[0] = 123;
+</code></pre>
+<p>遍历数组</p>
+<pre><code class="lang-java">for (int element : a)
+    System.out.println(element);
+for (int i = 0; i &lt; a.length; ++i)
+    System.out.println(a[i]);
+</code></pre>
+<p>数组拷贝</p>
+<pre><code class="lang-java">int[] a = new int[10];
+int[] b = a; // a和b指向同一个数组
+int[] c = Arrays.copyOf(a, a.length); // 从a拷贝出新数组，赋给c。a和c指向不同数组
+</code></pre>
+<p>数组排序</p>
+<pre><code class="lang-java">int[] a = new int[10];
+Arrays.sort(a); // 快速排序算法
+</code></pre>
+<p>多维数组的遍历</p>
+<pre><code class="lang-java">int aa[][] = new aa[10][10];
+for (double[] row : aa)
+    for (double value : row)
+        // double ....
+</code></pre>
+<p>数组调试</p>
+<pre><code class="lang-java">System.out.println(Arrays.toString(a));
+System.out.println(Arrays.deepToString(aa));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

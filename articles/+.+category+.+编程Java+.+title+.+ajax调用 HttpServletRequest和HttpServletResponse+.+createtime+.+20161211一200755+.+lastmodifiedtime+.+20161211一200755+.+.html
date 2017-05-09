@@ -1,0 +1,47 @@
+
+
+<html><head><meta charset="UTF-8"><title>ajax调用 HttpServletRequest和HttpServletResponse
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ajax-httpservletrequest-httpservletresponse">ajax调用 HttpServletRequest和HttpServletResponse</h1>
+<pre><code class="lang-js">$.post(&quot;test.do&quot;,
+    {
+        operAtt: &quot;checkJobExist&quot;,
+        jobName: &quot;jobName&quot;,
+    },
+    function(data, status){
+        alert(&quot;Data: &quot; + data + &quot;\nStatus: &quot; + status);
+    });
+</code></pre>
+<pre><code class="lang-java">public ActionForward checkJobExist(ActionMapping mapping, ActionForm form,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
+
+    String jobName = request.getParameter(&quot;jobName&quot;);
+
+    ServletOutputStream outputStream = response.getOutputStream();
+    OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+    writer.append(&quot;hello ajax&quot;);
+    writer.close();
+    outputStream.close();
+
+    return null;
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
