@@ -12,6 +12,11 @@
 <p><a href="http://www.docker.org.cn/book/docker/prepare-docker-5.html">prepare-docker</a></p>
 <p><a href="http://www.runoob.com/docker/docker-image-usage.html">docker-image-usage</a></p>
 <hr>
+<h2 id="-">镜像与容器</h2>
+<p>镜像, 一个只读的文件</p>
+<p>容器, 是从某镜像为基础创建的运行实例, 运行实例不会修改镜像数据, 修改操作会保存在镜像之上的可写层, 可写层最终会变成镜像, 变为只读.</p>
+<p><img src="pictures/cf005ad693f3a8cad41556ef3145529016a5a1f6.png" alt=""></p>
+<hr>
 <p>查找镜像</p>
 <pre><code class="lang-bash">docker search tutorial
 docker search httpd
