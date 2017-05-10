@@ -17,35 +17,107 @@
 <p>容器, 是从某镜像为基础创建的运行实例, 运行实例不会修改镜像数据, 修改操作会保存在镜像之上的可写层, 可写层最终会变成镜像, 变为只读.</p>
 <p><img src="pictures/cf005ad693f3a8cad41556ef3145529016a5a1f6.png" alt=""></p>
 <hr>
-<p>查找镜像</p>
+<h2 id="-">镜像</h2>
+<ol>
+<li><p>查找镜像</p>
 <pre><code class="lang-bash">docker search tutorial
 docker search httpd
 </code></pre>
-<p>列出本地镜像</p>
+</li>
+<li><p>下载镜像</p>
+<pre><code class="lang-bash">docker pull ubuntu:13.10
+</code></pre>
+</li>
+<li><p>查看本地镜像</p>
 <pre><code class="lang-bash">docker images
 </code></pre>
-<p>下载镜像</p>
-<pre><code class="lang-bash">docker pull learn/tutorial
-docker pull ubuntu:13.10
+</li>
+<li><p>创建镜像</p>
+<ol>
+<li><p>基于容器创建镜像</p>
+<pre><code class="lang-bash">docker run ubuntu:13.10 touch test.txt # 在镜像上创建test.txt
+docker ps -a # 查看创建test.txt后的容器id, fc7b8511c294
+docker commit -m &#39;Add test.txt file&#39; fc7b8511c294 test_repo:test_tag # 用容器id fc7b8511c294创建新镜像
+docker images # 查看创建的新镜像
 </code></pre>
-<p>在镜像中执行命令</p>
-<pre><code class="lang-bash">docker run learn/tutorial echo &quot;hello word&quot;
+</li>
+<li><p>基于本地模板创建镜像</p>
+<pre><code class="lang-bash">cat ubuntu.tar.gz | docker import - test_repo:test_tag # 以ubuntu.tar.gz为模板创建镜像
+docker images # 查看创建的新镜像
 </code></pre>
-<p>查看镜像状态</p>
-<pre><code class="lang-bash">docker ps
+</li>
+<li><p>基于Dockerfile创建镜像</p>
+<pre><code class="lang-dockerfile"># 指定基于什么基础镜像
+FROM ubuntu:13.10
+
+# 维护者信息
+MAINTAINER user user@email.com
+
+# 指定环境变量
+ENV VERSION 1.2.3
+
+# 指定工作路径
+WORKDIR /tmp
+
+# 镜像内执行的命令, 每条命令执行后将容器commit为新镜像, 后续命令以新镜像为基础镜像
+RUN cat /
+RUN echo &#39;hello Dockerfile&#39;
+
+# 告诉Docker服务器容器暴露的端口号
+EXPOSE 22
+
+# 容器启动时执行的命令, 每个Dockerfile只能有一个CMD
+CMD [&quot;echo&quot;, &quot;hello cmd&quot;]
 </code></pre>
-<p>查看镜像资源使用率(类似top)</p>
+<p>创建镜像</p>
+<pre><code class="lang-bash">docker build
+</code></pre>
+</li>
+</ol>
+</li>
+<li><p>删除镜像</p>
+<pre><code class="lang-bash">docker rmi fc7b8511c294
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="-">容器</h2>
+<ol>
+<li><p>创建并启动容器</p>
+<pre><code class="lang-bash">docker run ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39;
+docker run -d ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 以后台服务运行
+docker run -p 5000:5000 ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 映射端口5000到5000
+</code></pre>
+</li>
+<li><p>查看容器id, 容器大小</p>
+<pre><code class="lang-bash">docker ps -a -s
+</code></pre>
+</li>
+<li><p>查看容器输出信息</p>
+<pre><code class="lang-bash">docker logs -f 49c25062f661
+</code></pre>
+</li>
+<li><p>终止容器</p>
+<pre><code class="lang-bash">docker stop 49c25062f661
+</code></pre>
+</li>
+<li><p>启动容器</p>
+<pre><code class="lang-bash">docker start cdf8b9e60f30
+</code></pre>
+</li>
+<li><p>删除容器</p>
+<pre><code class="lang-bash">docker rm cdf8b9e60f30
+</code></pre>
+</li>
+<li><p>查看容器资源占用</p>
 <pre><code class="lang-bash">docker stats
 </code></pre>
-<p>关闭镜像</p>
-<pre><code class="lang-bash">docker stop
+</li>
+<li><p>查看容器端口映射</p>
+<pre><code class="lang-bash">docker port 84f3e6b91390
 </code></pre>
-<p>删除镜像</p>
-<pre><code class="lang-bash">docker rm
-</code></pre>
-<p>暂停镜像</p>
-<pre><code class="lang-bash">docker pause
-</code></pre>
+</li>
+</ol>
 
 
 </div>
