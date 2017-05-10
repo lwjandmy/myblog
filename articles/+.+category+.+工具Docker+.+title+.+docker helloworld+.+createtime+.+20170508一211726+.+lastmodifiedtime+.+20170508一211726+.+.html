@@ -27,6 +27,21 @@ docker pull ubuntu:13.10
 <p>在镜像中执行命令</p>
 <pre><code class="lang-bash">docker run learn/tutorial echo &quot;hello word&quot;
 </code></pre>
+<p>查看镜像状态</p>
+<pre><code class="lang-bash">docker ps
+</code></pre>
+<p>查看镜像资源使用率(类似top)</p>
+<pre><code class="lang-bash">docker stats
+</code></pre>
+<p>关闭镜像</p>
+<pre><code class="lang-bash">docker stop
+</code></pre>
+<p>删除镜像</p>
+<pre><code class="lang-bash">docker rm
+</code></pre>
+<p>暂停镜像</p>
+<pre><code class="lang-bash">docker pause
+</code></pre>
 <hr>
 <h2 id="docker-machine">docker machine</h2>
 <p><a href="https://docs.docker.com/machine/overview/">docker machine</a></p>
@@ -77,6 +92,50 @@ $Env:COMPOSE_CONVERT_WINDOWS_PATHS = &quot;true&quot;
 <p>启动docker机器</p>
 <pre><code class="lang-bash">docker-machine start default
 </code></pre>
+<hr>
+<h2 id="docker-compose">docker compose</h2>
+<p><a href="https://docs.docker.com/compose/overview/">docker compose</a></p>
+<p>mkdir ~/composetest
+cd ~/composetest</p>
+<p>vim app.py</p>
+<pre><code class="lang-python">from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host=&#39;redis&#39;, port=6379)
+
+@app.route(&#39;/&#39;)
+def hello():
+    count = redis.incr(&#39;hits&#39;)
+    return &#39;Hello World! I have been seen {} times.\n&#39;.format(count)
+
+if __name__ == &quot;__main__&quot;:
+    app.run(host=&quot;0.0.0.0&quot;, debug=True)
+</code></pre>
+<p>vim requirements.txt</p>
+<pre><code class="lang-text">flask
+redis
+</code></pre>
+<p>vim Dockerfile</p>
+<pre><code class="lang-Dockerfile">FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+<p>vim docker-compose.yml</p>
+<pre><code class="lang-yml">version: &#39;2&#39;
+services:
+  web:
+    build: .
+    ports:
+     - &quot;5000:5000&quot;
+    volumes:
+     - .:/code
+  redis:
+    image: &quot;redis:alpine&quot;
+</code></pre>
+<p>docker-compose up</p>
 <hr>
 <h2 id="-error-checking-tls-connection-host-is-not-running">错误: Error checking TLS connection: Host is not running</h2>
 <p>重启docker机器</p>

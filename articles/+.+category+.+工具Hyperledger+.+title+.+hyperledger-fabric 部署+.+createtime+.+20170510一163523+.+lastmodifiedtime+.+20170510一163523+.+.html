@@ -1,0 +1,53 @@
+
+
+<html><head><meta charset="UTF-8"><title>hyperledger-fabric 部署
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="hyperledger-fabric-">hyperledger-fabric 部署</h1>
+<p><a href="http://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html#prerequisites-and-setup">hyperledger_getting_start</a></p>
+<pre><code class="lang-bash">mkdir fabric-sample
+cd fabric-sample
+curl -L https://logs.hyperledger.org/sandbox/vex-yul-hyp-jenkins-2/fabric-binaries/release.tar.gz -o release.tar.gz
+</code></pre>
+<p>如果下载速度慢, 换用迅雷, 下载完后传到linux</p>
+<pre><code class="lang-bash">tar -xvf release.tar.gz
+cd release/
+cd linux-amd64/install/
+</code></pre>
+<p>确保docker能正常访问</p>
+<p>下载fabric的docker镜像</p>
+<pre><code class="lang-bash">./get-docker-images.sh
+</code></pre>
+<p>设置系统类型的环境变量</p>
+<pre><code class="lang-bash">os_arch=$(echo &quot;$(uname -s)-amd64&quot; | awk &#39;{print tolower($0)}&#39;)
+</code></pre>
+<p>进入e2e文件夹</p>
+<pre><code class="lang-bash">cd ../../samples/e2e
+</code></pre>
+<p>生成crypto配置</p>
+<pre><code class="lang-bash">./../../$os_arch/bin/cryptogen generate --config=./crypto-config.yaml
+</code></pre>
+<p>生成有序genesis块</p>
+<pre><code class="lang-bash">export FABRIC_CFG_PATH=$PWD
+./../../$os_arch/bin/configtxgen -profile TwoOrgs -outputBlock orderer.block
+</code></pre>
+<p>生成信道配置构件</p>
+<pre><code class="lang-bash">./../../$os_arch/bin/configtxgen -profile TwoOrgs -outputCreateChannelTx channel.tx -channelID channel1
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
