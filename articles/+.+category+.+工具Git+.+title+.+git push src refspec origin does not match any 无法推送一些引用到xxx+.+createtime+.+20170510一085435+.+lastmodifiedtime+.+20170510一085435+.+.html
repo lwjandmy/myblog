@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>git push src refspec origin does not match any 无法推送一些引用到xxx
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="git-push-src-refspec-origin-does-not-match-any-xxx">git push src refspec origin does not match any 无法推送一些引用到xxx</h1>
+<p>执行</p>
+<pre><code class="lang-bash">git push origin_oschina gh-pages origin-oschina/gh-pages
+</code></pre>
+<p>提示</p>
+<pre><code class="lang-text">error: src refspec origin-oschina/gh-pages does not match any.
+error: 无法推送一些引用到 &#39;http://git.oschina.net/lwjandmy/myblog&#39;
+</code></pre>
+<ol>
+<li><p>检查远程仓库的地址是否正确</p>
+</li>
+<li><p>执行</p>
+<pre><code class="lang-bash">git push -u origin master
+</code></pre>
+</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

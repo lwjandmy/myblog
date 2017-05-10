@@ -60,5 +60,4 @@ var md2html = function (callback) {
 	});
 };
 
-clean_articles();
-md2html();
+clean_articles(md2html);
