@@ -37,7 +37,7 @@ docker pull ubuntu:13.10
 <p>手动下载boot2docker到C:\Windows\System32\config\systemprofile.docker\machine\cache\boot2docker.iso</p>
 <p>断网</p>
 <p>创建docker机器</p>
-<pre><code class="lang-bash">docker-machine create --driver hyperv default
+<pre><code class="lang-bash">docker-machine create --engine-registry-mirror=https://xxx.mirror.aliyuncs.com --driver hyperv default
 </code></pre>
 <p>获取docker机器的环境变量设置命令</p>
 <pre><code class="lang-bash">docker-machine env default
@@ -60,13 +60,23 @@ $Env:DOCKER_MACHINE_NAME = &quot;default&quot;
 $Env:COMPOSE_CONVERT_WINDOWS_PATHS = &quot;true&quot;
 </code></pre>
 <p>也可以复制最后一行注释掉的代码, 在powershell中执行</p>
-<pre><code class="lang-bash">eval &quot;$(docker-machine env default)&quot;
-docker-machine.exe env default | Invoke-Expression
+<pre><code class="lang-bash">docker-machine.exe env default | Invoke-Expression
 </code></pre>
-<p>查看docker状态, 测试docker机器是否可访问</p>
+<p>查看docker状态, 测试docker机器是否可访问, 之后使用docker访问docker机器</p>
 <pre><code class="lang-bash">docker info
 </code></pre>
-<p>之后使用docker访问docker机器</p>
+<p>删除docker机器</p>
+<pre><code class="lang-bash">docker-machine rm default
+</code></pre>
+<p>关闭docker机器</p>
+<pre><code class="lang-bash">docker-machine stop default
+</code></pre>
+<p>重启docker机器</p>
+<pre><code class="lang-bash">docker-machine restart default
+</code></pre>
+<p>启动docker机器</p>
+<pre><code class="lang-bash">docker-machine start default
+</code></pre>
 <hr>
 <h2 id="-error-checking-tls-connection-host-is-not-running">错误: Error checking TLS connection: Host is not running</h2>
 <p>重启docker机器</p>
