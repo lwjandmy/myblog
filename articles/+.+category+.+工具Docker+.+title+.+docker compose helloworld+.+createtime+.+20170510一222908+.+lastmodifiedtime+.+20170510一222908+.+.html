@@ -1,0 +1,64 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker compose helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-compose-helloworld">docker compose helloworld</h1>
+<p><a href="https://docs.docker.com/compose/overview/">docker compose</a></p>
+<p>mkdir ~/composetest
+cd ~/composetest</p>
+<p>vim app.py</p>
+<pre><code class="lang-python">from flask import Flask
+from redis import Redis
+
+app = Flask(__name__)
+redis = Redis(host=&#39;redis&#39;, port=6379)
+
+@app.route(&#39;/&#39;)
+def hello():
+    count = redis.incr(&#39;hits&#39;)
+    return &#39;Hello World! I have been seen {} times.\n&#39;.format(count)
+
+if __name__ == &quot;__main__&quot;:
+    app.run(host=&quot;0.0.0.0&quot;, debug=True)
+</code></pre>
+<p>vim requirements.txt</p>
+<pre><code class="lang-text">flask
+redis
+</code></pre>
+<p>vim Dockerfile</p>
+<pre><code class="lang-Dockerfile">FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+<p>vim docker-compose.yml</p>
+<pre><code class="lang-yml">version: &#39;2&#39;
+services:
+  web:
+    build: .
+    ports:
+     - &quot;5000:5000&quot;
+    volumes:
+     - .:/code
+  redis:
+    image: &quot;redis:alpine&quot;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
