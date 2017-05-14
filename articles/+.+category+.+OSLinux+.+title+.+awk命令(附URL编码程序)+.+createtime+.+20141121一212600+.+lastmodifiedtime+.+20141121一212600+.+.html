@@ -51,6 +51,10 @@ awk &#39;{if($1==&quot;123&quot;){print $1;}}&#39; 1.txt
 <pre><code class="lang-bash">awk &#39;BEGIN{ out = &quot;&quot;; for (i = 0; i != 256; ++i) { tAscii = sprintf(&quot;%c&quot;, i); ASCII[tAscii] = i; } } { cnt = split($0,ch,&quot;&quot; ); for(i = 1; i &lt;= cnt; ++i) if (ch[i] ~ /[A-Za-z0-9\@\*\_\+\-\.]/) out = out ch[i]; else { tCh = sprintf(&quot;%%%X&quot;, ASCII[ch[i]]); out = out tCh; } } END{ print out }&#39; file
 </code></pre>
 <p>其中字符转ascii是个难题，因为awk在遇到字符转数字时，自动格式转换，而不是直接ascii替换.<br>由于可以ascii转字符（用scanf），所以建立了一个ascii[字符]=ascii的映射表，用查表方法得到字符的ascii.<br>awk里不存在字符类型，只有字符串和数字两个类型！！！</p>
+<hr>
+<h2 id="-">文件路径去掉最后的文件名</h2>
+<pre><code class="lang-bash">echo &#39;./xcom-i18n-web/pom.xml&#39; | awk -F/ &#39;{ for (i = 1; i &lt; NF; ++i) { printf &quot;%s/&quot;, $i; } print &quot;&quot;  }&#39;
+</code></pre>
 
 
 </div>

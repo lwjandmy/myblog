@@ -415,12 +415,6 @@
                     &lt;name&gt;Aliyun Repository&lt;/name&gt;
                     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
                 &lt;/repository&gt;
-                &lt;!-- 中间件仓库 --&gt;
-                &lt;repository&gt;
-                    &lt;id&gt;Component&lt;/id&gt;
-                    &lt;name&gt;Component Repository&lt;/name&gt;
-                    &lt;url&gt;http://192.168.2.58:8080/archiva/repository/arms_rele1&lt;/url&gt;
-                &lt;/repository&gt;
                 &lt;!-- 原始maven中央仓库 --&gt;
                 &lt;repository&gt;
                     &lt;id&gt;origin&lt;/id&gt;
@@ -461,12 +455,6 @@
                     &lt;name&gt;Aliyun pluginRepository&lt;/name&gt;
                     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
                 &lt;/pluginRepository&gt;
-                &lt;!-- 中间件仓库 --&gt;
-                &lt;repository&gt;
-                    &lt;id&gt;Component&lt;/id&gt;
-                    &lt;name&gt;Component Repository&lt;/name&gt;
-                    &lt;url&gt;http://192.168.2.58:8080/archiva/repository/arms_rele1&lt;/url&gt;
-                &lt;/repository&gt;
                 &lt;!-- 原始maven中央仓库 --&gt;
                 &lt;pluginRepository&gt;
                     &lt;id&gt;origin&lt;/id&gt;
@@ -559,9 +547,12 @@
         &lt;/profile&gt;
     &lt;/profiles&gt;
 
-    &lt;!-- 指定编码 --&gt;
+    &lt;!-- 指定编码, JDK版本 --&gt;
     &lt;properties&gt;
+        &lt;maven.compiler.compilerVersion&gt;1.6&lt;/maven.compiler.compilerVersion&gt;
+        &lt;maven.compiler.source&gt;1.6&lt;/maven.compiler.source&gt;
         &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;maven.compiler.target&gt;1.6&lt;/maven.compiler.target&gt;
     &lt;/properties&gt;
 </code></pre>
 

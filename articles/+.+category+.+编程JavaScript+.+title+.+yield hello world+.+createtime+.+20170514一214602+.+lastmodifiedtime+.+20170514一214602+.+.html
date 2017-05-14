@@ -1,0 +1,50 @@
+
+
+<html><head><meta charset="UTF-8"><title>yield hello world
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="yield-hello-world">yield hello world</h1>
+<pre><code class="lang-js">function* numbers() {
+    console.log(&#39;numbers:&#39;, &#39;function start.&#39;); // 3 输出: numbers: function start.
+    let result = yield &#39;numbers_1&#39;; // 4 上下文切换
+    console.log(&#39;numbers:&#39;, result); // 7 输出: numbers: next_2
+    return &#39;numbers_2&#39;; // 8 上下文切换
+}
+
+function main() {
+    let nums = numbers(); // 1
+    let result = nums.next(&#39;next_1&#39;); // 2 上下文切换
+    console.log(&#39;main:&#39;, result); // 5 输出: main: { value: &#39;numbers_1&#39;, done: false }
+    result = nums.next(&#39;next_2&#39;); // 6 上下文切换
+    console.log(&#39;main:&#39;, result); // 9 输出: main: { value: &#39;numbers_2&#39;, done: true }
+}
+
+main();
+
+
+/*
+输出:
+ numbers: function start.
+ main: { value: &#39;numbers_1&#39;, done: false }
+ numbers: next_2
+ main: { value: &#39;numbers_2&#39;, done: true }
+
+ */
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
