@@ -81,12 +81,18 @@ arp -&gt; ip neighbor
 <p>设置默认网关:</p>
 <pre><code class="lang-bash">ip route add to 0/0 via 10.0.2.1 dev enp0s3
 </code></pre>
+<hr>
 <h2 id="-usb-">手机用usb使用电脑的网络上网</h2>
 <p>电脑能连外网的本地连接 -&gt; 属性 -&gt; 高级 -&gt; &quot;允许其它网络用户通过此计算机的Internet来连接&quot;</p>
 <p>rndis电脑端ip: 192.168.34.217 设置方法: 配置本地连接即可</p>
 <p>rndis手机端ip: 192.168.34.219 设置方法: ip addr change 192.168.34.219/24 dev rndis0</p>
 <p>手机加route, 方法: ip route change to 0/0 via 192.168.34.219; 若提示出错, 可能原来没有配0/0的路由, 可把change换成add; 若还提示错误, 可能当前路由没有配到192.168.34.0/24网段的路由, 此时需要检查rndis手机端ip是否配置正确, 配置正确了路由就会自动添加192.168.34.0/24路由.</p>
 <p>删除rndis0上的其他ip ip addr del 192.168.0.1/24 dev rndis0</p>
+<hr>
+<h2 id="hyper-v-archlinux-">hyper-v 下 archlinux 设置联网</h2>
+<pre><code class="lang-bash">ip addr 192.168.32.31/24 dev enp0s10f1
+ip route add to 0/0 via 192.168.32.200 dev enp0s10f1
+</code></pre>
 
 
 </div>
