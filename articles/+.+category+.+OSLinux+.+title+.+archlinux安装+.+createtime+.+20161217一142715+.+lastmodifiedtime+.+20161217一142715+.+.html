@@ -33,16 +33,17 @@ sudo systemctl start dhcpcd
 vi /etc/resolv.conf # 配置dns地址 8.8.8.8
 </code></pre>
 <h2 id="-">系统基础软件安装</h2>
-<pre><code class="lang-bash">pacman -S grub sudo vim samba git npm # 安装基础软件
+<pre><code class="lang-bash">pacman -S grub sudo vim samba git npm openssh # 安装基础软件
 </code></pre>
 <h2 id="-grub">配置grub</h2>
-<pre><code class="lang-bash">grub-install /mnt/sda # 安装grub引导
+<pre><code class="lang-bash">grub-install /dev/sda # 安装grub引导
 
 grub-mkconfig &gt; /boot/grub/grub.cfg # 生成grub配置
 </code></pre>
 <h2 id="-sudo">配置sudo</h2>
-<pre><code class="lang-bash">visudo -f /etc/sudoer # 配置sudo用户组
-
+<pre><code class="lang-bash">visudo -f /etc/sudoers # 配置sudo用户组
+%sudo ALL=(ALL) ALL # 去掉注释, 应用这句配置
+%sudo ALL=(ALL) NOPASSWD: ALL # 或者使用这个配置, 无需输入密码
 groupadd sudo # 添加sudo用户组
 </code></pre>
 <h2 id="-">配置用户</h2>
@@ -69,6 +70,8 @@ sudo cp ~/.vimrc /root # vim配置给root一份, sudo vim时会用
 sudo locale-gen
 
 vim ~/.bash_profile # 末尾加declare -x LANG=zh_CN.UTF-8
+
+sudo pacman -S wqy-bitmapfont # 安装中文字体
 </code></pre>
 <h2 id="-samba">配置samba</h2>
 <pre><code class="lang-bash">sudo systemctl enable smbd # 开启启动samba服务
@@ -80,6 +83,10 @@ sudo vim /etc/samba/smb.conf # 在comment = Home Directories配置处, 最后添
 sudo smbpasswd -a li # 添加samba用户, 及配置用户密码
 
 sudo systemctl start smbd # 启动samba服务
+</code></pre>
+<h2 id="-ssh">配置ssh</h2>
+<pre><code class="lang-bash">sudo systemctl enable sshd # 开机自动启动sshd
+sudo systemctl start sshd # 启动sshd
 </code></pre>
 
 
