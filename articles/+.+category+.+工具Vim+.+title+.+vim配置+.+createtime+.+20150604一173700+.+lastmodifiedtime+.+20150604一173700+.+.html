@@ -10,45 +10,71 @@
 
 <h1 id="vim-">vim配置</h1>
 <p>~/.vimrc</p>
-<p>&quot; 显示行号
-set number</p>
-<p>&quot; 设置顔色方案
-colorscheme torte  &quot; blue</p>
-<p>&quot; 不自动换行
-set nowrap</p>
-<p>&quot; 添加状态栏
-set laststatus=2</p>
-<p>&quot; 显示状态行
-set ruler</p>
-<p>&quot; 左下角那一行的状态
-set showmode</p>
-<p>&quot; 查找高亮
-set hlsearch</p>
-<p>&quot; 增量查找
-set incsearch</p>
-<p>&quot; 查找不区分大小写
-set ignorecase</p>
-<p>&quot; 设置编码<br>set encoding=utf-8<br>set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936<br>set fileencodings=utf-8,ucs-bom,chinese  </p>
-<p>&quot; 语言设置<br>set langmenu=zh_CN.UTF-8</p>
-<p>&quot; 智能对齐
-set smartindent</p>
-<p>&quot; 括号匹配模式
-set showmatch</p>
-<p>&quot; tab键为4个空格
+<pre><code class="lang-vimrc">&quot; 显示行号
+set number
+
+&quot; 设置顔色方案
+colorscheme torte  &quot; blue
+
+&quot; 不自动换行
+set nowrap
+
+&quot; 添加状态栏
+set laststatus=2
+
+&quot; 显示状态行
+set ruler
+
+&quot; 左下角那一行的状态
+set showmode
+
+&quot; 查找高亮
+set hlsearch
+
+&quot; 增量查找
+set incsearch
+
+&quot; 查找不区分大小写
+set ignorecase
+
+&quot; 设置编码  
+set encoding=utf-8  
+set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936  
+set fileencodings=utf-8,ucs-bom,chinese  
+
+&quot; 语言设置  
+set langmenu=zh_CN.UTF-8
+
+&quot; 智能对齐
+set smartindent
+
+&quot; 括号匹配模式
+set showmatch
+
+&quot; tab键为4个空格
 set tabstop=4
 set shiftwidth=4
-set softtabstop=4</p>
-<p>&quot; 自动对齐
-set autoindent</p>
-<p>&quot; 与windows共享剪贴板
-set clipboard+=unnamed</p>
-<p>&quot; 打开语法高亮
-syntax on</p>
-<p>&quot; 打开文件类型自动检测
-filetype on</p>
-<p>&quot; 使用phpcomplete插件
+set softtabstop=4
+
+&quot; 自动对齐
+set autoindent
+
+&quot; 与windows共享剪贴板
+set clipboard+=unnamed
+
+&quot; 打开语法高亮
+syntax on
+
+&quot; 打开文件类型自动检测
+filetype on
+
+&quot; 使用phpcomplete插件
 filetype plugin on
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP</p>
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+
+&quot; 在xshell中方便复制粘贴文字
+set mouse=c
+</code></pre>
 
 
 </div>

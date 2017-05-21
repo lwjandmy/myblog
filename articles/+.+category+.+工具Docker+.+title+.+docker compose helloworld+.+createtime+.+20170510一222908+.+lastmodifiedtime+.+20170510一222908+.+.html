@@ -10,9 +10,15 @@
 
 <h1 id="docker-compose-helloworld">docker compose helloworld</h1>
 <p><a href="https://docs.docker.com/compose/overview/">docker compose</a></p>
-<p>mkdir ~/composetest
-cd ~/composetest</p>
-<p>vim app.py</p>
+<h2 id="linux-">Linux下安装</h2>
+<pre><code class="lang-bash">sudo pacman -S docker-compose
+</code></pre>
+<h2 id="-">例子</h2>
+<pre><code class="lang-bash">mkdir ~/composetest
+cd ~/composetest
+</code></pre>
+<pre><code class="lang-bash">vim app.py
+</code></pre>
 <pre><code class="lang-python">from flask import Flask
 from redis import Redis
 
@@ -27,18 +33,21 @@ def hello():
 if __name__ == &quot;__main__&quot;:
     app.run(host=&quot;0.0.0.0&quot;, debug=True)
 </code></pre>
-<p>vim requirements.txt</p>
+<pre><code class="lang-bash">vim requirements.txt
+</code></pre>
 <pre><code class="lang-text">flask
 redis
 </code></pre>
-<p>vim Dockerfile</p>
+<pre><code class="lang-bash">vim Dockerfile
+</code></pre>
 <pre><code class="lang-Dockerfile">FROM python:3.4-alpine
 ADD . /code
 WORKDIR /code
 RUN pip install -r requirements.txt
 CMD [&quot;python&quot;, &quot;app.py&quot;]
 </code></pre>
-<p>vim docker-compose.yml</p>
+<pre><code class="lang-bash">vim docker-compose.yml
+</code></pre>
 <pre><code class="lang-yml">version: &#39;2&#39;
 services:
   web:
