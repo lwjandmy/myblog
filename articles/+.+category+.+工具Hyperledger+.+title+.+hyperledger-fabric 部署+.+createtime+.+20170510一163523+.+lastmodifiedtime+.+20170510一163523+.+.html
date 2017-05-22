@@ -132,6 +132,42 @@ peer channel join -b mychannel.block
 </code></pre>
 </li>
 </ol>
+<hr>
+<h2 id="-">用到的文件和命令总结</h2>
+<p>用到的文件</p>
+<pre><code class="lang-text">network_setup.sh
+
+configtx.yaml
+crypto-config.yaml
+docker-compose-cli.yaml
+
+bin/cryptogen
+bin/configtxgen
+
+base/docker-compose-base.yaml
+base/peer-base.yaml
+</code></pre>
+<p>执行的命令</p>
+<pre><code class="lang-bash">sudo ./network_setup.sh down
+
+./bin/cryptogen generate --config=./crypto-config.yaml
+mkdir ./channel-artifacts
+FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
+FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
+FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
+# 检查docker-compose-cli.yaml, 注释掉CLI下的command配置
+sudo CHCHANNEL_NAME=mychannel TIMEOUT=300 docker-compose -f ./docker-compose-cli.yaml up -d
+sudo docker exec -it cli bash
+peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/ca.example.com-cert.pem
+peer channel join -b mychannel.block
+peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+
+peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/ca.example.com-cert.pem -C mychannel -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c &#39;{&quot;Args&quot;:[&quot;init&quot;,&quot;a&quot;,&quot;100&quot;,&quot;b&quot;,&quot;200&quot;]}&#39; -P &quot;OR (&#39;Org1MSP.member&#39;,&#39;Org2MSP.member&#39;)&quot;
+peer chaincode query -C mychannel -n mycc -c &#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;
+peer chaincode invoke -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/ca.example.com-cert.pem -C mychannel -n mycc -c &#39;{&quot;Args&quot;:[&quot;invoke&quot;,&quot;a&quot;,&quot;b&quot;,&quot;10&quot;]}&#39;
+peer chaincode query -C mychannel -n mycc -c &#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;
+</code></pre>
 
 
 </div>
