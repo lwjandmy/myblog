@@ -48,9 +48,18 @@ sudo docker logs dev-peer1.org2.example.com-mycc-1.0
 <hr>
 <h2 id="-">详细说明 仔细介绍每一步命令</h2>
 <ol>
+<li><p>执行自动初始环境的脚本, bootstrap.sh自动完成以下工作: 下载yaml配置, 下载cryptogen和configtxgen, 下载Fabric的docker镜像.</p>
+<pre><code class="lang-bash">mkdir fabric-sample
+cd fabric-sample
+curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/examples/e2e_cli/bootstrap.sh | bash
+</code></pre>
+</li>
 <li><p>crypto生成器</p>
 <p>crypto-config.yaml定义了网络拓扑结构, crypto能够生成一个认证库, 提供给组织和组织下的单位. 每个组织提供一个唯一的根认证, 根认证绑定了组织下的单位节点. 事务被一个节点的私有键(keystore)加密, 然后被公有键(sigcerts)解密. crypto-config.yaml中的count变量指定组织下有多少单位, 例子中组织下有2个单位.</p>
 <p>执行后生成的认证将被放在crypto-config目录中.</p>
+<pre><code class="lang-bash">./bin/cryptogen generate --config=./crypto-config.yaml
+</code></pre>
+<p>忽略警告: Before using BCCSP, please call InitFactories(). Falling back to bootBCCSP.</p>
 </li>
 <li><p>configtxgen工具</p>
 <p>configtxgen被用来创建4个构件(artifacts):</p>
@@ -68,25 +77,16 @@ sudo docker logs dev-peer1.org2.example.com-mycc-1.0
 <p>configtx.yaml定义了网络, 包含3个成员, 一个Ordered组织(OrdererOrg)和两个Peer组织(Org1和Org2), 每个Peer组织包含两个节点(peer node). 同时指定了一个联营企业(consortium): SampleConsortium, 它包含两个Peer组织. 注意Profiles配置, 有两个唯一的头, 一个定义orderer根块: TwoOrgsOrdererGenesis, 另一个定义信道: TwoOrgsChannel, 这些头很关键, 将被用作参数来创建构件(artifacts).</p>
 <p>configtx.yaml同时包含两个扩展说明. 首先给每个Peer组织(Org)(peer0.org1.example.com和peer0.org2.example.com)指定了锚节点(anchor peer), 然后指向每个成员的MSP目录位置, 反过来存储orderer根块下的每个组织的根认证, 这是个决定性的概念. 现在任何与orderer服务通信的网络节点拥有了自己的数字认证.</p>
 <p>简便起见, generateArtifacts.sh被用于生成crypto数据和4个配置构件, 将生成的数据放在channel-artifacts目录下.</p>
-</li>
-<li><p>执行cryptogen, 生成认证</p>
-<pre><code class="lang-bash">./bin/cryptogen generate --config=./crypto-config.yaml
-</code></pre>
-<p>忽略警告: Before using BCCSP, please call InitFactories(). Falling back to bootBCCSP.</p>
-</li>
-<li><p>执行configtxgen, 生成orderer根块</p>
+<p>生成orderer根块</p>
 <pre><code class="lang-bash">FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
 </code></pre>
-</li>
-<li><p>执行configtxgen, 创建信道(channel)事务(transaction)构件(artifact)</p>
+<p>创建信道(channel)事务(transaction)构件(artifact)</p>
 <pre><code class="lang-bash">FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
 </code></pre>
-</li>
-<li><p>执行configtxgen, 定义Org1的锚(anchor)节点(peer)</p>
+<p>定义Org1的锚(anchor)节点(peer)</p>
 <pre><code class="lang-bash">FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
 </code></pre>
-</li>
-<li><p>执行configtxgen, 定义Org2的锚(anchor)节点(peer)</p>
+<p>定义Org2的锚(anchor)节点(peer)</p>
 <pre><code class="lang-bash">FABRIC_CFG_PATH=$PWD ./bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
 </code></pre>
 </li>
