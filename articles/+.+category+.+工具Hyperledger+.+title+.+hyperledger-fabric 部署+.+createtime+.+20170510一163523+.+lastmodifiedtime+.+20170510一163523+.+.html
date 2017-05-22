@@ -11,7 +11,7 @@
 <h1 id="hyperledger-fabric-">hyperledger-fabric 部署</h1>
 <p><a href="http://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html#prerequisites-and-setup">hyperledger_getting_start</a></p>
 <hr>
-<h2 id="hello-world">Hello World</h2>
+<h2 id="hello-world-">Hello World 只用两个脚本完成所有部署任务</h2>
 <ol>
 <li><p>执行自动初始环境的脚本, bootstrap.sh自动完成以下工作: 下载yaml配置, 下载cryptogen和configtxgen, 下载Fabric的docker镜像.</p>
 <pre><code class="lang-bash">mkdir fabric-sample
@@ -46,7 +46,7 @@ sudo docker logs dev-peer1.org2.example.com-mycc-1.0
 </li>
 </ol>
 <hr>
-<h2 id="-">详细说明</h2>
+<h2 id="-">详细说明 仔细介绍每一步命令</h2>
 <ol>
 <li><p>crypto生成器</p>
 <p>crypto-config.yaml定义了网络拓扑结构, crypto能够生成一个认证库, 提供给组织和组织下的单位. 每个组织提供一个唯一的根认证, 根认证绑定了组织下的单位节点. 事务被一个节点的私有键(keystore)加密, 然后被公有键(sigcerts)解密. crypto-config.yaml中的count变量指定组织下有多少单位, 例子中组织下有2个单位.</p>
@@ -91,17 +91,47 @@ sudo docker logs dev-peer1.org2.example.com-mycc-1.0
 </code></pre>
 </li>
 <li><p>启动网络</p>
-</li>
-</ol>
 <p>docker-compose-cli.yaml定义了docker集群配置, 注释掉CLI集合下的command配置, 后续手动执行各操作.</p>
 <pre><code class="lang-yaml">working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
 # command: /bin/bash -c &#39;./scripts/script.sh ${CHANNEL_NAME}; sleep $TIMEOUT&#39;
 volumes:
 ......
 </code></pre>
-<p>执行docker-compose, -d参数让程序作为daemon守护进程, 不要占用控制台</p>
+<p>执行docker-compose, 启动网络, -d参数让程序作为daemon守护进程, 不要占用控制台</p>
 <pre><code class="lang-bash">sudo CHCHANNEL_NAME=mychannel TIMEOUT=300 docker-compose -f ./docker-compose-cli.yaml up -d
 </code></pre>
+</li>
+<li><p>创建并加入信道(channel)</p>
+<pre><code class="lang-bash">sudo docker exec -it cli bash
+
+peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/ca.example.com-cert.pem
+# -c 指定信道名; -f 指定信道配置
+
+peer channel join -b mychannel.block
+</code></pre>
+</li>
+<li><p>将go源文件安装到节点文件系统上</p>
+<pre><code class="lang-bash">peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+</code></pre>
+</li>
+<li><p>在信道上演示链码</p>
+<p>包括如下步骤: 在信道上初始化链码, 设置链码支持(endorsement)策略, 启动链码执行环境</p>
+<pre><code class="lang-bash">peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/ca.example.com-cert.pem -C mychannel -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -c &#39;{&quot;Args&quot;:[&quot;init&quot;,&quot;a&quot;,&quot;100&quot;,&quot;b&quot;,&quot;200&quot;]}&#39; -P &quot;OR (&#39;Org1MSP.member&#39;,&#39;Org2MSP.member&#39;)&quot;
+</code></pre>
+</li>
+<li><p>查询&quot;a&quot;的数据, 值为100</p>
+<pre><code class="lang-bash">peer chaincode query -C mychannel -n mycc -c &#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;
+</code></pre>
+</li>
+<li><p>从&quot;a&quot;转移10到&quot;b&quot;, 这个事务将剪出(cut)一个新块并更新状态DB</p>
+<pre><code class="lang-bash">peer chaincode invoke -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/cacerts/ca.example.com-cert.pem -C mychannel -n mycc -c &#39;{&quot;Args&quot;:[&quot;invoke&quot;,&quot;a&quot;,&quot;b&quot;,&quot;10&quot;]}&#39;
+</code></pre>
+</li>
+<li><p>再次查询&quot;a&quot;的数据, 值为90</p>
+<pre><code class="lang-bash">peer chaincode query -C mychannel -n mycc -c &#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;
+</code></pre>
+</li>
+</ol>
 
 
 </div>

@@ -102,6 +102,10 @@ docker run -d ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 以后台服�
 docker run -p 5000:5000 ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 映射端口5000到5000
 </code></pre>
 </li>
+<li><p>在当前容器中执行命令</p>
+<pre><code class="lang-bash">docker exec ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39;
+</code></pre>
+</li>
 <li><p>查看容器id, 容器大小</p>
 <pre><code class="lang-bash">docker ps -a -s
 </code></pre>
@@ -120,6 +124,7 @@ docker run -p 5000:5000 ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 映
 </li>
 <li><p>删除容器</p>
 <pre><code class="lang-bash">docker rm cdf8b9e60f30
+docker rm -f $(sudo docker ps -a -q)
 </code></pre>
 </li>
 <li><p>查看容器资源占用</p>
