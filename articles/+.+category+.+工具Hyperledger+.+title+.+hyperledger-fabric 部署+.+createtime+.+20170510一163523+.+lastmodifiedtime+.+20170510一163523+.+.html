@@ -41,7 +41,7 @@ sudo docker logs dev-peer1.org2.example.com-mycc-1.0
 </code></pre>
 </li>
 <li><p>清理</p>
-<pre><code class="lang-bash">sudo ./network_setup.sh down
+<pre><code class="lang-bash">sudo CHANNEL_NAME=mychannel TIMEOUT=300 ./network_setup.sh down
 </code></pre>
 </li>
 </ol>
@@ -148,7 +148,7 @@ base/docker-compose-base.yaml
 base/peer-base.yaml
 </code></pre>
 <p>执行的命令</p>
-<pre><code class="lang-bash">sudo ./network_setup.sh down
+<pre><code class="lang-bash">sudo CHANNEL_NAME=mychannel TIMEOUT=300 ./network_setup.sh down
 
 ./bin/cryptogen generate --config=./crypto-config.yaml
 mkdir ./channel-artifacts

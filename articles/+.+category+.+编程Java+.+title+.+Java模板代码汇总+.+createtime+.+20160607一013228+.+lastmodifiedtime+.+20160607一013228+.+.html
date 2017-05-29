@@ -423,7 +423,7 @@ log4j.appender.stdout.layout.ConversionPattern=%5p %c:%t - %m%n
     &lt;!--
     Tomcat容器启动过程:
     1. 读取context-param节点
-    2. 创建ServletContext, 将context-param节点下所有键值对保存在ServletContext中 
+    2. 创建ServletContext, 将context-param节点下所有键值对保存在ServletContext中
     3. 读取listener节点, 创建监听器. 这些监听器能监听到ServletContext的初始化和销毁
     4. 读取filter节点
     5. 读取servlet节点.
@@ -488,22 +488,22 @@ jdbc.password=123456
 </code></pre>
 <h2 id="applicationcontext-xml-dtd-">applicationContext.xml DTD头</h2>
 <pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
-    xmlns:context=&quot;http://www.springframework.org/schema/context&quot; 
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
     xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
-    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
     xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;  
-    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; 
-    xmlns:p=&quot;http://www.springframework.org/schema/p&quot; 
-    xmlns:util=&quot;http://www.springframework.org/schema/util&quot; 
+    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xmlns:util=&quot;http://www.springframework.org/schema/util&quot;
     xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot;  
     xmlns:cache=&quot;http://www.springframework.org/schema/cache&quot;  
-    xmlns:drools=&quot;http://drools.org/schema/drools-spring&quot; 
+    xmlns:drools=&quot;http://drools.org/schema/drools-spring&quot;
     xmlns:camel=&quot;http://camel.apache.org/schema/spring&quot;
     xsi:schemaLocation=&quot;  
     http://www.springframework.org/schema/context  
     http://www.springframework.org/schema/context/spring-context.xsd  
-    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
     http://www.springframework.org/schema/beans  
     http://www.springframework.org/schema/beans/spring-beans.xsd  
@@ -528,20 +528,20 @@ jdbc.password=123456
 </code></pre>
 <h2 id="applicationcontext-dao-xml-mybatis-springmvc-mybatis-sqlsessionfactorybean-mapper-mapperscannerconfigure">applicationContext-dao.xml, 整合mybatis和springmvc专用, 包含数据源配置(数据库连接信息, 连接池), 加载mybatis的SqlSessionFactoryBean, 扫描mapper的MapperScannerConfigure</h2>
 <pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
-    xmlns:context=&quot;http://www.springframework.org/schema/context&quot; 
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
     xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
-    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
     xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;  
-    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; 
-    xmlns:p=&quot;http://www.springframework.org/schema/p&quot; 
-    xmlns:util=&quot;http://www.springframework.org/schema/util&quot; 
+    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xmlns:util=&quot;http://www.springframework.org/schema/util&quot;
     xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot;  
     xmlns:cache=&quot;http://www.springframework.org/schema/cache&quot;  
     xsi:schemaLocation=&quot;  
     http://www.springframework.org/schema/context  
     http://www.springframework.org/schema/context/spring-context.xsd  
-    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
     http://www.springframework.org/schema/beans  
     http://www.springframework.org/schema/beans/spring-beans.xsd  
@@ -568,12 +568,12 @@ jdbc.password=123456
     &lt;/bean&gt; --&gt;
 
     &lt;!-- spring数据源 --&gt;
-    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt; 
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
         &lt;property name=&quot;driverClassName&quot; value=&quot;oracle.jdbc.OracleDriver&quot; /&gt;
         &lt;property name=&quot;url&quot; value=&quot;jdbc:oracle:thin:@192.168.1.1:1521:ORCL&quot; /&gt;
         &lt;property name=&quot;username&quot; value=&quot;sdfae&quot; /&gt;
         &lt;property name=&quot;password&quot; value=&quot;sdfae&quot; /&gt;
-    &lt;/bean&gt; 
+    &lt;/bean&gt;
 
     &lt;!-- SqlSessionFactory --&gt;
     &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
@@ -593,20 +593,20 @@ jdbc.password=123456
 </code></pre>
 <h2 id="applicationcontext-transaction-xml-spring-">applicationContext-transaction.xml spring事务整合专用</h2>
 <pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
-    xmlns:context=&quot;http://www.springframework.org/schema/context&quot; 
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
     xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
-    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
     xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;  
-    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; 
-    xmlns:p=&quot;http://www.springframework.org/schema/p&quot; 
-    xmlns:util=&quot;http://www.springframework.org/schema/util&quot; 
+    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xmlns:util=&quot;http://www.springframework.org/schema/util&quot;
     xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot;  
     xmlns:cache=&quot;http://www.springframework.org/schema/cache&quot;  
     xsi:schemaLocation=&quot;  
     http://www.springframework.org/schema/context  
     http://www.springframework.org/schema/context/spring-context.xsd  
-    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
     http://www.springframework.org/schema/beans  
     http://www.springframework.org/schema/beans/spring-beans.xsd  
@@ -643,7 +643,7 @@ jdbc.password=123456
 
     &lt;!-- 定义aop切点 --&gt;
     &lt;aop:config&gt;
-        &lt;!-- 
+        &lt;!--
         aop:aspect 与 asp:advisor区别
         &lt;aop:aspect ref=&quot;inject&quot;&gt;
             &lt;aop:after pointcut=&quot;execution(* pkg.cls.method(..))&quot; method=&quot;inject_method&quot; /&gt;
@@ -656,7 +656,7 @@ jdbc.password=123456
         参考: http://www.iteye.com/problems/69785
         --&gt;
         &lt;aop:advisor
-            advice-ref=&quot;txAdvice&quot; 
+            advice-ref=&quot;txAdvice&quot;
             pointcut=&quot;execution(* learn.springmvc_deep.service.impl.*.*(..))&quot;/&gt;
     &lt;/aop:config&gt;
 
@@ -690,13 +690,13 @@ jdbc.password=123456
 </code></pre>
 <h2 id="jvm-">jvm启动参数</h2>
 <p>设置内存, jvisualvm远程调试, 生成gc日志, 内存溢出生成堆镜像</p>
-<pre><code class="lang-bash">-Xms700m -Xmx700m -XX:MaxPermSize=700m -Xdebug -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=&quot;C:\Users\li_wjie\Desktop&quot;
+<pre><code class="lang-bash">-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xdebug -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=&quot;C:\Users\li_wjie\Desktop&quot;
 </code></pre>
 <p>设置内存, jvisualvm远程调试, 生成gc日志, 内存溢出生成堆镜像, 远程监听端口</p>
-<pre><code class="lang-bash">-Xms700m -Xmx700m -XX:MaxPermSize=700m -Xdebug -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.port=9999 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=&quot;C:\Users\li_wjie\Desktop&quot;
+<pre><code class="lang-bash">-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xdebug -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.port=9999 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=&quot;C:\Users\li_wjie\Desktop&quot;
 </code></pre>
 <p>设置内存, jvisualvm远程调试, 生成gc日志, 内存溢出生成堆镜像, 远程监听端口, 记录gc日志</p>
-<pre><code class="lang-bash">-Xms768m -Xmx768m -XX:MaxPermSize=128m -Xdebug -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.port=9999 -Xloggc:&quot;C:\Users\li_wjie\Desktop\gclog.log&quot; -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=&quot;C:\Users\li_wjie\Desktop&quot;
+<pre><code class="lang-bash">-Xms512m -Xmx512m -XX:MaxPermSize=512m -Xdebug -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.port=9999 -Xloggc:&quot;C:\Users\li_wjie\Desktop\gclog.log&quot; -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=&quot;C:\Users\li_wjie\Desktop&quot;
 </code></pre>
 
 

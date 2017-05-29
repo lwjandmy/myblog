@@ -10,12 +10,12 @@
 
 <h1 id="oracle-">Oracle启动</h1>
 <h2 id="linux-oracle">linux下启动oracle</h2>
-<pre><code class="lang-sql">su - oracle 
-sqlplus /nolog 
-conn /as sysdba 
-startup 
-exit 
-lsnrctl start 
+<pre><code class="lang-sql">su - oracle
+sqlplus /nolog
+conn /as sysdba
+startup
+exit
+lsnrctl start
 exit
 </code></pre>
 <h2 id="-">解锁用户</h2>
@@ -24,17 +24,17 @@ sqlplus &#39;/as sysdba&#39;
 alter user xxxx account unlock;
 </code></pre>
 <h2 id="linux-oracle">linux下关闭oracle</h2>
-<pre><code class="lang-sql">su - oracle 
+<pre><code class="lang-sql">su - oracle
 
-sqlplus /nolog 
+sqlplus /nolog
 
-conn /as sysdba 
+conn /as sysdba
 
-shutdown immediate 
+shutdown immediate
 
-exit 
+exit
 
-lsnrctl stop 
+lsnrctl stop
 
 exit
 </code></pre>
@@ -45,8 +45,8 @@ exit
 <pre><code class="lang-sql">lsnrctl stop
 </code></pre>
 <h2 id="-">查看监听器状态</h2>
-<pre><code class="lang-sql">lsnrctl 
-status 
+<pre><code class="lang-sql">lsnrctl
+status
 exit
 </code></pre>
 <h2 id="-">创建用户并授予权限</h2>
@@ -149,7 +149,7 @@ select * from dba_segments;
 </code></pre>
 <h2 id="-">扩展表空间大小</h2>
 <pre><code class="lang-sql">alter database datafile &#39;D:\Oracle\PRODUCT\ORADATA\TEST\USERS01.DBF&#39; resize 50m;
-alter database datafile &#39;D:\ORACLE\PRODUCT\ORADATA\TEST\USERS01.DBF&#39; autoextend on next 50m maxsize 500m; 
+alter database datafile &#39;D:\ORACLE\PRODUCT\ORADATA\TEST\USERS01.DBF&#39; autoextend on next 50m maxsize 500m;
 alter tablespace yourtablespacename add datafile &#39;d:\newtablespacefile.dbf&#39; size 5m;
 </code></pre>
 <hr>
@@ -204,6 +204,8 @@ alter system kill session&#39;10,600&#39;;
 drop table cont_contractext_h_temp;
 drop table cont_contractext_h_history;
 imp lwjprivate/lwjprivate file=c:\cptest.dmp fromuser=cptest tables=(cont_contractext_h_temp,cont_contractext_h_history)
+</code></pre>
+<pre><code class="lang-sql">imp x/x@192.168.x.x/orcl file=c:\x.dump fromuser=x tables=(xx)
 </code></pre>
 
 
