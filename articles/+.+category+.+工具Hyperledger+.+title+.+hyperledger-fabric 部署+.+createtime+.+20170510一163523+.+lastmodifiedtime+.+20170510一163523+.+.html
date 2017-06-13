@@ -205,6 +205,10 @@ func (code *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Respons
         return code.invoke(stub)
     } else if &quot;query&quot; == funcName {
         return code.query(stub)
+    } else if &quot;create&quot; == funcName {
+        return code.create(stub);
+    } else if &quot;delete&quot; == funcName {
+        return code.delete(stub);
     }
 
     return shim.Error(&quot;未识别的invoke方法名&quot;)
@@ -243,6 +247,26 @@ func (code *SimpleChaincode) query(stub shim.ChaincodeStubInterface) pb.Response
     assetBytes, _ := stub.GetState(args[0])
 
     return shim.Success(assetBytes)
+}
+
+func (code *SimpleChaincode) create(stub shim.ChaincodeStubInterface) pb.Response {
+    fmt.Println(&quot;--- create ---&quot;)
+
+    _, args := stub.GetFunctionAndParameters()
+
+    stub.PutState(args[0], []byte(args[1]));
+
+    return shim.Success(nil)
+}
+
+func (code *SimpleChaincode) delete(stub shim.ChaincodeStubInterface) pb.Response {
+    fmt.Println(&quot;--- delete ---&quot;)
+
+    _, args := stub.GetFunctionAndParameters()
+
+    stub.DelState(args[0])
+
+    return shim.Success(nil)
 }
 
 func main() {
