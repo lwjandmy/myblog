@@ -9,7 +9,9 @@
 
 
 <h1 id="pom-xml-">pom.xml配置模板</h1>
-<pre><code class="lang-xml">
+<pre><code class="lang-xml">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+
     &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
     &lt;groupId&gt;org.test.pom.example&lt;/groupId&gt;
     &lt;artifactId&gt;pom_example&lt;/artifactId&gt;
@@ -43,7 +45,7 @@
     &lt;/distributionManagement&gt;
 
     &lt;build&gt;
-    &lt;!-- 插件配置 --&gt;
+        &lt;!-- 插件配置 --&gt;
         &lt;plugins&gt;
             &lt;!-- 插件: 编译时同时打包源文件, 部署到仓库 --&gt;
             &lt;plugin&gt;
@@ -61,15 +63,15 @@
                 &lt;/executions&gt;
             &lt;/plugin&gt;
 
-      &lt;!-- 插件: 指定jdk版本 --&gt;
-      &lt;plugin&gt;
-        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
-        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
-        &lt;configuration&gt;
-          &lt;source&gt;1.7&lt;/source&gt;
-          &lt;target&gt;1.7&lt;/target&gt;
-        &lt;/configuration&gt;
-      &lt;/plugin&gt;
+            &lt;!-- 插件: 指定jdk版本 --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.7&lt;/source&gt;
+                    &lt;target&gt;1.7&lt;/target&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
 
         &lt;/plugins&gt;
 
@@ -113,11 +115,13 @@
     &lt;properties&gt;
         &lt;!-- 源文件编码 --&gt;
         &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
-    &lt;!-- 编译日志编码 --&gt;
+        &lt;!-- 编译日志编码 --&gt;
         &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
         &lt;!-- 编译时的编码 --&gt;
         &lt;maven.compiler.encoding&gt;UTF-8&lt;/maven.compiler.encoding&gt;
     &lt;/properties&gt;
+
+&lt;/project&gt;
 </code></pre>
 
 
