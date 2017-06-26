@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>日期与字符串格式化DateFormat
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-dateformat">日期与字符串格式化DateFormat</h1>
+<p>使用DateFormat, 实现日期时间与字符串之间转换</p>
+<pre><code class="lang-java">DateFormat.getDateTimeInstance().format(new Date())
+DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.SIMPLIFIED_CHINESE).format(new Date())
+DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.SIMPLIFIED_CHINESE).format(new Date())
+DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.SIMPLIFIED_CHINESE).format(new Date())
+DateFormat.getDateInstance(DateFormat.FULL, Locale.SIMPLIFIED_CHINESE).format(new Date())
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
