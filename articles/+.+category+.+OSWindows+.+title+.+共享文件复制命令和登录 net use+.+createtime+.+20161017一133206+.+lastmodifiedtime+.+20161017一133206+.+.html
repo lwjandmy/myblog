@@ -16,6 +16,19 @@ copy /y \\192.168.x.x\a\webapps\x.war E:\b\webapps
 关闭网络节点 解决问题不允许一个用户使用一个以上用户名与服务器或共享资源的多重连接
 net use \\192.168.xx.xx /delete
 </code></pre>
+<pre><code class="lang-bat">
+rem 查看net use用法
+net use /?
+
+rem 查看当前远程共享连接
+net use
+
+rem 删除已存在的连接
+net use URL /delete
+
+rem 使用用户名USER连接共享
+net use URL * /user:USER
+</code></pre>
 
 
 </div>

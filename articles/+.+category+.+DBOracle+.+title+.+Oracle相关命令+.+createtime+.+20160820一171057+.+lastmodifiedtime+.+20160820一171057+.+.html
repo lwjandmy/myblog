@@ -1,6 +1,6 @@
 
 
-<html><head><meta charset="UTF-8"><title>Oracle启动
+<html><head><meta charset="UTF-8"><title>Oracle相关命令
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 
@@ -8,7 +8,7 @@
 
 
 
-<h1 id="oracle-">Oracle启动</h1>
+<h1 id="oracle-">Oracle相关命令</h1>
 <h2 id="linux-oracle">linux下启动oracle</h2>
 <pre><code class="lang-sql">su - oracle
 sqlplus /nolog
@@ -22,6 +22,24 @@ exit
 <pre><code class="lang-sql">su - oracle
 sqlplus &#39;/as sysdba&#39;
 alter user xxxx account unlock;
+</code></pre>
+<h2 id="oracle-">oracle服务排错</h2>
+<pre><code class="lang-bash">
+# 监听: 一个listener进程, 监听客户端发来的数据. 如果不开监听, 所有客户端无法连接服务器.
+
+# TNS: Transparence Network Substrate, 透明网络底层, 客户端与服务器通信协议
+# TNS Ping 工具
+tnsping
+
+# no login 不登陆服务器的方式启动sqlplus
+sqlplus /nolog
+
+SQL&gt; conn /as sysdba # 以系统管理员的方式连接数据库
+
+# 监听排错
+sqlplus /as sysdba # 使用操作系统认证, 不需监听
+sqlplus sys/oracle # 连接本机数据库, 不需监听
+sqlplus sys/oracle@orcl # 连接网络上数据库, 需要监听
 </code></pre>
 <h2 id="linux-oracle">linux下关闭oracle</h2>
 <pre><code class="lang-sql">su - oracle
@@ -190,7 +208,7 @@ show parameter deferred_segment_creation;
 
 drop user lwjtest cascade;
 create user lwjtest identified by lwjtest;
-grant all privilege, dba to lwjtest;
+grant all privileges, dba to lwjtest;
 
 imp lwjtest/lwjtest file=c:\cptest fromuser=cptest touser=lwjtest
 </code></pre>
@@ -206,6 +224,79 @@ drop table cont_contractext_h_history;
 imp lwjprivate/lwjprivate file=c:\cptest.dmp fromuser=cptest tables=(cont_contractext_h_temp,cont_contractext_h_history)
 </code></pre>
 <pre><code class="lang-sql">imp x/x@192.168.x.x/orcl file=c:\x.dump fromuser=x tables=(xx)
+</code></pre>
+<hr>
+<h2 id="-">查看日志</h2>
+<pre><code class="lang-sql">-- 查看日志文件所在路径
+select * from v$diag_info where name like &#39;%Diag%&#39;;
+</code></pre>
+<hr>
+<h2 id="-">归档日志</h2>
+<pre><code class="lang-sql">-- 查看归档日志位置
+show parameter db_recovery_file_dest;
+-- 查看归档日志大小
+select * from v$recovery_file_dest;
+select * from v$flash_recovery_area_usage;
+-- 修改归档日志大小
+alter system set db_recovery_file_dest_size=6G;
+-- 删除归档日志文件 **未完成 再收藏里有
+rman target sys/sysadmin@orcl
+</code></pre>
+<hr>
+<h2 id="-oracle-">看Oracle书后的整理</h2>
+<pre><code class="lang-sql">
+设置plsql一行展示文字个数
+show linesize
+set linesize 200
+
+15. 控制文件和日志文件
+
+控制文件记录数据库元数据（数据库名，数据文件存放位置）
+select * from v$controlfile;
+
+
+查看日志文件
+select * from v$logfile;
+查看数据库是否是归档模式
+select name, log_mode from v$database;
+
+
+16. 表空间的管理
+查看表空间
+select * from dba_tablespaces;
+创建表空间
+create tablespace mytablespace1
+datafile &#39;MYTABLESPACE1.DBF&#39; size 1g
+auto extend on next 100m maxsize 10g;
+移动数据文件
+表空间设置成脱机状态
+alter tablespace mytablespace1 offline;
+手动复制数据文件到其他位置
+更新数据文件名称
+alter tablespace mytablespace1 rename datafile oldname to newname;
+设置成联机状态
+alter tablespace mytablespace1 online;
+删除数据文件
+alter tablespace mytablespace1 drop datafile myfilename;
+
+17. 与数据库安全有关的对象
+创建用户
+create user username identified by password
+default tablespace mytablespace1;
+修改用户
+alter user username identified account unlock;
+查看用户的系统权限，用户的对象权限
+DBA_SYS_PRIVS, DBA_TAB_PRIVS
+
+
+19. 使用RMAN工具 Recovery Manager
+sqlplus
+create user RMANUSER identified by RMAN default tablespace RMANTABLESPACE
+grant RECOVERY_CATALOG_OWNER to RMANUSER
+rman
+connect catalog RMANUSER/RMAN@service
+创建恢复目录
+create catalog
 </code></pre>
 
 
