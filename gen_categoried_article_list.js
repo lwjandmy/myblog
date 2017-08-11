@@ -121,7 +121,7 @@ remove_file_list(function () { // 移除旧文件列表
 	
 		categoried_article_list = sort_by_modified_time_desc_categoried_article_list(categoried_article_list); // 对分类后文章, 每类文章按修改时间倒序排序
 		
-		console.log(categoried_article_list);
+		// console.log(categoried_article_list);
 	
 		// 保存文件
 		fs.appendFile('js/categoried_article_list.js', 'categoried_article_list = ' + 

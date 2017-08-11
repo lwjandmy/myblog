@@ -53,7 +53,7 @@ var md2html = function (callback) {
 			try {fs.unlinkSync(out_file_path);} catch (e){}
 			fs.appendFileSync(out_file_path, file_data);
 			
-			console.log(out_file_path);
+			// console.log(out_file_path);
 			
 		});
 		callback && callback();
