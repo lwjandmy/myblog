@@ -1,0 +1,154 @@
+
+
+<html><head><meta charset="UTF-8"><title>HttpClient 发送GET POST 携带cookie POST数据为UrlEncodeFormEntity
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="httpclient-get-post-cookie-post-urlencodeformentity">HttpClient 发送GET POST 携带cookie POST数据为UrlEncodeFormEntity</h1>
+<pre><code class="lang-java">/**
+ *  main方法执行以下HTTP操作: 进入单位结算账户预受理页面 获取验证码 开户申请
+ *
+ */
+public class AccountLogin {
+
+
+    /**
+     * 设置HttpClient打印日志参数, 方便调试
+     */
+    public static void setApacheLoggingParameters() {
+
+        java.util.logging.Logger.getLogger(&quot;org.apache.http.wire&quot;).setLevel(java.util.logging.Level.ALL);
+        java.util.logging.Logger.getLogger(&quot;org.apache.http.headers&quot;).setLevel(java.util.logging.Level.ALL);
+        System.setProperty(&quot;org.apache.commons.logging.Log&quot;, &quot;org.apache.commons.logging.impl.SimpleLog&quot;);
+        System.setProperty(&quot;org.apache.commons.logging.simplelog.showdatetime&quot;, &quot;true&quot;);
+        System.setProperty(&quot;org.apache.commons.logging.simplelog.log.httpclient.wire&quot;, &quot;debug&quot;);
+        System.setProperty(&quot;org.apache.commons.logging.simplelog.log.org.apache.http&quot;, &quot;debug&quot;);
+        System.setProperty(&quot;org.apache.commons.logging.simplelog.log.org.apache.http.headers&quot;, &quot;debug&quot;);
+        System.setProperty(&quot;org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient&quot;, &quot;debug&quot;);// &quot;stdout&quot;为标准输出格式，&quot;debug&quot;为调试模式
+
+    }
+
+    /**
+     * 进入单位结算账户预受理页面
+     * @param httpClient
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static boolean openLoginPage(HttpClient httpClient) throws ClientProtocolException, IOException {
+
+        HttpGet httpGet = new HttpGet(&quot;https://xxx&quot;);
+
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+
+        return 200 == httpResponse.getStatusLine().getStatusCode();
+    }
+
+    /**
+     * 获取验证码
+     * @param httpClient
+     * @param phoneNumber 手机号
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static boolean requireVerifyCode(HttpClient httpClient, String phoneNumber) throws ClientProtocolException, IOException {
+
+        HttpPost httpPost = new HttpPost(&quot;xxx&quot;);
+
+        List&lt;NameValuePair&gt; nvpl = new ArrayList&lt;NameValuePair&gt;();
+        nvpl.add(new BasicNameValuePair(&quot;appPhone&quot;, phoneNumber));
+        nvpl.add(new BasicNameValuePair(&quot;smsSndSeqNo&quot;, &quot;1&quot;));
+
+        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(nvpl);
+        httpPost.setEntity(entity);
+
+        HttpResponse httpResponse = httpClient.execute(httpPost);
+
+        return 200 == httpResponse.getStatusLine().getStatusCode();
+    }
+
+    /**
+     * 开户申请
+     * @param httpClient
+     * @param phoneNumber 手机号
+     * @param verifyCode 验证码
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static boolean createAccount(HttpClient httpClient, String phoneNumber, String verifyCode) throws ClientProtocolException, IOException {
+
+        HttpPost httpPost = new HttpPost(&quot;xxx&quot;);
+
+        List&lt;NameValuePair&gt; nvpl = new ArrayList&lt;NameValuePair&gt;();
+        nvpl.add(new BasicNameValuePair(&quot;appPhone&quot;, phoneNumber));
+        nvpl.add(new BasicNameValuePair(&quot;smsCode&quot;, verifyCode));
+        nvpl.add(new BasicNameValuePair(&quot;_viewReferer&quot;, &quot;cifRegist/ECReg0102&quot;));
+        nvpl.add(new BasicNameValuePair(&quot;chnlID&quot;, &quot;?12&quot;));
+        nvpl.add(new BasicNameValuePair(&quot;smsSndSeqNo&quot;, &quot;2&quot;));
+        nvpl.add(new BasicNameValuePair(&quot;orgNum&quot;, &quot;bbbbbbbbbbb&quot;));
+        nvpl.add(new BasicNameValuePair(&quot;radioSel&quot;, &quot;1&quot;));
+        nvpl.add(new BasicNameValuePair(&quot;merchant&quot;, &quot;bbbbbbbbbbb&quot;));
+
+        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(nvpl);
+        httpPost.setEntity(entity);
+
+        HttpResponse httpResponse = httpClient.execute(httpPost);
+
+        System.out.println(EntityUtils.toString(httpResponse.getEntity())); // 打印服务器返回的数据
+
+        return 200 == httpResponse.getStatusLine().getStatusCode();
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader sysinReader = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println(&quot;设置控制台日志打印参数&quot;);
+        setApacheLoggingParameters();
+
+        System.out.println(&quot;创建HttpClient&quot;);
+        List&lt;BasicHeader&gt; headerList = new ArrayList&lt;BasicHeader&gt;();
+        headerList.add(new BasicHeader(HttpHeaders.USER_AGENT, &quot;Mozilla/4.0 (compatible; MSIE 6.0; Windows XP)&quot;));
+        headerList.add(new BasicHeader(HttpHeaders.CONTENT_ENCODING, &quot;UTF-8&quot;));
+        HttpClient httpClient = HttpClients.custom().setDefaultHeaders(headerList).build();
+
+        System.out.println(&quot;打开登录页面&quot;);
+        openLoginPage(httpClient);
+
+        System.out.println(&quot;输入手机号:&quot;);
+        String phoneNumber = sysinReader.readLine();
+
+        System.out.println(&quot;发送获取验证码申请&quot;);
+        requireVerifyCode(httpClient, phoneNumber);
+
+        System.out.println(&quot;输入接收到的验证码:&quot;);
+        String verifyCode = sysinReader.readLine();
+
+        System.out.println(&quot;开户申请&quot;);
+        createAccount(httpClient, phoneNumber, verifyCode);
+
+        System.out.println(&quot;登录完成&quot;);
+
+
+    }
+
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
