@@ -1,0 +1,54 @@
+
+
+<html><head><meta charset="UTF-8"><title>Compiler compliance配置 Retrolanbda JDK8代码在JRE6下运行
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="compiler-compliance-retrolanbda-jdk8-jre6-">Compiler compliance配置 Retrolanbda JDK8代码在JRE6下运行</h1>
+<pre><code class="lang-text">Java Compiler  JDK Compliance
+    勾选Use compliance from execution environment ... 用Java Build Path下的运行环境, 设置这里的编译等级
+    Compiler compliance level 编译器编译等级 保证在低JRE环境下, 程序仍然能执行
+
+Java Build Path  Library  Edit Library
+    Execution environment 执行环境 这里即使当前使用JDK8 也能设成JavaSE-1.6执行环境 高版本JDK8兼容低版本执行环境
+</code></pre>
+<p>JDK8下的代码, 在JRE6下执行:</p>
+<p>使用retrolambda的mavne插件:</p>
+<p>pom.xml:</p>
+<pre><code class="lang-xml">&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;net.orfjackal.retrolambda&lt;/groupId&gt;
+            &lt;artifactId&gt;retrolambda-maven-plugin&lt;/artifactId&gt;
+            &lt;version&gt;2.5.1&lt;/version&gt;
+            &lt;executions&gt;
+                &lt;execution&gt;
+                    &lt;goals&gt;
+                        &lt;goal&gt;process-main&lt;/goal&gt;
+                        &lt;goal&gt;process-test&lt;/goal&gt;
+                    &lt;/goals&gt;
+                &lt;/execution&gt;
+            &lt;/executions&gt;
+            &lt;configuration&gt;
+                &lt;target&gt;1.6&lt;/target&gt;
+            &lt;/configuration&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
