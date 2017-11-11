@@ -25,7 +25,8 @@ mount -o iocharset=utf8
 <pre><code class="lang-bash">locale-gen
 </code></pre>
 <p>添加LANG环境变量, 编辑.bashrc:</p>
-<pre><code class="lang-bash">declare -x LANG=zh_CN.UTF-8
+<pre><code class="lang-bash">export LANG=zh_CN.UTF-8
+export LC_CTYPE=$LANG
 </code></pre>
 <h2 id="cygwin-">cygwin乱码</h2>
 <p>编辑cygwin\Cygwin.bat:</p>

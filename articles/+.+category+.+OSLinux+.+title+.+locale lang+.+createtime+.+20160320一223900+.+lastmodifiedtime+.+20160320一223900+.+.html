@@ -1,6 +1,6 @@
 
 
-<html><head><meta charset="UTF-8"><title>locale
+<html><head><meta charset="UTF-8"><title>locale lang
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 
@@ -8,7 +8,7 @@
 
 
 
-<h1 id="locale">locale</h1>
+<h1 id="locale-lang">locale lang</h1>
 <p><a href="http://zhaizhenxing.blog.51cto.com/643480/134533">LANG,LC_ALL,local详解</a></p>
 <p>LC_*说明:</p>
 <ol>
@@ -34,6 +34,10 @@
 <p>设置一个英文界面, 但可输入中文:</p>
 <pre><code class="lang-bash">LANG=en_US.UTF-8
 LC_CTYPE=zh_CN
+</code></pre>
+<p>后来发现LC_CTYPE被改成了C, 导致即使LANG设置对了, 中文还是乱码, 于是:</p>
+<pre><code class="lang-bash">export LANG=zh_CN.UTF-8
+export LC_CTYPE=$LANG
 </code></pre>
 
 
