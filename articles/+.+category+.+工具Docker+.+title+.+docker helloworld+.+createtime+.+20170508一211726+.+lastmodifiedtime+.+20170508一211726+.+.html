@@ -13,7 +13,7 @@
 <p><a href="http://www.runoob.com/docker/docker-image-usage.html">docker-image-usage</a></p>
 <hr>
 <h2 id="linux-">Linux下安装</h2>
-<pre><code class="lang-bash">pacman -S docker # 安装docker
+<pre><code class="lang-bash">pacman -S docker docker-compose # 安装docker docker-compose
 sudo systemctl enable docker # 系统启动时自动启动docker服务
 sudo systemctl start docker # 启动docker服务
 sudo mkdir -p /etc/docker # 创建docker配置目录
@@ -21,8 +21,10 @@ sudo tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39; # 设置aliyun镜像
 {
   &quot;registry-mirrors&quot;: [&quot;https://xxx.mirror.aliyuncs.com&quot;]
 }
-sudo docker search tutorial # 测试是否可用
 EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+sudo docker search tutorial # 测试是否可用
 </code></pre>
 <hr>
 <h2 id="-">镜像与容器</h2>

@@ -1,0 +1,29 @@
+
+
+<html><head><meta charset="UTF-8"><title>js 不用template 实现多行字符串 ${}表达式
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-template-">js 不用template 实现多行字符串 ${}表达式</h1>
+<pre><code class="lang-js">(function (s) { return s.replace(/\$\{([^\}]+)\}/g, function (match, expression) { return eval(expression) }) })
+((function (fn) { return fn.toString().split(&#39;\n&#39;).slice(1,-1).join(&#39;\n&#39;) + &#39;\n&#39; })
+(function(){/*
+这里放多行字符串
+*/}))
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

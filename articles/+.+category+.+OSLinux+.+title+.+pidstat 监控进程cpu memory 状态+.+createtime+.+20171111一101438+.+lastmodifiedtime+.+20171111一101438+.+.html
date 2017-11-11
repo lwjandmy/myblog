@@ -1,0 +1,27 @@
+
+
+<html><head><meta charset="UTF-8"><title>pidstat 监控进程cpu memory 状态
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="pidstat-cpu-memory-">pidstat 监控进程cpu memory 状态</h1>
+<pre><code class="lang-txt">监控进程资源占用
+pidstat -p 52453 -u 1 | tee pidstat_cpu.txt
+pidstat -p 52453 -r 1 | tee pidstat_memory.txt
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
