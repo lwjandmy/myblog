@@ -39,6 +39,9 @@ sudo mdadm --detail --scan | sudo tee -a /etc/mdadm.conf
 <p>初始化设备, 使之支持LVM:</p>
 <pre><code class="lang-bash">sudo pvcreate /dev/md0
 </code></pre>
+<p>显示物理卷信息:</p>
+<pre><code class="lang-bash">sudo pvdisplay
+</code></pre>
 <p>把设备加入卷组:</p>
 <pre><code class="lang-bash">sudo vgcreate LVM1 /dev/md0
 </code></pre>
@@ -48,6 +51,9 @@ sudo mdadm --detail --scan | sudo tee -a /etc/mdadm.conf
 <p>在卷组中创建逻辑卷:</p>
 <pre><code class="lang-bash">sudo lvcreate --size 100M --name web1 LVM1
 sudo lvcreate --size 100M --name web2 LVM1
+</code></pre>
+<p>显示逻辑卷信息:</p>
+<pre><code class="lang-bash">sudo lvdisplay
 </code></pre>
 <h2 id="-">完成, 应用此系统</h2>
 <p>建立文件系统:</p>
