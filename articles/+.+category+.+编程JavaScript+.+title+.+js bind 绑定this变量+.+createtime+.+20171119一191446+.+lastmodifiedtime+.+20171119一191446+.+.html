@@ -1,0 +1,53 @@
+
+
+<html><head><meta charset="UTF-8"><title>js bind 绑定this变量
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-bind-this-">js bind 绑定this变量</h1>
+<pre><code class="lang-js">var env = { data: &#39;i am data&#39; };
+var fun = function () { console.log(this.data); };
+fun(); // 输出undefined
+
+env.fun = fun;
+env.fun(); // 输出&#39;i am data&#39;
+
+var bindedFun = fun.bind(env);
+bindedFun(); // 输出&#39;i am data&#39;
+
+使用Function.protptype.bind(your_this), 绑定一个方法的this参数, 保证方法访问的this始终是正确的.
+</code></pre>
+<p>如果浏览器 不支持bind, 自动添加</p>
+<pre><code class="lang-js">if (!Function.prototype.bind) {
+    Function.prototype.bind = function(oThis) {
+        if (typeof this !== &quot;function&quot;) {
+            throw new TypeError(&quot;Function.prototype.bind - what is trying to be bound is not callable&quot;);
+        }
+        var aArgs = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
+        fNOP = function() {},
+        fBound = function() {
+            return fToBind.apply(this instanceof fNOP &amp;&amp; oThis ? this: oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+        };
+        fNOP.prototype = this.prototype;
+        fBound.prototype = new fNOP();
+        return fBound;
+    };
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

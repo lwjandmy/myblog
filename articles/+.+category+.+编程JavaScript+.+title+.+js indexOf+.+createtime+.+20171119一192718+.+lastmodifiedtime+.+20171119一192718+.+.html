@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>js indexOf 浏览器兼容 自定义indexOf
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-indexof-indexof">js indexOf 浏览器兼容 自定义indexOf</h1>
+<p>ie8不支持indexOf, 手动实现一个</p>
+<pre><code class="lang-js">if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(elt
+    /*, from*/
+    ) {
+        var len = this.length &gt;&gt;&gt; 0;
+        var from = Number(arguments[1]) || 0;
+        from = (from &lt; 0) ? Math.ceil(from) : Math.floor(from);
+        if (from &lt; 0) from += len;
+        for (; from &lt; len; from++) {
+            if (from in this &amp;&amp; this[from] === elt) return from;
+        }
+        return - 1;
+    };
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
