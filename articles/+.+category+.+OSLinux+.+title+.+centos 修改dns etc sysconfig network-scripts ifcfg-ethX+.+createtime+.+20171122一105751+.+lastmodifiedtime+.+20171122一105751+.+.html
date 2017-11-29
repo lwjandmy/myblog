@@ -1,0 +1,34 @@
+
+
+<html><head><meta charset="UTF-8"><title>centos 修改dns etc sysconfig network-scripts ifcfg-ethX
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="centos-dns-etc-sysconfig-network-scripts-ifcfg-ethx">centos 修改dns etc sysconfig network-scripts ifcfg-ethX</h1>
+<p>修改/etc/sysconfig/network-scripts/ifcfg-ethX</p>
+<p>增加</p>
+<pre><code class="lang-ini">DNS1=8.8.8.8   #google dns服务器, 根据实际情况更换
+DNS2=8.8.4.4   #google dns服务器, 根据实际情况更换
+</code></pre>
+<p>保存后重启网络</p>
+<pre><code class="lang-bash">service network restart
+</code></pre>
+<p>检查DNS是否设置成功</p>
+<pre><code class="lang-bash"># cat /etc/resolv.conf
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
