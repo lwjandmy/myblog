@@ -26,8 +26,10 @@ ip addr add 192.168.32.32/24 dev eth1
 ip route add to 0/0 via 192.168.32.200
 </code></pre>
 <p>virtualbox ubuntu设置静态ip</p>
-<pre><code class="lang-bash">sudo ip addr add 192.168.56.110/24 dev enp0s8
-sudo ip route add to 0/0 via 192.168.56.1
+<p>放在/etc/profile.d/static-ip.sh</p>
+<pre><code class="lang-bash">sudo ip link set up dev enp0s8
+sudo ip addr add 192.168.56.110/24 dev enp0s8
+sudo ip route add to 0/0 via 192.168.56.1 dev enp0s8
 </code></pre>
 
 
