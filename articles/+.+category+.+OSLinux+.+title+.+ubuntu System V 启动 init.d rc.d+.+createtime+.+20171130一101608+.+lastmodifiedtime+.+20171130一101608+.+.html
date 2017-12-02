@@ -1,0 +1,60 @@
+
+
+<html><head><meta charset="UTF-8"><title>ubuntu System V 启动 init.d rc.d
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ubuntu-system-v-init-d-rc-d">ubuntu System V 启动 init.d rc.d</h1>
+<pre><code class="lang-txt">update-rc.d
+把
+/etc/init.d/&lt;name&gt;
+链接到
+/etc/rc&lt;runlevel&gt;.d/&lt;S|K&gt;&lt;NN&gt;&lt;name&gt;
+
+&lt;name&gt;是脚本名
+&lt;runlevel&gt;是启动类型, 可选值为0123456789S
+&lt;S|K&gt;是S或K, S表示启动start, K表示关闭kill
+&lt;NN&gt;是2位数字, 表示启动次序
+
+编辑脚本
+sudo vim /etc/init.d/static-ip
+sudo chmod +x /etc/init.d/static-ip
+</code></pre>
+<p>设置脚本为开机启动</p>
+<pre><code class="lang-bash">cd /etc/init.d/
+sudo update-rc.d static-ip defaults
+</code></pre>
+<p>删掉启动链接, 禁止启动</p>
+<pre><code class="lang-bash">sudo update-rc.d -f static-ip remove
+</code></pre>
+<p>开启脚本启动</p>
+<pre><code class="lang-bash">sudo update-rc.d static-ip enable
+</code></pre>
+<p>禁止脚本启动</p>
+<pre><code class="lang-bash">sudo update-rc.d static-ip disable
+</code></pre>
+<p>发现无效, 改成如下</p>
+<pre><code class="lang-bash">sudo ln -s /etc/init.d/static-ip /etc/rc5.d/S90static-ip
+</code></pre>
+<pre><code class="lang-txt">启动脚本 不是这么写 这么写会出错:
+
+Control process exited, code=exited status=203
+Unit entered failed state.
+Failed with result &#39;exit-code&#39;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

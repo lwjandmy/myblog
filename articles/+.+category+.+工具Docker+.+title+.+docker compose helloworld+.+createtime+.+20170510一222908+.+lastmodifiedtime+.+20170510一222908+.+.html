@@ -13,6 +13,12 @@
 <h2 id="linux-">Linux下安装</h2>
 <pre><code class="lang-bash">sudo pacman -S docker-compose
 </code></pre>
+<p>离线安装</p>
+<pre><code class="lang-bash"># sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+# 下载https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m`
+# 放到/usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+</code></pre>
 <h2 id="-">例子</h2>
 <pre><code class="lang-bash">mkdir ~/composetest
 cd ~/composetest
