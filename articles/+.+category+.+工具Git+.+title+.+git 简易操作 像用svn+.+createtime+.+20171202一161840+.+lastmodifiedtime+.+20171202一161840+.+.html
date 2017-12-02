@@ -1,0 +1,92 @@
+
+
+<html><head><meta charset="UTF-8"><title>git 简易操作 像用svn
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="git-svn">git 简易操作 像用svn</h1>
+<p><a href="http://www.jikexueyuan.com/course/479.html">Git本地操作 - 极客学院</a></p>
+<pre><code class="lang-txt">概念
+
+工作目录(Working Directory): 编辑代码的目录
+暂存区(Staging Area): 提交代码前, 保存代码变化的缓冲区
+Git仓库(Git Repository): 保存提交后的代码
+远程Git仓库: 服务器上的Git仓库
+为了简化git使用, 达到类似svn的使用效果, 将暂存区, Git仓库, 远程Git仓库始终保持数据一致, 看做一个整体, 称作仓库.
+因此, 版本控制就仅仅变成工作目录和仓库两者之间的交互.
+</code></pre>
+<p>全局设置</p>
+<pre><code class="lang-bash">git config --global user.name &#39;li_wjie&#39;
+git config --global user.email &#39;li_wjie@cvicse.com&#39;
+git config --global color.ui true
+git config --global alias.logv &#39;log --pretty=oneline --graph --all&#39;
+</code></pre>
+<p>下载代码</p>
+<pre><code class="lang-bash">git clone li_wjie@localhost:/home/li_wjie/git-repo/repo1.git
+</code></pre>
+<p>切换分支</p>
+<pre><code class="lang-bash">git checkout feature1
+Eclipse: Team -&gt; Switch To -&gt; feature1
+</code></pre>
+<p>比较本地与仓库代码区别: 工作目录 &lt;--&gt; 远程Git仓库</p>
+<pre><code class="lang-bash">git fetch origin feature1
+git diff origin/feature1
+Eclipse: Team -&gt; Synchronize Workspace
+</code></pre>
+<p>提交代码: 工作目录 -&gt; 仓库: 工作目录 -&gt; 暂存区 -&gt; Git仓库 -&gt; 远程Git仓库</p>
+<pre><code class="lang-bash">git add *
+git commit -m &#39;append data14&#39;
+git push origin feature1
+如果上面这句出错, 说明仓库有人提代码了, 执行下面的:
+    git fetch origin feature1
+    git rebase origin/feature1
+    如果有冲突, 解决冲突
+        vim conflit_file
+        git add *
+        git rebase --continue
+    git push origin feature1
+Eclipse: Pull
+Eclipse: 解决冲突
+Eclipse: Mark as Merged
+Eclipse: Commit
+Eclipse: Push
+</code></pre>
+<p>更新代码(更新前git status确保代码都提交了): 远程Git仓库 -&gt; Git仓库 -&gt; 暂存区 -&gt; 工作目录</p>
+<pre><code class="lang-bash">git fetch origin feature1
+git merge
+Eclipse: Team -&gt; Synchronize Workspace
+</code></pre>
+<p>本地代码还原: 缓存区 -&gt; 工作目录</p>
+<pre><code class="lang-bash">git checkout -- file1
+</code></pre>
+<p>查看提交历史</p>
+<pre><code class="lang-bash">git logv
+Eclipse: Team -&gt; Show in history
+</code></pre>
+<p>查看历史代码版本</p>
+<pre><code class="lang-bash">git logv
+git log -- articles/new_picture.js
+git show bfe3bca0b2e43e68b52a08ec34cb24844a5119c3:articles/new_picture.js
+</code></pre>
+<p>SSH免密登录</p>
+<p>上传client的id_rsa.pub到server的~/.ssh/</p>
+<p>server中, 执行</p>
+<pre><code class="lang-bash">cd ~/.ssh/
+cat id_rsa.pub &gt;&gt; authorized_keys
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
