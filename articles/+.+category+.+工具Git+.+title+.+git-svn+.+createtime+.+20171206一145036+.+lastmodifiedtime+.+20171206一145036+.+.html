@@ -1,0 +1,87 @@
+
+
+<html><head><meta charset="UTF-8"><title>git-svn
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="git-svn">git-svn</h1>
+<p>在当前目录初始化svn仓库</p>
+<pre><code class="lang-bash">git svn init .
+</code></pre>
+<p>从SVN仓库下载代码, 会创建test-repo目录</p>
+<pre><code class="lang-bash">git svn clone --username=li_wjie https://localhost/svn/test-repo
+</code></pre>
+<p>提交代码</p>
+<pre><code class="lang-bash">git svn dcommit
+</code></pre>
+<p>如果出错: is out of date</p>
+<pre><code>从仓库下载最新代码
+
+```bash
+git svn rebase
+```
+
+如果出错: error: 无法合并变更
+
+    手动合并&lt;conflict-file&gt;
+
+    ```bash
+    git add &lt;conflict-file&gt;
+    git rebase --continue
+    ```
+
+再次提交代码
+
+```bash
+git svn dcommit
+```
+</code></pre><p>查看svn信息</p>
+<pre><code class="lang-bash">git svn info
+</code></pre>
+<p>git属性读写</p>
+<pre><code class="lang-bash">git svn proplist
+git svn propget
+git svn propset
+</code></pre>
+<pre><code class="lang-bash">git svn branch
+</code></pre>
+<pre><code class="lang-bash">git svn tag
+</code></pre>
+<pre><code class="lang-bash">git svn log
+</code></pre>
+<pre><code class="lang-bash">git svn blame
+</code></pre>
+<pre><code class="lang-bash">git svn find-rev
+</code></pre>
+<pre><code class="lang-bash">git svn set-tree
+</code></pre>
+<pre><code class="lang-bash">git svn create-ignore
+</code></pre>
+<pre><code class="lang-bash">git svn show-ignore
+</code></pre>
+<pre><code class="lang-bash">git svn mkdirs
+</code></pre>
+<pre><code class="lang-bash">git svn commit-diff
+</code></pre>
+<pre><code class="lang-bash">git svn show-externals
+</code></pre>
+<pre><code class="lang-bash">git svn gc
+</code></pre>
+<pre><code class="lang-bash">git svn reset
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
