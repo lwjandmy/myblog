@@ -18,28 +18,34 @@
 <p>提交代码</p>
 <pre><code class="lang-bash">git svn dcommit
 </code></pre>
-<p>如果出错: is out of date</p>
-<pre><code>*. 从仓库下载最新代码
-
-```bash
-git svn rebase
-```
-
-*. 如果出错: error: 无法合并变更
-
-    *. 手动合并&lt;conflict-file&gt;
-
-    ```bash
-    git add &lt;conflict-file&gt;
-    git rebase --continue
-    ```
-
-*. 再次提交代码
-
-```bash
-git svn dcommit
-```
-</code></pre><p>查看svn信息</p>
+<ol>
+<li><p>如果出错: is out of date</p>
+<ol>
+<li><p>从仓库下载最新代码</p>
+<pre><code class="lang-bash">git svn rebase
+</code></pre>
+</li>
+<li><p>如果出错: error: 无法合并变更</p>
+<ol>
+<li><p>手动合并</p>
+<pre><code class="lang-bash">vim &lt;conflict-file&gt;
+</code></pre>
+</li>
+<li><p>完成合并, 继续</p>
+<pre><code class="lang-bash">git add &lt;conflict-file&gt;
+git rebase --continue
+</code></pre>
+</li>
+</ol>
+</li>
+<li><p>再次提交代码</p>
+<pre><code class="lang-bash">git svn dcommit
+</code></pre>
+</li>
+</ol>
+</li>
+</ol>
+<p>查看svn信息</p>
 <pre><code class="lang-bash">git svn info
 </code></pre>
 <p>git属性读写</p>
