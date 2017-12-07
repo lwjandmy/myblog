@@ -1,0 +1,72 @@
+
+
+<html><head><meta charset="UTF-8"><title>BeanUtils 对象工具类 对象属性转String Date转String
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="beanutils-string-date-string">BeanUtils 对象工具类 对象属性转String Date转String</h1>
+<p>BeanUtils通过反射, 能方便的操作java对象, 将属性转成string. 并提供自定义类型转换器配置</p>
+<pre><code class="lang-java">    private static BeanUtilsBean beanUtils = new BeanUtilsBean();
+
+    static {
+
+        // 设置Date与String的类型转换器, 并把类型转换器放在当前类的实例化的beanUtils对象, 避免与BeanUtils内置的beanUtils对象冲突. 类型转换器里还有用到BeanUtils内置的ConvertUtils
+        beanUtils.getConvertUtils().register(new Converter() {
+            @Override
+            public Object convert(Class paramClass, Object paramObject) {
+                if (null == paramObject) {
+                    return null;
+                } else if (paramObject instanceof java.util.Date) {
+                    return (java.util.Date) paramObject;
+                }
+                else if (paramObject instanceof java.lang.String) {
+                    return new java.util.Date(Long.valueOf(String.valueOf(paramObject)));
+                } else {
+                    return ConvertUtils.lookup(paramClass).convert(paramClass, paramObject);
+                }
+            }
+        }, java.util.Date.class);
+
+        beanUtils.getConvertUtils().register(new Converter() {
+            @Override
+            public Object convert(Class paramClass, Object paramObject) {
+                if (null == paramObject) {
+                    return null;
+                } else if (paramObject instanceof java.lang.String) {
+                    return (java.lang.String) paramObject;
+                }
+                if (paramObject instanceof java.util.Date) {
+                    return String.valueOf(((java.util.Date) paramObject).getTime());
+                } else {
+                    return ConvertUtils.lookup(paramClass).convert(paramClass, paramObject);
+                }
+            }
+        }, java.lang.String.class);
+
+    }
+
+
+    function {
+        beanUtils.setProperty(javaObj, &quot;propertyName&quot;, &quot;propertyValue&quot;);
+        beanUtils.getProperty(javaObj, &quot;propertyName&quot;)
+        beanUtils.populate(javaObj, map); // 填充, Map转对象
+        Map&lt;String, String&gt; map = beanUtils.describe(javaObj); // 描述, 对象转Map
+
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
