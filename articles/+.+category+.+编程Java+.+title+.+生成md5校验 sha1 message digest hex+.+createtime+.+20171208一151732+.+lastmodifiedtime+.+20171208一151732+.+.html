@@ -1,0 +1,29 @@
+
+
+<html><head><meta charset="UTF-8"><title>生成md5校验 sha1 message digest hex
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-md5-sha1-message-digest-hex">生成md5校验 sha1 message digest hex</h1>
+<pre><code class="lang-java">            MessageDigest messageDigest = MessageDigest.getInstance(&quot;MD5&quot;);
+
+            messageDigest.update(new byte[] {0, 1, 2, 3});
+
+            String digestResult = Hex.encodeHexString(messageDigest.digest());
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
