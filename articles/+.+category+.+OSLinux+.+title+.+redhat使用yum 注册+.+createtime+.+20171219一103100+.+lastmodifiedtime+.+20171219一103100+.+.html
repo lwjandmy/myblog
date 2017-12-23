@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>redhat使用yum 注册
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="redhat-yum-">redhat使用yum 注册</h1>
+<pre><code class="lang-bash">yum search docker
+</code></pre>
+<p>提示:
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</p>
+<p><a href="http://blog.csdn.net/huoyunshen88/article/details/37763911">http://blog.csdn.net/huoyunshen88/article/details/37763911</a></p>
+<p>卸载yum, 再安装, 配置其他源</p>
+<p>卸载yum</p>
+<pre><code class="lang-bash">rpm -aq | grep yum | xargs rpm -e --nodeps
+</code></pre>
+<p>安装yum</p>
+<pre><code class="lang-bash">rpm -ivh http://mirrors.163.com/centos/6.9/os/x86_64/Packages/yum-3.2.29-81.el6.centos.noarch.rpm http://mirrors.163.com/centos/6.9/os/x86_64/Packages/yum-metadata-parser-1.1.2-16.el6.x86_64.rpm http://mirrors.163.com/centos/6.9/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.30-40.el6.noarch.rpm http://mirrors.163.com/centos/6.9/os/x86_64/Packages/python-iniparse-0.3.1-2.1.el6.noarch.rpm
+</code></pre>
+<p>如果提示package already installed, 就去掉这个package的url</p>
+<p>配置源</p>
+<pre><code class="lang-bash">cd /etc/yum.repos.d/
+rm -rf *
+wget http://mirrors.163.com/.help/CentOS6-Base-163.repo
+sed -i &#39;s/\$releasever/6.9/g&#39; CentOS6-Base-163.repo
+</code></pre>
+<p>清理yum缓存</p>
+<pre><code class="lang-bash">yum clean all
+</code></pre>
+<p>显示已安程序包及可安程序包</p>
+<pre><code class="lang-bash">yum list
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

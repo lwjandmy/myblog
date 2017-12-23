@@ -82,6 +82,11 @@ sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 <p>开机自动加载配置</p>
 <pre><code class="lang-bash">sudo systemctl enable iptables
 </code></pre>
+<p>编辑防火墙更简单的方式</p>
+<pre><code class="lang-bash">sudo iptables-save &gt; iptables.cfg
+vim iptables.cfg
+sudo iptables-reload &lt; iptables.cfg
+</code></pre>
 
 
 </div>
