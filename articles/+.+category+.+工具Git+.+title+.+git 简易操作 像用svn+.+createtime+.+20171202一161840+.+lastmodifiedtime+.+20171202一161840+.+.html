@@ -32,6 +32,12 @@ git config --global alias.logv &#39;log --pretty=oneline --graph --all&#39;
 <pre><code class="lang-bash">git checkout feature1
 Eclipse: Team -&gt; Switch To -&gt; feature1
 </code></pre>
+<p>从其它分支获得内容(其它分支修改了文件, 在当前分支上生效)</p>
+<pre><code class="lang-bash">git checkout feature2 -- changed-file-name
+</code></pre>
+<p>比较两个分支之间区别</p>
+<pre><code class="lang-bash">git diff feature1 feature2
+</code></pre>
 <p>比较本地与仓库代码区别: 工作目录 &lt;--&gt; 远程Git仓库</p>
 <pre><code class="lang-bash">git fetch origin feature1
 git diff origin/feature1
