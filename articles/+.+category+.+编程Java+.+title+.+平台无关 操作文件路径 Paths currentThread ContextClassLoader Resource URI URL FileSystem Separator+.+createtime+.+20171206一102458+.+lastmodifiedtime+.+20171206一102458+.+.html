@@ -11,7 +11,7 @@
 <h1 id="-paths-currentthread-contextclassloader-resource-uri-url-filesystem-separator">平台无关 操作文件路径 Paths currentThread ContextClassLoader Resource URI URL FileSystem Separator</h1>
 <pre><code class="lang-java">    return Paths.get(
                 Paths.get(Thread.currentThread().getContextClassLoader().getResource(&quot;&quot;).toURI()).toString(), // 通过Thread获取classLoader获得classpath路径, URL转成URI
-                &quot;test/fixture/sdkintegration/e2e-2Orgs/channel&quot;.replace(&quot;/&quot;, FileSystems.getDefault().getSeparator())) // 拼接子路径, 替换分隔符为当前系统分隔符
+                &quot;test/fixture&quot;.replace(&quot;/&quot;, FileSystems.getDefault().getSeparator())) // 拼接子路径, 替换分隔符为当前系统分隔符
             .toString(); // Paths.get用于拼接多个文件路径
 </code></pre>
 <pre><code class="lang-java">        // URI URL URN
@@ -20,8 +20,8 @@
 
         URL url = uri.toURL();
 
-        System.out.println(uri); // file:///D:/li_wjie/10金交所区块链环境/SVN/trunk/code/ts/
-        System.out.println(url); // file:/D:/li_wjie/10金交所区块链环境/SVN/trunk/code/ts/
+        System.out.println(uri); // file:///D:/SVN/trunk/code
+        System.out.println(url); // file:/D:/SVN/trunk/code
 
         uri.getScheme();
         uri.getPath();

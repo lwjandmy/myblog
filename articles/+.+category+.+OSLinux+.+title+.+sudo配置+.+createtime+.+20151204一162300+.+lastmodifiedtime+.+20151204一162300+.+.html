@@ -13,7 +13,9 @@
 <pre><code class="lang-bash">visudo -f /etc/sudoers
 </code></pre>
 <p>修改配置, 允许sodu组用户获得sudo权限:</p>
-<pre><code class="lang-ini">%sudo ALL=(ALL) ALL
+<pre><code class="lang-ini">visudo -f /etc/sudoers # 配置sudo用户组
+%sudo ALL=(ALL) ALL # 去掉注释, 应用这句配置
+%sudo ALL=(ALL) NOPASSWD: ALL # 或者使用这个配置, 无需输入密码
 </code></pre>
 <p>创建sudo组:</p>
 <pre><code class="lang-bash">groupadd sudo

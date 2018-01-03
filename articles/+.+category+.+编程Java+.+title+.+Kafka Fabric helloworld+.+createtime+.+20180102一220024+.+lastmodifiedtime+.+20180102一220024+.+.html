@@ -1,0 +1,110 @@
+
+
+<html><head><meta charset="UTF-8"><title>Kafka Fabric helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="kafka-fabric-helloworld">Kafka Fabric helloworld</h1>
+<p>创建topic</p>
+<pre><code class="lang-bash">./bin/kafka-topics.sh --create --zookeeper zookeeper2:2181 --replication-factor 3 --partitions 1 --topic test
+</code></pre>
+<p>查看topic</p>
+<pre><code class="lang-bash">./bin/kafka-topics.sh --list --zookeeper zookeeper2:2181
+</code></pre>
+<p>查看broker详情, 属于哪个broker</p>
+<pre><code class="lang-bash">./bin/kafka-topics.sh --describe --zookeeper zookeeper2:2181
+</code></pre>
+<p>生产者 - 发送消息</p>
+<pre><code class="lang-bash">./bin/kafka-console-producer.sh --broker-list kafka0:9092,kafka1:9092,kafka2:9092 --topic test
+</code></pre>
+<p>消费者 - 接收消息</p>
+<pre><code class="lang-bash">./bin/kafka-console-consumer.sh --bootstrap-server kafka2:9092 --zookeeper zookeeper2:2181 --topic test --from-beginning
+</code></pre>
+<pre><code class="lang-txt">leader 是对数据读写首要负责的节点. leader通过一个随机选择, 在所有节点中随机产生.
+
+replicas 是一组节点, 它们负责对leader的数据进行同步镜像, 也就是从节点. 这是从节点的总称, 其中可能有出问题的节点.
+
+isr 是一组处于数据同步状态的replicas. 是replicas的子集. 也就是replicas集合中数据与leader同步的, 正常的节点.
+</code></pre>
+<p>docker compose</p>
+<pre><code class="lang-yaml">networks:
+  kafka0:
+  kafka1:
+  kafka2:
+  kafka3:
+services:
+  kafka0:
+    container_name: kafka0
+    image: hyperledger/fabric-kafka:x86_64-1.0.3
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=0
+      - KAFKA_ADVERTISED_HOST_NAME=kafka0
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+    ports:
+      - &quot;9092:9092&quot;
+    depends_on:
+      - zookeeper0
+    networks:
+      - kafka0
+  kafka1:
+    container_name: kafka1
+    image: hyperledger/fabric-kafka:x86_64-1.0.3
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ADVERTISED_HOST_NAME=kafka1
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+    ports:
+      - &quot;9092:9092&quot;
+    depends_on:
+      - zookeeper1
+    networks:
+      - kafka1
+  kafka2:
+    container_name: kafka2
+    image: hyperledger/fabric-kafka:x86_64-1.0.3
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_BROKER_ID=2
+      - KAFKA_ADVERTISED_HOST_NAME=kafka2
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+    ports:
+      - &quot;9092:9092&quot;
+    depends_on:
+      - zookeeper2
+    networks:
+      - kafka2
+</code></pre>
+<p>注意配置KAFKA_ADVERTISED_HOST_NAME, kafka会在zookeeper上记录自己的hostname和port, 如果不设置这个hostname, 默认会设置docker容器里的随机hostname, 在docker间无法通用, 导致kafka无法通信!</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

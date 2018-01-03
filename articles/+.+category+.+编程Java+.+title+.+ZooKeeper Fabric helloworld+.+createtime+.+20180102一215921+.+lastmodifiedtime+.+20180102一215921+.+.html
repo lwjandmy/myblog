@@ -1,0 +1,96 @@
+
+
+<html><head><meta charset="UTF-8"><title>ZooKeeper Fabric helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="zookeeper-fabric-helloworld">ZooKeeper Fabric helloworld</h1>
+<p>进入客户端命令行</p>
+<pre><code class="lang-bash">./bin/zkCli.sh -server 127.0.0.1:2181
+</code></pre>
+<p>查看帮助</p>
+<pre><code class="lang-bash">help
+</code></pre>
+<p>查看zoo节点(znode)</p>
+<pre><code class="lang-bash">ls /
+</code></pre>
+<p>创建节点/zk_test, 数据是my_data</p>
+<pre><code class="lang-bash">create /zk_test my_data
+</code></pre>
+<p>读取节点数据</p>
+<pre><code class="lang-bash">get /zk_test
+</code></pre>
+<p>写入节点数据</p>
+<pre><code class="lang-bash">set /zk_test junk
+</code></pre>
+<p>删除节点数据</p>
+<pre><code class="lang-bash">delete /zk_test
+</code></pre>
+<p>docker-compose配置</p>
+<pre><code class="lang-yaml">networks:
+  zookeeper0:
+  zookeeper1:
+  zookeeper2:
+services:
+  zookeeper0:
+    container_name: zookeeper0
+    image: hyperledger/fabric-zookeeper:x86_64-1.0.3
+    restart: always
+    hostname: zookeeper0
+    ports:
+      - &quot;2181:2181&quot;
+      - &quot;2888:2888&quot;
+      - &quot;3888:3888&quot;
+    environment:
+      - ZOO_TICK_TIME=5000
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    networks:
+      - zookeeper0
+  zookeeper1:
+    container_name: zookeeper1
+    image: hyperledger/fabric-zookeeper:x86_64-1.0.3
+    restart: always
+    hostname: zookeeper1
+    ports:
+      - &quot;2181:2181&quot;
+      - &quot;2888:2888&quot;
+      - &quot;3888:3888&quot;
+    environment:
+      - ZOO_TICK_TIME=5000
+      - ZOO_MY_ID=2
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    networks:
+      - zookeeper1
+  zookeeper2:
+    container_name: zookeeper2
+    image: hyperledger/fabric-zookeeper:x86_64-1.0.3
+    restart: always
+    hostname: zookeeper2
+    ports:
+      - &quot;2181:2181&quot;
+      - &quot;2888:2888&quot;
+      - &quot;3888:3888&quot;
+    environment:
+      - ZOO_TICK_TIME=5000
+      - ZOO_MY_ID=3
+      - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    networks:
+      - zookeeper2
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
