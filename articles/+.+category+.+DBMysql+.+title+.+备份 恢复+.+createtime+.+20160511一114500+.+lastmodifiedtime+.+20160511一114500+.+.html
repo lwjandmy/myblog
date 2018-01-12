@@ -10,7 +10,8 @@
 
 <h1 id="-">备份 恢复</h1>
 <h2 id="-">备份数据库</h2>
-<pre><code class="lang-shell">mysqldump -u root -p --all-databases --lock-all-tables  &gt; mysql_db.sql
+<pre><code class="lang-shell">mysqldump -u root -p --all-databases --lock-all-tables  &gt; mysql_db.sql  
+mysqldump -u root -p db1 &gt; db1.sql
 </code></pre>
 <h2 id="-">恢复数据库</h2>
 <pre><code class="lang-shell">mysql -u root -p      进入数据库终端
