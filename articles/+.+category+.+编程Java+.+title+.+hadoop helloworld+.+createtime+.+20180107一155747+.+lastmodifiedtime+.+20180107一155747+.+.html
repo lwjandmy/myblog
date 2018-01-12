@@ -1,0 +1,196 @@
+
+
+<html><head><meta charset="UTF-8"><title>hadoop helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="hadoop-helloworld">hadoop helloworld</h1>
+<p>解压jdk, hadoop, 配置环境变量JAVA_HOME</p>
+<pre><code class="lang-bash">sudo tar xzf jdk-8u151-linux-x64.tar.gz -C /usr/local/lib
+sudo tar xzf hadoop-2.9.0.tar.gz -C ~/hadoop
+sudo vim /etc/profile
+export JAVA_HOME=&quot;/usr/local/lib/jdk1.8.0_151&quot;
+export CLASSPATH=&quot;.;$JAVA_HOME/lib/dt.jar;%JAVA_HOME%/lib/rt.jar;%JAVA_HOME%/lib/tools.jar&quot;
+export PATH=&quot;$PATH:$JAVA_HOME/bin&quot;
+export HADOOP_PREFIX=&quot;/home/li_wjie/hadoop/hadoop-2.9.0&quot;
+export HADOOP_CONF_DIR=&quot;$HADOOP_PREFIX/etc/hadoop&quot;
+export HADOOP_YARN_HOME=&quot;$HADOOP_PREFIX&quot;
+sudo vim /etc/hosts
+192.168.56.120 master
+192.168.56.121 hadoop1
+192.168.56.122 hadoop2
+192.168.56.123 hadoop3
+</code></pre>
+<p>进入hadoop解压目录</p>
+<pre><code class="lang-bash">cd ~/hadoop/hadoop-2.9.0
+</code></pre>
+<p>查看hadoop命令说明</p>
+<pre><code class="lang-bash">./bin/hadoop
+</code></pre>
+<p>独立模式</p>
+<p>准备输入数据, 用于后续测试</p>
+<pre><code class="lang-bash">mkdir input &amp;&amp; cp ./etc/hadoop/*.xml input
+</code></pre>
+<p>从input读取文件, 查找满足正则表达式的字符串, 输出到output文件夹</p>
+<pre><code class="lang-bash">./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.9.0.jar grep input output &#39;dfs[a-z.]+&#39;
+</code></pre>
+<p>集群模式</p>
+<p>编辑hadoop-env.sh, yarn-env.sh, slaves, core-site.xml, hdfs-site.xml, mapred-site.xml, yarn-site.xml</p>
+<pre><code class="lang-bash">vim ./etc/hadoop/hadoop-env.sh
+export JAVA_HOME=/usr/local/lib/jdk1.8.0_151
+</code></pre>
+<pre><code class="lang-bash">vim ./etc/hadoop/yarn-env.sh
+export JAVA_HOME=/usr/local/lib/jdk1.8.0_151
+</code></pre>
+<pre><code class="lang-bash">vim ./etc/hadoop/slaves
+hadoop1
+hadoop2
+</code></pre>
+<pre><code class="lang-bash">vim ./etc/hadoop/core-site.xml
+</code></pre>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;fs.defaultFS&lt;/name&gt;
+        &lt;value&gt;hdfs://master:9000&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<pre><code class="lang-bash">vim ./etc/hadoop/hdfs-site.xml
+</code></pre>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;
+        &lt;value&gt;master:9001&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+        &lt;value&gt;file:/hadoop/dfs/name&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.replication&lt;/name&gt;
+        &lt;value&gt;3&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+        &lt;value&gt;true&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<pre><code class="lang-bash">vim ./etc/hadoop/mapred-site.xml
+</code></pre>
+<pre><code class="lang-xml">&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+        &lt;value&gt;yarn&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;
+        &lt;value&gt;master:10020&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;
+        &lt;value&gt;master:19888&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<pre><code class="lang-bash">vim ./etc/hadoop/yarn-site.xml
+</code></pre>
+<pre><code class="lang-yaml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;configuration&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.nodemanager.aux-services.mapreduce.shuffle.class&lt;/name&gt;
+        &lt;value&gt;org.apache.hadoop.mapred.ShuffleHandler&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.address&lt;/name&gt;
+        &lt;value&gt;master:8032&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;/name&gt;
+        &lt;value&gt;master:8030&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;/name&gt;
+        &lt;value&gt;master:8035&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.admin.address&lt;/name&gt;
+        &lt;value&gt;master:8033&lt;/value&gt;
+    &lt;/property&gt;
+    &lt;property&gt;
+        &lt;name&gt;yarn.resourcemanager.webapp.address&lt;/name&gt;
+        &lt;value&gt;master:8088&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>检查ssh, 需要满足访问localhost无需输入密码</p>
+<pre><code class="lang-bash">ssh localhost
+sudo ssh localhost
+</code></pre>
+<p>如果需要输密码, 则</p>
+<pre><code class="lang-bash"># 给自己生成rsa非对称算法的公钥和密钥
+ssh-keygen -t rsa -P &#39;&#39; -f ~/.ssh/id_rsa
+# 把自己的公钥, 加入authorized_keys, 这样以后登录ssh无需输入密码
+cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+# 修改authorized_keys文件权限, 只能自己读写
+chmod 0600 ~/.ssh/authorized_keys
+</code></pre>
+<p>清理
+sudo rm -r /hadoop
+sudo rm $HADOOP_PREFIX/logs/*</p>
+<p>格式化文件系统</p>
+<pre><code class="lang-bash">sudo $HADOOP_PREFIX/bin/hdfs namenode -format
+</code></pre>
+<p>启动hdfs, NameNode后台服务和DataNode后台服务</p>
+<pre><code class="lang-bash">sudo ./sbin/start-dfs.sh
+sudo $HADOOP_PREFIX/sbin/start-dfs.sh
+sudo $HADOOP_PREFIX/sbin/stop-dfs.sh
+</code></pre>
+<p>启动yarn</p>
+<pre><code class="lang-bash">sudo ./sbin/start-yarn.sh
+sudo $HADOOP_PREFIX/sbin/start-yarn.sh
+sudo $HADOOP_PREFIX/sbin/stop-yarn.sh
+</code></pre>
+<p>查看集群状态</p>
+<pre><code class="lang-bash">./bin/hdfs dfsadmin -report
+</code></pre>
+<p>查看hdfs, NameNode控制页面</p>
+<pre><code class="lang-txt">http://hadoop0:50070/
+</code></pre>
+<p>查看RM</p>
+<p>```txt
+<a href="http://hadoop0:8088/">http://hadoop0:8088/</a></p>
+<p>测试</p>
+<p>touch data1 data2
+for ((i=1;i<999999;i++))
+do
+echo “this is a test data1” >&gt; data1
+echo &quot;and the data2 will be always created&quot;&gt;&gt;data2
+done</p>
+<p>sudo $HADOOP_PREFIX/bin/hadoop fs -mkdir /tmp
+sudo $HADOOP_PREFIX/bin/hadoop fs -mkdir /tmp/input
+sudo $HADOOP_PREFIX/bin/hadoop fs -put $HADOOP_PREFIX/data1 /tmp/input
+sudo $HADOOP_PREFIX/bin/hadoop fs -put $HADOOP_PREFIX/data2 /tmp/input</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

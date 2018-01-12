@@ -9,8 +9,314 @@
 
 
 <h1 id="fabric-sdk-">fabric sdk 整理</h1>
+<p>SampleStore.java</p>
+<pre><code class="lang-java">/*
+ *  Copyright 2016, 2017 DTCC, Fujitsu Australia Software Technology, IBM - All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package org.hyperledger.fabric.sdkintegration;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.util.encoders.Hex;
+import org.hyperledger.fabric.sdk.Channel;
+import org.hyperledger.fabric.sdk.Enrollment;
+import org.hyperledger.fabric.sdk.HFClient;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+
+/**
+ * A local file-based key value store.
+ * 改成了不读取文件, 直接放内存, 程序关闭数据丢失
+ */
+public class SampleStore {
+
+//    private String file;
+    Properties properties = new Properties();
+    private Log logger = LogFactory.getLog(SampleStore.class);
+
+    public SampleStore() {
+
+//        this.file = file.getAbsolutePath();
+    }
+
+    /**
+     * Get the value associated with name.
+     *
+     * @param name
+     * @return value associated with the name
+     */
+    public String getValue(String name) {
+        Properties properties = loadProperties();
+        return properties.getProperty(name);
+    }
+
+    /**
+     * Has the value present.
+     *
+     * @param name
+     * @return true if it&#39;s present.
+     */
+    public boolean hasValue(String name) {
+        Properties properties = loadProperties();
+        return properties.containsKey(name);
+    }
+
+    private Properties loadProperties() {
+        return properties;
+    }
+
+    /**
+     * Set the value associated with name.
+     *
+     * @param name  The name of the parameter
+     * @param value Value for the parameter
+     */
+    public void setValue(String name, String value) {
+        Properties properties = loadProperties();
+        properties.setProperty(name, value);
+    }
+
+    private final Map&lt;String, SampleUser&gt; members = new HashMap&lt;&gt;();
+
+    /**
+     * Get the user with a given name
+     *
+     * @param name
+     * @param org
+     * @return user
+     */
+    public SampleUser getMember(String name, String org) {
+
+        // Try to get the SampleUser state from the cache
+        SampleUser sampleUser = members.get(SampleUser.toKeyValStoreName(name, org));
+        if (null != sampleUser) {
+            return sampleUser;
+        }
+
+        // Create the SampleUser and try to restore it&#39;s state from the key value store (if found).
+        sampleUser = new SampleUser(name, org, this);
+
+        return sampleUser;
+
+    }
+
+    /**
+     * Check if store has user.
+     *
+     * @param name
+     * @param org
+     * @return true if the user exists.
+     */
+    public boolean hasMember(String name, String org) {
+
+        // Try to get the SampleUser state from the cache
+
+        if (members.containsKey(SampleUser.toKeyValStoreName(name, org))) {
+            return true;
+        }
+        return SampleUser.isStored(name, org, this);
+
+    }
+
+    /**
+     * Get the user with a given name
+     *
+     * @param name
+     * @param org
+     * @param mspId
+     * @param privateKeyFile
+     * @param certificateFile
+     * @return user
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
+     * @throws InvalidKeySpecException
+     */
+    public SampleUser getMember(String name, String org, String mspId, File privateKeyFile,
+                                File certificateFile) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+
+        try {
+            // Try to get the SampleUser state from the cache
+            SampleUser sampleUser = members.get(SampleUser.toKeyValStoreName(name, org));
+            if (null != sampleUser) {
+                return sampleUser;
+            }
+
+            // Create the SampleUser and try to restore it&#39;s state from the key value store (if found).
+            sampleUser = new SampleUser(name, org, this);
+            sampleUser.setMspId(mspId);
+
+            String certificate = new String(IOUtils.toByteArray(new FileInputStream(certificateFile)), &quot;UTF-8&quot;);
+
+            PrivateKey privateKey = getPrivateKeyFromBytes(IOUtils.toByteArray(new FileInputStream(privateKeyFile)));
+
+            sampleUser.setEnrollment(new SampleStoreEnrollement(privateKey, certificate));
+
+            sampleUser.saveState();
+
+            return sampleUser;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+    }
+
+    static {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+    }
+
+    static PrivateKey getPrivateKeyFromBytes(byte[] data) throws IOException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+        final Reader pemReader = new StringReader(new String(data));
+
+        final PrivateKeyInfo pemPair;
+        try (PEMParser pemParser = new PEMParser(pemReader)) {
+            pemPair = (PrivateKeyInfo) pemParser.readObject();
+        }
+
+        PrivateKey privateKey = new JcaPEMKeyConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getPrivateKey(pemPair);
+
+        return privateKey;
+    }
+
+    static final class SampleStoreEnrollement implements Enrollment, Serializable {
+
+        private static final long serialVersionUID = -2784835212445309006L;
+        private final PrivateKey privateKey;
+        private final String certificate;
+
+        SampleStoreEnrollement(PrivateKey privateKey, String certificate) {
+
+            this.certificate = certificate;
+
+            this.privateKey = privateKey;
+        }
+
+        @Override
+        public PrivateKey getKey() {
+
+            return privateKey;
+        }
+
+        @Override
+        public String getCert() {
+            return certificate;
+        }
+
+    }
+
+    void saveChannel(Channel channel) throws IOException, InvalidArgumentException {
+
+        setValue(&quot;channel.&quot; + channel.getName(), Hex.toHexString(channel.serializeChannel()));
+
+    }
+
+    Channel getChannel(HFClient client, String name) throws IOException, ClassNotFoundException, InvalidArgumentException {
+        Channel ret = null;
+
+        String channelHex = getValue(&quot;channel.&quot; + name);
+        if (channelHex != null) {
+
+            ret = client.deSerializeChannel(Hex.decode(channelHex));
+
+        }
+        return ret;
+    }
+
+}
+</code></pre>
 <p>BasicTools.java</p>
-<pre><code class="lang-java">
+<pre><code class="lang-java">package org.hyperledger.fabric.sdkintegration;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hyperledger.fabric.sdk.ChaincodeID;
+import org.hyperledger.fabric.sdk.Channel;
+import org.hyperledger.fabric.sdk.HFClient;
+import org.hyperledger.fabric.sdk.Orderer;
+import org.hyperledger.fabric.sdk.Peer;
+import org.hyperledger.fabric.sdk.ProposalResponse;
+import org.hyperledger.fabric.sdk.QueryByChaincodeRequest;
+import org.hyperledger.fabric.sdk.TransactionProposalRequest;
+import org.hyperledger.fabric.sdk.exception.CryptoException;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.exception.ProposalException;
+import org.hyperledger.fabric.sdk.security.CryptoSuite;
+import org.hyperledger.fabric.sdk.testutils.TestConfig;
+import org.hyperledger.fabric_ca.sdk.HFCAClient;
+import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
+import org.hyperledger.fabric_ca.sdk.exception.EnrollmentException;
+import org.hyperledger.fabric_ca.sdk.exception.RegistrationException;
+
+
 /**
  * fabric-sdk-java提供的对链码query和invoke调用的功能封装
  *
@@ -26,7 +332,7 @@ public class BasicTools {
     // SampleUser的每个set方法, 都会执行内部的saveState方法,
     // 会调用SampleStore.setValue将数据写入到文件
 //    public static final SampleStore sampleStore = new SampleStore(new File(System.getProperty(&quot;java.io.tmpdir&quot;) + &quot;/HFCSampletest.properties&quot;));
-    public static final SampleStore sampleStore = new SampleStore(Paths.get(testConfig.getTestChannelPath(), &quot;..&quot;, &quot;HFCSampletest.properties&quot;).toFile());
+    public static final SampleStore sampleStore = new SampleStore();
 
     @SuppressWarnings(&quot;unused&quot;)
     private static final Log logger = LogFactory.getLog(BasicTools.class);
@@ -53,6 +359,8 @@ public class BasicTools {
      */
     public static HFCAClient createCaClient(String caName, String caUrl) throws MalformedURLException, org.hyperledger.fabric_ca.sdk.exception.InvalidArgumentException, IllegalAccessException, InstantiationException, ClassNotFoundException, CryptoException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException {
         Properties properties = new Properties();
+//        properties.put(&quot;pemFile&quot;, Paths.get(testConfig.getTestChannelPath(), &quot;crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem&quot;).toFile().getAbsolutePath());
+//        properties.setProperty(&quot;allowAllHostNames&quot;, &quot;true&quot;); //testing environment only NOT FOR PRODUCTION!
         HFCAClient ca = HFCAClient.createNewInstance(caName, caUrl, properties);
         ca.setCryptoSuite(CryptoSuite.Factory.getCryptoSuite());
         return ca;
@@ -146,9 +454,9 @@ public class BasicTools {
 
     /**
      * 构造ChaincodeID对象
-     * @param chaincodeName 链码名, 如&quot;demo_zichzhsh&quot;
+     * @param chaincodeName 链码名, 如&quot;demo_demo&quot;
      * @param chaincodeVersion 链码版本, 如&quot;1.0&quot;
-     * @param chaincodeSrcPath 链码源码路径, 如&quot;github.com/hyperledger/fabric/examples/chaincode/go/demo_zichzhsh&quot;
+     * @param chaincodeSrcPath 链码源码路径, 如&quot;github.com/hyperledger/fabric/examples/chaincode/go/demo_demo&quot;
      */
     public static ChaincodeID createChaincodeID(String chaincodeName, String chaincodeVersion, String chaincodeSrcPath) {
         return ChaincodeID.newBuilder().setName(chaincodeName).setVersion(chaincodeVersion)
@@ -202,9 +510,28 @@ public class BasicTools {
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     public static &lt;T&gt; T getRandomOne(Collection&lt;T&gt; collection) {
+        List&lt;T&gt; randomSome = getRandomSome(collection, 1);
+        if (null == randomSome || randomSome.size() &lt; 1)
+            return null;
+        return randomSome.get(0);
+    }
 
-        return (T) CollectionUtils.get(collection, random.nextInt(collection.size()));
-
+    /**
+     * 从Collection中随机选择一些
+     * @param collection Collection对象
+     * @param count 选择几个
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public static &lt;T&gt; List&lt;T&gt; getRandomSome(Collection&lt;T&gt; collection, int count) {
+        if (null == collection || count &gt;= collection.size())
+            return new ArrayList&lt;T&gt;(collection);
+        List&lt;T&gt; result = new ArrayList&lt;T&gt;();
+        while (result.size() &lt; count) {
+            T someone = (T) CollectionUtils.get(collection, random.nextInt(collection.size()));
+            if (false == result.contains(someone))
+                result.add(someone);
+        }
+        return result;
     }
 
     /**
@@ -212,32 +539,68 @@ public class BasicTools {
      * @param channel 信道对象
      * @param queryRequest 请求内容
      */
-    public static Collection&lt;ProposalResponse&gt; doQuery(Channel channel, QueryByChaincodeRequest queryRequest) throws InvalidArgumentException, ProposalException {
-        return channel.queryByChaincode(queryRequest, Arrays.asList(getRandomOne(channel.getPeers())));
+    public static ProposalResponse doQuery(Channel channel, QueryByChaincodeRequest queryRequest) throws InvalidArgumentException, ProposalException {
+        if (0 == channel.getPeers().size()) {
+            return null;
+        }
+        return channel.queryByChaincode(queryRequest, Arrays.asList(getRandomOne(channel.getPeers()))).iterator().next();
     }
 
     /**
-     * 发送transaction提议, 执行transaction类型的链码调用, 将执行成功的ProposalResponse发送给orderer
+     * 发送transaction提议, 执行transaction类型的链码调用.
+     * 随机选择endorseCount个peer作为背书节点, 发送链码调用请求, 获取调用结果
+     * 检查endorseCount个返回值是否相同
+     * 发送结果给orderer, 记录到账本
      * @param channel 信道对象
      * @param transactionProposalRequest 请求内容
+     * @param endorseCount 背书节点个数, 背书策略要求的需要几个背书节点给事务背书, 事务才认为有效
      */
-    public static Collection&lt;ProposalResponse&gt; doTransaction(Channel channel, TransactionProposalRequest transactionProposalRequest) throws ProposalException, InvalidArgumentException, InterruptedException, ExecutionException, TimeoutException {
+    public static ProposalResponse doTransaction(Channel channel, TransactionProposalRequest transactionProposalRequest, int endorseCount) throws ProposalException, InvalidArgumentException, InterruptedException, ExecutionException, TimeoutException {
 
-        // 发送transaction提议, 执行transaction类型的链码调用
-        Collection&lt;ProposalResponse&gt; proposalResponses = channel.sendTransactionProposal(transactionProposalRequest, Arrays.asList(getRandomOne(channel.getPeers())));
+        if (channel.getPeers().size() &lt;= 0) {
+            throw new RuntimeException(String.format(&quot;信道节点个数%d不能小于等于0!&quot;, channel.getPeers().size()));
+        }
 
-        // 保存成功的proposalResponse, 发送给orderer
-        Collection&lt;ProposalResponse&gt; successful = new LinkedList&lt;&gt;();
+        if (endorseCount &lt;= 0) {
+            throw new RuntimeException(String.format(&quot;背书节点个数%d不能小于等于0!&quot;, endorseCount));
+        }
+
+        if (endorseCount &gt; channel.getPeers().size()) {
+            throw new RuntimeException(String.format(&quot;背书节点个数%d不能大于当前信道上的全部节点数%d!&quot;, endorseCount, channel.getPeers().size()));
+        }
+
+        // 随机选择endorseCount个peer作为背书节点, 发送链码调用请求, 获取调用结果
+        Collection&lt;ProposalResponse&gt; proposalResponses = channel.sendTransactionProposal(transactionProposalRequest, getRandomSome(channel.getPeers(), endorseCount));
+        List&lt;ProposalResponse&gt; successful = new LinkedList&lt;&gt;();
         for (ProposalResponse proposalResponse : proposalResponses) {
             if (isProposalResponseSuccess(proposalResponse)) {
                 successful.add(proposalResponse);
             }
         }
 
-        // 发送成功的ProposalResponse给orderer
+        // 检查背书成功节点个数
+        if (successful.size() != endorseCount) {
+            throw new RuntimeException(String.format(&quot;背书节点成功个数%d != 背书策略要求的节点个数%d!&quot;, successful.size(), endorseCount));
+        }
+
+        // 检查背书节点返回值是否相同
+        ProposalResponse firstProposalResponse = successful.get(0);
+        boolean endorseResultIdentical = true;
+        for (ProposalResponse proposalResponse : successful) {
+            logger.debug(String.format(&quot;节点%s返回数据: %s&quot;, proposalResponse.getPeer().getName(), getProposalResult(proposalResponse)));
+            if (false == getProposalResult(proposalResponse).equals(getProposalResult(firstProposalResponse))) {
+                endorseResultIdentical = false;
+                break;
+            }
+        }
+        if(false == endorseResultIdentical) {
+            throw new RuntimeException(String.format(&quot;背书节点返回内容不相同!&quot;));
+        }
+
+        // 发送结果给orderer
         channel.sendTransaction(successful).get(2, TimeUnit.SECONDS);
 
-        return proposalResponses;
+        return successful.get(0); // 选择一个response返回即可
 
     }
 
@@ -262,7 +625,36 @@ public class BasicTools {
 }
 </code></pre>
 <p>End2End.java</p>
-<pre><code class="lang-java">
+<pre><code class="lang-java">package org.hyperledger.fabric.sdkintegration;
+
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hyperledger.fabric.sdk.ChaincodeID;
+import org.hyperledger.fabric.sdk.Channel;
+import org.hyperledger.fabric.sdk.HFClient;
+import org.hyperledger.fabric.sdk.Orderer;
+import org.hyperledger.fabric.sdk.Peer;
+import org.hyperledger.fabric.sdk.ProposalResponse;
+import org.hyperledger.fabric.sdk.QueryByChaincodeRequest;
+import org.hyperledger.fabric.sdk.TransactionProposalRequest;
+import org.hyperledger.fabric.sdk.exception.CryptoException;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.exception.ProposalException;
+import org.hyperledger.fabric.sdk.exception.TransactionException;
+import org.hyperledger.fabric_ca.sdk.HFCAClient;
+import org.hyperledger.fabric_ca.sdk.exception.EnrollmentException;
+import org.hyperledger.fabric_ca.sdk.exception.RegistrationException;
+
+import com.cvicse.ts.pm.bo.base.BaseSysParamManager;
+
+
 /**
  * 基于当前区块链网络结构(3个peer), 封装的节点调用类, 单例
  *
@@ -272,7 +664,9 @@ public class End2End {
     private HFClient client;
     private HFCAClient caClient;
     private SampleUser user1;
-    private Orderer order;
+    private Orderer order0;
+    private Orderer order1;
+    private Orderer order2;
     private Peer peer0;
     private Peer peer1;
     private Peer peer2;
@@ -286,13 +680,18 @@ public class End2End {
         client = BasicTools.createClient();
 
         // 构造HyperLedger CA Client, 用于用户注册, 用户登记
-        caClient = BasicTools.createCaClient(&quot;ca.example.com&quot;, &quot;http://ca.example.com:7054&quot;);
+//        caClient = BasicTools.createCaClient(&quot;ca.example.com&quot;, &quot;http://ca.example.com:7054&quot;);
+        caClient = BasicTools.createCaClient(BaseSysParamManager.getInstance().getFabricCaName(), BaseSysParamManager.getInstance().getFabricCaUrl());
+
+        String username = &quot;fabric_username__&quot; + UUID.randomUUID().toString();
 
         // 获取用户user1
-        user1 = BasicTools.getUserPersistent(&quot;user4&quot;, &quot;Org1MSP&quot;);
+//        user1 = BasicTools.getUserPersistent(&quot;user1&quot;, &quot;Org1MSP&quot;);
+        user1 = BasicTools.getUserPersistent(username, BaseSysParamManager.getInstance().getFabricUserMspId());
 
         // 注册登记user1
-        BasicTools.userRegisterAndEnroll(user1, caClient, &quot;Org1MSP&quot;, &quot;org1.department1&quot;, &quot;admin&quot;, &quot;Org1MSP&quot;, &quot;adminpw&quot;);
+//        BasicTools.userRegisterAndEnroll(user1, caClient, &quot;Org1MSP&quot;, &quot;org1.department1&quot;, &quot;admin&quot;, &quot;Org1MSP&quot;, &quot;adminpw&quot;);
+        BasicTools.userRegisterAndEnroll(user1, caClient, BaseSysParamManager.getInstance().getFabricUserMspId(), BaseSysParamManager.getInstance().getFabricUserAffiliation(), BaseSysParamManager.getInstance().getFabricAdminName(), BaseSysParamManager.getInstance().getFabricAdminMspId(), BaseSysParamManager.getInstance().getFabricAdminPassword());
 
         // 设置操作用户为user1
         client.setUserContext(user1);
@@ -300,22 +699,31 @@ public class End2End {
         // 拷贝文件:
         // Y:\demo-fabric\prepare\crypto-config
         // D:\li_wjie\0区块链研究\FabricTest\src\test\fixture\sdkintegration\e2e-2Orgs\channel\crypto-config
-        // D:\li_wjie\10金交所区块链环境\SVN\trunk\code\ts-web\src\test\fixture\sdkintegration\e2e-2Orgs\channel
+        // D:\li_wjie\10区块链环境\SVN\trunk\code\ts-web\src\test\fixture\sdkintegration\e2e-2Orgs\channel
         // getOrdererProperties, getPeerProperties内部会去读crypto-config
 
         // 构造Orderer对象
-        order = BasicTools.getOrderer(client, &quot;orderer.example.com&quot;, &quot;grpc://orderer.example.com:7050&quot;);
+//        order0 = BasicTools.getOrderer(client, &quot;orderer0.example.com&quot;, &quot;grpc://orderer0.example.com:7050&quot;);
+//        order1 = BasicTools.getOrderer(client, &quot;orderer1.example.com&quot;, &quot;grpc://orderer1.example.com:7050&quot;);
+//        order2 = BasicTools.getOrderer(client, &quot;orderer2.example.com&quot;, &quot;grpc://orderer2.example.com:7050&quot;);
+        order0 = BasicTools.getOrderer(client, BaseSysParamManager.getInstance().getFabricOrderer0Name(), BaseSysParamManager.getInstance().getFabricOrderer0Url());
+        order1 = BasicTools.getOrderer(client, BaseSysParamManager.getInstance().getFabricOrderer1Name(), BaseSysParamManager.getInstance().getFabricOrderer1Url());
+        order2 = BasicTools.getOrderer(client, BaseSysParamManager.getInstance().getFabricOrderer2Name(), BaseSysParamManager.getInstance().getFabricOrderer2Url());
 
-        // 构造Peer0对象
-        peer0 = BasicTools.getPeer(client, &quot;peer0.org1.example.com&quot;, &quot;grpc://peer0.org1.example.com:7051&quot;);
-        // 构造Peer1对象
-        peer1 = BasicTools.getPeer(client, &quot;peer1.org1.example.com&quot;, &quot;grpc://peer1.org1.example.com:8051&quot;);
-        // 构造Peer2对象
-        peer2 = BasicTools.getPeer(client, &quot;peer2.org1.example.com&quot;, &quot;grpc://peer2.org1.example.com:9051&quot;);
+        // 构造Peer对象
+//        peer0 = BasicTools.getPeer(client, &quot;peer0.org1.example.com&quot;, &quot;grpc://peer0.org1.example.com:7051&quot;);
+//        peer1 = BasicTools.getPeer(client, &quot;peer1.org1.example.com&quot;, &quot;grpc://peer1.org1.example.com:8051&quot;);
+//        peer2 = BasicTools.getPeer(client, &quot;peer2.org1.example.com&quot;, &quot;grpc://peer2.org1.example.com:9051&quot;);
+        peer0 = BasicTools.getPeer(client, BaseSysParamManager.getInstance().getFabricPeer0Name(), BaseSysParamManager.getInstance().getFabricPeer0Url());
+        peer1 = BasicTools.getPeer(client, BaseSysParamManager.getInstance().getFabricPeer1Name(), BaseSysParamManager.getInstance().getFabricPeer1Url());
+        peer2 = BasicTools.getPeer(client, BaseSysParamManager.getInstance().getFabricPeer2Name(), BaseSysParamManager.getInstance().getFabricPeer2Url());
 
         // 构造channel, 添加orderer和peer到channel, 初始化channel
-        channel = BasicTools.createChannel(client, &quot;mychannel&quot;);
-        channel.addOrderer(order);
+//        channel = BasicTools.createChannel(client, &quot;mychannel&quot;);
+        channel = BasicTools.createChannel(client, BaseSysParamManager.getInstance().getFabricChannelName());
+        channel.addOrderer(order0);
+        channel.addOrderer(order1);
+        channel.addOrderer(order2);
         channel.addPeer(peer0);
         channel.addPeer(peer1);
         channel.addPeer(peer2);
@@ -349,23 +757,9 @@ public class End2End {
         QueryByChaincodeRequest queryProposalRequest = BasicTools.createQueryProposalRequest(client, chaincodeID, functionName, arguments);
 
         // 发送提议请求
-        Collection&lt;ProposalResponse&gt; proposalResponses = BasicTools.doQuery(channel, queryProposalRequest);
-
-        for (ProposalResponse proposalResponse : proposalResponses) {
-            String result = BasicTools.getProposalResult(proposalResponse);
-            if (BasicTools.isProposalResponseSuccess(proposalResponse)) {
-                return result;
-            } else {
-                logger.warn(String.format(
-                        &quot;链码执行出错, 可能是当前节点还没同步完数据, 可以忽略此警告, 信息: %s, 信道名: %s, 链码名: %s, 链码版本: %s&quot;, 
-                        result, channel.getName(), chaincodeID.getName(), chaincodeID.getVersion()));
-            }
-
-        }
-
-        throw new RuntimeException(String.format(
-                &quot;链码出错, 如果日志未出现&#39;链码执行出错&#39;开头的日志, 说明没有节点返回过数据, 是链码执行超时. 否则日志会出现&#39;链码执行出错&#39;开头的日志, 并且会出现3条, 分别代表3个节点返回的错误信息, 查看那3条日志的错误信息分析原因&quot;
-                ));
+        ProposalResponse proposalResponse = BasicTools.doQuery(channel, queryProposalRequest);
+        String result = BasicTools.getProposalResult(proposalResponse);
+        return result;
 
     }
 
@@ -382,163 +776,12 @@ public class End2End {
         TransactionProposalRequest transactionProposalRequest = BasicTools.createTransactionProposalRequest(client, chaincodeID, functionName, arguments);
 
         // 发送提议
-        Collection&lt;ProposalResponse&gt; proposalResponses = BasicTools.doTransaction(channel, transactionProposalRequest);
+        ProposalResponse proposalResponse = BasicTools.doTransaction(channel, transactionProposalRequest, 2);
 
-        for (ProposalResponse proposalResponse : proposalResponses) {
-            String result = BasicTools.getProposalResult(proposalResponse);
-            if (BasicTools.isProposalResponseSuccess(proposalResponse)) {
-                return result;
-            } else {
-                logger.warn(String.format(
-                        &quot;链码执行出错, 可能是当前节点还没同步完数据, 可以忽略此警告, 信息: %s, 信道名: %s, 链码名: %s, 链码版本: %s&quot;, 
-                        result, channel.getName(), chaincodeID.getName(), chaincodeID.getVersion()));
-            }
-
-        }
-
-        throw new RuntimeException(String.format(
-                &quot;链码出错, 如果日志未出现&#39;链码执行出错&#39;开头的日志, 说明没有节点返回过数据, 是链码执行超时. 否则日志会出现&#39;链码执行出错&#39;开头的日志, 并且会出现3条, 分别代表3个节点返回的错误信息, 查看那3条日志的错误信息分析原因&quot;
-                ));
+        return BasicTools.getProposalResult(proposalResponse);
 
     }
 
-
-    @SuppressWarnings(&quot;unused&quot;)
-    private void queryTest() throws Exception {
-
-
-        // 构造HyperLedger Client
-        HFClient client = BasicTools.createClient();
-
-        // 构造HyperLedger CA Client, 用于用户注册, 用户登记
-        HFCAClient caClient = BasicTools.createCaClient(&quot;ca.example.com&quot;, &quot;http://ca.example.com:7054&quot;);
-
-        // 获取用户user1
-        SampleUser user1 = BasicTools.getUserPersistent(&quot;user4&quot;, &quot;Org1MSP&quot;);
-
-        // 注册登记user1
-        BasicTools.userRegisterAndEnroll(user1, caClient, &quot;Org1MSP&quot;, &quot;org1.department1&quot;, &quot;admin&quot;, &quot;Org1MSP&quot;, &quot;adminpw&quot;);
-
-        // 设置操作用户为user1
-        client.setUserContext(user1);
-
-        // 拷贝文件:
-        // Y:\demo-fabric\prepare\crypto-config
-        // D:\li_wjie\0区块链研究\FabricTest\src\test\fixture\sdkintegration\e2e-2Orgs\channel\crypto-config
-        // D:\li_wjie\10金交所区块链环境\SVN\trunk\code\ts-web\src\test\fixture\sdkintegration\e2e-2Orgs\channel
-        // getOrdererProperties, getPeerProperties内部会去读crypto-config
-
-        // 构造Orderer对象
-        Orderer order = BasicTools.getOrderer(client, &quot;orderer.example.com&quot;, &quot;grpc://orderer.example.com:7050&quot;);
-
-        // 构造Peer0对象
-        Peer peer0 = BasicTools.getPeer(client, &quot;peer0.org1.example.com&quot;, &quot;grpc://peer0.org1.example.com:7051&quot;);
-        // 构造Peer1对象
-        Peer peer1 = BasicTools.getPeer(client, &quot;peer1.org1.example.com&quot;, &quot;grpc://peer1.org1.example.com:8051&quot;);
-        // 构造Peer2对象
-        Peer peer2 = BasicTools.getPeer(client, &quot;peer2.org1.example.com&quot;, &quot;grpc://peer2.org1.example.com:9051&quot;);
-
-        // 构造channel, 添加orderer和peer到channel, 初始化channel
-        // peer任选一个加入, 如果加入多个, proposal返回也会返回多个, 分别对应每个peer的返回内容
-        Channel channel = client.newChannel(&quot;mychannel&quot;);
-        channel.addOrderer(order);
-//        channel.addPeer(peer0);
-         channel.addPeer(peer1);
-//         channel.addPeer(peer2);
-        channel.initialize();
-
-        // 构造链码id对象
-        ChaincodeID chaincodeID = BasicTools.createChaincodeID(&quot;demo_zichzhsh&quot;, &quot;1.0&quot;, &quot;github.com/hyperledger/fabric/examples/chaincode/go/demo_zichzhsh&quot;);
-
-        // 构造一个query类型的提议(proposal)
-        QueryByChaincodeRequest queryRequest = BasicTools.createQueryProposalRequest(client, chaincodeID, &quot;get&quot;, new String[] { &quot;a&quot; });
-
-        // 发送提议请求
-        Collection&lt;ProposalResponse&gt; proposalResponses = BasicTools.doQuery(channel, queryRequest);
-
-        // 接收响应并处理
-        for (ProposalResponse proposalResponse : proposalResponses) {
-            String result = BasicTools.getProposalResult(proposalResponse);
-            if (BasicTools.isProposalResponseSuccess(proposalResponse)) {
-                System.out.println(&quot;调用成功&quot;);
-            } else {
-                System.out.println(&quot;调用失败&quot;);
-            }
-            System.out.println(result);
-        }
-
-    }
-
-    @SuppressWarnings(&quot;unused&quot;)
-    private void invokeTest() throws Exception {
-
-        // 构造HyperLedger Client
-        HFClient client = BasicTools.createClient();
-
-        // 构造HyperLedger CA Client, 用于用户注册, 用户登记
-        HFCAClient caClient = BasicTools.createCaClient(&quot;ca.example.com&quot;, &quot;http://ca.example.com:7054&quot;);
-
-        // 获取用户user1
-        SampleUser user1 = BasicTools.getUserPersistent(&quot;user5&quot;, &quot;Org1MSP&quot;);
-
-        // 注册登记user1
-        BasicTools.userRegisterAndEnroll(user1, caClient, &quot;Org1MSP&quot;, &quot;org1.department1&quot;, &quot;admin&quot;, &quot;Org1MSP&quot;, &quot;adminpw&quot;);
-
-        // 设置操作用户为user1
-        client.setUserContext(user1);
-
-        // 拷贝文件:
-        // Y:\demo-fabric\prepare\crypto-config
-        // \src\test\fixture\sdkintegration\e2e-2Orgs\channel\crypto-config
-        // getOrdererProperties, getPeerProperties内部会去读crypto-config
-
-        // 构造Orderer对象
-        Orderer order = BasicTools.getOrderer(client, &quot;orderer.example.com&quot;, &quot;grpc://orderer.example.com:7050&quot;);
-
-        // 构造Peer0对象
-        Peer peer0 = BasicTools.getPeer(client, &quot;peer0.org1.example.com&quot;, &quot;grpc://peer0.org1.example.com:7051&quot;);
-        // 构造Peer1对象
-        Peer peer1 = BasicTools.getPeer(client, &quot;peer1.org1.example.com&quot;, &quot;grpc://peer1.org1.example.com:8051&quot;);
-        // 构造Peer2对象
-        Peer peer2 = BasicTools.getPeer(client, &quot;peer2.org1.example.com&quot;, &quot;grpc://peer2.org1.example.com:9051&quot;);
-
-        // 构造channel, 添加orderer和peer到channel, 初始化channel
-        // peer任选一个加入, 如果加入多个, proposal返回也会返回多个, 分别对应每个peer的返回内容
-        Channel channel = client.newChannel(&quot;mychannel&quot;);
-        channel.addOrderer(order);
-//        channel.addPeer(peer0);
-//         channel.addPeer(peer1);
-         channel.addPeer(peer2);
-        channel.initialize();
-
-        // 构造链码id对象
-        ChaincodeID chaincodeID = BasicTools.createChaincodeID(&quot;demo_zichzhsh&quot;, &quot;1.0&quot;, &quot;github.com/hyperledger/fabric/examples/chaincode/go/demo_zichzhsh&quot;);
-
-        // 构造一个transaction类型的提议(proposal)
-        TransactionProposalRequest transactionProposalRequest = BasicTools.createTransactionProposalRequest(client, chaincodeID, &quot;put&quot;, new String[] { &quot;a&quot;, &quot;this is a&quot;, &quot;i am a&quot; });
-
-        // 发送提议
-        Collection&lt;ProposalResponse&gt; proposalResponses = BasicTools.doTransaction(channel, transactionProposalRequest);
-
-        // 接收响应并处理
-        for (ProposalResponse proposalResponse : proposalResponses) {
-            String result = BasicTools.getProposalResult(proposalResponse);
-            if (BasicTools.isProposalResponseSuccess(proposalResponse)) {
-                System.out.println(&quot;调用成功&quot;);
-            } else {
-                System.out.println(&quot;调用失败&quot;);
-            }
-            System.out.println(result);
-        }
-
-
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        new End2End().queryTest();
-        new End2End().invokeTest();
-    }
 }
 </code></pre>
 
