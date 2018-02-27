@@ -1,0 +1,86 @@
+
+
+<html><head><meta charset="UTF-8"><title>log4j 配置 例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="log4j-">log4j 配置 例子</h1>
+<p>log4j.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;&gt;
+&lt;log4j:configuration xmlns:log4j=&quot;http://jakarta.apache.org/log4j/&quot; debug=&quot;false&quot;&gt;
+    &lt;appender name=&quot;CONSOLE&quot; class=&quot;org.apache.log4j.ConsoleAppender&quot;&gt;
+        &lt;param name=&quot;Target&quot; value=&quot;System.out&quot; /&gt;
+        &lt;param name=&quot;Threshold&quot; value=&quot;trace&quot; /&gt;
+        &lt;layout class=&quot;org.apache.log4j.PatternLayout&quot;&gt;
+            &lt;param name=&quot;ConversionPattern&quot; value=&quot;%d{HH:mm:ss.SSS} %5p %c:%t - %m%n&quot; /&gt;
+        &lt;/layout&gt;
+    &lt;/appender&gt;
+
+    &lt;logger name=&quot;org.apache&quot; additivity=&quot;false&quot;&gt;
+        &lt;level value=&quot;INFO&quot; /&gt;
+        &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+    &lt;/logger&gt;
+    &lt;logger name=&quot;org.quartz&quot; additivity=&quot;false&quot;&gt;
+        &lt;level value=&quot;WARN&quot; /&gt;
+        &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+    &lt;/logger&gt;
+    &lt;logger name=&quot;org.springframework&quot; additivity=&quot;false&quot;&gt;
+        &lt;level value=&quot;INFO&quot; /&gt;
+        &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+    &lt;/logger&gt;
+    &lt;logger name=&quot;org.mybatis&quot; additivity=&quot;false&quot;&gt;
+        &lt;level value=&quot;INFO&quot; /&gt;
+        &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+    &lt;/logger&gt;
+    &lt;root&gt;
+        &lt;priority value=&quot;debug&quot;&gt;&lt;/priority&gt;
+        &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
+    &lt;/root&gt;
+&lt;/log4j:configuration&gt;
+</code></pre>
+<p>log4j2.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration status=&quot;error&quot;&gt;
+    &lt;appenders&gt;
+        &lt;Console name=&quot;Console&quot; target=&quot;SYSTEM_OUT&quot;&gt;
+            &lt;ThresholdFilter level=&quot;trace&quot; onMatch=&quot;ACCEPT&quot; onMismatch=&quot;ACCEPT&quot;/&gt;
+            &lt;PatternLayout pattern=&quot;%d{HH:mm:ss.SSS} %5p %c:%t - %m%n&quot;/&gt;
+        &lt;/Console&gt;    
+    &lt;/appenders&gt;
+
+    &lt;loggers&gt;
+        &lt;logger name=&quot;org.apache&quot; level=&quot;INFO&quot;&gt;
+            &lt;appender-ref ref=&quot;Console&quot;/&gt;
+        &lt;/logger&gt;
+        &lt;logger name=&quot;org.quartz&quot; level=&quot;WARN&quot;&gt;
+            &lt;appender-ref ref=&quot;Console&quot;/&gt;
+        &lt;/logger&gt;
+        &lt;logger name=&quot;org.springframework&quot; level=&quot;INFO&quot;&gt;
+            &lt;appender-ref ref=&quot;Console&quot;/&gt;
+        &lt;/logger&gt;
+        &lt;logger name=&quot;org.mybatis&quot; level=&quot;INFO&quot;&gt;
+            &lt;appender-ref ref=&quot;Console&quot;/&gt;
+        &lt;/logger&gt;
+        &lt;root level=&quot;debug&quot; additivity=&quot;false&quot; &gt;
+            &lt;appender-ref ref=&quot;Console&quot;/&gt;
+        &lt;/root&gt;
+    &lt;/loggers&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
