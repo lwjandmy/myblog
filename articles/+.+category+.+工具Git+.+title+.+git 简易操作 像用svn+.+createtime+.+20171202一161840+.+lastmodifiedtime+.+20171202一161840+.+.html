@@ -44,12 +44,13 @@ git diff origin/feature1
 Eclipse: Team -&gt; Synchronize Workspace
 </code></pre>
 <p>提交代码: 工作目录 -&gt; 仓库: 工作目录 -&gt; 暂存区 -&gt; Git仓库 -&gt; 远程Git仓库</p>
-<pre><code class="lang-bash">git add *
+<pre><code class="lang-bash">git pull origin feature1
+git add *
 git commit -m &#39;append data14&#39;
 git push origin feature1
 如果上面这句出错, 说明仓库有人提代码了, 执行下面的:
     git fetch origin feature1
-    git rebase origin/feature1
+    git rebase origin/feature1 (这里不是必须要变基的 也可以解决冲突, 不变基)
     如果有冲突, 解决冲突
         vim conflit_file
         git add *
@@ -83,6 +84,51 @@ git show bfe3bca0b2e43e68b52a08ec34cb24844a5119c3:articles/new_picture.js
 <p>server中, 执行</p>
 <pre><code class="lang-bash">cd ~/.ssh/
 cat id_rsa.pub &gt;&gt; authorized_keys
+</code></pre>
+<p>Stash保护现场</p>
+<pre><code class="lang-bash">
+保护当前现场
+git stash
+
+查看保护现场列表
+git stash list
+
+恢复现场
+git stash pop
+</code></pre>
+<p>变基的例子</p>
+<pre><code class="lang-bash">git fetch origin 从远程仓库拉下来最新代码
+</code></pre>
+<pre><code class="lang-txt">远程仓库    
+5d9d53c(add test.txt) -&gt; fd845f9(add line2)
+
+本地仓库
+5d9d53c(add test.txt) -&gt; de55b3b(add line3)
+</code></pre>
+<p>变基</p>
+<pre><code class="lang-bash">git rebase origin/master
+解决冲突
+vi conflict_file
+git add conflict_file
+git rebase --continue
+</code></pre>
+<pre><code class="lang-txt">本地仓库
+5d9d53c(add test.txt) -&gt; fd845f9(add line2) -&gt; 3dcd225(add line3)
+
+变基的特点: 简化了版本变更历史. 注意点: 如果某开始节点被其它人使用, 就不要变基, 否则会让别人使用的开始节点消失掉!
+</code></pre>
+<p>不变基</p>
+<pre><code class="lang-bash">git pull
+解决冲突
+vi conflict_file
+git add conflict_file
+git commit -m &#39;解决冲突&#39;
+</code></pre>
+<pre><code class="lang-txt">本地仓库
+5d9d53c(add test.txt) -&gt; fd845f9(add line2) -&gt; b102af2(解决冲突)
+                      -&gt; dc8025d(add line3)
+
+不变基的特点: 保留最原始的代码版本变化记录
 </code></pre>
 
 
