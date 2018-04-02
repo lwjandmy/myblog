@@ -1,0 +1,47 @@
+
+
+<html><head><meta charset="UTF-8"><title>mock server helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mock-server-helloworld">mock server helloworld</h1>
+<h2 id="-">启动</h2>
+<pre><code class="lang-bash">java -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090
+</code></pre>
+<h2 id="-">模拟功能</h2>
+<p>用于仿真真实服务器返回的结果</p>
+<pre><code class="lang-bash">curl -v -X PUT &quot;http://localhost:1080/expectation&quot; -d @mock_expectation.json
+</code></pre>
+<h2 id="-">录制功能</h2>
+<p>对真实服务器返回结果的录制</p>
+<pre><code class="lang-bash">curl -v -X PUT &quot;http://localhost:1090/retrieve?type=RECORDED_EXPECTATIONS&amp;format=JSON&quot; &gt; mock_expectation.json
+</code></pre>
+<h2 id="-">用法</h2>
+<pre><code class="lang-txt">可连接真实服务的环境:
+
+先设置代理, 使用localhost:1090代理, 请求服务器, 进行数据录制
+
+然后记录数据到json
+</code></pre>
+<pre><code class="lang-txt">在测试, 封闭环境:
+
+设置模拟服务器, 把json数据导入
+
+代理改成localhost:1080
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
