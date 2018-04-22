@@ -1,0 +1,141 @@
+
+
+<html><head><meta charset="UTF-8"><title>redux helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="redux-helloworld">redux helloworld</h1>
+<p>例子1, action creator, reducer, combine reducer, subscribe, dispatch</p>
+<pre><code class="lang-js">import { createStore, combineReducers } from &#39;redux&#39;;
+
+// 定义action creator
+let usernameActionCreator = (username) =&gt; {
+    return {
+        type: &#39;USERNAME_ACTION&#39;,
+        username: username
+    }
+};
+
+let passwordActionCreator = (password) =&gt; {
+    return {
+        type: &#39;PASSWORD_ACTION&#39;,
+        password: password
+    }
+};
+
+// 定义reducer
+let usernameReducer = function (state = &#39;&#39;, action) {
+    switch (action.type) {
+        case &#39;USERNAME_ACTION&#39;:
+            return action.username;
+        default:
+            return state;
+    }
+};
+
+let passwordReducer = function (state = &#39;&#39;, action) {
+    switch (action.type) {
+        case &#39;PASSWORD_ACTION&#39;:
+            return action.password;
+        default:
+            return state;
+    }
+}
+
+let reducer = combineReducers({
+    username: usernameReducer,
+    password: passwordReducer
+});
+
+// 创建store
+let store = createStore(reducer);
+
+// 添加监听
+store.subscribe(() =&gt; {
+    console.log(&#39;on subscribe, state:&#39;, store.getState());
+});
+
+// 发送action, 调用reducer, 使state修改, 触发store监听
+store.dispatch(usernameActionCreator(&#39;user1&#39;));
+store.dispatch(passwordActionCreator(&#39;pass1&#39;));
+</code></pre>
+<p>例子2, thunk中间件, 支持异步action; promise中间件, 支持promise</p>
+<pre><code class="lang-js">import { createStore, applyMiddleware } from &#39;redux&#39;;
+import thunkMiddleware from &#39;redux-thunk&#39;;
+import promiseMiddleware from &#39;redux-promise&#39;
+
+// 同步的actionCreator
+let actionCreator1 = (param) =&gt; {
+    return {
+        type: &#39;TEST_ACTION&#39;,
+        param: param
+    }
+};
+
+// thunk插件支持的, 异步的actionCreator
+let actionCreator2 = (param) =&gt; {
+    return (dispatch, getState) =&gt; {
+        setTimeout(() =&gt; {
+            dispatch({
+                type: &#39;TEST_ACTION&#39;,
+                param: param
+            });
+        }, 1000);
+    };
+};
+
+// promise插件支持的, 返回promise的actionCreator
+let actionCreator3 = (param) =&gt; {
+    let promise = new Promise((resolve, reject) =&gt; {
+        setTimeout(() =&gt; {
+            resolve({
+                type: &#39;TEST_ACTION&#39;,
+                param: param
+            })
+        }, 2000)
+    })
+
+    return promise
+}
+
+let reducer = (state = {}, action) =&gt; {
+    switch (action.type) {
+        case &#39;TEST_ACTION&#39;:
+            return {
+                ...state,
+                param: action.param
+            }
+        default:
+            return {
+                ...state
+            }
+    }
+};
+
+// 创建store, 应用thunk中间件, promise中间件
+let store = applyMiddleware(thunkMiddleware, promiseMiddleware)(createStore)(reducer);
+
+store.subscribe(() =&gt; {
+    console.log(&#39;on subscribe, state:&#39;, store.getState());
+});
+
+store.dispatch(actionCreator1(&#39;action1&#39;));
+store.dispatch(actionCreator2(&#39;action2&#39;));
+store.dispatch(actionCreator3(&#39;action3&#39;));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
