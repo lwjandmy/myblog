@@ -20,23 +20,23 @@ iter.next, 获取下一个函数的yield值
 </code></pre>
 <p>例子:</p>
 <pre><code class="lang-js">// 定义Generator
-function *gen() {
-    yield &#39;hello&#39;;
-    yield &#39;world&#39;;
-    return true;
+function *gen(param) {
+    param = yield param;
+    param = yield param;
+    return param;
 }
 
 // 获取generator的迭代器iterator
-let iter = gen();
+let iter = gen(1);
 
-console.log(iter.next())
-// Object {value: &quot;hello&quot;, done: false}
+console.log(iter.next()); // 第一次next, 参数无意义
+// Object {value: 1, done: false}
 
-console.log(iter.next())
-// Object {value: &quot;world&quot;, done: false}
+console.log(iter.next(2))
+// Object {value: 2, done: false}
 
-console.log(iter.next())
-// Object {value: true, done: true}
+console.log(iter.next(3))
+// Object {value: 3, done: true}
 </code></pre>
 <p>场景:</p>
 <p>有异步方法:</p>

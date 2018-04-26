@@ -13,6 +13,7 @@
 import createSagaMiddleware from &#39;redux-saga&#39;;
 import { takeEvery, takeLatest } from &#39;redux-saga&#39;;
 import { call, put } from &#39;redux-saga/effects&#39;;
+import { deepEqual } from &#39;assert&#39;;
 
 
 // 定义2个方法, 用于获取数据, 返回promise, 类比为现有的异步方法, 与saga无关
@@ -77,11 +78,22 @@ const sagaMiddleware = createSagaMiddleware();
 const store = applyMiddleware(sagaMiddleware)(createStore)(reducer);
 sagaMiddleware.run(rootSaga);
 
+
 store.dispatch({type: &#39;APPLE_FETCH_REQUESTED&#39;, payload: { appleId: 1 }}); // 1
+
 
 setTimeout(() =&gt; {
   store.dispatch({type: &#39;USER_FETCH_REQUESTED&#39;, payload: { userId: 2 }});
 }, 1000);
+
+
+setTimeout(() =&gt; {
+  console.log(&#39;开始单元测试&#39;);
+  const gen = onAppleFetchRequested({payload: { appleId: 1 }});
+  deepEqual(gen.next(), { done: false, value: call(appleFetch, 1) });
+  deepEqual(gen.next({a: 1}), { done: false, value: put({type: &#39;APPLE_FETCH_SUCCEEDED&#39;, payload: {a: 1}}) });
+  deepEqual(gen.next(), { done: true, value: undefined });
+}, 2000);
 </code></pre>
 
 
