@@ -1,0 +1,97 @@
+
+
+<html><head><meta charset="UTF-8"><title>redux saga helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="redux-saga-helloworld">redux saga helloworld</h1>
+<pre><code class="lang-js">import { createStore, applyMiddleware } from &#39;redux&#39;;
+import createSagaMiddleware from &#39;redux-saga&#39;;
+import { takeEvery, takeLatest } from &#39;redux-saga&#39;;
+import { call, put } from &#39;redux-saga/effects&#39;;
+
+
+// 定义2个方法, 用于获取数据, 返回promise, 类比为现有的异步方法, 与saga无关
+
+function appleFetch(appleId) {
+  console.log(&#39;appleFetch            --- appleId:&#39;, appleId); // 3
+  return new Promise((resolve, reject) =&gt; {
+    let result = { appleName: &#39;apple&#39; + appleId };
+    console.log(&#39;appleFetch            --- return:&#39;, result); // 4
+    resolve(result);
+  });
+}
+
+function userFetch(userId) {
+  console.log(&#39;userFetch             --- userId:&#39;, userId)
+  return new Promise((resolve, reject) =&gt; {
+    let userData = { userName: &#39;user&#39; + userId };
+    console.log(&#39;userFetch             --- return:&#39;, userData);
+    resolve(userData);
+  });
+}
+
+
+// 定义2个Generator, 用于分别处理2个action, 内部调用上面两个异步方法
+// 方法调用用call, action推送用put
+
+function* onAppleFetchRequested(action) {
+  console.log(&#39;onAppleFetchRequested --- call:&#39;, &#39;appleFetch&#39;, action.payload.appleId); // 2
+  let appleData = yield call(appleFetch, action.payload.appleId);
+  let result = {type: &#39;APPLE_FETCH_SUCCEEDED&#39;, payload: appleData};
+  console.log(&#39;onAppleFetchRequested --- put:&#39;, result); // 5
+  yield put(result);
+}
+
+function* onUserFetchRequested(action) {
+  console.log(&#39;onUserFetchRequested  --- call:&#39;, &#39;fetchUser&#39;, action.payload.userId)
+  let userData = yield call(userFetch, action.payload.userId);
+  let result = {type: &quot;USER_FETCH_SUCCEEDED&quot;, payload: userData};
+  console.log(&#39;onUserFetchRequested  --- put:&#39;, result);
+  yield put(result);
+}
+
+
+// 定义saga方法, 里面定义所有监听的action, 和对应的Generator
+
+function* rootSaga() {
+  yield [
+    takeEvery(&#39;APPLE_FETCH_REQUESTED&#39;, onAppleFetchRequested),
+    takeEvery(&#39;USER_FETCH_REQUESTED&#39;, onUserFetchRequested)
+  ];
+}
+
+
+function reducer(state, action) {
+  return { ...state }
+}
+
+
+// 创建saga中间件, 运行rootSaga
+
+const sagaMiddleware = createSagaMiddleware();
+const store = applyMiddleware(sagaMiddleware)(createStore)(reducer);
+sagaMiddleware.run(rootSaga);
+
+store.dispatch({type: &#39;APPLE_FETCH_REQUESTED&#39;, payload: { appleId: 1 }}); // 1
+
+setTimeout(() =&gt; {
+  store.dispatch({type: &#39;USER_FETCH_REQUESTED&#39;, payload: { userId: 2 }});
+}, 1000);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
