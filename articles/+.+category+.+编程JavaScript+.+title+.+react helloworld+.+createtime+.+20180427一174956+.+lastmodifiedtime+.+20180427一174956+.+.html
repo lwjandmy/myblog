@@ -44,6 +44,7 @@ module.exports = {
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;react-tutorial&quot;,
   &quot;scripts&quot;: {
+    &quot;example&quot;: &quot;babel-node&quot;,
     &quot;dev&quot;: &quot;webpack -d --watch&quot;
   },
   &quot;dependencies&quot;: {
@@ -119,6 +120,16 @@ import { Provider, connect } from &#39;react-redux&#39;;
 import { createStore, combineReducers } from &#39;redux&#39;;
 
 
+// 定义action创建器, 和reducer配对
+
+const increseActionCreator = (count) =&gt; {
+  return {
+    type: &#39;INCRESE_ACTION&#39;,
+    payload: count
+  }
+}
+
+
 // 创建针对content属性的reducer, 处理INCRESE_ACTION请求, 把content属性的值+1
 
 const contentReducer = (state = 0, action) =&gt; {
@@ -173,7 +184,7 @@ App = connect(
     }
   }, function mapDispatchProps(dispatch) {
     return {
-      increseAction: (count) =&gt; { dispatch({ type: &#39;INCRESE_ACTION&#39;, payload: count }) }
+      increseAction: (count) =&gt; { dispatch(increseActionCreator(count)) }
     }
   })(App);
 
@@ -185,6 +196,14 @@ render((
     &lt;App /&gt;
   &lt;/Provider&gt;
 ), document.getElementById(&#39;sense&#39;));
+</code></pre>
+<hr>
+<p>react, redux, connect, saga例子</p>
+<pre><code class="lang-js">
+</code></pre>
+<hr>
+<p>react, router 例子</p>
+<pre><code class="lang-js">
 </code></pre>
 
 
