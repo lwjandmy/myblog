@@ -97,7 +97,7 @@ co(function *() {
 这里的内部, 异步, 指每个异步方法, 他们的返回值都是Promise; 这里的外部, 是co方法, 它驱动整个程序的执行
 </code></pre>
 <hr>
-<p>yield *o 代理yield表达式, 将需要产生数据的值, 委托到另一个generator中</p>
+<p>yield* 代理yield表达式, 将需要产生数据的值, 委托到另一个generator中</p>
 <pre><code class="lang-js">function *fun1() {
     yield 1
     yield* fun2()
