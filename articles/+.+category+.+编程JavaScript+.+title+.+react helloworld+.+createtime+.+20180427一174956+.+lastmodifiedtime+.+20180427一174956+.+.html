@@ -1,0 +1,200 @@
+
+
+<html><head><meta charset="UTF-8"><title>react helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="react-helloworld">react helloworld</h1>
+<p>环境准备</p>
+<p>webpack.config.js</p>
+<pre><code class="lang-js">var path = require(&#39;path&#39;);
+
+module.exports = {
+    entry: &#39;./test6.jsx&#39;,
+    output: {
+        path: path.join(__dirname, &#39;/dist&#39;),
+        filename: &#39;bundle.js&#39;
+    },
+    resolve: {
+        extensions: [&#39;&#39;, &#39;.js&#39;, &#39;.jsx&#39;]
+    },
+    module: {
+        loaders: [
+            { test: /\.js|jsx$/, loaders: [&#39;babel&#39;] }
+        ]
+    }
+}
+</code></pre>
+<p>dist/index.html</p>
+<pre><code class="lang-html">&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id=&quot;sense&quot;&gt;&lt;/div&gt;
+        &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>package.json</p>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;react-tutorial&quot;,
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;webpack -d --watch&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;babel&quot;: &quot;5.3.1&quot;,
+    &quot;babel-core&quot;: &quot;^5.6.15&quot;,
+    &quot;babel-loader&quot;: &quot;^5.2.2&quot;,
+    &quot;bluebird&quot;: &quot;^2.9.34&quot;,
+    &quot;css-loader&quot;: &quot;^0.15.1&quot;,
+    &quot;file-loader&quot;: &quot;^0.8.4&quot;,
+    &quot;jquery&quot;: &quot;^3.3.1&quot;,
+    &quot;node-libs-browser&quot;: &quot;^0.5.2&quot;,
+    &quot;react&quot;: &quot;0.14.2&quot;,
+    &quot;react-dom&quot;: &quot;0.14.2&quot;,
+    &quot;react-redux&quot;: &quot;4.0.0&quot;,
+    &quot;redux&quot;: &quot;v3.0.2&quot;,
+    &quot;redux-logger&quot;: &quot;^3.0.6&quot;,
+    &quot;redux-promise&quot;: &quot;^0.5.3&quot;,
+    &quot;redux-saga&quot;: &quot;^0.16.0&quot;,
+    &quot;redux-thunk&quot;: &quot;^0.1.0&quot;,
+    &quot;style-loader&quot;: &quot;^0.12.3&quot;,
+    &quot;url-loader&quot;: &quot;^0.5.6&quot;,
+    &quot;webpack&quot;: &quot;^1.10.0&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;react-hot-loader&quot;: &quot;^1.2.7&quot;,
+    &quot;eslint&quot;: &quot;^1.10.3&quot;,
+    &quot;babel-eslint&quot;: &quot;^3.1.9&quot;,
+    &quot;eslint-plugin-react&quot;: &quot;^2.3.0&quot;,
+    &quot;webpack-dev-server&quot;: &quot;^1.8.2&quot;
+  }
+}
+</code></pre>
+<p>执行命令, 动态监听js变化, 实时编译</p>
+<pre><code class="lang-bash">yarn run dev
+</code></pre>
+<p>浏览器进dist/index.html, 本地编辑test6.jsx代码</p>
+<hr>
+<p>react的基础用法, props, state, 事件监听例子</p>
+<pre><code class="lang-jsx">import React, { Component } from &#39;react&#39;
+import { render } from &#39;react-dom&#39;
+
+const mountNode = document.getElementById(&#39;sense&#39;);
+
+const ShowMessage = (props) =&gt; &lt;div&gt;{props.message}&lt;/div&gt;
+
+class LikeButton extends Component {
+  constructor() {
+    super();
+    this.state = { liked: false };
+  }
+
+  handleClick(event) {
+    this.setState({ liked: !this.state.liked });
+  }
+
+  render() {
+    const text = this.state.liked ? &#39;like&#39; : &quot;haven&#39;t liked&quot;;
+    return (
+      &lt;div onClick={this.handleClick.bind(this)}&gt;
+        &lt;ShowMessage message={text} /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+render(&lt;LikeButton /&gt;, mountNode);
+</code></pre>
+<hr>
+<p>react, redux, connect例子</p>
+<pre><code class="lang-js">import React, { Component } from &#39;react&#39;;
+import { render } from &#39;react-dom&#39;;
+import { Provider, connect } from &#39;react-redux&#39;;
+import { createStore, combineReducers } from &#39;redux&#39;;
+
+
+// 创建针对content属性的reducer, 处理INCRESE_ACTION请求, 把content属性的值+1
+
+const contentReducer = (state = 0, action) =&gt; {
+  switch (action.type) {
+    case &#39;INCRESE_ACTION&#39;:
+      return state + action.payload;
+    default:
+      return state;
+  }
+}
+
+
+// 把所有属性(如content)的reducer绑定在一起reducer
+
+const reducer = combineReducers({
+  content: contentReducer
+})
+
+
+// 由reducer, 创建store
+// 消息action的产生dispatch, 是在App的事件监听里; 消息的处理, 是通过修改App的props通知App
+
+const store = createStore(reducer);
+
+
+// 定义App组件, 能监听鼠标点击, 并展示信息
+// 鼠标点击, 触发this.props.increseAction, 这个是个方法, 由connect绑定, 最终调用到外部的方法
+// 展示信息, 是展示this.props.content, 这个是个属性, 由connect绑定, 最终由外部属性变化通知内部属性
+// 组件和外界的交互, 均通过props
+
+class App extends Component {
+
+  handleClick() {
+    this.props.increseAction(1);
+  }
+
+  render() {
+    return (
+      &lt;div onClick={this.handleClick.bind(this)}&gt;累计: { this.props.content }&lt;/div&gt;
+    );
+  }
+}
+
+
+// 把外界变化state.content, 通知到内部props.content
+// 把内部的调用increseAction, 关联到外部dispatch(action)
+
+App = connect(
+  function mapStateToProps(state) {
+    return {
+      content: state.content
+    }
+  }, function mapDispatchProps(dispatch) {
+    return {
+      increseAction: (count) =&gt; { dispatch({ type: &#39;INCRESE_ACTION&#39;, payload: count }) }
+    }
+  })(App);
+
+
+// 渲染页面
+
+render((
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+), document.getElementById(&#39;sense&#39;));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
