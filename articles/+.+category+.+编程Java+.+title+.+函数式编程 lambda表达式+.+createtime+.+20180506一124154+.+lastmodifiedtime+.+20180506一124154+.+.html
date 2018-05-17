@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>函数式编程 lambda表达式
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-lambda-">函数式编程 lambda表达式</h1>
+<pre><code class="lang-java">    public static void main(String[] args) {
+
+        // 函数式编程语法:
+        // 在接口上加注解@FunctionalInterface, 如Consumer, Function, Runnable
+        // 前提是这些接口, 只能有一个待实现的类, 不能有1个以上, 也不能1个都没有, 编译器会检查
+        // 然后用函数式语法糖, (param) -&gt; { code }, 编译器就能展开代码
+
+        // 双冒号语法:
+        // (param) -&gt; System.out.println(param)     可以换成双冒号语法:     System.out::println
+
+
+        Arrays.asList(&quot;a&quot;, &quot;b&quot;).forEach((item) -&gt; System.out.println(item));
+
+        Arrays.asList(&quot;a&quot;, &quot;b&quot;).forEach(System.out::println);
+
+        new Thread( () -&gt; System.out.println(&quot;In Java8, Lambda expression rocks !!&quot;) ).start();
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

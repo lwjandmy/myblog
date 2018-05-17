@@ -555,6 +555,46 @@
         &lt;maven.compiler.target&gt;1.6&lt;/maven.compiler.target&gt;
     &lt;/properties&gt;
 </code></pre>
+<hr>
+<h2 id="-nexus-">设置阿里云nexus, 最简单配置</h2>
+<p>不修改~/.m2/settings.xml, 或不添加这个文件</p>
+<p>设置环境变量MAVEN_HOME, 直接在apache-maven\conf\settings.xml增添以下配置即可:</p>
+<pre><code class="lang-xml">  &lt;profiles&gt;
+    &lt;profile&gt;
+      &lt;id&gt;aliyun-nexus&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;jdk&gt;1.6&lt;/jdk&gt;
+        &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
+      &lt;/activation&gt;
+      &lt;repositories&gt;
+        &lt;repository&gt;
+          &lt;id&gt;central&lt;/id&gt;
+          &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
+          &lt;layout&gt;default&lt;/layout&gt;
+          &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/releases&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/repository&gt;
+      &lt;/repositories&gt;
+      &lt;pluginRepositories&gt;
+        &lt;pluginRepository&gt;
+          &lt;id&gt;central&lt;/id&gt;
+          &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
+          &lt;layout&gt;default&lt;/layout&gt;
+          &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/releases&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/pluginRepository&gt;
+      &lt;/pluginRepositories&gt;
+    &lt;/profile&gt;
+  &lt;/profiles&gt;
+</code></pre>
 
 
 </div>
