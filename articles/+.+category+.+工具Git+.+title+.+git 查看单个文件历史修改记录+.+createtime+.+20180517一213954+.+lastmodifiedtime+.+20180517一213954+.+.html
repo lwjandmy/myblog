@@ -1,0 +1,33 @@
+
+
+<html><head><meta charset="UTF-8"><title>git 查看单个文件历史修改记录
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="git-">git 查看单个文件历史修改记录</h1>
+<p>查看文件在哪些历史commit里</p>
+<pre><code class="lang-bash">git log --pretty=oneline README.md
+</code></pre>
+<p>查看commit中文件有什么变化</p>
+<pre><code class="lang-bash">git show 013d450 README.md
+</code></pre>
+<p>查看文件中每一行, 由哪次提交, 哪个人提交的.</p>
+<pre><code class="lang-bash">git blame README.md
+</code></pre>
+<p>SourceTree中, 在&quot;已暂存文件&quot;列表, 或历史commt中文件列表, 右键, &quot;选定项目的变更历史&quot;, &quot;按行审阅选定项目&quot;</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
