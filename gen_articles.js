@@ -36,7 +36,7 @@ co(function* () {
         
         // 将标题应用到template_beforemd
         template_beforemd = template_beforemd.replace('\[\[\[template_begin\[\[\[title\]\]\]template_end\]\]\]', title);
-			
+      
         // 加入模板内容
         file_data = template_beforemd + file_data + template_aftermd;
         
