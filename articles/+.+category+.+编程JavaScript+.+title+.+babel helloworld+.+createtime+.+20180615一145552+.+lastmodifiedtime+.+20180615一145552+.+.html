@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>babel helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="babel-helloworld">babel helloworld</h1>
+<pre><code class="lang-bash">yarn add babel-cli
+</code></pre>
+<pre><code class="lang-bash">yarn add babel-preset-es2015
+</code></pre>
+<p>package.json:</p>
+<pre><code class="lang-js">{
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;babel-node ./index.js&quot;
+  }
+}
+</code></pre>
+<p>.babelrc</p>
+<pre><code class="lang-js">{
+  &quot;presets&quot;: [&quot;es2015&quot;]
+}
+</code></pre>
+<pre><code class="lang-bash">yarn run start
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
