@@ -1,0 +1,76 @@
+
+
+<html><head><meta charset="UTF-8"><title>express mock server demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="express-mock-server-demo">express mock server demo</h1>
+<p>package.json</p>
+<pre><code class="lang-js">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;nodemon --exec babel-node ./index.js&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;babel-cli&quot;: &quot;^6.26.0&quot;,
+    &quot;babel-preset-es2015&quot;: &quot;^6.24.1&quot;,
+    &quot;bluebird&quot;: &quot;^3.5.1&quot;,
+    &quot;co&quot;: &quot;^4.6.0&quot;,
+    &quot;express&quot;: &quot;^4.16.3&quot;,
+    &quot;nodemon&quot;: &quot;^1.17.5&quot;
+  }
+}
+</code></pre>
+<p>.babelrc</p>
+<pre><code class="lang-js">{
+  &quot;presets&quot;: [&quot;es2015&quot;]
+}
+</code></pre>
+<p>index.js</p>
+<pre><code class="lang-js">import express from &#39;express&#39;
+import Promise from &#39;bluebird&#39;
+import co from &#39;co&#39;
+
+const app = express()
+
+// use第一个参数是路径, 可忽略
+// use第二个参数可以是callback函数, 也可以是express对象
+app.use(&#39;/api&#39;, (() =&gt; {
+  const api = express()
+
+  // callback函数, 第三方参数next, 调用就会调到其它use, 不调用就不向下
+  api.use(/\/role(\d+)/, (req, res, next) =&gt; {
+    res.json(req.params)
+  })
+
+  return api
+})())
+
+
+
+app.use((req, res, next) =&gt; {
+  res.json(&#39;404 Not found!&#39;)
+})
+
+
+app.listen(3000)
+
+console.log(&#39;Server started&#39;)
+</code></pre>
+<pre><code class="lang-bash">yarn run dev
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
