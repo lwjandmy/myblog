@@ -27,6 +27,26 @@ public class OptionalDemo {
         System.out.println(demo.flatMap(demo1 -&gt; demo1.prop).orElse(&quot;default&quot;));
     }
 
+    public static void main1(String[] args) {
+
+        Optional&lt;String[]&gt; argsOpt = Optional.ofNullable(args);
+
+        // 返回Optional或EMPTY
+        argsOpt.filter(argss -&gt; argss.length != 0);
+
+        // 如果有值, 就执行, 用下面的map可以代替
+        argsOpt.ifPresent(argss -&gt; {
+            System.out.println(argss);
+        });
+
+        // 如果有值, 就执行, 并获得返回结果
+        argsOpt.map(argss -&gt; 0);
+
+        // 如果为空, 设置默认值
+        argsOpt.orElse(new String[]{});
+
+    }
+
 }
 </code></pre>
 
