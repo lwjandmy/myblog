@@ -1,0 +1,75 @@
+
+
+<html><head><meta charset="UTF-8"><title>co异步处理与生成器懒加载共存方案
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="co-">co异步处理与生成器懒加载共存方案</h1>
+<pre><code class="lang-js">
+// 既使用co, 将异步请求代码的编写, 变成前后有序
+// 也使用生成器, 实现数据的按需加载
+// 生产者(迭代器)与消费者(循环迭代器)的写法
+
+// 总结:
+// 最外层的生成器, 一定是给co用的, 这样才保证能把异步方法调用写成前后顺序
+// 里层代码为了达到生成器懒加载效果, 让生成器返回Promise而不是数据
+
+(() =&gt; {
+    try {
+
+        const api = {
+            detail: (id) =&gt; {
+                console.log(&#39;请求后台:&#39; + id)
+                return new Promise((resolve, reject) =&gt; {
+                    setTimeout(() =&gt; {
+                        console.log(&#39;后台响应:&#39; + id)
+                        resolve(id)
+                    }, 1000)
+                })
+            },
+        }
+
+        // 生产者, 迭代器, 生产Promise
+        // 内部可通过co, 处理异步请求, 生产出Promise
+        const gen = function* () {
+            for (const id of [1, 2, 3]) {
+                yield co(function* () {
+                    const detail = yield api.detail(id)
+                    console.log(&#39;处理1: &#39; + detail);
+                    return detail
+                })
+            }
+        }
+
+        // 消费者, 循环迭代器, 消费Promise
+        // 外部被co包裹, 内部循环出Promise, yield出去给co处理
+        co(function* () {
+            for (const promise of gen()) {
+                const detail = yield promise
+                console.log(&#39;处理2: &#39; + detail)
+            }
+        })
+
+
+    } catch (e) {
+        console.error(&#39;error:&#39;)
+        console.error(e)
+    }
+})()
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

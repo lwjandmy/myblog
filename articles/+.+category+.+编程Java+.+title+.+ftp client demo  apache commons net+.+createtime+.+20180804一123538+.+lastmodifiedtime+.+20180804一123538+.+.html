@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>ftp client demo  apache commons net
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ftp-client-demo-apache-commons-net">ftp client demo  apache commons net</h1>
+<pre><code class="lang-java">    public static void main(String[] args) throws SocketException, IOException {
+
+        Closer closer = Closer.create();
+
+
+        FTPClient ftpClient = new FTPClient();
+
+        ftpClient.setAutodetectUTF8(true);
+
+        ftpClient.connect(&quot;localhost&quot;, 21);
+        closer.register(() -&gt; ftpClient.disconnect());
+
+        System.out.println(&quot;logined: &quot; + ftpClient.login(&quot;anonymous&quot;, &quot;&quot;));
+        closer.register(() -&gt; ftpClient.logout());
+
+        System.out.println(&quot;listFiles: &quot;);
+        Stream.of(ftpClient.listFiles()).forEach(file -&gt; System.out.println(file.toString()));
+
+        System.out.println(&quot;下载文件: &quot;);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ftpClient.retrieveFileStream(&quot;download-ftp-client-demo.txt&quot;), &quot;UTF-8&quot;));
+        reader.lines().forEach(line -&gt; System.out.println(line));
+        reader.close();
+        ftpClient.completePendingCommand();
+
+        ftpClient.deleteFile(&quot;upload-ftp-client-demo.txt&quot;);
+
+        System.out.println(&quot;上传文件: &quot;);
+        OutputStream os = ftpClient.storeFileStream(&quot;upload-ftp-client-demo.txt&quot;);
+        os.write(&quot;this is file data from ftp client demo.&quot;.getBytes(&quot;UTF-8&quot;));
+        os.close();
+        ftpClient.completePendingCommand();
+
+
+        closer.close();
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
