@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>xmlns xml命名空间
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="xmlns-xml-">xmlns xml命名空间</h1>
+<p>命名空间</p>
+<pre><code class="lang-xml">&lt;h:table xmlns:h=&quot;http://www.w3.org/TR/html4/&quot;&gt;
+   &lt;h:tr&gt;
+       &lt;h:td&gt;Apples&lt;/h:td&gt;
+       &lt;h:td&gt;Bananas&lt;/h:td&gt;
+   &lt;/h:tr&gt;
+&lt;/h:table&gt;
+</code></pre>
+<p>xmlns:h=&quot;<a href="http://www.w3.org/TR/html4/">http://www.w3.org/TR/html4/</a>&quot; 定义命名空间, table, tr, td标签都要加上命名空间作为前缀h:table</p>
+<pre><code class="lang-xml">&lt;table xmlns=&quot;http://www.w3.org/TR/html4/&quot;&gt;
+   &lt;tr&gt;
+       &lt;td&gt;Apples&lt;/td&gt;
+       &lt;td&gt;Bananas&lt;/td&gt;
+   &lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
+<p>xmlns=&quot;<a href="http://www.w3.org/TR/html4/">http://www.w3.org/TR/html4/</a>&quot; 定义默认的命名空间, table, tr, td的命名空间都确定了, 可简化写法</p>
+<p>XSI命名空间</p>
+<pre><code class="lang-xml">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-4.0.xsd&quot;&gt;
+&lt;/beans&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

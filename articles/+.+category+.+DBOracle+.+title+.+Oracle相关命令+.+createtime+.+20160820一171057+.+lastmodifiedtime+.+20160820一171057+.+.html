@@ -170,6 +170,9 @@ select * from dba_segments;
 alter database datafile &#39;D:\ORACLE\PRODUCT\ORADATA\TEST\USERS01.DBF&#39; autoextend on next 50m maxsize 500m;
 alter tablespace yourtablespacename add datafile &#39;d:\newtablespacefile.dbf&#39; size 5m;
 </code></pre>
+<h2 id="-">查询默认表空间</h2>
+<pre><code class="lang-sql">select default_tablespace from user_users;
+</code></pre>
 <hr>
 <h2 id="-exp-imp-">解决exp/imp无法导出空表</h2>
 <h3 id="-1-">方法1 对空表分配空间</h3>
