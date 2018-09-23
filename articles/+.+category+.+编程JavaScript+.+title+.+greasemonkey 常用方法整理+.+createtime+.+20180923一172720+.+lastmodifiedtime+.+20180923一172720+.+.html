@@ -1,0 +1,157 @@
+
+
+<html><head><meta charset="UTF-8"><title>greasemonkey 常用方法整理
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="greasemonkey-">greasemonkey 常用方法整理</h1>
+<pre><code class="lang-js">
+
+(function() {
+    &#39;use strict&#39;;
+
+    // 事件总线
+    function eventBus() {
+        var bus = {};
+        return {
+            regist: function (type, callback) {
+                bus[type] = bus[type] ? bus[type] : [];
+                bus[type].push(callback);
+            },
+            trigger: function (type, param) {
+                if (bus[type]) {
+                    for (var i in bus[type]) {
+                        var listener = bus[type][i];
+                        listener.call(null, param);
+                    }
+                }
+            },
+        }
+    }
+
+    /*
+    var bus = eventBus();
+    bus.regist(&#39;test&#39;, function (param) { console.log(param); });
+    bus.trigger(&#39;test&#39;, &#39;abc&#39;);
+    */
+
+    var bus = eventBus();
+
+    // 生成随机字符串
+    function randomStr() {
+        return (Math.random() + &#39;&#39;).replace(&#39;\.&#39;, &#39;&#39;);
+    }
+
+    // 为ajax设置钩子: ajax请求成功时, 执行回调函数, 可获取前后台交互的数据
+    // callback: function(request, response)
+    function registAjaxSuccess($, callback) {
+        $(document).bind(&quot;ajaxSuccess&quot;, function(event, jqXRH, request, response){
+            callback(request, response);
+        });
+    }
+
+    /*
+    registAjaxSuccess($, (req, resp) =&gt; {
+        console.log(req, resp);
+    });
+    */
+
+    // 创建一个文字输出域, 用于输出文字
+    // 从body的末尾, 创建div, div内创建pre, pre为文字输出域
+    // 返回值见return语句
+    function createOutput($) {
+        var preId = &#39;pre&#39; + randomStr();
+        $(&#39;body&#39;).append(&#39;&lt;div&gt;&lt;pre id=&quot;&#39; + preId + &#39;&quot;&gt;&lt;/pre&gt;&lt;/div&gt;&#39;);
+        var pre = $(&#39;#&#39; + preId);
+        return {
+            appendText: function (text) {
+                pre.append(text);
+            },
+            cleanText: function () {
+                pre.empty();
+            },
+            getText: function () {
+                return pre.text();
+            },
+            getPre: function () {
+                return pre;
+            },
+        };
+    }
+
+    // 把output的输出, 增加日志和自动末尾的换行符
+    function formatedOutputText(output) {
+        var origin_function_name = &#39;_appendText&#39; + randomStr();
+        output[origin_function_name] = output.appendText;
+        output.appendText = function (text) {
+            this[origin_function_name](currentDate() + &#39; &#39; + text + &#39;\n&#39;);
+        }
+        return output;
+    }
+
+    /*
+    var output = createOutput($);
+    output.appendText(&#39;hello appender&#39;);
+    */
+
+    // 为Date增加Format方法, 格式化日期字符串
+    Date.prototype.Format = function(fmt)
+    {
+        var o = {
+            &quot;M+&quot; : this.getMonth()+1,                 //月份
+            &quot;d+&quot; : this.getDate(),                    //日
+            &quot;h+&quot; : this.getHours(),                   //小时
+            &quot;m+&quot; : this.getMinutes(),                 //分
+            &quot;s+&quot; : this.getSeconds(),                 //秒
+            &quot;q+&quot; : Math.floor((this.getMonth()+3)/3), //季度
+            &quot;S&quot;  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt))
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+&quot;&quot;).substr(4 - RegExp.$1.length));
+        for(var k in o)
+            if(new RegExp(&quot;(&quot;+ k +&quot;)&quot;).test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : ((&quot;00&quot;+ o[k]).substr((&quot;&quot;+ o[k]).length)));
+        return fmt;
+    }
+
+    // 获取当前时间
+    function currentDate() {
+        return new Date().Format(&#39;MMdd hhmmss&#39;);
+    }
+
+    // 获取持久数据
+    function getPersistentData(key, default_data) {
+        if (localStorage.hasOwnProperty(key)) {
+            return JSON.parse(localStorage.getItem(key));
+        } else {
+            return default_data;
+        }
+    }
+
+    // 设置持久数据
+    function setPersistentData(key, data) {
+        if (undefined === data) {
+            localStorage.removeItem(key);
+        } else {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+    }
+
+})();
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
