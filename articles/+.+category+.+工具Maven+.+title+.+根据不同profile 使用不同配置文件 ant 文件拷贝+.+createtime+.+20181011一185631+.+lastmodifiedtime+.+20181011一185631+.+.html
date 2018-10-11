@@ -1,0 +1,73 @@
+
+
+<html><head><meta charset="UTF-8"><title>根据不同profile 使用不同配置文件 ant 文件拷贝
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-profile-ant-">根据不同profile 使用不同配置文件 ant 文件拷贝</h1>
+<p>命令:</p>
+<pre><code class="lang-bash">mvn install
+
+mvn install -P sit
+
+mvn install -P uat
+</code></pre>
+<p>pom.xml</p>
+<pre><code class="lang-xml">
+&lt;project&gt;
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-antrun-plugin&lt;/artifactId&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;phase&gt;compile&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;run&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;tasks&gt;
+                                &lt;copy overwrite=&quot;true&quot; file=&quot;${project.build.directory}/classes/jdbc-${env}.properties&quot; tofile=&quot;${project.build.directory}/classes/jdbc.properties&quot; /&gt;
+                                &lt;delete quiet=&quot;true&quot; file=&quot;${project.build.directory}/classes/jdbc-dev.properties&quot; /&gt;
+                                &lt;delete quiet=&quot;true&quot; file=&quot;${project.build.directory}/classes/jdbc-sit.properties&quot; /&gt;
+                                &lt;delete quiet=&quot;true&quot; file=&quot;${project.build.directory}/classes/jdbc-uat.properties&quot; /&gt;
+                            &lt;/tasks&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+    &lt;profiles&gt;
+        &lt;profile&gt;
+            &lt;id&gt;dev&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;dev&lt;/env&gt;&lt;/properties&gt;
+            &lt;activation&gt;&lt;activeByDefault&gt;true&lt;/activeByDefault&gt;&lt;/activation&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;
+            &lt;id&gt;sit&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;sit&lt;/env&gt;&lt;/properties&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;
+            &lt;id&gt;uat&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;uat&lt;/env&gt;&lt;/properties&gt;
+        &lt;/profile&gt;
+    &lt;/profiles&gt;
+&lt;/project&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

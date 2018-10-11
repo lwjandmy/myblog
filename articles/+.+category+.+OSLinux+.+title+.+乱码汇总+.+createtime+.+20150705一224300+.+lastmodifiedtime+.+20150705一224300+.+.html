@@ -42,6 +42,17 @@ mintty zsh --login -i
 <h2 id="git-344-270-255-346-226-207-346-265-213-350-257-225-txt-">git 中文乱码 显示&quot;\344\270\255\346\226\207\346\265\213\350\257\225.txt&quot;</h2>
 <pre><code class="lang-bash">git config --global core.quotepath false
 </code></pre>
+<h2 id="oracle-">oracle乱码</h2>
+<p>查看服务器编码</p>
+<pre><code class="lang-sql">select userenv(&#39;language&#39;) from dual;
+</code></pre>
+<p>上面看到的是服务器上的编码.</p>
+<p>在@执行sql脚本时, 只要保证脚本文件编码(GBK)与本地环境变量NLS_LANG=SIMPLIFIED CHINESE_CHINA.ZHS16GBK一致即可, 不需与服务器上编码一致, sqlplus和sql服务会处理服务器上的编码.</p>
+<h2 id="cmd-">cmd乱码</h2>
+<pre><code class="lang-bat">chcp 65001 # 换成utf8
+chcp 936 # 换成默认gbk
+</code></pre>
+<p>utf8, 属性 -&gt;字体 -&gt;选择 Lucida Console</p>
 
 
 </div>
