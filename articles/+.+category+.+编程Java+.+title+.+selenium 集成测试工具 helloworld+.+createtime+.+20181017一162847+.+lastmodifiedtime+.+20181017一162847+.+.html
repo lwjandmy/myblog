@@ -1,0 +1,109 @@
+
+
+<html><head><meta charset="UTF-8"><title>selenium 集成测试工具 helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="selenium-helloworld">selenium 集成测试工具 helloworld</h1>
+<pre><code class="lang-java">package org.demo.selenium_demo;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class App {
+
+    public static void fillData(WebDriver driver, Map&lt;String, String&gt; data) {
+        data.forEach((selector, text) -&gt; {
+            driver.findElement(By.cssSelector(selector)).sendKeys(text);
+        });
+    }
+
+    public static void main(String[] args) {
+
+        // 设置驱动位置
+        System.setProperty(&quot;webdriver.chrome.driver&quot;, &quot;/path/to/chromedriver.exe&quot;);
+        WebDriver driver = new ChromeDriver();
+
+        try {
+
+            // 设置查询元素不存在, 等待时间
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+            // 进入网页
+            driver.get(&quot;https://www.baidu.com&quot;);
+
+            // 输入内容
+            Map&lt;String, String&gt; data = new LinkedHashMap&lt;String, String&gt;();
+            data.put(&quot;#kw&quot;, &quot;abc&quot;);
+            fillData(driver, data);
+
+            // 点击按钮
+            driver.findElement(By.cssSelector(&quot;#su&quot;)).click();
+
+            // 检查结果
+            for (WebElement resultItem : driver.findElements(By.cssSelector(&quot;#content_left div h3 a&quot;))) {
+                System.out.println(resultItem.getText());
+            }
+
+            System.out.println(&quot;\n --- next page --- \n&quot;);
+
+            // 下一页
+            driver.findElement(By.cssSelector(&quot;#page &gt; a.n&quot;)).click();
+
+            // 等待页面刷新, 当前黑体页数变成2
+            new WebDriverWait(driver, 10).until(ExpectedConditions.textToBe(By.cssSelector(&quot;#page &gt; strong &gt; span.pc&quot;), &quot;2&quot;));
+
+            // 检查结果
+            for (WebElement resultItem : driver.findElements(By.cssSelector(&quot;#content_left div h3 a&quot;))) {
+                System.out.println(resultItem.getText());
+            }
+
+        } finally {
+            driver.close();
+        }
+    }
+
+}
+</code></pre>
+<p>pom.xml</p>
+<pre><code class="lang-xml">    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.seleniumhq.selenium&lt;/groupId&gt;
+            &lt;artifactId&gt;selenium-java&lt;/artifactId&gt;
+            &lt;version&gt;3.14.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+</code></pre>
+<p>chromedriver 下载:</p>
+<p><a href="https://npm.taobao.org/mirrors/chromedriver/">https://npm.taobao.org/mirrors/chromedriver/</a></p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
