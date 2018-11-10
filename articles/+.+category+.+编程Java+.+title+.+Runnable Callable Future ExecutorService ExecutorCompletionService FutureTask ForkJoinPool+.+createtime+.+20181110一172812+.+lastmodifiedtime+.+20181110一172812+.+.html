@@ -1,0 +1,144 @@
+
+
+<html><head><meta charset="UTF-8"><title>Runnable Callable Future ExecutorService ExecutorCompletionService FutureTask ForkJoinPool
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="runnable-callable-future-executorservice-executorcompletionservice-futuretask-forkjoinpool">Runnable Callable Future ExecutorService ExecutorCompletionService FutureTask ForkJoinPool</h1>
+<p>Runnable和Callable, 接口, 代表一个可执行的代码, 区别是Callable的代码有返回值, Runnable无返回值</p>
+<p>Future, 接口, 代表一个代码执行后的结果, 通常用在异步代码的执行, 把结果记录下来</p>
+<p>ExecutorService, 类, 执行器, 用于执行代码(Runnable或Callable), 类似线程池</p>
+<pre><code class="lang-java">    // ExecutorService Future Callable Runnable
+    public static void main4(String[] args) throws InterruptedException, ExecutionException {
+
+        // ExecutorService执行器 Future异步任务结果 Callable可调用的任务有返回值 Runnable可调用的任务无返回值
+        // 执行器服务 ExecutorService
+        // 表示一个异步执行机制
+        // 类似于一个线程池
+        // 返回Future, 记录执行结果
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        Future&lt;String&gt; future = executorService.submit(new Callable&lt;String&gt;() {
+            @Override
+            public String call() throws Exception {
+                return &quot;Callable Task&quot;;
+            }
+        });
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(&quot;Runnable Task&quot;);
+            }
+        });
+
+        System.out.println(future.get());
+
+        executorService.shutdown();
+
+    }
+</code></pre>
+<p>ExecutorCompletionService, 类, 执行器, 把多个任务的执行结果Future, 放在queue里, 可以依次取出</p>
+<pre><code class="lang-java">    // ExecutorCompletionService
+    public static void main7(String[] args) throws InterruptedException, ExecutionException {
+
+        // ExecutorCompletionService
+        // 调用Executor运行任务. 内部使用queue, 把完成的任务的Future, 通过take依次拿到
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorCompletionService&lt;String&gt; executorCompletionService = new ExecutorCompletionService&lt;String&gt;(executorService);
+
+        executorCompletionService.submit(new Callable&lt;String&gt;() {
+            @Override
+            public String call() throws Exception {
+                return &quot;Callable Task1&quot;;
+            }
+        });
+
+        executorCompletionService.submit(new Callable&lt;String&gt;() {
+            @Override
+            public String call() throws Exception {
+                return &quot;Callable Task2&quot;;
+            }
+        });
+
+        System.out.println(executorCompletionService.take().get());
+        System.out.println(executorCompletionService.take().get());
+
+        executorService.shutdown();
+
+    }
+</code></pre>
+<p>FutureTask, 类, 实现了Future和Runnable接口, 代表一个可执行的代码, 并且自己保存代码的执行结果</p>
+<pre><code class="lang-java">    // FutureTask
+    public static void main6(String[] args) throws InterruptedException, ExecutionException {
+
+        // FutureTask
+        // 内部封装了Callable, Runnable, Future接口
+        // 提供了run方法, run方法内调用Callable或Runnable, 把调用结果保存到Future
+        // 即自己管理自己的异步调用后的结果
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+        FutureTask&lt;String&gt; futureTask = new FutureTask&lt;String&gt;(new Callable&lt;String&gt;() {
+            @Override
+            public String call() throws Exception {
+                return &quot;Callable Task&quot;;
+            }
+        });
+
+        executorService.submit(futureTask);
+
+        System.out.println(futureTask.get());
+
+        executorService.shutdown();
+
+    }
+</code></pre>
+<p>ForkJoinPool, 类, 用于充分利用多核处理器, 把需要高运算量的任务分解fork再合并join</p>
+<pre><code class="lang-java">    // 把task, 除以2二分分隔, 再把分隔值求和合并
+    static class MyRecursiveTask extends RecursiveTask&lt;Integer&gt; {
+        int task;
+        public MyRecursiveTask(int task) { this.task = task; }
+        @Override
+        protected Integer compute() {
+            if (task &lt;= 1) {
+                return task;
+            } else {
+                int splited = task / 2;
+                MyRecursiveTask splitedTask1 = new MyRecursiveTask(splited);
+                MyRecursiveTask splitedTask2 = new MyRecursiveTask(task - splited);
+                splitedTask1.fork();
+                splitedTask2.fork();
+                return splitedTask1.join() + splitedTask2.join();
+            }
+        }
+    }
+
+    // ForkJoinPool RecursiveTask fork join
+    public static void main5(String[] args) {
+
+        // ForkJoinPool RecursiveTask fork join
+        // ForkJoinPool 线程池, 分叉-和-合并 任务分割的工作
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        System.out.println(forkJoinPool.invoke(new MyRecursiveTask(5)));
+        forkJoinPool.shutdown();
+
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
