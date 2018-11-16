@@ -9,12 +9,30 @@
 
 
 <h1 id="babel-helloworld">babel helloworld</h1>
+<p>安装babel和preset预置插件</p>
 <pre><code class="lang-bash">yarn add babel-cli
 </code></pre>
 <pre><code class="lang-bash">yarn add babel-preset-es2015
 </code></pre>
-<p>package.json:</p>
-<pre><code class="lang-js">{
+<p>编译js</p>
+<pre><code class="lang-bash">babel example.js -o compiled.js
+</code></pre>
+<p>编译整个目录</p>
+<pre><code class="lang-bash"># -s 生成source map
+babel src -d lib -s
+``
+
+
+
+
+
+
+
+
+package.json:
+
+```js
+{
   &quot;scripts&quot;: {
     &quot;start&quot;: &quot;babel-node ./index.js&quot;
   }
@@ -26,6 +44,34 @@
 }
 </code></pre>
 <pre><code class="lang-bash">yarn run start
+</code></pre>
+<hr>
+<p>babel用于将ES6代码转为ES5代码.</p>
+<p>JS的标准:</p>
+<p>ES5, 传统js语法, 大部分浏览器都支持.</p>
+<p>ES6(又称ES2015), 新js语法, 部分浏览器不支持.</p>
+<p>TypeScript, 在ES6(又称ES2015)之上, 增加了数据类型, 类型检查.</p>
+<p>ES7, 更新的js语法</p>
+<p>将ES2015转换为ES5, 需要babel-preset-es2015</p>
+<p>将react转换为ES5, 需要babel-preset-react</p>
+<p>将ES7转换为ES5, 按ES7语法提案的不同阶段, 分别需要babel-preset-stage-0, babel-preset-stage-1, babel-preset-stage-2, babel-preset-stage-3. 0包含1, 2, 3; 1包含2, 3.</p>
+<p>为了省事, 可以设置</p>
+<p>.babelrc</p>
+<pre><code class="lang-js">{
+&quot;presets&quot;: [
+    &quot;es2015&quot;,
+    &quot;react&quot;,
+    &quot;stage-0&quot;
+],
+&quot;plugins&quot;: []
+}
+</code></pre>
+<hr>
+<p>兼容老浏览器, 提供模拟API</p>
+<pre><code class="lang-bash">npm install --save babel-polyfill
+</code></pre>
+<p>js增加</p>
+<pre><code class="lang-js">import &#39;babel-polyfill&#39;;
 </code></pre>
 
 
