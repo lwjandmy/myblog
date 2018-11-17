@@ -166,6 +166,28 @@
     }
 }
 </code></pre>
+<hr>
+<h2 id="-springmvc-">与springmvc结合</h2>
+<p>pom.xml</p>
+<pre><code class="lang-xml">    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-web&lt;/artifactId&gt;
+        &lt;version&gt;4.3.20.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre>
+<p>applicationContext.xml</p>
+<pre><code class="lang-xml">&lt;bean class=&quot;org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping&quot;/&gt;
+
+&lt;bean name=&quot;/service1&quot; class=&quot;com.googlecode.jsonrpc4j.spring.JsonServiceExporter&quot;&gt;
+    &lt;property name=&quot;service&quot;&gt;&lt;bean class=&quot;org.demo.Service1&quot; /&gt;&lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;bean name=&quot;/service2&quot; class=&quot;com.googlecode.jsonrpc4j.spring.JsonServiceExporter&quot;&gt;
+    &lt;property name=&quot;service&quot;&gt;&lt;bean class=&quot;org.demo.Service2&quot; /&gt;&lt;/property&gt;
+&lt;/bean&gt;
+</code></pre>
+<p>在Service1和Service2里写代码即可, 无需实现接口</p>
+<p>请求地址是/service1和/service2</p>
 
 
 </div>

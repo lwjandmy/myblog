@@ -91,6 +91,7 @@ log4j.appender.stdout.layout.ConversionPattern=%5p %c:%t - %m%n
         &lt;param name=&quot;Threshold&quot; value=&quot;trace&quot; /&gt;
         &lt;layout class=&quot;org.apache.log4j.PatternLayout&quot;&gt;
             &lt;param name=&quot;ConversionPattern&quot; value=&quot;%d{HH:mm:ss.SSS} %5p %c:%t - %m%n&quot; /&gt;
+            &lt;!-- &lt;param name=&quot;ConversionPattern&quot; value=&quot;%d{HH:mm:ss.SSS} %5p %30.30c - %m%n&quot; /&gt; --&gt;
         &lt;/layout&gt;
     &lt;/appender&gt;
 
@@ -103,6 +104,37 @@ log4j.appender.stdout.layout.ConversionPattern=%5p %c:%t - %m%n
         &lt;priority value=&quot;debug&quot;&gt;&lt;/priority&gt;
         &lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;
     &lt;/root&gt;
+&lt;/log4j:configuration&gt;
+</code></pre>
+<h2 id="log4j-xml-">log4j.xml 另一个模板</h2>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;&gt;
+&lt;log4j:configuration xmlns:log4j=&quot;http://jakarta.apache.org/log4j/&quot;
+    debug=&quot;false&quot;&gt;
+
+    &lt;appender name=&quot;console&quot; class=&quot;org.apache.log4j.ConsoleAppender&quot;&gt;
+        &lt;param name=&quot;Target&quot; value=&quot;System.out&quot; /&gt;
+        &lt;layout class=&quot;org.apache.log4j.PatternLayout&quot;&gt;
+            &lt;param name=&quot;ConversionPattern&quot; value=&quot;%-5p %c{1} - %m%n&quot; /&gt;
+        &lt;/layout&gt;
+        &lt;filter class=&quot;org.apache.log4j.varia.LevelMatchFilter&quot;&gt;
+            &lt;param name=&quot;LevelToMatch&quot; value=&quot;INFO&quot; /&gt;
+            &lt;param name=&quot;AcceptOnMatch&quot; value=&quot;true&quot; /&gt;
+        &lt;/filter&gt;
+        &lt;filter class=&quot;org.apache.log4j.varia.DenyAllFilter&quot; /&gt;
+    &lt;/appender&gt;
+
+
+    &lt;logger name=&quot;com.journaldev.log4j&quot; additivity=&quot;false&quot;&gt;
+        &lt;level value=&quot;DEBUG&quot; /&gt;
+        &lt;appender-ref ref=&quot;console&quot; /&gt;
+    &lt;/logger&gt;
+
+    &lt;root&gt;
+        &lt;priority value=&quot;DEBUG&quot; /&gt;
+        &lt;appender-ref ref=&quot;console&quot; /&gt;
+    &lt;/root&gt;
+
 &lt;/log4j:configuration&gt;
 </code></pre>
 <h2 id="log4j2-xml">log4j2.xml</h2>
