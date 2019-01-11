@@ -22,6 +22,8 @@ div {
 	<div class="operations">
 		<input type="button" value="格式化" onclick="transform(format)">
 		<input type="button" value="压缩" onclick="transform(tiny)">
+		<input type="button" value="unicode编码成ascii" onclick="transform(unicodeEncode)">
+		<input type="button" value="ascii解码成unicode" onclick="transform(unicodeDecode)">
 	</div>
 	<div>
 		<textarea id="output_textarea"></textarea>
@@ -43,6 +45,32 @@ div {
 		}
 		function tiny(json) {
 			return JSON.stringify(JSON.parse(json));
+		}
+		function unicodeEncode(unicode) {
+			var v = unicode.split("");
+			var ascii = "";
+			for (var i = 0; i < v.length; i++) {
+				var code = Number(v[i].charCodeAt(0));
+				if (code > 127) {
+					var charAscii = code.toString(16);
+					charAscii = new String("0000").substring(charAscii.length, 4) + charAscii;
+					ascii += "\\u" + charAscii;
+				} else {
+					ascii += v[i];
+				}
+			}
+			return ascii;
+		}
+		function unicodeDecode(ascii) {
+			var v = ascii;
+			var r = v.match(/\\u[0-9a-fA-F]{4}/g);
+			if(r == null) {
+				return v;
+			}
+			for(var i = 0; i < r.length; i++){
+				v = v.replace(r[i],unescape(r[i].replace("\\u","%u")));
+			}
+			return v;
 		}
 	</script>
 </body>

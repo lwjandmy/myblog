@@ -1,0 +1,167 @@
+
+
+<html><head><meta charset="UTF-8"><title>maven assembly 自定义zip打包
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="maven-assembly-zip-">maven assembly 自定义zip打包</h1>
+<h2 id="-zip-">打zip包</h2>
+<p>pom.xml</p>
+<pre><code class="lang-xml">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;artifactId&gt;X&lt;/artifactId&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;X&lt;/groupId&gt;
+            &lt;artifactId&gt;X&lt;/artifactId&gt;
+            &lt;version&gt;X&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;nonFilteredFileExtensions&gt;
+                        &lt;nonFilteredFileExtension&gt;sh&lt;/nonFilteredFileExtension&gt;
+                        &lt;nonFilteredFileExtension&gt;bat&lt;/nonFilteredFileExtension&gt;
+                        &lt;nonFilteredFileExtension&gt;properties&lt;/nonFilteredFileExtension&gt;
+                        &lt;nonFilteredFileExtension&gt;xml&lt;/nonFilteredFileExtension&gt;
+                        &lt;nonFilteredFileExtension&gt;yaml&lt;/nonFilteredFileExtension&gt;
+                    &lt;/nonFilteredFileExtensions&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-antrun-plugin&lt;/artifactId&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;phase&gt;compile&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;run&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;tasks&gt;
+                                &lt;copy overwrite=&quot;true&quot; file=&quot;${project.build.directory}/classes/config/config-${env}.properties&quot; tofile=&quot;${project.build.directory}/classes/config/config.properties&quot; /&gt;
+                                &lt;copy overwrite=&quot;true&quot; file=&quot;${project.build.directory}/classes/config/jdbc-${env}.properties&quot; tofile=&quot;${project.build.directory}/classes/config/jdbc.properties&quot; /&gt;
+                            &lt;/tasks&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.6&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;appendAssemblyId&gt;false&lt;/appendAssemblyId&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;make-X-zip&lt;/id&gt;
+                        &lt;phase&gt;package&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;single&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;descriptor&gt;src/main/assembly/zip.xml&lt;/descriptor&gt;
+                            &lt;finalName&gt;${project.artifactId}-${project.version}&lt;/finalName&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+    &lt;profiles&gt;
+        &lt;profile&gt;
+            &lt;id&gt;local&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;local&lt;/env&gt;&lt;/properties&gt;
+            &lt;activation&gt;&lt;activeByDefault&gt;true&lt;/activeByDefault&gt;&lt;/activation&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;
+            &lt;id&gt;dev&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;dev&lt;/env&gt;&lt;/properties&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;
+            &lt;id&gt;sit&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;sit&lt;/env&gt;&lt;/properties&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;
+            &lt;id&gt;uat&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;uat&lt;/env&gt;&lt;/properties&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;
+            &lt;id&gt;prod&lt;/id&gt;
+            &lt;properties&gt;&lt;env&gt;prod&lt;/env&gt;&lt;/properties&gt;
+        &lt;/profile&gt;
+    &lt;/profiles&gt;
+
+&lt;/project&gt;
+</code></pre>
+<p>zip.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;assembly
+    xmlns=&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd&quot;&gt;
+    &lt;id&gt;release&lt;/id&gt;
+    &lt;formats&gt;
+        &lt;format&gt;zip&lt;/format&gt;
+    &lt;/formats&gt;
+    &lt;includeBaseDirectory&gt;false&lt;/includeBaseDirectory&gt;
+    &lt;fileSets&gt;
+        &lt;fileSet&gt;
+            &lt;directory&gt;target/classes&lt;/directory&gt;
+            &lt;outputDirectory&gt;.&lt;/outputDirectory&gt;
+            &lt;includes&gt;
+                &lt;include&gt;bin/*.sh&lt;/include&gt;
+                &lt;include&gt;bin/*.bat&lt;/include&gt;
+                &lt;include&gt;config/config.properties&lt;/include&gt;
+                &lt;include&gt;config/jdbc.properties&lt;/include&gt;
+                &lt;include&gt;config/logback.xml&lt;/include&gt;
+            &lt;/includes&gt;
+        &lt;/fileSet&gt;
+    &lt;/fileSets&gt;
+    &lt;dependencySets&gt;
+        &lt;dependencySet&gt;
+            &lt;useProjectArtifact&gt;true&lt;/useProjectArtifact&gt;
+            &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependencySet&gt;
+    &lt;/dependencySets&gt;
+&lt;/assembly&gt;
+</code></pre>
+<p>目录结构:</p>
+<pre><code class="lang-txt">gateway-deploy/
+    pom.xml
+    src/
+        main/
+            assembly/
+                zip.xml
+            resources/
+                bin/
+                    start.sh
+                config/
+                    config.properties
+                    jdbc.properties
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
