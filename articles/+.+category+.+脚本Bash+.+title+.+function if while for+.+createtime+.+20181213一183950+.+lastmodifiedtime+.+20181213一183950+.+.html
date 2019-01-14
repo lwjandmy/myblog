@@ -63,19 +63,22 @@ done
 <p>获取长度, 拼接, 切分, 匹配, 替换</p>
 <h2 id="map-">Map操作</h2>
 <h2 id="list-">List操作</h2>
+<h2 id="-">思考</h2>
 <p>为什么:</p>
-<p>function fun() {
+<pre><code class="lang-bash">function fun() {
     echo $1
     return 0
 }
-echo $(fun hello)</p>
-<p>输出: hello</p>
-<p>function fun() {
+echo $(fun hello)
+</code></pre>
+<p>输出: <code>hello</code></p>
+<pre><code class="lang-bash">function fun() {
     echo $1
     return 0
 }
-$(fun hello)</p>
-<p>输出: -bash: hello: 未找到命令</p>
+$(fun hello)
+</code></pre>
+<p>输出: <code>-bash: hello: 未找到命令</code></p>
 
 
 </div>
