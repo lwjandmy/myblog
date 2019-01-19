@@ -60,7 +60,22 @@ for item in $(echo a b c); do
 done
 </code></pre>
 <h2 id="-">字符操作</h2>
-<p>获取长度, 拼接, 切分, 匹配, 替换</p>
+<p>获取长度</p>
+<pre><code class="lang-bash">str=abcde
+echo ${#str}
+# 输出: 5
+</code></pre>
+<p>字符拼接</p>
+<pre><code class="lang-bash">str=abcde
+echo ${str}--${str}
+# 输出: abcde--abcde
+# $str和${str}是相同的效果, ${str}可以用于字符串拼接
+</code></pre>
+<p>字符切分</p>
+<pre><code class="lang-bash">str=abcde
+echo ${str:1:3}
+# 输出: bcd
+</code></pre>
 <h2 id="map-">Map操作</h2>
 <h2 id="list-">List操作</h2>
 <h2 id="-">思考</h2>
