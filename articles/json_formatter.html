@@ -14,6 +14,8 @@ div {
 	text-align: center;
 }
 </style>
+<script type="text/javascript" src='jquery.min.js'></script>
+<script type="text/javascript" src='jquery.format.js'></script>
 </head>
 <body>
 	<div>
@@ -24,6 +26,10 @@ div {
 		<input type="button" value="压缩" onclick="transform(tiny)">
 		<input type="button" value="unicode编码成ascii" onclick="transform(unicodeEncode)">
 		<input type="button" value="ascii解码成unicode" onclick="transform(unicodeDecode)">
+		<input type="button" value="文字转码成十六进制" onclick="transform(strToHex)">
+		<input type="button" value="十六进制转码成文字" onclick="transform(hexToStr)">
+		<input type="button" value="xml格式化" onclick="transform(xmlFormat)">
+		<input type="button" value="xml压缩" onclick="transform(xmlTiny)">
 	</div>
 	<div>
 		<textarea id="output_textarea"></textarea>
@@ -71,6 +77,18 @@ div {
 				v = v.replace(r[i],unescape(r[i].replace("\\u","%u")));
 			}
 			return v;
+		}
+		function strToHex(str) {
+			return encodeURIComponent(str).substr(1).split('%').join(' ');
+		}
+		function hexToStr(hex) {
+			return decodeURIComponent('%' + hex.replace(/\n/g, ' ').split(' ').filter(function (item) { return '' != item }).join('%'));
+		}
+		function xmlFormat(hex) {
+			return $.format(hex, {method: 'xml'});
+		}
+		function xmlTiny(hex) {
+			return $.format(hex, {method: 'xmlmin'});
 		}
 	</script>
 </body>
