@@ -21,6 +21,16 @@ COLLATE &#39;utf8_general_ci&#39;;
 `UserID` varchar(40) NOT NULL default &#39;&#39;,  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 </code></pre>
+<hr>
+<p>查看编码配置</p>
+<pre><code class="lang-sql">show variables like &#39;collation_%&#39;;
+</code></pre>
+<p>collation_connection
+collation_database
+collation_server</p>
+<p>创建数据库时设置默认编码</p>
+<pre><code class="lang-sql">CREATE DATABASE `dbname` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+</code></pre>
 
 
 </div>

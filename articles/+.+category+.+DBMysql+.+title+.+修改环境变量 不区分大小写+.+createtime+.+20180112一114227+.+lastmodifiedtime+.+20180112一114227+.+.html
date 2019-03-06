@@ -16,6 +16,13 @@
 <pre><code class="lang-sql">set global lower_case_table_names=1;
 </code></pre>
 <p>lower_case_table_names需要在my.cnf里修改, 重启后生效</p>
+<p>my.cnf追加</p>
+<pre><code class="lang-inf">lower_case_table_names=1
+</code></pre>
+<p>lower_case_table_names</p>
+<p>0, 区分大小写</p>
+<p>1, 不区分大小写</p>
+<p>注意: 必须在建表前, 先定义这个变量, 再创建数据库, 创建表. 否则如果先建好了大写的数据库和表, 再调整这个参数, 会提示找不到表了.....</p>
 
 
 </div>

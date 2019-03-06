@@ -13,6 +13,10 @@ div {
 .operations {
 	text-align: center;
 }
+.space {
+	display: inline;
+	width: 20px;
+}
 </style>
 <script type="text/javascript" src='jquery.min.js'></script>
 <script type="text/javascript" src='jquery.format.js'></script>
@@ -22,14 +26,20 @@ div {
 		<textarea id="input_textarea"></textarea>
 	</div>
 	<div class="operations">
-		<input type="button" value="格式化" onclick="transform(format)">
-		<input type="button" value="压缩" onclick="transform(tiny)">
+		<input type="button" value="json格式化" onclick="transform(jsonFormat)">
+		<input type="button" value="json压缩" onclick="transform(jsonTiny)">
+		<div class="space"></div>
 		<input type="button" value="unicode编码成ascii" onclick="transform(unicodeEncode)">
 		<input type="button" value="ascii解码成unicode" onclick="transform(unicodeDecode)">
+		<div class="space"></div>
 		<input type="button" value="文字转码成十六进制" onclick="transform(strToHex)">
 		<input type="button" value="十六进制转码成文字" onclick="transform(hexToStr)">
+		<div class="space"></div>
 		<input type="button" value="xml格式化" onclick="transform(xmlFormat)">
 		<input type="button" value="xml压缩" onclick="transform(xmlTiny)">
+		<div class="space"></div>
+		<input type="button" value="base64编码" onclick="transform(base64Encode)">
+		<input type="button" value="base64解码" onclick="transform(base64Decode)">
 	</div>
 	<div>
 		<textarea id="output_textarea"></textarea>
@@ -46,10 +56,10 @@ div {
 				document.getElementById('output_textarea').value = e;
 			}
 		}
-		function format(json) {
+		function jsonFormat(json) {
 			return JSON.stringify(JSON.parse(json), null, 2);
 		}
-		function tiny(json) {
+		function jsonTiny(json) {
 			return JSON.stringify(JSON.parse(json));
 		}
 		function unicodeEncode(unicode) {
@@ -89,6 +99,17 @@ div {
 		}
 		function xmlTiny(hex) {
 			return $.format(hex, {method: 'xmlmin'});
+		}
+		function base64Encode(str) {
+			return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+				function toSolidBytes(match, p1) {
+					return String.fromCharCode('0x' + p1);
+				}));
+		}
+		function base64Decode(str) {
+			return decodeURIComponent(atob(str).split('').map(function (c) {
+				return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+				}).join(''));
 		}
 	</script>
 </body>
