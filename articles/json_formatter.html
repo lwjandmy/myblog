@@ -20,6 +20,7 @@ div {
 </style>
 <script type="text/javascript" src='jquery.min.js'></script>
 <script type="text/javascript" src='jquery.format.js'></script>
+<script type="text/javascript" src='md5.min.js'></script>
 </head>
 <body>
 	<div>
@@ -40,6 +41,8 @@ div {
 		<div class="space"></div>
 		<input type="button" value="base64编码" onclick="transform(base64Encode)">
 		<input type="button" value="base64解码" onclick="transform(base64Decode)">
+		<div class="space"></div>
+		<input type="button" value="md5" onclick="transform(md5)">
 	</div>
 	<div>
 		<textarea id="output_textarea"></textarea>
