@@ -26,6 +26,10 @@ co(function* () {
         
         // 从file_data获取文章标题
         const title = file_data.split('\r\n')[0].substring(2);
+		
+		console.log('file_path: ' + file_path)
+		console.log('title: ' + title)
+		return
         
         // md -> html
         file_data = marked(file_data);
