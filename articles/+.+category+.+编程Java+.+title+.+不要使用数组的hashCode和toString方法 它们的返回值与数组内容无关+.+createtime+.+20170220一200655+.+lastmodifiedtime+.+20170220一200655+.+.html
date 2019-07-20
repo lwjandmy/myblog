@@ -1,0 +1,26 @@
+
+
+<html><head><meta charset="UTF-8"><title>不要使用数组的hashCode和toString方法 它们的返回值与数组内容无关
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-hashcode-tostring-">不要使用数组的hashCode和toString方法 它们的返回值与数组内容无关</h1>
+<p>数组类型的hashCode和toString方法几乎是无用的.</p>
+<p>hashCode返回数组的hash值, toString返回hashCode相同的值, 这两个方法的返回值与数组的内容都无关.</p>
+<p>因此, 应该使用Arrays中的静态方法处理数组.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>ndiswrapper
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ndiswrapper">ndiswrapper</h1>
+<h2 id="-ndiswrapper">使用ndiswrapper</h2>
+<h3 id="-">安装驱动</h3>
+<pre><code class="lang-bash">ndiswrapper -i xxx.inf   文件将会进入/etc/ndiswrapper
+</code></pre>
+<h3 id="-">查看安装过的驱动</h3>
+<pre><code class="lang-bash">ndiswrapper -l
+</code></pre>
+<h3 id="-ndiswrapper-modprobe">将ndiswrapper配置放入modprobe</h3>
+<pre><code class="lang-bash">ndiswrapper -m   配置放入/etc/modprobe.d/ndiswrapper.conf
+depmod -a
+</code></pre>
+<h3 id="-ndiswrapper-">确定一下ndiswrapper被加载</h3>
+<pre><code class="lang-bash">modprobe ndiswrapper
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

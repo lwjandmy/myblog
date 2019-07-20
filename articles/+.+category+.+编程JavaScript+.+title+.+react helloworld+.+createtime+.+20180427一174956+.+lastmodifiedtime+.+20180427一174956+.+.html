@@ -1,0 +1,419 @@
+
+
+<html><head><meta charset="UTF-8"><title>react helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="react-helloworld">react helloworld</h1>
+<p>环境准备</p>
+<p>webpack.config.js</p>
+<pre><code class="lang-js">var path = require(&#39;path&#39;);
+
+module.exports = {
+    entry: &#39;./test7.jsx&#39;,
+    output: {
+        path: path.join(__dirname, &#39;/dist&#39;),
+        filename: &#39;bundle.js&#39;
+    },
+    resolve: {
+        extensions: [&#39;.js&#39;, &#39;.jsx&#39;]
+    },
+    module: {
+        rules: [
+            { test: /\.js|jsx$/, loaders: [&#39;babel-loader&#39;] },
+            { test: /\.css|less$/, loaders: [ &#39;style-loader&#39;, &#39;css-loader&#39; ] }
+        ]
+    }
+}
+</code></pre>
+<p>dist/index.html</p>
+<pre><code class="lang-html">&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id=&quot;scene&quot;&gt;&lt;/div&gt;
+        &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>.babelrc</p>
+<pre><code class="lang-json">{
+  &quot;presets&quot;: [&quot;es2015&quot;, &quot;react&quot;, &quot;stage-0&quot;]
+}
+</code></pre>
+<p>package.json</p>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;react-tutorial&quot;,
+  &quot;scripts&quot;: {
+    &quot;example&quot;: &quot;babel-node&quot;,
+    &quot;dev&quot;: &quot;webpack-dev-server --progress true --mode development --content-base dist --hot --watch&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;babel-cli&quot;: &quot;^6.26.0&quot;,
+    &quot;babel-core&quot;: &quot;^6.26.3&quot;,
+    &quot;babel-loader&quot;: &quot;^7.1.4&quot;,
+    &quot;babel-plugin-transform-react-jsx&quot;: &quot;^6.24.1&quot;,
+    &quot;babel-plugin-transform-runtime&quot;: &quot;^6.23.0&quot;,
+    &quot;babel-preset-env&quot;: &quot;^1.6.1&quot;,
+    &quot;babel-preset-es2015&quot;: &quot;^6.24.1&quot;,
+    &quot;babel-preset-es2016&quot;: &quot;^6.24.1&quot;,
+    &quot;babel-preset-es2017&quot;: &quot;^6.24.1&quot;,
+    &quot;babel-preset-latest&quot;: &quot;^6.24.1&quot;,
+    &quot;babel-preset-react&quot;: &quot;^6.24.1&quot;,
+    &quot;babel-preset-stage-0&quot;: &quot;^6.24.1&quot;,
+    &quot;bluebird&quot;: &quot;^3.5.1&quot;,
+    &quot;css-loader&quot;: &quot;^0.28.11&quot;,
+    &quot;file-loader&quot;: &quot;^1.1.11&quot;,
+    &quot;history&quot;: &quot;^4.7.2&quot;,
+    &quot;jquery&quot;: &quot;^3.3.1&quot;,
+    &quot;node-libs-browser&quot;: &quot;^2.1.0&quot;,
+    &quot;react&quot;: &quot;^16.3.2&quot;,
+    &quot;react-dom&quot;: &quot;^16.3.2&quot;,
+    &quot;react-redux&quot;: &quot;^5.0.7&quot;,
+    &quot;react-router&quot;: &quot;^4.2.0&quot;,
+    &quot;react-router-dom&quot;: &quot;^4.2.2&quot;,
+    &quot;react-router-redux&quot;: &quot;^5.0.0-alpha.9&quot;,
+    &quot;redux&quot;: &quot;^4.0.0&quot;,
+    &quot;redux-logger&quot;: &quot;^3.0.6&quot;,
+    &quot;redux-promise&quot;: &quot;^0.5.3&quot;,
+    &quot;redux-router&quot;: &quot;^2.1.2&quot;,
+    &quot;redux-saga&quot;: &quot;^0.16.0&quot;,
+    &quot;redux-thunk&quot;: &quot;^2.2.0&quot;,
+    &quot;style-loader&quot;: &quot;^0.21.0&quot;,
+    &quot;transform-runtime&quot;: &quot;^0.0.0&quot;,
+    &quot;url-loader&quot;: &quot;^1.0.1&quot;,
+    &quot;webpack&quot;: &quot;^4.7.0&quot;,
+    &quot;webpack-cli&quot;: &quot;^2.1.3&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;babel-eslint&quot;: &quot;^8.2.3&quot;,
+    &quot;eslint&quot;: &quot;^4.19.1&quot;,
+    &quot;eslint-plugin-react&quot;: &quot;^7.7.0&quot;,
+    &quot;react-hot-loader&quot;: &quot;^4.1.2&quot;,
+    &quot;webpack-dev-server&quot;: &quot;^3.1.4&quot;
+  }
+}
+</code></pre>
+<p>执行命令, 动态监听js变化, 实时编译</p>
+<pre><code class="lang-bash">yarn run dev
+</code></pre>
+<p>浏览器进dist/index.html, 本地编辑test9.jsx代码</p>
+<hr>
+<p>react的基础用法, props, state, 事件监听例子</p>
+<pre><code class="lang-jsx">import React, { Component } from &#39;react&#39;
+import { render } from &#39;react-dom&#39;
+
+const mountNode = document.getElementById(&#39;scene&#39;);
+
+const ShowMessage = (props) =&gt; &lt;div&gt;{props.message}&lt;/div&gt;
+
+class LikeButton extends Component {
+  constructor() {
+    super();
+    this.state = { liked: false };
+  }
+
+  handleClick(event) {
+    this.setState({ liked: !this.state.liked });
+  }
+
+  render() {
+    const text = this.state.liked ? &#39;like&#39; : &quot;haven&#39;t liked&quot;;
+    return (
+      &lt;div onClick={this.handleClick.bind(this)}&gt;
+        &lt;ShowMessage message={text} /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+render(&lt;LikeButton /&gt;, mountNode);
+</code></pre>
+<hr>
+<p>react, redux, connect例子</p>
+<pre><code class="lang-js">import React, { Component } from &#39;react&#39;;
+import { render } from &#39;react-dom&#39;;
+import { Provider, connect } from &#39;react-redux&#39;;
+import { createStore, combineReducers } from &#39;redux&#39;;
+
+
+// 定义action创建器, 和reducer配对
+
+const increseActionCreator = (count) =&gt; {
+  return {
+    type: &#39;INCRESE_ACTION&#39;,
+    payload: count
+  }
+}
+
+
+// 创建针对content属性的reducer, 处理INCRESE_ACTION请求, 把content属性的值+1
+
+const contentReducer = (state = 0, action) =&gt; {
+  switch (action.type) {
+    case &#39;INCRESE_ACTION&#39;:
+      return state + action.payload;
+    default:
+      return state;
+  }
+}
+
+
+// 把所有属性(如content)的reducer绑定在一起reducer
+
+const reducer = combineReducers({
+  content: contentReducer
+})
+
+
+// 由reducer, 创建store
+// 消息action的产生dispatch, 是在App的事件监听里; 消息的处理, 是通过修改App的props通知App
+
+const store = createStore(reducer);
+
+
+// 定义App组件, 能监听鼠标点击, 并展示信息
+// 鼠标点击, 触发this.props.increseAction, 这个是个方法, 由connect绑定, 最终调用到外部的方法
+// 展示信息, 是展示this.props.content, 这个是个属性, 由connect绑定, 最终由外部属性变化通知内部属性
+// 组件和外界的交互, 均通过props
+
+class App extends Component {
+
+  handleClick() {
+    this.props.increseAction(1);
+  }
+
+  render() {
+    return (
+      &lt;div onClick={this.handleClick.bind(this)}&gt;累计: { this.props.content }&lt;/div&gt;
+    );
+  }
+}
+
+
+// 把外界变化state.content, 通知到内部props.content
+// 把内部的调用increseAction, 关联到外部dispatch(action)
+
+App = connect(
+  function mapStateToProps(state) {
+    return {
+      content: state.content
+    }
+  }, function mapDispatchProps(dispatch) {
+    return {
+      increseAction: (count) =&gt; { dispatch(increseActionCreator(count)) }
+    }
+  })(App);
+
+
+// 渲染页面
+
+render((
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+), document.getElementById(&#39;scene&#39;));
+</code></pre>
+<hr>
+<p>react, redux, connect, saga例子</p>
+<pre><code class="lang-js">import React, { Component } from &#39;react&#39;;
+import { render } from &#39;react-dom&#39;;
+import { Provider, connect } from &#39;react-redux&#39;;
+import { createStore, combineReducers, applyMiddleware } from &#39;redux&#39;;
+import createSagaMiddleware from &#39;redux-saga&#39;;
+import { takeEvery, takeLatest, take, call, put, fork, cancel } from &#39;redux-saga/effects&#39;;
+import &#39;babel-polyfill&#39;
+
+
+// 一个普通的异步方法
+
+const testAsync = (count) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      resolve(count);
+    }, 1000);
+  });
+}
+
+
+// increse async功能: action creator 和 saga
+
+const increseAsyncActionCreator = (count) =&gt; {
+  return {
+    type: &#39;INCRESE_ASYNC_ACTION&#39;,
+    payload: count
+  }
+}
+
+function* increseAsyncSaga(action) {
+  const count = yield call(testAsync, action.payload);
+  yield put(increseActionCreator(count));
+}
+
+function* rootSaga() {
+  yield takeEvery(&#39;INCRESE_ASYNC_ACTION&#39;, increseAsyncSaga)
+}
+
+
+// increse功能: action creator 和 reducer
+
+const increseActionCreator = (count) =&gt; {
+  return {
+    type: &#39;INCRESE_ACTION&#39;,
+    payload: count
+  }
+}
+
+const increseReducer = (state = 0, action) =&gt; {
+  switch (action.type) {
+    case &#39;INCRESE_ACTION&#39;:
+      return state + action.payload;
+    default:
+      return state;
+  }
+}
+
+const reducer = combineReducers({
+  content: increseReducer
+})
+
+
+// 创建store, 运行saga中间件
+// 由reducer, 创建store
+// 消息action的产生dispatch, 是在App的事件监听里; 消息的处理, 是通过修改App的props通知App
+
+const sagaMiddleware = createSagaMiddleware();
+const store = applyMiddleware(sagaMiddleware)(createStore)(reducer);
+sagaMiddleware.run(rootSaga);
+
+// 定义App组件, 能监听鼠标点击, 并展示信息
+// 鼠标点击, 触发this.props.increseAction, 这个是个方法, 由connect绑定, 最终调用到外部的方法
+// 展示信息, 是展示this.props.content, 这个是个属性, 由connect绑定, 最终由外部属性变化通知内部属性
+// 组件和外界的交互, 均通过props
+
+class App extends Component {
+
+  handleClick() {
+    this.props.increse(1);
+  }
+
+  render() {
+    return (
+      &lt;div onClick={this.handleClick.bind(this)}&gt;累计: { this.props.content }&lt;/div&gt;
+    );
+  }
+}
+
+
+// 把外界变化state.content, 通知到内部props.content
+// 把内部的调用increseAction, 关联到外部dispatch(action)
+
+App = connect(
+  function mapStateToProps(state) {
+    return {
+      content: state.content
+    }
+  }, function mapDispatchProps(dispatch) {
+    return {
+      increse: (count) =&gt; { dispatch(increseAsyncActionCreator(count)) }
+    }
+  })(App);
+
+
+// 渲染页面
+
+render((
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+), document.getElementById(&#39;scene&#39;));
+</code></pre>
+<hr>
+<p>react, router 例子</p>
+<pre><code class="lang-js">import React, { Component } from &#39;react&#39;
+import { render } from &#39;react-dom&#39;
+import { HashRouter, Switch, Route } from &#39;react-router-dom&#39;
+
+
+const Container = (props) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;p&gt;this is container&lt;/p&gt;
+      &lt;a href={&#39;/#/list&#39;}&gt;list&lt;/a&gt;
+    &lt;/div&gt;
+  );
+};
+
+const List = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;p&gt;this is list&lt;/p&gt;
+      &lt;a href=&quot;/#/item&quot;&gt;item&lt;/a&gt;
+    &lt;/div&gt;
+  );
+}
+
+const Item = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;p&gt;this is item&lt;/p&gt;
+      &lt;a href=&quot;/#/&quot;&gt;container&lt;/a&gt;
+    &lt;/div&gt;
+  );
+}
+
+render((
+  &lt;HashRouter&gt;
+    &lt;Switch&gt;
+      &lt;Route exact path=&quot;/&quot; component={Container} /&gt;
+      &lt;Route path=&quot;/list&quot; component={List} /&gt;
+      &lt;Route path=&quot;/item&quot; component={Item} /&gt;
+    &lt;/Switch&gt;
+  &lt;/HashRouter&gt;
+  ), document.getElementById(&#39;scene&#39;));
+</code></pre>
+<hr>
+<p>css module 例子</p>
+<p>index.less</p>
+<pre><code class="lang-less">:local(.debug-util) {
+    border: solid red 1px;
+}
+
+:local(.head) {
+    composes: debug-util;
+    font-size: 27px;
+    text-align: center;
+    padding: 5px;
+}
+</code></pre>
+<pre><code class="lang-js">import styles from &#39;./index.less&#39;
+
+const Head = (props) =&gt; {
+  return (
+    &lt;div className={styles.head}&gt;
+      this is head
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<hr>
+<p>后端渲染的例子</p>
+<pre><code class="lang-js">
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

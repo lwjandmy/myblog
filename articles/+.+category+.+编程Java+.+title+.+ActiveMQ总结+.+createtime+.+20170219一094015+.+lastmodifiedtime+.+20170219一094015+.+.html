@@ -1,0 +1,209 @@
+
+
+<html><head><meta charset="UTF-8"><title>ActiveMQ总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="activemq-">ActiveMQ总结</h1>
+<p><a href="http://activemq.apache.org/getting-started.html">ActiveMQ Get Start</a></p>
+<h2 id="-">下载</h2>
+<p><a href="http://activemq.apache.org/download.html">ActiveMQ下载</a></p>
+<p>下载文件apache-activemq-5.14.3-bin.tar.gz</p>
+<h2 id="-">安装</h2>
+<p>tar xzvf apache-activemq-5.14.3-bin.tar.gz  解压文件</p>
+<h2 id="-">启动</h2>
+<pre><code class="lang-bash">./bin/activemq start  启动activemq
+./bin/activemq console  保持前台运行activemq
+</code></pre>
+<h2 id="-">关闭</h2>
+<pre><code class="lang-bash">./bin/activemq stop  关闭activemq
+</code></pre>
+<h2 id="-">访问控制台</h2>
+<pre><code class="lang-text">访问控制台 http://vmware-archlinux:8161/ -&gt; &quot;Manage ActiveMQ broker&quot; -&gt; 账户密码: admin/admin -&gt; Queues -&gt; Queue Name: &quot;queue1&quot; -&gt; Create -&gt; &quot;Send To&quot;
+</code></pre>
+<h2 id="-">执行自带例子</h2>
+<pre><code class="lang-bash">./bin/activemq producer  启动&quot;生产者&quot;demo
+./bin/activemq consumer  启动&quot;消费者&quot;demo
+</code></pre>
+<h2 id="-">官方自带例子简化版</h2>
+<pre><code class="lang-java">public class App 
+{
+
+    // 1. 官方例子
+    public static void producer1() throws Exception {
+
+        // ActiveMQ连接工厂
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(&quot;tcp://vmware-archlinux:61616&quot;);
+
+        // ActiveMQ连接
+        Connection connection = factory.createConnection();
+
+        // 建立连接
+        connection.start();
+
+        // 创建会话
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+        // 创建目的地
+        Destination destination = ActiveMQDestination.createDestination(&quot;queue://TEST&quot;, ActiveMQDestination.QUEUE_TYPE);
+
+        // 创建生产者
+        MessageProducer producer = session.createProducer(destination);
+        producer.setDeliveryMode(DeliveryMode.PERSISTENT); // DeliveryMode.NON_PERSISTENT
+        producer.setTimeToLive(0);
+
+        // 创建消息
+        Message message = session.createTextMessage(&quot;this is a message&quot;);
+        System.out.println(String.format(&quot;Send: %s&quot;, message));
+
+        // 发送消息
+        producer.send(message);
+
+        // 关闭生产者
+        producer.close();
+
+        // 关闭连接
+        connection.close();
+    }
+
+    public static void consumer1() throws Exception {
+
+        // ActiveMQ连接工厂
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(&quot;tcp://vmware-archlinux:61616&quot;);
+
+        // ActiveMQ连接
+        Connection connection = factory.createConnection();
+
+        // 建立连接
+        connection.start();
+
+        // 创建会话
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+        // 创建目的地
+        Destination destination = ActiveMQDestination.createDestination(&quot;queue://TEST&quot;, ActiveMQDestination.QUEUE_TYPE);
+
+        // 创建消费者
+        MessageConsumer consumer = session.createConsumer(destination);
+
+        // 接收消息
+        Message message = consumer.receive(3000);
+        System.out.println(String.format(&quot;Receive: %s&quot;, message));
+
+        // 关闭消费者
+        consumer.close();
+
+        // 关闭连接
+        connection.close();
+    }
+
+    // http://shmilyaw-hotmail-com.iteye.com/blog/1897635
+
+    // 2. 发布订阅模式
+    public static void producer2() throws Exception {
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(&quot;tcp://vmware-archlinux:61616&quot;);
+        Connection conn = factory.createConnection();
+        conn.start();
+
+        Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        MapMessage mapMessage = sess.createMapMessage();
+        mapMessage.setString(&quot;key&quot;, &quot;value&quot;);
+        MessageProducer producer = sess.createProducer(ActiveMQDestination.createDestination(&quot;queue://TEST&quot;, ActiveMQDestination.QUEUE_TYPE));
+        producer.send(mapMessage);
+
+        conn.close();
+    }
+
+    public static void consumer2() throws Exception {
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(&quot;tcp://vmware-archlinux:61616&quot;);
+        Connection conn = factory.createConnection();
+        conn.start();
+        Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Destination destination = sess.createTopic(&quot;topic1&quot;);
+        MessageConsumer consumer = sess.createConsumer(destination);
+        consumer.setMessageListener(new MessageListener() {
+
+            @Override
+            public void onMessage(Message message) {
+                try {
+                    MapMessage mapMessage = (MapMessage) message;
+                    String string = mapMessage.getString(&quot;key&quot;);
+                    System.out.println(string);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+
+    // 3. p2p
+    public static void producer3() throws Exception {
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(&quot;tcp://vmware-archlinux:61616&quot;);
+        Connection conn = factory.createConnection();
+        conn.start();
+
+        Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        MessageProducer producer = sess.createProducer(null);
+
+        Destination destination = sess.createQueue(&quot;queue1&quot;);
+        MapMessage mapMessage = sess.createMapMessage();
+        mapMessage.setString(&quot;key&quot;, &quot;value&quot;);
+
+        producer.send(destination, mapMessage);
+
+        conn.close();
+    }
+
+    public static void consumer3() throws Exception {
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(&quot;tcp://vmware-archlinux:61616&quot;);
+        Connection conn = factory.createConnection();
+        conn.start();
+
+        Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Destination destination = sess.createQueue(&quot;queue1&quot;);
+        MessageConsumer consumer = sess.createConsumer(destination);
+        consumer.setMessageListener(new MessageListener() {
+
+            @Override
+            public void onMessage(Message message) {
+                try {
+                    MapMessage mapMessage = (MapMessage) message;
+                    String string = mapMessage.getString(&quot;key&quot;);
+                    System.out.println(string);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+
+
+    public static void main( String[] args ) throws Exception
+    {
+        producer1();
+        consumer1();
+//        producer2();
+//        consumer2();
+//        producer3();
+//        consumer3();
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>bottle demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="bottle-demo">bottle demo</h1>
+<p>建立测试文件helloworld.py:</p>
+<pre><code class="lang-Python">from bottle import Bottle, route, run, template
+
+app = Bottle()
+
+@app.route(&#39;/hello/&lt;name&gt;&#39;)
+def index(name):
+    return &#39;Hello World!&#39;
+    #return template(&#39;&lt;b&gt;Hello {{name}}&lt;/b&gt;!&#39;, name = name)
+
+run(host = &#39;0.0.0.0&#39;, port = 8080)
+</code></pre>
+<p>压力测试:</p>
+<pre><code class="lang-shell">ab -c 100 -n 300 http://192.168.137.101:8080/hello/a  30 req per sec
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

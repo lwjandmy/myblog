@@ -1,0 +1,90 @@
+
+
+<html><head><meta charset="UTF-8"><title>命令行配置wlan
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-wlan">命令行配置wlan</h1>
+<p>netsh wlan disconnect 断开当前链接</p>
+<p>netsh wlan connect name=TP-LINK_FC5C3C 与TP-LINK_FC5C3C链接</p>
+<p>netsh wlan show interfaces  获取当前链接状态</p>
+<p>有时候会显示无法链接，此时可以通过获取状态知道，然后断开再重新链接就能回复网络。</p>
+<hr>
+<p>windows下判断无线状态，出错时自动重连脚本：</p>
+<pre><code class="lang-bat">@echo off
+:begintest
+ rem delay 10 seconds before check connection
+echo ========================================
+echo delay 10 seconds before check connection
+ping localhost -n 10 &gt; nul
+ rem test wlan connection
+netsh wlan show interfaces | findstr &quot;已连接&quot; &gt; nul
+ rem if &quot;已连接&quot;exist, then connection is good
+if %errorlevel% equ 0 goto ok
+rem else, connection has error
+goto err
+
+////////////////////////////////////////
+:ok
+ rem nothing to do
+echo ok
+goto begintest
+
+////////////////////////////////////////
+:err
+ rem disconnect, and connect
+echo error, disconnect now
+netsh wlan disconnect
+echo delay 5 seconds before try reconnect
+ping localhost -n 5 &gt; nul
+netsh wlan connect name=TP-LINK_FC5C3C
+echo delay 5 seconds after try reconnect
+ping localhost -n 5 &gt; nul
+goto begintest
+</code></pre>
+<p>后来发现在提示“受限制的网络”的wifi时，上面的检查方法检查不到，依然是“已连接”，所以用了ping代替上面的判断，新版本脚本：</p>
+<pre><code class="lang-bat">@echo off
+:begintest
+ rem delay 30 seconds before check connection
+echo ========================================
+echo delay 30 seconds before check connection
+ping localhost -n 30 &gt; nul
+ rem test wlan connection
+ping www.baidu.com -l 1 -n 1 | findstr &quot;来自&quot; &gt; nul
+ rem if &quot;来自&quot;  exist, then connection is good
+if %errorlevel% equ 0 goto ok
+rem else, connection has error
+goto err
+////////////////////////////////////////
+:ok
+ rem nothing to do
+echo ok
+goto begintest
+////////////////////////////////////////
+:err
+ rem disconnect, and connect
+echo error, disconnect now
+netsh wlan disconnect
+echo delay 5 seconds before try reconnect
+ping localhost -n 5 &gt; nul
+netsh wlan connect name=TP-LINK_FC5C3C
+echo delay 5 seconds after try reconnect
+ping localhost -n 5 &gt; nul
+goto begintest
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

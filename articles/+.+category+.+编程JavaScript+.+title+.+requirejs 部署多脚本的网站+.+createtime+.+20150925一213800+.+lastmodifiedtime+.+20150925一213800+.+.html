@@ -1,0 +1,57 @@
+
+
+<html><head><meta charset="UTF-8"><title>requirejs 部署多脚本的网站
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="requirejs-">requirejs 部署多脚本的网站</h1>
+<p>引入require.js脚本:  </p>
+<p>./index.html:</p>
+<pre><code class="lang-html">&lt;script data-main=&quot;app&quot; src=&quot;lib/require.js&quot;&gt;&lt;/script&gt;                 data-main=&quot;app&quot; 指定了主脚本是app.js文件
+</code></pre>
+<p>./app.js:   这个文件用来配置require，并调用主js文件app/main.js</p>
+<pre><code class="lang-js">requirejs.config({
+    baseUrl: &#39;lib&#39;,                               baseUrl,指定模块文件所在目录,加载模块时,路径为lib/module-name
+    paths: {
+        app: &#39;../app&#39;                            特殊的，对app模块，定义特殊路径。目的是调整baseUrl，最终app的路径为: lib/../app
+    }
+});
+
+requirejs([&#39;app/main&#39;]);                    加载主要的脚本文件
+</code></pre>
+<p>./app/main.js:</p>
+<pre><code class="lang-js">define (function(require)
+{
+// main js code
+});
+`
+
+
+
+
+
+
+文件总结
+
+```text
+./index.html        &lt;script data-main=&quot;app&quot; src=&quot;lib/require.js&quot;&gt;&lt;/script&gt; 
+./app.js              requirejs.config     requirejs([&#39;app/main&#39;]); 
+./app/main.js     define(......)
+./lib/require.js      require.js文件， lib文件夹主要是放模块文件；而app文件夹主要放网站程序逻辑
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,58 @@
+
+
+<html><head><meta charset="UTF-8"><title>平台无关 操作文件路径 Paths currentThread ContextClassLoader Resource URI URL FileSystem Separator
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-paths-currentthread-contextclassloader-resource-uri-url-filesystem-separator">平台无关 操作文件路径 Paths currentThread ContextClassLoader Resource URI URL FileSystem Separator</h1>
+<pre><code class="lang-java">    return Paths.get(
+                Paths.get(Thread.currentThread().getContextClassLoader().getResource(&quot;&quot;).toURI()).toString(), // 通过Thread获取classLoader获得classpath路径, URL转成URI
+                &quot;test/fixture&quot;.replace(&quot;/&quot;, FileSystems.getDefault().getSeparator())) // 拼接子路径, 替换分隔符为当前系统分隔符
+            .toString(); // Paths.get用于拼接多个文件路径
+</code></pre>
+<pre><code class="lang-java">        // URI URL URN
+
+        URI uri = Paths.get(&quot;&quot;).toUri();
+
+        URL url = uri.toURL();
+
+        System.out.println(uri); // file:///D:/SVN/trunk/code
+        System.out.println(url); // file:/D:/SVN/trunk/code
+
+        uri.getScheme();
+        uri.getPath();
+        uri.getPort();
+
+        url.getProtocol();
+        url.getFile();
+</code></pre>
+<pre><code class="lang-txt">URI:
+Uniform Resource Identifier 统一资源标志符
+表示抽象或物理资源的唯一定位编号, 类似UUID, 身份证
+需要结合具体资源类型才能知道怎么定位它
+
+URL:
+Uniform Resource Locator 统一资源定位符
+定位该资源的访问机制
+可通过方法直接获取此资源
+
+记录内容上, URL包含URI, 不仅记录了资源的标识URI, 同时记录了资源类型
+
+概念上, URI是更宽泛的概念, 包含URL概念
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

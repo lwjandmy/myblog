@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>QWebView模拟鼠标点击网页
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="qwebview-">QWebView模拟鼠标点击网页</h1>
+<p>首先获取frame</p>
+<pre><code class="lang-C++">    QWebFrame *mainFrame = ui-&gt;webView-&gt;page()-&gt;mainFrame();
+</code></pre>
+<p>获取元素</p>
+<pre><code class="lang-C++">    QWebElement span = mainFrame-&gt;findFirstElement(&quot;span.J_Term.term&quot;);
+</code></pre>
+<p>获取元素坐标，这个坐标是相对于frame的</p>
+<pre><code class="lang-C++">    QRect rect = span.geometry();
+</code></pre>
+<p>获取元素坐标</p>
+<pre><code class="lang-C++">    QPoint spanpt = rect.center();
+</code></pre>
+<p>设置滚动条，因为元素可能未显示出来</p>
+<pre><code class="lang-C++">    mainFrame-&gt;setScrollPosition(spanpt);
+</code></pre>
+<p>获取当前滚动条位置</p>
+<pre><code class="lang-C++">    QPoint scrpt = mainFrame-&gt;scrollPosition();
+</code></pre>
+<p>产生鼠标消息，其中坐标是以frame为参考，而发给view是因为view从widget继承，会处理消息循环，而frame和view在坐标上是没区别的，所以可行。</p>
+<pre><code class="lang-C++">    QEvent *event = new QMouseEvent(QEvent::MouseButtonPress, spanpt - scrpt, Qt::LeftButton, 0, 0);
+    QCoreApplication::postEvent(ui-&gt;webView, event);
+
+    event = new QMouseEvent(QEvent::MouseButtonRelease, spanpt - scrpt, Qt::LeftButton, 0, 0);
+    QCoreApplication::postEvent(ui-&gt;webView, event);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

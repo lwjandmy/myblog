@@ -1,0 +1,245 @@
+
+
+<html><head><meta charset="UTF-8"><title>react route helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="react-route-helloworld">react route helloworld</h1>
+<p>其它依赖的文件, 环境, 见&quot;react helloworld&quot;</p>
+<pre><code class="lang-js">import React from &quot;react&quot;;
+import { render } from &#39;react-dom&#39;
+import { BrowserRouter, HashRouter, Route, Link } from &quot;react-router-dom&quot;;
+
+const BasicExample = () =&gt; (
+  &lt;HashRouter&gt;
+    &lt;div&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/&quot;&gt;Home&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/about&quot;&gt;About&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/topics&quot;&gt;Topics&lt;/Link&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+
+      &lt;hr /&gt;
+
+      &lt;Route exact path=&quot;/&quot; component={Home} /&gt;
+      &lt;Route path=&quot;/about&quot; component={About} /&gt;
+      &lt;Route path=&quot;/topics&quot; component={Topics} /&gt;
+    &lt;/div&gt;
+  &lt;/HashRouter&gt;
+);
+
+const Home = () =&gt; (
+  &lt;div&gt;
+    &lt;h2&gt;Home&lt;/h2&gt;
+  &lt;/div&gt;
+);
+
+const About = () =&gt; (
+  &lt;div&gt;
+    &lt;h2&gt;About&lt;/h2&gt;
+  &lt;/div&gt;
+);
+
+{/* 
+
+history对象, 提供监听url变化, 修改url地址的功能
+
+&lt;Router&gt; 内部记录一个history, 分HashHistory, BrowserHistory, history监听浏览器url变化, 调用setState更新内部的state的match属性, 之后自动触发render重新渲染子元素, 此时通过修改子元素props, 与子元素通信
+  &lt;Link /&gt; 产生一个&lt;a&gt;, 响应onClick事件, 内部调用props.onClick, 然后调用this.context.router.history.push(props.to)
+  &lt;Route /&gt; componentWillReceiveProps(父Router在setState之后render导致子元素props改变) -&gt; setState -&gt; render, 内部主要是render方法, 如果url和自己的props.url匹配, 就渲染props.component, 传入参数, 主要做了初始化这些参数: match, location, history
+&lt;/Router&gt;
+
+&lt;Switch&gt; 主要是render方法, 里面循环每个children, 如果通过matchPath, 发现通过props.path能匹配出props.location.pathname, 说明children能够渲染, 就不执行后续渲染了
+&lt;/Switch&gt;
+
+
+*/}
+
+
+
+const Topics = ({ match }) =&gt; (
+  &lt;div&gt;
+    &lt;h2&gt;Topics&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;Link to={`${match.url}/rendering`}&gt;Rendering with React&lt;/Link&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;Link to={`${match.url}/components`}&gt;Components&lt;/Link&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;Link to={`${match.url}/props-v-state`}&gt;Props v. State&lt;/Link&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;Route path={`${match.url}/:topicId`} component={Topic} /&gt;
+    &lt;Route
+      exact
+      path={match.url}
+      render={() =&gt; &lt;h3&gt;Please select a topic.&lt;/h3&gt;}
+    /&gt;
+  &lt;/div&gt;
+);
+
+const Topic = ({ match }) =&gt; (
+  &lt;div&gt;
+    &lt;h3&gt;{match.params.topicId}&lt;/h3&gt;
+  &lt;/div&gt;
+);
+
+render(
+  &lt;BasicExample /&gt;,
+  document.getElementById(&#39;scene&#39;)
+)
+</code></pre>
+<hr>
+<p>router, redux, css, propTypes例子</p>
+<pre><code class="lang-js">import styles from &#39;./index.css&#39;
+
+import React from &#39;react&#39;
+import { Component, render } from &#39;react-dom&#39;
+
+import PropTypes from &#39;prop-types&#39;
+
+import { createStore, combineReducers, applyMiddleware, compose } from &#39;redux&#39;;
+import defaultLogger from &#39;redux-logger&#39;
+import createSagaMiddleware from &#39;redux-saga&#39;;
+import { takeEvery, takeLatest, take, call, put, fork, cancel } from &#39;redux-saga/effects&#39;;
+import { Provider, connect } from &#39;react-redux&#39;;
+
+import { Router, Switch, Route, Link } from &#39;react-router-dom&#39;
+import createHistory from &#39;history/createHashHistory&#39;
+import { routerActions, routerMiddleware, ConnectedRouter, routerReducer } from &#39;react-router-redux&#39;
+
+import &#39;babel-polyfill&#39;
+
+
+const history = createHistory()
+
+const reducer = routerReducer
+
+function* rootSaga() {
+}
+
+const sagaMiddleware = createSagaMiddleware();
+
+const store = applyMiddleware(sagaMiddleware, routerMiddleware(history), defaultLogger)(createStore)(reducer);
+sagaMiddleware.run(rootSaga);
+
+
+
+// 两个Action: CALL_HISTORY_METHOD 执行url变化, LOCATION_CHANGE url变化了通知
+// CALL_HISTORY_METHOD: routerActions.push发出action, routerMiddleware接收并执行url改变的动作
+// LOCATION_CHANGE: ConnectedRouter监听history并发出action, routerReducer接收并更改state.location
+// 例子中将用户菜单点击, 挂载到routerActions.push; 将state.location变化挂载到菜单高亮
+
+
+
+const Head = props =&gt; (&lt;div className={styles.head}&gt;this is head&lt;/div&gt;)
+const Footer = props =&gt; (&lt;div className={styles.footer}&gt;this is footer&lt;/div&gt;)
+
+let LeftMenu = (props) =&gt; (
+  &lt;div className={styles.leftMenu}&gt;
+    {
+      props.menuList.map((menu) =&gt; {
+        return &lt;p
+          key={menu.id}
+          onClick={props.onMenuClick.bind(this, menu)}
+          className={props.highlightMenuId === menu.id ? styles.menuItemHighlight : &#39;&#39;}
+          &gt;menu item {menu.name}&lt;/p&gt;
+      })
+    }
+  &lt;/div&gt;
+)
+
+LeftMenu.propTypes = {
+  menuList: PropTypes.array.isRequired,
+  highlightMenuId: PropTypes.number.isRequired,
+  onMenuClick: PropTypes.func.isRequired
+}
+
+let Container = props =&gt; (&lt;div&gt;this is container&lt;a href=&#39;javascript:void(0)&#39; onClick={props.onClick.bind(this, &#39;/list&#39;)}&gt;-&gt;list&lt;/a&gt;&lt;/div&gt;)
+let List = props =&gt; (&lt;div&gt;this is list&lt;a href=&#39;javascript:void(0)&#39; onClick={props.onClick.bind(this, &#39;/item&#39;)}&gt;-&gt;item&lt;/a&gt;&lt;/div&gt;)
+let Item = props =&gt; (&lt;div&gt;this is item&lt;a href=&#39;javascript:void(0)&#39; onClick={props.onClick.bind(this, &#39;/&#39;)}&gt;-&gt;container&lt;/a&gt;&lt;/div&gt;)
+
+Container.propTypes = {
+  onClick: PropTypes.func.isRequired
+}
+
+List.propTypes = {
+  onClick: PropTypes.func.isRequired
+}
+
+Item.propTypes = {
+  onClick: PropTypes.func.isRequired
+}
+
+
+LeftMenu = connect((state) =&gt; {
+  const menuList = [ 
+    { id: 1, name: &#39;A&#39;, url: &#39;/&#39; }, 
+    { id: 2, name: &#39;B&#39;, url: &#39;/list&#39; }, 
+    { id: 3, name: &#39;C&#39;, url: &#39;/item&#39; } ];
+  const highlightMenu = menuList.find(menu =&gt; menu.url === state.location.pathname)
+  return {
+    menuList: menuList,
+    highlightMenuId: highlightMenu ? highlightMenu.id : 1
+  }
+}, (dispatch) =&gt; {
+  return {
+    onMenuClick: menu =&gt; dispatch(routerActions.push(menu.url))
+  }
+})(LeftMenu)
+
+Container = connect(state =&gt; ({}), (dispatch) =&gt; ({
+  onClick: url =&gt; dispatch(routerActions.push(url))
+}))(Container)
+
+List = connect(state =&gt; ({}), (dispatch) =&gt; ({
+  onClick: url =&gt; dispatch(routerActions.push(url))
+}))(List)
+
+Item = connect(state =&gt; ({}), (dispatch) =&gt; ({
+  onClick: url =&gt; dispatch(routerActions.push(url))
+}))(Item)
+
+
+render((
+  &lt;Provider store={store}&gt;
+    &lt;ConnectedRouter history={history}&gt;
+      &lt;div&gt;
+        &lt;Head /&gt;
+        &lt;LeftMenu /&gt;
+        &lt;div className={styles.body}&gt;
+          &lt;Route exact path=&quot;/&quot; component={Container} store={store} /&gt;
+          &lt;Route path=&quot;/list&quot; component={List} store={store} /&gt;
+          &lt;Route path=&quot;/item&quot; component={Item} store={store} /&gt;
+        &lt;/div&gt;
+        &lt;Footer /&gt;
+      &lt;/div&gt;
+    &lt;/ConnectedRouter&gt;
+  &lt;/Provider&gt;
+  ), document.getElementById(&#39;scene&#39;));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

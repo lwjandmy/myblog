@@ -1,0 +1,61 @@
+
+
+<html><head><meta charset="UTF-8"><title>RxJava helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="rxjava-helloworld">RxJava helloworld</h1>
+<pre><code class="lang-java">
+    // Observer 消费者 观察者 订阅者
+    static Observer&lt;Integer&gt; commonObserver = new Observer&lt;Integer&gt;() {
+        public void onSubscribe(Disposable paramDisposable) { System.out.println(&quot;onSubscribe&quot;); }
+        public void onNext(Integer paramT) { System.out.println(&quot;onNext&quot; + paramT); }
+        public void onError(Throwable paramThrowable) { System.out.println(&quot;onError&quot;); }
+        public void onComplete() { System.out.println(&quot;onComplete&quot;); }
+    };
+
+    public static void testObservableAndObserver() {
+        // Observable 被观察者 产生数据, Observer 观察者 消费数据, Observable.subscribe绑定两者
+        Observable&lt;Integer&gt; observable = Observable.create(new ObservableOnSubscribe&lt;Integer&gt;() {
+            @Override
+            public void subscribe(ObservableEmitter&lt;Integer&gt; emitter) throws Exception {
+                for (int i = 0; i != 5; ++i) {
+                    emitter.onNext(i);
+                }
+                emitter.onComplete();
+            }
+        });
+        observable.subscribe(commonObserver);
+    }
+
+    public static void testPublishSubject() {
+        // PublishSubject绑定一个Observer观察者, 像一个被观察者一样, 能够onNext产生数据
+        PublishSubject&lt;Integer&gt; stringPublishSubject = PublishSubject.create();
+        stringPublishSubject.subscribe(commonObserver);
+        stringPublishSubject.onNext(11);
+        stringPublishSubject.onComplete();
+    }
+
+    public static void main(String[] args) {
+
+        testObservableAndObserver();
+        testPublishSubject();
+
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

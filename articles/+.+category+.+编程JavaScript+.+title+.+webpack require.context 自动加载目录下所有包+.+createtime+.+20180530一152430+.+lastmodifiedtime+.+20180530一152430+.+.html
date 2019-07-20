@@ -1,0 +1,29 @@
+
+
+<html><head><meta charset="UTF-8"><title>webpack require.context 自动加载目录下所有包
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="webpack-require-context-">webpack require.context 自动加载目录下所有包</h1>
+<pre><code class="lang-js">  const context = require.context(&#39;utils&#39;, true, /\.js$/)
+  context.keys() // 返回[&quot;./HttpClient.js&quot;, &quot;./LayoutUtils.js&quot;, &quot;./ParseUtils.js&quot;, &quot;./SysUtils.js&quot;, &quot;./Theme.js&quot;, &quot;./index.js&quot;]
+  context.resolve(&#39;./HttpClient.js&#39;) // 返回 &quot;./src/utils/HttpClient.js&quot;
+  context(&#39;./HttpClient.js&#39;) // 等价于 require(&#39;./HttpClient.js&#39;)
+</code></pre>
+<p>三个参数: 文件夹, 是否扫描子文件夹, 扫描文件名</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

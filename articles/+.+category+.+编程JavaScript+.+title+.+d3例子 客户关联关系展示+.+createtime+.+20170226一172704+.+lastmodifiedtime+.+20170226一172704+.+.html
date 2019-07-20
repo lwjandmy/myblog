@@ -1,0 +1,688 @@
+
+
+<html><head><meta charset="UTF-8"><title>d3例子 客户关联关系展示
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="d3-">d3例子 客户关联关系展示</h1>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;客户关联关系图&lt;/title&gt;
+    &lt;script src=&quot;js/d3.v4.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;js/jquery.1.9.1.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        /*
+        画布样式
+        */
+        svg {
+            cursor: move;
+        }
+
+        /*
+        连线样式
+        */
+        path.link {
+            fill: none;
+            stroke-opacity: 0.4;
+            stroke-width: 10.5;
+            cursor: pointer;
+        }
+        .线_股权关联 {
+            stroke: #0f0;
+            color: #0f0;
+            background-color: #0f0;
+            border-color: #0f0;
+        }
+        .线_授信关联 {
+            stroke: #f00;
+            color: #f00;
+            background-color: #f00;
+            border-color: #f00;
+        }
+        .线_关系人关联 {
+            stroke: #ff0;
+            color: #ff0;
+            background-color: #ff0;
+            border-color: #ff0;
+        }
+        .线_新连线类型1 {
+            stroke: #cc9;
+            color: #cc9;
+            background-color: #cc9;
+            border-color: #cc9;
+        }
+
+        /*
+        连线选中/还原的样式
+        */
+        path.link.focus {
+            stroke-width: 12px;
+        }
+        path.link {
+            stroke-width: 5px;
+        }
+
+        /*
+        图案样式, 变大变小是通过js控制
+        */
+        .node image {
+            cursor: pointer;
+        }
+
+        /*
+        文字被选中/还原的样式, 放大缩小在js中控制
+         */
+        .node text.focus {
+            fill: red;
+            font-family: &#39;Microsoft Yahei&#39;, 微软雅黑, &#39;Lantinghei SC&#39;, &#39;Open Sans&#39;, &#39;Hiragino Sans GB&#39;, STHeiti, &#39;WenQuanYi Micro Hei&#39;, SimSun, sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .node text {
+            fill: black;
+            font-family: &#39;Microsoft Yahei&#39;, 微软雅黑, &#39;Lantinghei SC&#39;, &#39;Open Sans&#39;, &#39;Hiragino Sans GB&#39;, STHeiti, &#39;WenQuanYi Micro Hei&#39;, SimSun, sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /*
+        图例
+         */
+        table.legend {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999999999;
+        }
+
+        /*
+        客户信息面板
+         */
+        .customer_detail_panel {
+            position: fixed;
+            padding-left: 10px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            width: 300px;
+            min-height: 500px;
+
+            z-index: 9999999999;
+            background-color: #fff;
+            border: 1px solid #e9e9e9;
+            box-shadow: 0 3px 15px 1px rgba(0,0,0,.2);
+            border-radius: 3px;
+            overflow: hidden!important;
+            font-size: 12px;
+        }
+
+        /*
+        操作面板放大缩小按钮
+         */
+        .operation_panel-scale {
+            width: 33px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 3px 15px 1px rgba(0,0,0,.2);
+            border-radius: 2px;
+            padding: 2px;
+            border: 1px solid #e9e9e9;
+            position: absolute;
+            right: 20px;
+            top: 250px;
+        }
+
+        /*
+        操作面板一键展开/收缩按钮
+        */
+        .operation-panel-expand {
+            width: 33px;
+            height: 33px;
+            cursor: pointer;
+            box-shadow: 0 3px 15px 1px rgba(0,0,0,.2);
+            border-radius: 2px;
+            padding: 2px;
+            position: absolute;
+            right: 20px;
+            top: 200px;
+        }
+        .expand-out-in {
+            width: 100%;
+            height: 100%;
+            background: url(images/expand-operation.png) no-repeat -2px -299px;
+            background-size: 113%;
+        }
+        .expand-change .expand-out-in {
+            background-position: -2px -337px;
+        }
+
+        /*
+        操作面板放大按钮
+         */
+        .operation-panel-button-scale-up {
+            width: 27px;
+            height: 27px;
+            background: url(images/icon_scale_up.png) no-repeat 3px;
+            cursor: pointer;
+        }
+
+        /*
+        操作面板缩小按钮
+         */
+        .operation-panel-button-scale-down {
+            width: 27px;
+            height: 27px;
+            background: url(images/icon_scale_down.png) no-repeat 3px;
+            cursor: pointer;
+        }
+
+        /*
+        操作面板逆时针旋转
+         */
+        .operation-panel-button-rotate-left {
+            width: 27px;
+            height: 26px;
+            background: url(images/expand-operation.png) no-repeat 1px -160px;
+            background-size: 27px 270px;
+            cursor: pointer;
+        }
+
+        /*
+        操作面板顺时针旋转
+         */
+        .operation-panel-button-rotate-right {
+            width: 27px;
+            height: 26px;
+            background: url(images/expand-operation.png) no-repeat 1px -133px;
+            background-size: 27px 270px;
+            cursor: pointer;
+        }
+
+        .expand-out-in:hover,
+        .operation-panel-button-scale-down:hover,
+        .operation-panel-button-scale-up:hover,
+        .operation-panel-button-rotate-left:hover,
+        .operation-panel-button-rotate-right:hover {
+            background-color:#e9e9e9
+        }
+
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;d3_scene&quot;&gt;
+
+        &lt;table class=&quot;legend&quot;&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;hr width=&quot;70&quot; class=&quot;线_股权关联&quot;&gt;&lt;/td&gt;&lt;td&gt;股权关联&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;hr width=&quot;70&quot; class=&quot;线_授信关联&quot;&gt;&lt;/td&gt;&lt;td&gt;授信关联&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;hr width=&quot;70&quot;  class=&quot;线_关系人关联&quot;&gt;&lt;/td&gt;&lt;td&gt;关系人关联&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;hr width=&quot;70&quot;  class=&quot;线_新连线类型1&quot;&gt;&lt;/td&gt;&lt;td&gt;新连线类型1&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/table&gt;
+
+        &lt;div class=&quot;operation-panel-expand&quot;&gt;&lt;div class=&quot;expand-out-in&quot; title=&quot;一键展开&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+
+        &lt;table class=&quot;operation_panel-scale&quot;&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;div title=&quot;放大&quot; class=&quot;operation-panel-button-scale-up&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;div title=&quot;缩小&quot; class=&quot;operation-panel-button-scale-down&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;div title=&quot;逆时针旋转&quot; class=&quot;operation-panel-button-rotate-left&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;div title=&quot;顺时针旋转&quot; class=&quot;operation-panel-button-rotate-right&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;/table&gt;
+
+        &lt;div class=&quot;customer_detail_panel&quot; style=&quot;display: none;&quot;&gt;
+
+            &lt;input id=&quot;customer_detail_panel_close_button&quot; type=&quot;button&quot; style=&quot;width: 21px; margin: 5px; padding: 0; float: right; font-size: 21px; &quot; value=&quot;×&quot;&gt;
+
+            &lt;div style=&quot;height: 30px;&quot;&gt;
+                &lt;div style=&quot;float: left; margin-top: 2px; width: 3px; height: 14px; background-color: rgb(36, 166, 218);&quot;&gt;&lt;/div&gt;
+                &lt;div style=&quot;float:left;padding-left:5px;&quot;&gt;
+                    &lt;span&gt;公司信息&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div id=&quot;cust_name&quot;&gt;客户名&lt;/div&gt;
+
+            &lt;table id=&quot;cust_info&quot; style=&quot;width: 100%&quot;&gt;
+            &lt;/table&gt;
+
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        &quot;use strict&quot;;
+
+        // 初始化客户信息面板
+        $(&#39;#customer_detail_panel_close_button&#39;).click(function () {
+            $(&#39;.customer_detail_panel&#39;).hide();
+        });
+        // 初始化操作面板
+        $(&#39;.operation-panel-button-scale-up&#39;).click(function () {
+            zoom.scaleBy(svg, 1.1);
+        });
+        $(&#39;.operation-panel-button-scale-down&#39;).click(function () {
+            zoom.scaleBy(svg, 0.9);
+        });
+        $(&#39;.expand-out-in&#39;).click(function () {
+            var expand_out_in = $(&#39;.expand-out-in&#39;);
+            if ($(expand_out_in.parent()).hasClass(&#39;expand-change&#39;)) { // 当前是展开状态
+                $(expand_out_in.parent()).removeClass(&#39;expand-change&#39;);
+                expand_out_in.attr(&#39;title&#39;, &#39;一键展开&#39;);
+                expand_in_all(g_data);
+                refreshData(g_data);
+            } else { // 当前是收缩状态
+                $(expand_out_in.parent()).addClass(&#39;expand-change&#39;);
+                expand_out_in.attr(&#39;title&#39;, &#39;一键收起&#39;);
+                expand_out_all(g_data);
+                refreshData(g_data);
+            }
+        });
+        $(&#39;.operation-panel-button-rotate-left&#39;).click(function () {
+            rotate(-3);
+        });
+        $(&#39;.operation-panel-button-rotate-right&#39;).click(function () {
+            rotate(3);
+        });
+
+        // 初始化图例
+        $(function () {
+            var table = $(&#39;table.legend&#39;);
+            var trs = table.find(&#39;tr&#39;);
+            var index_trs = 0;
+            for (var k in map_between_customer_type_and_png_path) {
+                var v = map_between_customer_type_and_png_path[k].replace(/\.([^.]+)$/, &#39;_normal&#39; + &#39;.$1&#39;);
+                var tr = jQuery(trs[index_trs]);
+                tr.append(&#39;&lt;td&gt;&lt;image src=&quot;&#39; + v + &#39;&quot; width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/image&gt;&lt;/td&gt;&lt;td&gt;&#39; + k + &#39;&lt;/td&gt;&#39;);
+                index_trs = ++index_trs % trs.length;
+            }
+        });
+
+        // 画布尺寸定义
+        var width = window.innerWidth - 30;
+        var height = window.innerHeight - 30;
+
+        // 客户类型定义
+        var map_between_customer_type_and_png_path = {
+            &#39;行外法人客户&#39;: &#39;images/hwfrkh.png&#39;,
+            &#39;行内法人客户&#39;: &#39;images/hnfrkh.png&#39;,
+            &#39;集团客户&#39;: &#39;images/jtkh.png&#39;,
+            &#39;行内自然人&#39;: &#39;images/hnzrr.png&#39;,
+            &#39;行外自然人&#39;: &#39;images/hwzrr.png&#39;,
+            &#39;新客户类型1&#39;: &#39;images/customer_type_1.png&#39;
+        };
+
+        // 定义画布, 组
+        var svg = d3.select(&#39;#d3_scene&#39;)
+                .append(&#39;svg&#39;)
+                .attr(&#39;width&#39;, width + &#39;px&#39;)
+                .attr(&#39;height&#39;, height + &#39;px&#39;),
+            g = svg.append(&quot;g&quot;);
+
+        // 定义树形分布坐标转换方法
+        var tree = d3.tree()
+            .size([360, height / 2 - 100])
+            .separation(function (a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth });
+
+        // 移动, 放大缩小监听
+        var zoom = d3.zoom();
+        svg.call(zoom.on(&quot;zoom&quot;, function zoomed() {
+            g.attr(&quot;transform&quot;, d3.event.transform);
+        }));
+
+        // 初始化视口坐标映射
+        svg.call(zoom.translateBy, width / 2, height / 2);
+
+        // 旋转微调
+        var rotateoffset = 0;
+
+        // 微调, 传入单位是角度
+        function rotate(rotateOffsetDelta) {
+            rotateoffset += rotateOffsetDelta;
+            refreshData(g_data, true);
+        }
+
+        // 坐标弧度映射
+        function project(x, y) {
+            var angle = x / 180 * Math.PI, radius = y;
+            return [radius * Math.cos(angle), radius * Math.sin(angle)];
+        }
+
+        // 数据收缩处理
+        function expand_in_all(data) {
+            // 初始化isDisplayChildren属性
+            function init_isDisplayChildren_attribute(object) {
+                ++init_isDisplayChildren_attribute.current_depth;
+                object[&#39;isDisplayChildren&#39;] = init_isDisplayChildren_attribute.current_depth == 1;
+                var relations = object[&#39;relations&#39;];
+                if (undefined != relations) {
+                    for (var k in relations) {
+                        if (relations.hasOwnProperty(k))
+                            init_isDisplayChildren_attribute(relations[k]);
+                    }
+                }
+                --init_isDisplayChildren_attribute.current_depth;
+            }
+            init_isDisplayChildren_attribute.current_depth = 0;
+            init_isDisplayChildren_attribute(data);
+        }
+
+        // 数据展开处理
+        function expand_out_all(data) {
+            function showAll_isDisplayChildren_attribute(object) {
+                object[&#39;isDisplayChildren&#39;] = true;
+                var relations = object[&#39;relations&#39;];
+                if (undefined != relations) {
+                    for (var k in relations) {
+                        if (relations.hasOwnProperty(k))
+                            showAll_isDisplayChildren_attribute(relations[k]);
+                    }
+                }
+            }
+            showAll_isDisplayChildren_attribute(data);
+        }
+
+        var g_data; // 全局数据变量
+
+        // 处理后台传来的数据
+        function onjsondata(data) {
+            g_data = data; // 存储数据到全局
+            expand_in_all(data); // 首次接收到数据, 收起
+            refreshData(data); // 刷新数据
+        }
+
+        // 刷新数据到页面
+        function refreshData(data, isStopTransition) {
+
+            g.selectAll(&#39;*&#39;).remove(); // 清除所有节点
+
+            // 工具函数, 判断isDisplayChildren, 隐藏/显示元素, 通过修改relations属性成relations_backup实现
+            function data_hide(data) {
+                if (undefined == data.relations)
+                    return; // 对页节点忽略, 否则会设置relations为[], 会出现加号
+                if (false == data.isDisplayChildren) { // 需要隐藏
+                    data.relations_backup = data.relations; // 备份属性
+                    data.relations = []; // 删除属性
+                }
+                if (undefined != data.relations) {
+                    for (var k in data.relations) {
+                        if (data.relations.hasOwnProperty(k)) {
+                            var v = data.relations[k];
+                            data_hide(v);
+                        }
+                    }
+                }
+            }
+            function data_unhide(data) {
+                if (undefined != data.relations_backup) { // 含有备份的属性
+                    data.relations = data.relations_backup; // 还原属性
+                    data.relations_backup = undefined; // 删除备份的属性
+                }
+                if (undefined != data.relations) {
+                    for (var k in data.relations) {
+                        if (data.relations.hasOwnProperty(k)) {
+                            var v = data.relations[k];
+                            data_unhide(v);
+                        }
+                    }
+                }
+            }
+
+            data_hide(data);
+
+            var root = tree(d3.hierarchy(data, function (d) { return d.relations }));
+
+            // 数据x坐标微调
+            root.each(function (d) {
+                d.x = (d.x + rotateoffset) % 360;
+            });
+
+            // garbage
+            var path_list = g.selectAll(&quot;path&quot;)
+                .data(data)
+                .enter()
+                .append(&quot;path&quot;)
+                .attr(&#39;class&#39;, function (d) { return d.data.class });
+
+            // 连线
+            var link_data = g.selectAll(&quot;.link&quot;)
+                .data(root.descendants().slice(1));
+            var link = link_data.enter()
+                .append(&quot;path&quot;)
+                .attr(&#39;class&#39;, function (d) { return &#39;link 线_&#39; + d.data.relation_type })
+                .attr(&quot;d&quot;, function (d) {
+                    return &quot;M&quot; + project(d.x, d.y)
+                        + &quot;C&quot; + project(d.x, (d.y + d.parent.y) / 2)
+                        + &quot; &quot; + project(d.parent.x, (d.y + d.parent.y) / 2)
+                        + &quot; &quot; + project(d.parent.x, d.parent.y);
+                })
+                .attr(&#39;transform&#39;, &#39;&#39;);
+            link_data.exit()
+                .remove();
+
+            // 结点
+            var node_data = g.selectAll(&quot;.node&quot;)
+                .data(root.descendants());
+            var node = node_data.enter()
+                .append(&quot;g&quot;)
+                .attr(&quot;class&quot;, function (d) { return &quot;node&quot; + (d.children ? &quot; node--internal&quot; : &quot; node--leaf&quot;); })
+                .attr(&quot;transform&quot;, function (d) {
+                    return &quot;translate(&quot; + project(d.x, d.y) + &quot;)&quot;;
+                })
+                .attr(&quot;data-customer-name&quot;, function (d) { return d.data.customer_name });
+            node_data.exit()
+                .remove();
+
+            // 结点-图案
+            node.each(function (d) {
+                var image_href = map_between_customer_type_and_png_path[d.data.customer_type];
+                if (undefined == d.data[&#39;relations&#39;]) {
+                    image_href = image_href.replace(/\.([^.]+)$/, &#39;_normal&#39; + &#39;.$1&#39;);
+                }
+                else {
+                    if (true == d.data.isDisplayChildren)
+                        image_href = image_href.replace(/\.([^.]+)$/, &#39;_minus&#39; + &#39;.$1&#39;);
+                    else
+                        image_href = image_href.replace(/\.([^.]+)$/, &#39;_plus&#39; + &#39;.$1&#39;);
+                }
+
+                if (isStopTransition)
+                    d3.select(this)
+                        .append(&#39;image&#39;)
+                        .attr(&#39;xlink:href&#39;, image_href)
+                        .attr(&#39;x&#39;, &#39;-10&#39;)
+                        .attr(&#39;y&#39;, &#39;-10&#39;)
+                        .attr(&#39;width&#39;, &#39;20&#39;)
+                        .attr(&#39;height&#39;, &#39;20&#39;);
+                else
+                    d3.select(this)
+                        .append(&#39;image&#39;)
+                        .transition()
+                        .duration(200)
+                        .delay(function (d, i) { return d.depth * 100 })
+                        .attr(&#39;xlink:href&#39;, image_href)
+                        .attr(&#39;x&#39;, &#39;-10&#39;)
+                        .attr(&#39;y&#39;, &#39;-10&#39;)
+                        .attr(&#39;width&#39;, &#39;20&#39;)
+                        .attr(&#39;height&#39;, &#39;20&#39;);
+            });
+
+            // 结点-文字
+            if (isStopTransition)
+                node.append(&quot;text&quot;)
+                    .attr(&quot;dy&quot;, &quot;.31em&quot;)
+                    .attr(&quot;x&quot;, function (d) { // 文字横坐标微调不能动, 否则文字与连线过紧
+                        return (d.x &lt; 90 || d.x &gt; 270) === !d.children ? 6 : -6;
+                    })
+                    .style(&quot;text-anchor&quot;, function (d) { // 文字锚点固定不能动, 否则文字会挡住连线
+                        return (d.x &lt; 90 || d.x &gt; 270) === !d.children ? &quot;start&quot; : &quot;end&quot;;
+                    })
+                    .attr(&quot;transform&quot;, function (d) { // 文字旋转固定不能动, 否则文字会倒着
+                        if (d.depth == 0) // 第一个节点, 不旋转
+                            return &#39;&#39;;
+                        return &quot;rotate(&quot; + ((d.x &lt; 90 || d.x &gt; 270) ? d.x : (d.x + 180)) + &quot;)&quot;;
+                    })
+                    .text(function (d) { return d.data.customer_name; });
+            else
+                node.append(&quot;text&quot;)
+                    .transition()
+                    .duration(100)
+                    .delay(function (d, i) { return d.depth * 100 })
+                    .attr(&quot;dy&quot;, &quot;.31em&quot;)
+                    .attr(&quot;x&quot;, function (d) { // 文字横坐标微调不能动, 否则文字与连线过紧
+                        return (d.x &lt; 90 || d.x &gt; 270) === !d.children ? 6 : -6;
+                    })
+                    .style(&quot;text-anchor&quot;, function (d) { // 文字锚点固定不能动, 否则文字会挡住连线
+                        return (d.x &lt; 90 || d.x &gt; 270) === !d.children ? &quot;start&quot; : &quot;end&quot;;
+                    })
+                    .attr(&quot;transform&quot;, function (d) { // 文字旋转固定不能动, 否则文字会倒着
+                        if (d.depth == 0) // 第一个节点, 不旋转
+                            return &#39;&#39;;
+                        return &quot;rotate(&quot; + ((d.x &lt; 90 || d.x &gt; 270) ? d.x : (d.x + 180)) + &quot;)&quot;;
+                    })
+                    .text(function (d) { return d.data.customer_name; });
+
+            // 节点响应鼠标滑过, 放大, 加focus属性
+            d3.selectAll(&#39;g.node&#39;).on(&#39;mouseover&#39;, function (d) {
+                // 放大
+                d3.selectAll(&#39;g[data-customer-name=&#39; + d.data.customer_name + &#39;]&#39;)
+                    .each(function () {
+                        var thisd3 = d3.select(this);
+                        var transform_data = thisd3.attr(&#39;transform&#39;);
+                        if (-1 != transform_data.indexOf(&#39;scale&#39;))
+                            transform_data = transform_data.substr(0, transform_data.indexOf(&#39;scale&#39;));
+                        transform_data += &#39; scale(1.4,1.4)&#39;;
+                        thisd3.transition()
+                            .duration(200)
+                            .attr(&#39;transform&#39;, transform_data);
+                    });
+                // 加focus属性
+                d3.selectAll(&#39;g[data-customer-name=&#39; + d.data.customer_name + &#39;]&#39;)
+                    .select(&#39;text&#39;)
+                    .classed(&#39;focus&#39;, true);
+                d3.selectAll(&#39;g[data-customer-name=&#39; + d.data.customer_name + &#39;]&#39;)
+                    .select(&#39;image&#39;)
+                    .classed(&#39;focus&#39;, true);
+            })
+            .on(&#39;mouseout&#39;, function (d) {
+                // 还原
+                d3.selectAll(&#39;g[data-customer-name=&#39; + d.data.customer_name + &#39;]&#39;)
+                    .each(function () {
+                        var thisd3 = d3.select(this);
+                        var transform_data = thisd3.attr(&#39;transform&#39;);
+                        if (-1 != transform_data.indexOf(&#39;scale&#39;))
+                            transform_data = transform_data.substr(0, transform_data.indexOf(&#39;scale&#39;));
+                        thisd3.transition()
+                            .duration(200)
+                            .attr(&#39;transform&#39;, transform_data);
+                    });
+                // 去focus属性
+                d3.selectAll(&#39;g[data-customer-name=&#39; + d.data.customer_name + &#39;]&#39;)
+                    .select(&#39;text&#39;)
+                    .classed(&#39;focus&#39;, false);
+                d3.selectAll(&#39;g[data-customer-name=&#39; + d.data.customer_name + &#39;]&#39;)
+                    .select(&#39;image&#39;)
+                    .classed(&#39;focus&#39;, false);
+            });
+
+            // 连线响应鼠标滑过, 放大, 加focus属性
+            link.on(&#39;mouseover&#39;, function (d) {
+                var thisd3 = d3.select(this);
+                thisd3.classed(&#39;focus&#39;, true);
+            })
+            .on(&#39;mouseout&#39;, function (d) {
+                var thisd3 = d3.select(this);
+                thisd3.classed(&#39;focus&#39;, false);
+            });
+
+            // 节点图标响应鼠标按下
+            d3.selectAll(&#39;image&#39;).on(&#39;click&#39;, function (d) {
+                var relations = d.data[&#39;relations&#39;];
+                if (undefined == relations) { // 无子节点, 和文字被点击效果一样
+                    $(&#39;#cust_name&#39;).text(d.data.customer_name);
+                    $(&#39;#cust_info_k_1&#39;).text(&#39;客户名称&#39;);
+                    $(&#39;#cust_info_v_1&#39;).text(d.data.customer_name);
+                    $(&#39;#cust_info_k_2&#39;).text(&#39;客户类型&#39;);
+                    $(&#39;#cust_info_v_2&#39;).text(d.data.customer_type);
+                    $(&#39;.customer_detail_panel&#39;).show();
+                } else {
+                    var thisd3 = d3.select(this);
+                    var image_href = map_between_customer_type_and_png_path[d.data.customer_type];
+                    if (true == d.data.isDisplayChildren) { // 已经展示了子节点
+                        // 图标换成&#39;加&#39;
+                        image_href = image_href.replace(/\.([^.]+)$/, &#39;_plus&#39; + &#39;.$1&#39;);
+                        thisd3.attr(&#39;xlink:href&#39;, image_href);
+                        // 修改isDisplayChildren=false
+                        d.data.isDisplayChildren = false;
+                        // 刷新svg
+                        refreshData(g_data);
+                    } else { // 未展示子节点
+                        // 图标换成&#39;减&#39;
+                        image_href = image_href.replace(/\.([^.]+)$/, &#39;_minus&#39; + &#39;.$1&#39;);
+                        thisd3.attr(&#39;xlink:href&#39;, image_href);
+                        // 修改isDisplayChildren=true
+                        d.data.isDisplayChildren = true;
+                        // 刷新svg
+                        refreshData(g_data);
+                    }
+                }
+            });
+
+
+            // 节点文字响应鼠标按下
+            d3.selectAll(&#39;text&#39;).on(&#39;click&#39;, function (d) {
+                $(&#39;#cust_name&#39;).text(d.data.customer_name);
+                var cust_info = $(&#39;#cust_info&#39;);
+                cust_info.html(&#39;&#39;);
+                cust_info.append(&#39;&lt;tr&gt;&lt;td style=&quot;width: 30%&quot;&gt;&#39; + &#39;客户名称&#39; + &#39;&lt;/td&gt;&lt;td&gt;&#39; + d.data.customer_name + &#39;&lt;/td&gt;&lt;/tr&gt;&#39;);
+                cust_info.append(&#39;&lt;tr&gt;&lt;td style=&quot;width: 30%&quot;&gt;&#39; + &#39;客户类型&#39; + &#39;&lt;/td&gt;&lt;td&gt;&#39; + d.data.customer_type + &#39;&lt;/td&gt;&lt;/tr&gt;&#39;);
+                $(&#39;.customer_detail_panel&#39;).show();
+            });
+
+            // 连线响应鼠标按下
+            link.on(&#39;click&#39;, function (d) {
+                $(&#39;#cust_name&#39;).text(d.data.customer_name);
+                var cust_info = $(&#39;#cust_info&#39;);
+                cust_info.html(&#39;&#39;);
+                cust_info.append(&#39;&lt;tr&gt;&lt;td style=&quot;width: 30%&quot;&gt;&#39; + &#39;客户名称&#39; + &#39;&lt;/td&gt;&lt;td&gt;&#39; + d.data.customer_name + &#39;&lt;/td&gt;&lt;/tr&gt;&#39;);
+                cust_info.append(&#39;&lt;tr&gt;&lt;td style=&quot;width: 30%&quot;&gt;&#39; + &#39;客户类型&#39; + &#39;&lt;/td&gt;&lt;td&gt;&#39; + d.data.customer_type + &#39;&lt;/td&gt;&lt;/tr&gt;&#39;);
+                $(&#39;.customer_detail_panel&#39;).show();
+            });
+
+            data_unhide(data);
+        }
+
+        $(function () {
+            $.getJSON(&#39;data.json&#39;, {
+                &#39;customerid&#39;: &#39;123&#39;
+            }, function (data) {
+                onjsondata(data);
+            });
+        });
+
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

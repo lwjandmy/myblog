@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>Gson GsonBuilder 自定义TypeAdapter
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="gson-gsonbuilder-typeadapter">Gson GsonBuilder 自定义TypeAdapter</h1>
+<p>Gson用于java对象和json串之间的转换, 可自定义类型转换器</p>
+<pre><code class="lang-java">    // 使用GsonBuilder, 增加自定义类型转换器
+    private static Gson gson = new GsonBuilder().registerTypeAdapter(java.util.Date.class, new TypeAdapter&lt;java.util.Date&gt;() {
+        @Override
+        public Date read(JsonReader jsonReader) throws IOException {
+            return new java.util.Date(Long.valueOf(jsonReader.nextString()));
+        }
+        @Override
+        public void write(JsonWriter jsonWriter, Date date) throws IOException {
+            jsonWriter.value(String.valueOf(date.getTime()));
+        }
+    }).create();
+
+    gson.fromJson(&quot;json串&quot;, Java类.class);
+    gson.toJson(java对象);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

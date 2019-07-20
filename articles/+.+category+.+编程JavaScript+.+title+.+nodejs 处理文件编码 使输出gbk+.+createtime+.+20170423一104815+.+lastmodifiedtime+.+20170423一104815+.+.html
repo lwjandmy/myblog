@@ -1,0 +1,26 @@
+
+
+<html><head><meta charset="UTF-8"><title>nodejs 处理文件编码 使输出gbk
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="nodejs-gbk">nodejs 处理文件编码 使输出gbk</h1>
+<p>用iconv转换编码为gbk, 再以二进制格式输出文件</p>
+<pre><code class="lang-js">fs.writeFileSync(output_fullpath, iconv.encode(output_text, &#39;gbk&#39;), {encoding: &#39;binary&#39;});
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

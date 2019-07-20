@@ -1,0 +1,77 @@
+
+
+<html><head><meta charset="UTF-8"><title>Stream helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="stream-helloworld">Stream helloworld</h1>
+<pre><code class="lang-java">    public static void main(String[] args) {
+
+        // Stream提供面向函数风格数据处理方式
+        Stream&lt;Integer&gt; stream = Arrays.asList(1, 2, 3).stream();
+        stream.filter(i -&gt; i &gt;= 2).map(i -&gt; i * 2).forEach(i -&gt; {
+            System.out.println(i);
+        });
+
+        // Stream类似Iterator, 可以用来创建一个懒加载Iterator
+        Iterator&lt;Integer&gt; iterator = Stream.generate(new Supplier&lt;Integer&gt;() {
+            int i = 0;
+            public Integer get() {
+                ++i;
+                System.out.println(&quot;supply &quot; + i);
+                return i;
+            }
+        }).limit(10).iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+    }
+</code></pre>
+<p>构造方法:</p>
+<pre><code class="lang-js">    // 通过builder, 构造stream
+    Builder&lt;String&gt; builder = Stream.builder();
+    Stream&lt;String&gt; stream1 = builder
+        .add(&quot;a&quot;)
+        .add(&quot;b&quot;)
+        .add(&quot;c&quot;)
+        .build();
+
+    // 通过generate方法, 通过Supplier, 构造stream
+    Stream&lt;Integer&gt; stream2 = Stream.generate(new Supplier&lt;Integer&gt;() {
+        int i = 0;
+        public Integer get() {
+            ++i;
+            return i;
+        }
+    });
+
+    // 通过iterate方法, 通过UnaryOperator, 构造stream
+    Stream&lt;Integer&gt; stream3 = Stream.iterate(0, new UnaryOperator&lt;Integer&gt;() {
+        public Integer apply(Integer t) {
+            return ++t;
+        }
+    });
+
+    // 通过of, 构造stream
+    Stream&lt;Integer&gt; stream4 = Stream.of(0);
+
+    // 通过of, 构造stream
+    Stream&lt;Integer&gt; stream5 = Stream.of(1, 2, 3);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

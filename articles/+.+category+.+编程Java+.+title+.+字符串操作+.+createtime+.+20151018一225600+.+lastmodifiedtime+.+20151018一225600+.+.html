@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>字符串操作
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">字符串操作</h1>
+<pre><code class="lang-text">去掉字符串前后空格
+trim()
+
+提取子字符串
+subString()
+
+转换大写/小写
+toLowerCase()/toUpperCase()
+
+修改字符串
+和python一样，字符串不能直接修改，需要创建新的字符串覆盖原来的字符串
+String str = new String(&quot;test string&quot;);
+str = str.substring(0,3) + &quot;replace&quot;;
+
+比较字符串
+str1.equals(str2)
+str1 == str2   这是判断两字符串是否指向同一内存
+
+字符串长度
+str.length()    返回字符串占多少char字节
+str.codePointCount(0, str.length())    返回字符串有多少个unicode字符，一个unicode字符可能占多个char字节
+
+可修改的字符串StringBuffer, 可多线程, 线程安全的
+StringBuffer strBuf = new StringBuffer;
+strBuf.append(&quot;hello&quot;);  // 字符追加
+strBuf.insert(0, &quot;world&quot;);  // 字符插入
+strBuf.replace(0, 1, &quot;replace&quot;);  // 字符替换
+System.out.pringln(strBuf);
+
+可修改的字符串StringBuilder, 比StringBuffer更快, 线程不安全的
+StringBuilder builder = new StringBuilder();
+builder.append(&quot;hello&quot;);  // 字符追加
+builder.insert(0, &quot;world&quot;);  // 字符插入
+builder.replace(0, 1, &quot;replace&quot;);  // 字符替换
+String completeStr= builder.toString();
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

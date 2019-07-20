@@ -1,0 +1,54 @@
+
+
+<html><head><meta charset="UTF-8"><title>学习laravel
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-laravel">学习laravel</h1>
+<h2 id="-composer-">修改composer镜像, 改用国内的, 国外的被墙访问不了</h2>
+<pre><code class="lang-bash">composer config -g repo.packagist composer https://packagist.phpcomposer.com
+</code></pre>
+<h2 id="-composer-laravel-quickstart">用composer创建laravel应用quickstart</h2>
+<pre><code class="lang-bash">composer --prefer-dist create-project laravel/laravel quickstart
+</code></pre>
+<h2 id="-">配置密钥</h2>
+<pre><code class="lang-bash">mv .env.example .env 应用例子文件
+php artisan key:generate 重新生成密钥
+</code></pre>
+<h2 id="-mariadb">安装配置mariadb</h2>
+<pre><code class="lang-bash">sudo pacman -S mariadb
+sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+sudo systemctl start mysqld
+</code></pre>
+<h2 id="-laravel-">配置laravel数据库</h2>
+<p>编辑config/database.php,</p>
+<p>修改&#39;mysql&#39; =&gt; [...]中内容</p>
+<p>配置/etc/php/php.ini:</p>
+<pre><code class="lang-ini">extension=pdo_mysql.so
+</code></pre>
+<h2 id="-">创建一个数据库迁移</h2>
+<pre><code class="lang-bash">php artisan make:migration --create=tasks create_tasks_table
+</code></pre>
+<p>编辑database/migrations/2016_05_07_152739_create_tasks_table.php</p>
+<pre><code class="lang-php">$table-&gt;string(&#39;name&#39;)  加入此行
+</code></pre>
+<p>执行数据库迁移</p>
+<pre><code class="lang-bash">php artisan migrate
+</code></pre>
+<p>(未完待续)</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

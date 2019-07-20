@@ -1,0 +1,49 @@
+
+
+<html><head><meta charset="UTF-8"><title>例子 git fetch all
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-git-fetch-all">例子 git fetch all</h1>
+<p>fetch-one.sh</p>
+<pre><code class="lang-sh">pushd $1
+git fetch
+popd
+</code></pre>
+<p>fetch-all.sh</p>
+<pre><code class="lang-sh">find . -maxdepth 1 -type d ! -name &#39;.&#39; ! -name &#39;.idea&#39; | \
+xargs -n 1 sh ./fetch-one.sh
+</code></pre>
+<p>fetch-all2.sh</p>
+<pre><code class="lang-sh">function fetch() {
+    pushd $1
+    git fetch
+    popd
+}
+
+find . -maxdepth 1 -type d | while read path; do
+    if [ &quot;.&quot; == &quot;$path&quot; ]; then
+        continue
+    fi
+    if [ &quot;./.idea&quot; == &quot;$path&quot; ]; then
+        continue
+    fi
+    fetch $path
+done
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

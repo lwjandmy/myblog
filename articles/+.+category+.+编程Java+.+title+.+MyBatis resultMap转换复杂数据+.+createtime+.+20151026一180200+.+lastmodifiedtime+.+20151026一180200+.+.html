@@ -1,0 +1,99 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis resultMap转换复杂数据
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-resultmap-">MyBatis resultMap转换复杂数据</h1>
+<p>log4j.properties忽略, MyBatisConfig.xml忽略, User.java数据类,含id,name,password,忽略 User.xml映射配置文件, TestMyBatisSelect.java主函数</p>
+<p>数据库:</p>
+<pre><code class="lang-sql">create table `user_tbl` (
+  `id` int(10) not null auto_increment,
+  `username` varchar(20) not null,
+  `password` varchar(20) not null,
+  primary key (`id`)
+);
+
+insert into `user_tbl` values
+(1,&#39;test1&#39;,&#39;test1&#39;),
+(2,&#39;test2&#39;,&#39;test2&#39;);
+</code></pre>
+<p>User.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn.UserMapper&quot;&gt;
+    &lt;!-- 传入HashMap --&gt;
+    &lt;select id=&quot;selectFromHashMap&quot; parameterType=&quot;hashmap&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl where username=#{username} and password=#{password}
+    &lt;/select&gt;
+    &lt;!-- 传入Object --&gt;
+    &lt;select id=&quot;selectFromObject&quot; parameterType=&quot;User&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl where username=#{username} and password=#{password}
+    &lt;/select&gt;
+    &lt;!-- 返回List结果集 --&gt;
+    &lt;select id=&quot;selectToList&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl;
+    &lt;/select&gt;
+    &lt;resultMap type=&quot;User&quot; id=&quot;UserMap&quot;&gt;
+        &lt;id property=&quot;id&quot; column=&quot;id&quot; /&gt;
+        &lt;result property=&quot;username&quot; column=&quot;username&quot; /&gt;
+        &lt;result property=&quot;password&quot; column=&quot;password&quot; /&gt;
+    &lt;/resultMap&gt;
+    &lt;!-- 返回Map, 用于数据库记录名到对象属性名的转换. 返回值经过map配置, 转换成了User, 最终List&lt;User&gt; --&gt;
+    &lt;select id=&quot;selectToMap&quot; resultMap=&quot;UserMap&quot;&gt;
+        select * from user_tbl
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>TestMyBatisSelect.java:</p>
+<pre><code class="lang-java">public class TestMyBatisSelect {
+    public static void main(String[] args) {
+        InputStream inputStream = TestMyBatisSelect.class.getResourceAsStream(&quot;../../../org/learnmybatisselect/map/MyBatisConfig.xml&quot;);
+        SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlMapper.openSession();
+        { // 传入HashMap
+        HashMap&lt;String, String&gt; hashMap = new HashMap&lt;&gt;();
+        hashMap.put(&quot;username&quot;, &quot;admin&quot;);
+        hashMap.put(&quot;password&quot;, &quot;123456&quot;);
+        User user = session.selectOne(&quot;selectFromHashMap&quot;, hashMap);
+        session.commit();
+        System.out.println(user);
+        }
+        { // 传入Object
+        User user = new User();
+        user.setUsername(&quot;admin&quot;);
+        user.setPassword(&quot;123456&quot;);
+        User userSelect = session.selectOne(&quot;selectFromObject&quot;, user);
+        System.out.println(userSelect);
+        }
+        { // 返回List结果集
+        List&lt;User&gt; list = session.selectList(&quot;selectToList&quot;);
+        for (User user : list)
+            System.out.println(user);
+        }
+        { // 返回Map, 用于数据库记录名到对象属性名的转换. 返回值经过map配置, 转换成了User, 最终所有User返回List&lt;User&gt;
+        List&lt;User&gt; list = session.selectList(&quot;selectToMap&quot;);
+        for (User user : list)
+            System.out.println(user);
+        }
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

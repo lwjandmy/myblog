@@ -1,0 +1,143 @@
+
+
+<html><head><meta charset="UTF-8"><title>函数I 获取POST变量
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-i-post-">函数I 获取POST变量</h1>
+<p>Quick Start:  </p>
+<pre><code class="lang-PHP">$var = $_POST[&#39;var_name&#39;];
+</code></pre>
+<p>等价于：  </p>
+<pre><code class="lang-PHP">$var = I(&#39;post.var_name&#39;);
+</code></pre>
+<p>函数声明:<br>I(&#39;变量类型.变量名/修饰符&#39;,[&#39;默认值&#39;],[&#39;过滤方法&#39;],[&#39;额外数据源&#39;])</p>
+<p>---第一个参数，&#39;变量类型.变量名/修饰符&#39;---</p>
+<table>
+<thead>
+<tr>
+<th>变量类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>get</td>
+<td>获取GET参数</td>
+</tr>
+<tr>
+<td>post</td>
+<td>获取POST参数</td>
+</tr>
+<tr>
+<td>param</td>
+<td>自动判断请求类型获取GET、POST或者PUT参数(默认，可忽略）</td>
+</tr>
+<tr>
+<td>request</td>
+<td>获取REQUEST 参数</td>
+</tr>
+<tr>
+<td>put</td>
+<td>获取PUT 参数</td>
+</tr>
+<tr>
+<td>session</td>
+<td>获取 $_SESSION 参数</td>
+</tr>
+<tr>
+<td>cookie</td>
+<td>获取 $_COOKIE 参数</td>
+</tr>
+<tr>
+<td>server</td>
+<td>获取 $_SERVER 参数</td>
+</tr>
+<tr>
+<td>globals</td>
+<td>获取 $GLOBALS参数</td>
+</tr>
+<tr>
+<td>path</td>
+<td>获取 PATHINFO模式的URL参数</td>
+</tr>
+<tr>
+<td>data</td>
+<td>获取 其他类型的参数，需要配合额外数据源参数</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>修饰符</th>
+<th>全名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s</td>
+<td>string</td>
+<td>强制转换为字符串类型</td>
+</tr>
+<tr>
+<td>d</td>
+<td>decimal</td>
+<td>强制转换为整形类型</td>
+</tr>
+<tr>
+<td>b</td>
+<td>bool</td>
+<td>强制转换为布尔类型</td>
+</tr>
+<tr>
+<td>a</td>
+<td>array</td>
+<td>强制转换为数组类型</td>
+</tr>
+<tr>
+<td>f</td>
+<td>float</td>
+<td>强制转换为浮点类型</td>
+</tr>
+</tbody>
+</table>
+<p>例子:<br>I(&#39;get.id/d&#39;);<br>I(&#39;post.name/s&#39;);<br>I(&#39;post.ids/a&#39;);  </p>
+<p>---第三个参数，[&#39;过滤方法&#39;]---
+传入过滤函数名，用htmlspecials过滤用户变量:</p>
+<pre><code class="lang-PHP">  I(&#39;post.name&#39;, &#39;&#39;, &#39;htmlspecialchars&#39;);   htmlspecialchars是默认过滤函数，即使不指定也会调用htmlspecialchars
+</code></pre>
+<p>  可以设置多个默认过滤函数:</p>
+<pre><code class="lang-PHP">&#39;DEFAULT_FILTER&#39; =&gt; &#39;strip_tags,htmlspecialchars&#39;
+</code></pre>
+<pre><code class="lang-PHP">I(&#39;post.name&#39;)    等同于   htmlspecialchars(strip_tags($_POST[&#39;name&#39;]))
+</code></pre>
+<p>传入数组，则自动用array_map进行过滤处理:</p>
+<pre><code class="lang-PHP">  I(&#39;post.name&#39;, &#39;&#39;, array(&#39;htmlspecialchars&#39;, &#39;strip_tags&#39;));
+</code></pre>
+<p>传入过滤名称，自动用filter_var过滤：</p>
+<pre><code class="lang-PHP">  I(&#39;post.email&#39;,&#39;&#39;,&#39;email&#39;);      通过调用filter_list()可查看支持的过滤名称
+</code></pre>
+<p>传入正则表达式：</p>
+<pre><code class="lang-PHP">  I(&#39;get.name&#39;,&#39;&#39;,&#39;/^[A-Za-z]+$/&#39;);   如果正则表达式不通过，则返回第二个参数指定的默认值
+</code></pre>
+<p>获取$_POST整个数组：</p>
+<pre><code class="lang-PHP">I(&#39;post.&#39;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

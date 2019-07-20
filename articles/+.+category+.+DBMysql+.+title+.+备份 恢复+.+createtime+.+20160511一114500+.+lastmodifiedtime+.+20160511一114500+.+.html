@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>备份 恢复
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">备份 恢复</h1>
+<h2 id="-">备份数据库</h2>
+<pre><code class="lang-shell">mysqldump -u root -p --all-databases --lock-all-tables  &gt; mysql_db.sql  
+mysqldump -u root -p db1 &gt; db1.sql
+</code></pre>
+<h2 id="-">恢复数据库</h2>
+<pre><code class="lang-shell">mysql -u root -p      进入数据库终端
+</code></pre>
+<pre><code class="lang-mysql">source mysql_db.sql;  还原数据库
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,77 @@
+
+
+<html><head><meta charset="UTF-8"><title>CSS float用法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="css-float-">CSS float用法</h1>
+<pre><code class="lang-text">http://www.w3school.com.cn/html/html_blocks.asp
+
+
+HTML 块元素
+大多数 HTML 元素被定义为块级元素或内联元素。
+
+编者注：“块级元素”译为 block level element，“内联元素”译为 inline element。
+
+块级元素在浏览器显示时，通常会以新行来开始（和结束）。
+
+例子：&lt;h1&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;table&gt;
+
+HTML 内联元素
+内联元素在显示时通常不会以新行开始。
+
+例子：&lt;b&gt;, &lt;td&gt;, &lt;a&gt;, &lt;img&gt;
+
+
+
+
+
+
+
+
+
+http://www.w3school.com.cn/css/css_positioning_floating.asp
+块级元素默认排列顺序是从上到下,
+
+如果想一部分元素从左到右,可以设置float: left
+
+
+一旦设置float: left, 此元素在布局器中就不会占位置,后面的元素会占当前元素的位置,
+就像这个元素不存在一样(位置被布局器忽略)
+为了让后面的元素给float: left的元素让出位置, 要为后面的元素设置clear: both
+
+
+例子:
+
+
+
+&lt;style type=&quot;text/css&quot;&gt;
+    .left {
+        float: left;
+    }
+    .clear {
+        clear: both;
+    }
+&lt;/style&gt;
+
+&lt;p class=&quot;left&quot;&gt;text1&lt;/p&gt;
+&lt;p class=&quot;left&quot;&gt;text2&lt;/p&gt;
+&lt;p class=&quot;left&quot;&gt;text3&lt;/p&gt;
+&lt;p class=&quot;clear&quot;&gt;text4&lt;/p&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

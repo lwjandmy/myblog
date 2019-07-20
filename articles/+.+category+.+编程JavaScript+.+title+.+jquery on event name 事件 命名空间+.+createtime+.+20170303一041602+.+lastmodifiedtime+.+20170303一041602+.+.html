@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>jquery on event name 事件 命名空间
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jquery-on-event-name-">jquery on event name 事件 命名空间</h1>
+<p><a href="http://api.jquery.com/on/#event-names">jquery-on</a></p>
+<p>An event name can be qualified by event namespaces that simplify removing or triggering the event. </p>
+<p>For example, &quot;click.myPlugin.simple&quot; defines both the myPlugin and simple namespaces for this particular click event. </p>
+<p>A click event handler attached via that string could be removed with .off(&quot;click.myPlugin&quot;) or .off(&quot;click.simple&quot;) without disturbing other click handlers attached to the elements. </p>
+<p>Namespaces are similar to CSS classes in that they are not hierarchical; only one name needs to match. </p>
+<p>Namespaces beginning with an underscore are reserved for jQuery&#39;s use.</p>
+<p>命名空间类似css中的class属性, 但它们不存在继承.</p>
+<p>.on(&quot;click.myPlugin.simple&quot;) 在命名空间myPlugin和simple上的click事件同时创建监听.</p>
+<p>通过.off(&quot;click.myPlugin&quot;)或.off(&quot;click.simple&quot;)即可去掉监听.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

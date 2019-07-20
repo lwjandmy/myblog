@@ -1,0 +1,49 @@
+
+
+<html><head><meta charset="UTF-8"><title>git 多个远程仓库合并同步
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="git-">git 多个远程仓库合并同步</h1>
+<p>场景:</p>
+<p>两个git远程仓库, 内容完全不同, 起点也不同, 实现两个git远程仓库内容的合并同步</p>
+<p>步骤:</p>
+<p>从A仓库clone代码</p>
+<pre><code class="lang-bash">git clone http://server-A/project.git
+</code></pre>
+<p>本地master分支为origin-A/master</p>
+<pre><code class="lang-bash">
+</code></pre>
+<p>增加远程仓库B: origin-B</p>
+<pre><code class="lang-bash">git remote add origin-B http://server-B/project.git
+</code></pre>
+<p>从B仓库获取代码</p>
+<pre><code class="lang-bash">git fetch origin-B master
+</code></pre>
+<p>从origin-B/master merge 到 本地master分支</p>
+<pre><code class="lang-bash">git merge origin-B/master
+</code></pre>
+<p>解决冲突, 解决完后提交</p>
+<pre><code class="lang-bash">
+</code></pre>
+<p>将本地master推送到origin-A/master 和 origin-B/master</p>
+<pre><code class="lang-bash">git push origin 参数不太会
+</code></pre>
+<p>完成</p>
+<p>以上命令可能会出错, 命令只表示步骤含义, 操作是用UI完成的.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

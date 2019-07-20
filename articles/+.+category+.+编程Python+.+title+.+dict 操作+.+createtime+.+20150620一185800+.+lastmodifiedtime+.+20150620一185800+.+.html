@@ -1,0 +1,79 @@
+
+
+<html><head><meta charset="UTF-8"><title>dict 操作
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="dict-">dict 操作</h1>
+<pre><code class="lang-Python">dic = { &#39;1&#39;: &#39;1&#39;, &#39;2&#39;: &#39;2&#39; }
+
+# 创建
+dic[&#39;3&#39;] = &#39;3&#39;
+
+# 读取
+dic[&#39;3&#39;]
+dic.get(&#39;3&#39;, 3)    ==    dic[&#39;3&#39;] if &#39;3&#39; in dic else 3
+
+# 修改
+dic[&#39;3&#39;] = &#39;3&#39;
+
+# 删除
+del dic[&#39;3&#39;]
+
+# 判断是否存在此键:
+&#39;1&#39; in dic
+
+# 遍历dict:
+for k in dic:
+    print(k, dic[k])
+
+# 排序:
+sorted(dic.iteritems(), lambda a,b: cmp(a,b), lambda k: k[0], True) # 按key排序
+    # 第一个参数是迭代器, 用于提供待排序数据
+    # 第二个参数是比较函数, cmp(a,b) -&gt; int, 返回值小于0，等于0或大于0
+    # 第三个参数是关键值函数, 即根据什么值来排序, key(k1) -&gt; k2, k1是dic.iteritems()的每一项,
+        # 这里dic.iteritems()返回的每一项是一个2元元组(不可变的列表), 分别代表一对(key, value),
+        # 所以这里k2 = k1[0], 即获取元组的key值用来排序
+    # 第四个参数是是否逆序排序, 这里用了逆序排序
+sorted(dic.iteritems(), lambda a,b: cmp(a,b), lambda k: k[1], True) # 按value排序
+    # 这里k2 = k1[1], 用元组的value值来排序
+
+
+# key的排序
+D={&#39;k1&#39;:&#39;v1&#39;,&#39;k2&#39;:&#39;v2&#39;,&#39;k3&#39;:&#39;v3&#39;}
+K=D.keys()
+for key in sorted(K):
+    print(key, &#39;=&gt;&#39;, D[key])
+
+
+
+# 获取所有键
+D.keys()  output: [&#39;k1&#39;,&#39;k2&#39;,&#39;k3&#39;]
+# 获取所有值
+D.values()  output: [&#39;v1&#39;,&#39;v2&#39;,&#39;v3&#39;]
+# 获取所有键值对
+D.items()  output: [(&#39;k1&#39;,&#39;v1&#39;),(&#39;k2&#39;,&#39;v2&#39;),(&#39;k3&#39;,&#39;v3&#39;)]
+
+
+# 字典用于稀疏数据结构
+Matrix={}
+Matrix[(2,3,4)]=88
+Matrix[(7,8,9)]=99
+Matrix.get((2,3,6),0)   用get避免missing-key错误
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

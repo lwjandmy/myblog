@@ -1,0 +1,103 @@
+
+
+<html><head><meta charset="UTF-8"><title>webpack helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="webpack-helloworld">webpack helloworld</h1>
+<h2 id="-">基本概念</h2>
+<p><a href="https://webpack.js.org/concepts/">https://webpack.js.org/concepts/</a></p>
+<h3 id="entry">Entry</h3>
+<p>webpack.config.js</p>
+<pre><code class="lang-js">module.exports = {
+  entry: &#39;./path/to/my/entry/file.js&#39;
+};
+</code></pre>
+<p>指明哪个功能要进行打包</p>
+<p><a href="https://webpack.js.org/concepts/entry-points/">https://webpack.js.org/concepts/entry-points/</a></p>
+<h3 id="output">Output</h3>
+<p>webpack.config.js</p>
+<pre><code class="lang-js">const path = require(&#39;path&#39;);
+
+module.exports = {
+  entry: &#39;./path/to/my/entry/file.js&#39;,
+  output: {
+    path: path.resolve(__dirname, &#39;dist&#39;),
+    filename: &#39;my-first-webpack.bundle.js&#39;
+  }
+};
+</code></pre>
+<p>指明输出位置和输出文件名</p>
+<p><a href="https://webpack.js.org/concepts/output/">https://webpack.js.org/concepts/output/</a></p>
+<h3 id="loaders">Loaders</h3>
+<p>webpack.config.js</p>
+<pre><code class="lang-js">const path = require(&#39;path&#39;);
+
+module.exports = {
+  output: {
+    filename: &#39;my-first-webpack.bundle.js&#39;
+  },
+  module: {
+    rules: [
+      { test: /\.txt$/, use: &#39;raw-loader&#39; }
+    ]
+  }
+};
+</code></pre>
+<p>loader用于处理各种类型的文件, 将这些类型的文件转换成可用的模块</p>
+<p>test, 指明哪些文件需要进行转换</p>
+<p>use, 指明使用哪个loader进行转换</p>
+<p>当webpack发现一个require/import语句, 引入了test: /.txt$/类型时, 使用use: &#39;raw-loader&#39;来转换这个文件</p>
+<p><a href="https://webpack.js.org/concepts/loaders/">https://webpack.js.org/concepts/loaders/</a></p>
+<h3 id="plugins">Plugins</h3>
+<p>当loader在转换文件时, Plugins可以进行范围更广的处理, 比如代码性能优化</p>
+<p>webpack.config.js</p>
+<pre><code class="lang-js">const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;); //installed via npm
+const webpack = require(&#39;webpack&#39;); //to access built-in plugins
+
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.txt$/, use: &#39;raw-loader&#39; }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({template: &#39;./src/index.html&#39;})
+  ]
+};
+</code></pre>
+<p>使用new表达式创建Plugin对象, 放在plugins数据下</p>
+<p><a href="https://webpack.js.org/plugins/">https://webpack.js.org/plugins/</a></p>
+<h3 id="mode">Mode</h3>
+<pre><code class="lang-js">module.exports = {
+  mode: &#39;production&#39;
+};
+</code></pre>
+<p>可选值: development, production or none, 默认production</p>
+<p>会设置webpack内置的优化策略</p>
+<p><a href="https://webpack.js.org/concepts/mode/">https://webpack.js.org/concepts/mode/</a></p>
+<h3 id="-">每个配置项的说明</h3>
+<p><a href="https://webpack.js.org/configuration/#options">https://webpack.js.org/configuration/#options</a></p>
+<p>点击配置项, 进入说明链接</p>
+<hr>
+<h2 id="webpack-guide-">Webpack的配置项说明, Guide手册</h2>
+<p><a href="https://webpack.js.org/guides/">https://webpack.js.org/guides/</a></p>
+<p>按章节, 配置webpack.config.js</p>
+<p>遇到疑问的属性, 查询</p>
+<p><a href="https://webpack.js.org/configuration">https://webpack.js.org/configuration</a></p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

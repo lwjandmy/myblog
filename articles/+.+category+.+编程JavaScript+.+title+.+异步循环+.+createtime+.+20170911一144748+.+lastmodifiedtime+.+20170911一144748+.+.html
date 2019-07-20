@@ -1,0 +1,62 @@
+
+
+<html><head><meta charset="UTF-8"><title>异步循环
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">异步循环</h1>
+<pre><code class="lang-js">// 异步的for循环
+// list: 数组, list[i] === undefined时, 循环终止
+// process: function (list[i], nextCallback) {...}, nextCallback: function () {...}  处理每个数组元素的方法, 处理完要调用nextCallback, 参数空
+// finishCallback: function () {...}, 所有循环执行完, 调用的回调函数
+var forEachAsync = function (list, process, finishCallback) {
+
+    var index = 0;
+
+    var forEachAsyncNextCallback = (function(index, process, list, finishCallback) {
+
+        var forEachAsyncNextCallback = function() {
+
+            if (undefined === list[index]) {
+                finishCallback &amp;&amp; finishCallback();
+            } else {
+                process(list[index++], forEachAsyncNextCallback);
+            }
+
+        }
+
+        return forEachAsyncNextCallback;
+    })(0, process, list, finishCallback);
+
+    forEachAsyncNextCallback();
+
+};
+
+// 测试:
+var childrens = getChildren();
+
+forEachAsync(childrens, function (children, nextCallback) {
+
+    console.log(children);
+    nextCallback();
+
+}, function () {
+    console.log(&#39;finish&#39;);
+});
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

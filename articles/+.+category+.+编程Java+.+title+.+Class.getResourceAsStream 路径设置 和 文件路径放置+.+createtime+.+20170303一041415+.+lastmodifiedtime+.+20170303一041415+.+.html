@@ -1,0 +1,87 @@
+
+
+<html><head><meta charset="UTF-8"><title>Class.getResourceAsStream 路径设置 和 文件路径放置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="class-getresourceasstream-">Class.getResourceAsStream 路径设置 和 文件路径放置</h1>
+<p>两个项目: app1, app2, 其中app2依赖app1, 两个项目各包含两个txt文件, 分别位于classpath根, 某包下</p>
+<p>/app1/src/main/resources/root_resource.txt:</p>
+<pre><code class="lang-text">root_resource in app1
+</code></pre>
+<p>/app1/src/main/resources/com/relative_path_resource.txt:</p>
+<pre><code class="lang-text">relative_path_resource in app1
+</code></pre>
+<p>/app2/src/main/resources/root_resource.txt:</p>
+<pre><code class="lang-text">root_resource in app2
+</code></pre>
+<p>/app2/src/main/resources/com/relative_path_resource.txt:</p>
+<pre><code class="lang-text">relative_path_resource in app2
+</code></pre>
+<p>两个项目各有一个java类, 其中有main方法:</p>
+<p>/app1/src/main/java/com/App1.java:</p>
+<pre><code class="lang-java">public class App1
+{
+
+    public static String read(InputStream inputStream) throws Exception {
+        return new BufferedReader(new InputStreamReader(inputStream, &quot;UTF-8&quot;)).readLine();
+    }
+
+    public static void main( String[] args ) throws Exception
+    {
+        System.out.println(read(Object.class.getResourceAsStream(&quot;/root_resource.txt&quot;)));
+        System.out.println(read(App1.class.getResourceAsStream(&quot;../root_resource.txt&quot;)));
+        System.out.println(read(App1.class.getResourceAsStream(&quot;relative_path_resource.txt&quot;)));
+        System.out.println(read(Object.class.getResourceAsStream(&quot;/com/relative_path_resource.txt&quot;)));
+    }
+}
+</code></pre>
+<p>/app2/src/main/java/com/App2.java:</p>
+<pre><code class="lang-java">public class App2 {
+
+    public static String read(InputStream inputStream) throws Exception {
+        return new BufferedReader(new InputStreamReader(inputStream, &quot;UTF-8&quot;)).readLine();
+    }
+
+    public static void main( String[] args ) throws Exception
+    {
+        System.out.println(read(Object.class.getResourceAsStream(&quot;/root_resource.txt&quot;)));
+        System.out.println(read(App1.class.getResourceAsStream(&quot;../root_resource.txt&quot;)));
+        System.out.println(read(App1.class.getResourceAsStream(&quot;relative_path_resource.txt&quot;)));
+        System.out.println(read(Object.class.getResourceAsStream(&quot;/com/relative_path_resource.txt&quot;)));
+    }
+}
+</code></pre>
+<p>最终结果:</p>
+<p>App1.main:</p>
+<pre><code class="lang-text">root_resource in app1
+root_resource in app1
+relative_path_resource in app1
+relative_path_resource in app1
+</code></pre>
+<p>App2.main:</p>
+<pre><code class="lang-text">root_resource in app2
+root_resource in app2
+relative_path_resource in app2
+relative_path_resource in app2
+</code></pre>
+<p>总结:</p>
+<p>Object.class.getResourceAsStream(&quot;/root_resource.txt&quot;)) 是从classpath绝对路径获取资源</p>
+<p>App1.class.getResourceAsStream(&quot;relative_path_resource.txt&quot;)) 是从App1所在相对路径(/com路径)获取资源</p>
+<p>app2依赖app1, 在app2的代码中获取资源, 优先读取app2项目中资源, 找不到再到app1项目中找资源</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

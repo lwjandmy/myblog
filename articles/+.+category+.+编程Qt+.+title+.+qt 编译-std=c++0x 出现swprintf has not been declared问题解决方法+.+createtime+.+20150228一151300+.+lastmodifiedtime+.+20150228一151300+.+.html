@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>qt 编译-std=c++0x 出现swprintf has not been declared问题解决方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="qt-std-c-0x-swprintf-has-not-been-declared-">qt 编译-std=c++0x 出现swprintf has not been declared问题解决方法</h1>
+<p><a href="http://bbs.csdn.net/topics/300238775">体验C++0x，奇怪编译错误</a></p>
+<p>方法一：</p>
+<p>不使用-std=c++0x，改用-std=gnu++0x</p>
+<p>方法二</p>
+<pre><code class="lang-c++">#ifdef __STRICT_ANSI__ 
+#undef __STRICT_ANSI__ 
+#endif 
+#include &lt;。。。。。
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

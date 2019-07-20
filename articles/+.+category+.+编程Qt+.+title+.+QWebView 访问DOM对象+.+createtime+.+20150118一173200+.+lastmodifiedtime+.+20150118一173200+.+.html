@@ -1,0 +1,50 @@
+
+
+<html><head><meta charset="UTF-8"><title>QWebView 访问DOM对象
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="qwebview-dom-">QWebView 访问DOM对象</h1>
+<pre><code class="lang-c++">    QWebFrame *mainFrame = ui-&gt;webView-&gt;page()-&gt;mainFrame();
+    QWebElement li = mainFrame-&gt;findFirstElement(&quot;li#J_TradeWrap&quot;);
+
+    qDebug() &lt;&lt; li.isNull();
+    qDebug() &lt;&lt; li.attribute(&quot;id&quot;);
+    qDebug() &lt;&lt; li.attribute(&quot;class&quot;);
+
+
+    QWebElement a = li.findFirst(&quot;a&quot;);
+    qDebug() &lt;&lt; a.isNull();
+    qDebug() &lt;&lt; a.attribute(&quot;href&quot;);
+
+    QVariant v = a.evaluateJavaScript(&quot;click()&quot;);
+    qDebug() &lt;&lt; v;
+
+
+
+    v = a.evaluateJavaScript(&quot;class=\&quot;selected\&quot;&quot;);
+    qDebug() &lt;&lt; v;
+
+    v = a.evaluateJavaScript(&quot;\
+    var clickEvent = window.document.createEvent(&#39;MouseEvents&#39;);  \
+    clickEvent.initMouseEvent(&#39;click&#39;, false, true);  \
+    document.getElementById(&#39;id&#39;).dispatchEvent(clickEvent);&quot;); 
+
+    qDebug() &lt;&lt; v;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

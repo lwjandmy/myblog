@@ -1,0 +1,74 @@
+
+
+<html><head><meta charset="UTF-8"><title>Groovy入门
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="groovy-">Groovy入门</h1>
+<h2 id="-groovy-shell">进入Groovy shell</h2>
+<pre><code class="lang-shell">groovysh
+</code></pre>
+<h2 id="-groovy-gui">进入Groovy GUI</h2>
+<pre><code class="lang-shell">groovyConsole
+</code></pre>
+<h2 id="-groovy-">执行Groovy脚本</h2>
+<pre><code class="lang-shell">groovy Gold.groovy
+</code></pre>
+<h2 id="-groovy-class-classes-">编译Groovy脚本到class文件, 放入classes目录中</h2>
+<pre><code class="lang-shell">groovyc -d classes Gold.groovy
+</code></pre>
+<h2 id="-groovy-jar-">配置Groovy依赖的jar包的环境变量</h2>
+<pre><code class="lang-ini">GROOVY_HOME=D:\groovy-2.4.7
+CLASSPATH=.;%JAVA_HOME%/lib/dt.jar;%JAVA_HOME%/lib/tools.jar;%GROOVY_HOME%/embeddable/groovy-all-2.4.7.jar;
+</code></pre>
+<h2 id="-groovy-class-classes-gold-class-">执行编译好的Groovy的class字节码(classes/Gold.class文件)</h2>
+<pre><code class="lang-shell">java -cp %CLASSPATH%;classes Gold
+</code></pre>
+<h2 id="-">计算黄金分割数</h2>
+<pre><code class="lang-groovy">List fibo = [1, 1]
+List gold = [1, 2]
+
+while (!isGolden(gold[-1])) {
+    fibo.add(fibo[-1] + fibo[-2])
+    gold.add(fibo[-1] / fibo[-2])
+}
+
+println &quot;found golden ratio with fibo (${fibo.size-1 }) as&quot;
+println fibo[-1] + &quot; / &quot; + fibo[-2] + &quot; = &quot; + gold[-1]
+println &quot;_&quot; * 10 + &quot;|&quot; + &quot;_&quot; * (10 * gold[-1])
+
+def isGolden(candidate) {
+    def small = 1
+    def big = small * candidate
+    return isCloseEnough( (small+big) / big, big/small )
+}
+
+def isCloseEnough(a, b) {
+    return (a - b).abs() &lt; 1.0e-9
+}
+</code></pre>
+<h2 id="java-groovy">Java中调用Groovy</h2>
+<pre><code class="lang-java">GroovyClassLoader groovyClassLoader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
+Class parseClass = groovyClassLoader.parseClass(&quot;println 123&quot;);
+Script script = (Script) parseClass.newInstance();
+MyBinding myBinding = new MyBinding();
+// script.setBinding(myBinding);
+Object result = script.run();
+System.out.println(result);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

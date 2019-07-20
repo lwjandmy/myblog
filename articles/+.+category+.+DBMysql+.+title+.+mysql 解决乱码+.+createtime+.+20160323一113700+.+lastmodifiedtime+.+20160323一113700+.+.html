@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>mysql 解决乱码
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mysql-">mysql 解决乱码</h1>
+<p><a href="http://blog.csdn.net/luoweifu/article/details/8832492">Mysql中文乱码问题完美解决方案</a></p>
+<p>创建数据库:</p>
+<pre><code class="lang-mysql">CREATE DATABASE `test`  
+CHARACTER SET &#39;utf8&#39;  
+COLLATE &#39;utf8_general_ci&#39;;
+</code></pre>
+<p>创建表:</p>
+<pre><code class="lang-mysql">CREATE TABLE `database_user` (  
+`ID` varchar(40) NOT NULL default &#39;&#39;,  
+`UserID` varchar(40) NOT NULL default &#39;&#39;,  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre>
+<hr>
+<p>查看编码配置</p>
+<pre><code class="lang-sql">show variables like &#39;collation_%&#39;;
+</code></pre>
+<p>collation_connection
+collation_database
+collation_server</p>
+<p>创建数据库时设置默认编码</p>
+<pre><code class="lang-sql">CREATE DATABASE `dbname` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,34 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker save load 保存镜像 加载镜像 用户离线安装镜像
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-save-load-">docker save load 保存镜像 加载镜像 用户离线安装镜像</h1>
+<pre><code class="lang-bash">docker save -o /镜像存储路径.img 镜像名[:版本tag] 镜像名[:版本tag] 镜像名[:版本tag] ...
+
+docker load -i /镜像加载路径.img
+
+
+# 备份所有镜像
+sudo docker images | grep -v latest | grep -v REPOSITORY | awk &#39;{ print $1 &quot;:&quot; $2 }&#39; | sudo xargs docker save -o hyperledger-fabric-docker-images.img
+
+# 还原镜像
+sudo docker load -i hyperledger-fabric-docker-images.img
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

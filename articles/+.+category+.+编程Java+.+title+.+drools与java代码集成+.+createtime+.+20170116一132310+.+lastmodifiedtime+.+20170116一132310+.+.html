@@ -1,0 +1,339 @@
+
+
+<html><head><meta charset="UTF-8"><title>drools与java代码集成
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="drools-java-">drools与java代码集成</h1>
+<h2 id="-maven-drools-java-">通过maven项目, 实现drools与java代码集成</h2>
+<p>workbench定义po类和规则, 编译项目</p>
+<p>建maven项目, 引jar</p>
+<p>pom.xml</p>
+<pre><code class="lang-xml">    &lt;dependency&gt;
+        &lt;groupId&gt;com.cvicse.cxzx.mydemo&lt;/groupId&gt;    
+        &lt;artifactId&gt;testrule1&lt;/artifactId&gt;
+        &lt;version&gt;1.0&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.drools&lt;/groupId&gt;
+        &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
+        &lt;version&gt;6.5.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.kie&lt;/groupId&gt;
+        &lt;artifactId&gt;kie-ci&lt;/artifactId&gt;
+        &lt;version&gt;6.5.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre>
+<p>App.java</p>
+<pre><code class="lang-java">        KieServices kieServices = KieServices.Factory.get();
+        ReleaseId releaseId = kieServices.newReleaseId(&quot;com.cvicse.cxzx.mydemo&quot;, &quot;testrule1&quot;, &quot;1.0&quot;);
+        KieContainer kContainer = kieServices.newKieContainer(releaseId);
+//        KieScanner kScanner = kieServices.newKieScanner(kContainer);
+//        kScanner.start(10_000);
+        KieSession kSession = kContainer.newKieSession();
+
+        User user = new User();
+        user.setIsLogined(false);
+        user.setUsername(&quot;123&quot;);
+        user.setPassword(&quot;456&quot;);
+
+        kSession.insert(user);
+        int rules = kSession.fireAllRules();
+        System.out.println(rules);
+        kSession.dispose();
+
+        System.out.println(user.getIsLogined());
+</code></pre>
+<h2 id="-kie-server-drools-java-">通过kie-server项目, 实现drools与java代码集成</h2>
+<p>pom.xml</p>
+<pre><code class="lang-xml">    &lt;dependency&gt;
+        &lt;groupId&gt;org.kie.server&lt;/groupId&gt;
+        &lt;artifactId&gt;kie-server-client&lt;/artifactId&gt;
+        &lt;version&gt;6.5.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.cvicse.cxzx.mydemo&lt;/groupId&gt;    
+        &lt;artifactId&gt;testrule1&lt;/artifactId&gt;
+        &lt;version&gt;1.0&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- https://mvnrepository.com/artifact/org.drools/drools-compiler --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.drools&lt;/groupId&gt;
+        &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
+        &lt;version&gt;6.5.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.kie&lt;/groupId&gt;
+        &lt;artifactId&gt;kie-ci&lt;/artifactId&gt;
+        &lt;version&gt;6.5.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- https://mvnrepository.com/artifact/log4j/log4j --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j&lt;/artifactId&gt;
+        &lt;version&gt;1.2.17&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+        &lt;version&gt;1.7.21&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+        &lt;version&gt;1.7.21&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre>
+<p>App.java</p>
+<pre><code class="lang-java">public class App 
+{
+    /**
+     * 建立kie-server连接
+     * &lt;pre&gt;
+     * KieServicesClient client = connect(&quot;http://localhost:8080/kie-server/services/rest/server&quot;, &quot;kieserver&quot;, &quot;kieserver&quot;, new HashSet&lt;Class&lt;?&gt;&gt;(Arrays.asList(User.class)));
+     * &lt;/pre&gt;
+     * @param URI 连接地址, 如: http://localhost:8080/kie-server/services/rest/server
+     * @param username 用户名, tomcat-users.xml中配置的有角色&quot;kie-server&quot;的用户名, 如: kieserver
+     * @param password 密码, tomcat-users.xml中配置的有角色&quot;kie-server&quot;的用户密码, 如: kieserver
+     * @param extraClassList 与kie-server通信中, 接收到数据时, 数据对应的java类, 用于自动填写数据到java类, 如: new HashSet&lt;Class&lt;?&gt;&gt;(Arrays.asList(User.class))
+
+     */
+    public static KieServicesClient connect(String URI, String username, String password, Set&lt;Class&lt;?&gt;&gt; extraClassList) {
+        KieServicesConfiguration config = KieServicesFactory.newRestConfiguration(URI, username, password);
+        config.addExtraClasses(extraClassList);
+        config.setMarshallingFormat(MarshallingFormat.JSON);
+        KieServicesClient client = KieServicesFactory.newKieServicesClient(config);
+        return client;
+    }
+
+    /**
+     * 获取container列表
+     * &lt;pre&gt;
+     * {@code
+     * List&lt;KieContainerResource&gt; kieContainers = listContainers(client);
+     * System.out.println(&quot;Available containers: &quot;);
+     * for (KieContainerResource container : kieContainers) {
+     *     System.out.println(&quot;\t&quot; + container.getContainerId() + &quot; (&quot;
+     *             + container.getReleaseId() + &quot;)&quot;);
+     * }
+     * &lt;/pre&gt;
+     * @param client kie-server连接对象, 通过connect获取
+     * @return KieContainerResource集合
+     */
+    public static List&lt;KieContainerResource&gt; listContainers(KieServicesClient client) {
+        return client.listContainers().getResult().getContainers();
+    }
+
+    /**
+     * 删除container
+     * &lt;pre&gt;
+     * if (false == disposeContainer(client, containerId)) {
+     *     System.out.println(&quot;Error disposing &quot; + containerId + &quot;. Message: &quot;);
+     *     return;
+     * }
+     * System.out.println(&quot;Success Disposing container &quot; + containerId);
+     * &lt;/pre&gt;
+     * @param client kie-server连接对象, 通过connect获取
+     * @param containerId container编号
+     */
+    public static boolean disposeContainer(KieServicesClient client, String containerId) {
+        ServiceResponse&lt;Void&gt; disposeResponse = client.disposeContainer(containerId);
+        return ResponseType.SUCCESS == disposeResponse.getType();
+    }
+
+    /**
+     * 增加container
+     * &lt;pre&gt;
+     * System.out.println(&quot;Trying to recreate the container...&quot;);
+     * if (false == createContainer(client, containerId, container)) {
+     *     System.out.println(&quot;Error creating &quot; + containerId + &quot;. Message: &quot;);
+     *     return;
+     * }
+     * System.out.println(&quot;Container recreated with success!&quot;);
+     * &lt;/pre&gt;
+     * @param client kie-server连接对象, 通过connect获取
+     * @param containerId container编号
+     * @param groupId maven坐标: 组编号
+     * @param artifactId maven坐标: 项目编号
+     * @param version maven坐标: 版本
+     * @return 创建成功, 返回true; 创建失败, 返回false
+     */
+    public static boolean createContainer(KieServicesClient client, String containerId, String groupId, String artifactId, String version) {
+        ReleaseId releaseId = new ReleaseId();
+        releaseId.setGroupId(groupId);
+        releaseId.setArtifactId(artifactId);
+        releaseId.setVersion(version);
+        KieContainerResource kieContainerResource = new KieContainerResource();
+        kieContainerResource.setReleaseId(releaseId);
+        kieContainerResource.setContainerId(containerId);
+        return createContainer(client, containerId, kieContainerResource);
+    }
+
+    /**
+     * 增加container
+     * @param client kie-server连接对象, 通过connect获取
+     * @param containerId container编号
+     * @param kieContainerResource container资源
+     * @return 创建成功, 返回true; 创建失败, 返回false
+     */
+    public static boolean createContainer(KieServicesClient client, String containerId, KieContainerResource kieContainerResource) {
+        ServiceResponse&lt;KieContainerResource&gt; createResponse = client.createContainer(containerId, kieContainerResource);
+        return ResponseType.SUCCESS == createResponse.getType();
+    }
+
+    /**
+     * 创建命令列表, 用于暂存命令并最终统一执行
+     * &lt;pre&gt;
+     * List&lt;? extends Command&lt;?&gt;&gt; commandList = createCommandList();
+     * &lt;/pre&gt;
+     * @return 命令列表
+     */
+    public static List&lt;? extends Command&lt;?&gt;&gt; createCommandList() {
+        return new ArrayList&lt;Command&lt;?&gt;&gt;();
+    }
+
+    /**
+     * insert命令, 加入一个对象进行规则校验
+     * &lt;pre&gt;
+     * User user = new User();
+     * user.setIsLogined(false);
+     * user.setUsername(&quot;123&quot;);
+     * user.setPassword(&quot;456&quot;);
+     * insert(commandList, user, &quot;user&quot;);
+     * &lt;/pre&gt;
+     * @param commandList 命令集合, 通过createCommandList创建, executeCommands执行
+     * @param object 要加入的对象
+     * @param outIdentifier 对象输出标识, 在executeCommands执行后, 返回map, 用作map的键
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public static void insert(List&lt;? extends Command&lt;?&gt;&gt; commandList, Object object, String outIdentifier) {
+        Command&lt;?&gt; insert = KieServices.Factory.get().getCommands().newInsert(object, outIdentifier);
+        ((List&lt;Command&lt;?&gt;&gt;) commandList).add(insert);
+    }
+
+    /**
+     * fireAllRules命令, 执行所有规则校验
+     * &lt;pre&gt;
+     * fireAllRules(commandList);
+     * &lt;/pre&gt;
+     * @param commandList 命令集合, 通过createCommandList创建, executeCommands执行
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public static void fireAllRules(List&lt;? extends Command&lt;?&gt;&gt; commandList) {
+        Command&lt;?&gt; fireAllRules = KieServices.Factory.get().getCommands().newFireAllRules();
+        ((List&lt;Command&lt;?&gt;&gt;) commandList).add((Command&lt;Object&gt;)fireAllRules);
+    }
+
+    /**
+     * 执行命令
+     * &lt;pre&gt;
+     * Map&lt;String, Object&gt; result = executeCommands(client, containerId, commandList);
+     * if (null == result) {
+     *     System.out.println(&quot;Error executing rules!&quot;);
+     *     return;
+     * }
+     * System.out.println(result);
+     * &lt;/pre&gt;
+     * @param client kie-server连接对象, 通过connect获取
+     * @param containerId container编号
+     * @param commandList 命令集合
+     * @return 执行失败, 返回null; 执行成功, 返回键值对, 键为insert时指定的name, 值为connect时指定的extraClassList中某个类
+     * @return
+     */
+    public static Map&lt;String, Object&gt; executeCommands(KieServicesClient client, String containerId, List&lt;? extends Command&lt;?&gt;&gt; commandList) {
+        RuleServicesClient rulesClient = client.getServicesClient(RuleServicesClient.class);
+        Command&lt;?&gt; batchCommand = KieServices.Factory.get().getCommands().newBatchExecution(commandList);
+        ServiceResponse&lt;ExecutionResults&gt; executeResponse = rulesClient.executeCommandsWithResults(containerId, batchCommand);
+        Map&lt;String, Object&gt; result = null;
+        if (ResponseType.SUCCESS == executeResponse.getType()) {
+            result = new LinkedHashMap&lt;String, Object&gt;();
+            ExecutionResults executionResults = executeResponse.getResult();
+            for (String key : executionResults.getIdentifiers()) {
+                Object value = executionResults.getValue(key);
+                result.put(key, value);
+            }
+        }
+        return result;
+    }
+
+    public static void main( String[] args )
+    {
+        // 建立kie-server连接
+        KieServicesClient client = connect(&quot;http://localhost:8080/kie-server/services/rest/server&quot;, &quot;kieserver&quot;, &quot;kieserver&quot;, new HashSet&lt;Class&lt;?&gt;&gt;(Arrays.asList(User.class)));
+
+
+        // 获取container列表
+        List&lt;KieContainerResource&gt; kieContainers = listContainers(client);
+        System.out.println(&quot;Available containers: &quot;);
+        for (KieContainerResource container : kieContainers) {
+            System.out.println(&quot;\t&quot; + container.getContainerId() + &quot; (&quot;
+                    + container.getReleaseId() + &quot;)&quot;);
+        }
+        KieContainerResource container = kieContainers.get(0);
+        String containerId = container.getContainerId();
+
+
+        // 删除container
+        if (false == disposeContainer(client, containerId)) {
+            System.out.println(&quot;Error disposing &quot; + containerId + &quot;. Message: &quot;);
+            return;
+        }
+        System.out.println(&quot;Success Disposing container &quot; + containerId);
+
+
+        // 增加container
+        System.out.println(&quot;Trying to recreate the container...&quot;);
+        if (false == createContainer(client, containerId, container)) {
+            System.out.println(&quot;Error creating &quot; + containerId + &quot;. Message: &quot;);
+            return;
+        }
+        System.out.println(&quot;Container recreated with success!&quot;);
+
+
+        User user = new User();
+        user.setIsLogined(false);
+        user.setUsername(&quot;123&quot;);
+        user.setPassword(&quot;456&quot;);
+
+
+        // 执行insert, fireAllRules命令, 获取结果
+        List&lt;? extends Command&lt;?&gt;&gt; commandList = createCommandList();
+        insert(commandList, user, &quot;user&quot;);
+        fireAllRules(commandList);
+        Map&lt;String, Object&gt; result = executeCommands(client, containerId, commandList);
+        if (null == result) {
+            System.out.println(&quot;Error executing rules!&quot;);
+            return;
+        }
+        System.out.println(result);
+
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,67 @@
+
+
+<html><head><meta charset="UTF-8"><title>乱码汇总
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">乱码汇总</h1>
+<h2 id="mount-">mount 乱码</h2>
+<pre><code class="lang-bash">mount -o iocharset=cp936
+mount -o iocharset=utf8
+</code></pre>
+<p>其中936代表简体中文</p>
+<h2 id="unzip-">unzip 乱码</h2>
+<pre><code class="lang-bash">unzip -O CP936 xxx.zip
+</code></pre>
+<h2 id="archlinux-">archlinux中文支持</h2>
+<p>编辑/etc/locale.gen:</p>
+<pre><code class="lang-bash">zh_CN.UTF-8
+</code></pre>
+<p>执行locale-gen:</p>
+<pre><code class="lang-bash">locale-gen
+</code></pre>
+<p>添加LANG环境变量, 编辑.bashrc:</p>
+<pre><code class="lang-bash">export LANG=zh_CN.UTF-8
+export LC_CTYPE=$LANG
+</code></pre>
+<h2 id="cygwin-">cygwin乱码</h2>
+<p>编辑cygwin\Cygwin.bat:</p>
+<pre><code class="lang-bash">@echo off
+
+D:
+chdir D:\cygwin64\bin
+
+mintty zsh --login -i
+</code></pre>
+<p>注意用mintty替代原来的cmd</p>
+<p>进入cygwin, 菜单 -&gt; Options... -&gt; Text -&gt; Character set: UTF-8</p>
+<h2 id="git-344-270-255-346-226-207-346-265-213-350-257-225-txt-">git 中文乱码 显示&quot;\344\270\255\346\226\207\346\265\213\350\257\225.txt&quot;</h2>
+<pre><code class="lang-bash">git config --global core.quotepath false
+</code></pre>
+<h2 id="oracle-">oracle乱码</h2>
+<p>查看服务器编码</p>
+<pre><code class="lang-sql">select userenv(&#39;language&#39;) from dual;
+</code></pre>
+<p>上面看到的是服务器上的编码.</p>
+<p>在@执行sql脚本时, 只要保证脚本文件编码(GBK)与本地环境变量NLS_LANG=SIMPLIFIED CHINESE_CHINA.ZHS16GBK一致即可, 不需与服务器上编码一致, sqlplus和sql服务会处理服务器上的编码.</p>
+<h2 id="cmd-">cmd乱码</h2>
+<pre><code class="lang-bat">chcp 65001 # 换成utf8
+chcp 936 # 换成默认gbk
+</code></pre>
+<p>utf8, 属性 -&gt;字体 -&gt;选择 Lucida Console</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

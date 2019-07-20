@@ -1,0 +1,75 @@
+
+
+<html><head><meta charset="UTF-8"><title>form的enctype 与http的文件上传
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="form-enctype-http-">form的enctype 与http的文件上传</h1>
+<pre><code class="lang-txt">text/plain 只将空格转为&quot;+&quot;号
+浏览器发送例子:
+Content-Type:text/plain
+file1=t1.txt
+
+
+application/x-www-form-urlencoded 默认值, 对字符进行编码
+浏览器发送例子:
+Content-Type:application/x-www-form-urlencoded
+file1=t1.txt
+
+
+multipart/form-data 多章节, 不对字符编码, 用于文件上传
+浏览器发送例子:
+Content-Type:multipart/form-data; boundary=----WebKitFormBoundarygPh2iTYfA2z1LQxn
+------WebKitFormBoundarygPh2iTYfA2z1LQxn
+Content-Disposition: form-data; name=&quot;file1&quot;; filename=&quot;t1.txt&quot;
+Content-Type: text/plain
+
+t1
+
+------WebKitFormBoundarygPh2iTYfA2z1LQxn--
+</code></pre>
+<p>http文件上传, 使用post请求, 请求的body不是把文件内容全放在body里, 而是用&quot;------PartName&quot;分隔开数据流.</p>
+<p>java读取文件上传内容</p>
+<pre><code class="lang-java">    if (FileUpload.isMultipartContent(new ServletRequestContext(request))) {
+
+        FileUpload fileUpload = new FileUpload();
+
+        DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
+
+        fileItemFactory.setRepository(new File(System.getProperty(&quot;java.io.tmpdir&quot;)));
+
+        fileUpload.setFileItemFactory(fileItemFactory);
+
+        List&lt;FileItem&gt; fileItemList = fileUpload.parseRequest(new ServletRequestContext(request));
+
+        for (FileItem fileItem : fileItemList) {
+
+            System.out.println(&quot;文件名: &quot; + fileItem.getName());
+            System.out.println(&quot;input的name名: &quot; + fileItem.getFieldName());
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fileItem.getInputStream(), &quot;UTF-8&quot;));
+            String line = null;
+            while (null != (line = reader.readLine())) {
+                System.out.println(line);
+            }
+
+        }
+
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

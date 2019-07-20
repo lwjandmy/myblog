@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>archlinux 设置 静态ip hyper-v 连外网 宿主连虚拟机 网络配置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="archlinux-ip-hyper-v-">archlinux 设置 静态ip hyper-v 连外网 宿主连虚拟机 网络配置</h1>
+<p><a href="https://wiki.archlinux.org/index.php/Network_configuration#Static_IP_address">Arch Wiki Network_configuration</a></p>
+<p><a href="https://wiki.archlinux.org/index.php/Dhcpcd#DHCP_static_route.28s.29">Arch Wiki Dhcpcd</a></p>
+<hr>
+<p>开启dhcpcd客户端</p>
+<pre><code class="lang-bash">sudo systemctl enable dhcpcd
+</code></pre>
+<p>增加dhcpcd启动时hook脚本</p>
+<pre><code class="lang-bash">vim /usr/lib/dhcpcd/dhcpcd-hooks/40-staticip
+</code></pre>
+<p>增加执行静态ip配置的命令</p>
+<pre><code class="lang-bash">ip link set up dev eth0
+ip addr add 10.0.75.2/24 dev eth0
+ip link set up dev eth1
+ip addr add 192.168.32.32/24 dev eth1
+ip route add to 0/0 via 192.168.32.200
+</code></pre>
+<p>virtualbox ubuntu设置静态ip</p>
+<p>放在~/static-ip.sh</p>
+<pre><code class="lang-bash">sudo ip link set up dev enp0s8
+sudo ip addr add 192.168.56.110/24 dev enp0s8
+sudo ip route add to 0/0 via 192.168.56.1 dev enp0s8
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

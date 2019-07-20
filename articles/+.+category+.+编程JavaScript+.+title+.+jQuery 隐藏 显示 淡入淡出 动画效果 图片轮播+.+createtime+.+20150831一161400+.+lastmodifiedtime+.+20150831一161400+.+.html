@@ -1,0 +1,125 @@
+
+
+<html><head><meta charset="UTF-8"><title>jQuery 隐藏 显示 淡入淡出 动画效果 图片轮播
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jquery-">jQuery 隐藏 显示 淡入淡出 动画效果 图片轮播</h1>
+<pre><code class="lang-html">&lt;html&gt;
+&lt;head&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;//code.jquery.com/jquery-1.11.3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+$(document).ready(function(){
+
+    $(&quot;p&quot;).click(function(){
+    //    if ( $(this).attr(&quot;class&quot;) == &quot;hide&quot; )
+        if ( $(this).hasClass(&quot;hide&quot;) )
+            $(this).fadeOut(500);
+    });
+
+    $(&quot;#slide&quot;).click(function(){
+        if ( $(this).hasClass(&quot;down&quot;) )
+        {
+            $(this).removeClass(&quot;down&quot;);
+            $(this).slideUp();
+            $(this).addClass(&quot;up&quot;);
+
+            setTimeout(function(){
+            // setTimeout不属于jQuery,$(this)不能轻易传递..
+            //        $(this).trigger(&quot;click&quot;);
+                    $(&quot;#slide&quot;).trigger(&quot;click&quot;);
+                }, 3000);
+        }
+        else
+        {
+            // 因为slide up, 点不到了, 用个interval
+            $(this).removeClass(&quot;up&quot;);
+            $(this).slideDown();
+            $(this).addClass(&quot;down&quot;);
+        }
+    });
+
+    $(&quot;#animate&quot;).click(function(){
+        var ani = $(&quot;#animate&quot;);
+        ani.animate({ left:&#39;250px&#39; },3000);
+        ani.animate({height:&#39;300px&#39;,opacity:&#39;0.4&#39;},&quot;slow&quot;);
+        ani.animate({width:&#39;300px&#39;,opacity:&#39;0.8&#39;},&quot;slow&quot;);
+        ani.animate({height:&#39;100px&#39;,opacity:&#39;0.4&#39;},&quot;slow&quot;);
+        ani.animate({width:&#39;100px&#39;,opacity:&#39;0.8&#39;},&quot;slow&quot;);
+        ani.animate({left:&#39;100px&#39;},&quot;slow&quot;);
+        ani.animate({fontSize:&#39;3em&#39;},&quot;slow&quot;);
+    });
+
+});
+&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;p id=&quot;show&quot; class=&quot;show&quot;&gt;This line will show.&lt;/p&gt;
+&lt;p id=&quot;hide&quot; class=&quot;hide&quot;&gt;This line will disappear.&lt;/p&gt;
+&lt;p id=&quot;slide&quot; class=&quot;down&quot;&gt;Slide&lt;/p&gt;
+&lt;p id=&quot;animate&quot; style=&quot;background-color:#339933; width:20%; height:100px; position:absolute;&quot;&gt;Animate&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+
+
+
+
+
+
+
+图片轮播，半成品，主要功能都有：
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+    &lt;script src=&quot;jquery-1.11.3.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+    $(document).ready(function(){
+        setTimeout(function(){
+              // 用left属性控制要显示哪些（遮盖哪些）。注意这里属性间用逗号隔开，和css语法（用分号隔开）不同。
+              $(&quot;#ctl&quot;).animate({width: &quot;200%&quot;, position: &quot;relative&quot;, left: &quot;-100%&quot;}, &quot;slow&quot;);
+        }, 3000);
+
+    });
+
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- 遮盖层，要控制宽度，高度 --&gt;
+    &lt;div style=&quot;overflow: hidden; width: 100%; height: 200px; &quot;&gt;
+        &lt;!-- 承载所有图，让遮盖层遮盖暂时不显示的部分。用left: -100%等来控制显示哪张图片 --&gt;
+        &lt;div id=&quot;ctl&quot; style=&quot;width: 200%; position: relative; &quot;&gt;
+            &lt;!-- 用于把图片居中。独占一行宽，把其余图挤出遮盖层。注意width是以父元素为基准，这里父元素width为200% --&gt;
+            &lt;div style=&quot;text-align: center; width: 50%; float: left; &quot;&gt;
+                &lt;!-- 图片要控制统一高度，用于遮盖层 --&gt;
+                &lt;img src=&quot;1.jpg&quot; style=&quot;height: 200px; &quot; /&gt;
+            &lt;/div&gt;
+            &lt;!-- 用于把图片居中。独占一行宽，把其余图挤出遮盖层。注意width是以父元素为基准，这里父元素width为200% --&gt;
+            &lt;div style=&quot;text-align: center; width: 50%; float: left; &quot;&gt;
+                &lt;!-- 图片要控制统一高度，用于遮盖层 --&gt;
+                &lt;img src=&quot;2.jpg&quot; style=&quot;height: 200px; &quot; /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

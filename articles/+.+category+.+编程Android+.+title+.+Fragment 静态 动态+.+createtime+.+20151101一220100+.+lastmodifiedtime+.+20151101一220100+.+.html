@@ -1,0 +1,302 @@
+
+
+<html><head><meta charset="UTF-8"><title>Fragment 静态 动态
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="fragment-">Fragment 静态 动态</h1>
+<p>静态Fragment:</p>
+<ul>
+<li>创建类MainFragment, 继承自Fragment, 重写onCreateView, View viewRoot = inflater.inflate(R.layout.fragment_main, container, false); return viewRoot;</li>
+<li>创建fragment_main.xml</li>
+<li>在activity.xml中, 使用fragment标签,加上android:name=&quot;MainFragment&quot;属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AndroidManifest.xml</td>
+<td>仅配置一个主Activity</td>
+</tr>
+<tr>
+<td>MainActivity.java</td>
+<td>Activity类, 仅设置一下布局</td>
+</tr>
+<tr>
+<td>activity_main.xml</td>
+<td>Activity布局, 其中指定了fragment到MainFragment.java. 其中LinearLayout是随意的, 可换成FrameLayout</td>
+</tr>
+<tr>
+<td>MainFragment.java</td>
+<td>Fragment类文件. 简单的加载了fragment_main.xml布局文件</td>
+</tr>
+<tr>
+<td>fragment_main.xml</td>
+<td>fragment的布局配置文件, 内容和Activity完全一样</td>
+</tr>
+</tbody>
+</table>
+<p>AndroidManifest.xml: 仅配置一个主Activity</p>
+<pre><code class="lang-xml">    &lt;application
+        android:allowBackup=&quot;true&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/AppTheme&quot; &gt;
+        &lt;activity android:name=&quot;.MainActivity&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+</code></pre>
+<p>MainActivity.java: Activity类, 仅设置一下布局</p>
+<pre><code class="lang-xml">public class MainActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+}
+</code></pre>
+<p>activity_main.xml: Activity布局, 其中指定了fragment到MainFragment.java. 其中LinearLayout是随意的, 可换成FrameLayout</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+             xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+             android:layout_width=&quot;match_parent&quot;
+             android:layout_height=&quot;match_parent&quot;
+             android:orientation=&quot;vertical&quot;
+             tools:context=&quot;com.learnandroid.learnfragmentstaticfragment.MainActivity&quot;&gt;
+
+    &lt;fragment
+        android:name=&quot;com.learnandroid.learnfragmentstaticfragment.MainFragment&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;/&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>MainFragment.java: Fragment类文件. 简单的加载了fragment_main.xml布局文件</p>
+<pre><code class="lang-java">public class MainFragment extends Fragment
+{
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View viewRoot = inflater.inflate(R.layout.fragment_main, container, false);
+        return viewRoot;
+    }
+}
+</code></pre>
+<p>fragment_main.xml: fragment的布局配置文件, 内容和Activity完全一样</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+              android:layout_width=&quot;match_parent&quot;
+              android:layout_height=&quot;match_parent&quot;
+              android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;TextView
+        android:text=&quot;MainFragment&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<hr>
+<p>动态Fragment:</p>
+<ul>
+<li>创建类MainFragment, 继承自Fragment, 重写onCreateView, View viewRoot = inflater.inflate(R.layout.fragment_main, container, false); return viewRoot;</li>
+<li>创建fragment_main.xml</li>
+<li>在activity.xml中, 设置android:id属性, 设置当前容器的id, 给后面的replace函数使用</li>
+<li>调用getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new AnotherFragment()).commit();实现切换fragment<pre><code>注意上面的getFragmentManager是在Fragment派生类中函数; FragmentActivity派生类需调用getSupportFragmentManager, 否则会获取到android.app.Fragment, 这会导致类型错误, 兼容性低.
+</code></pre></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AndroidManifest.xml</td>
+<td>仅配置了一个Activity</td>
+</tr>
+<tr>
+<td>MainActivity.java</td>
+<td>使用函数动态切换了fragment</td>
+</tr>
+<tr>
+<td>activity_main.xml</td>
+<td>仅配置了布局类型, 用作fragment的容器, 且给布局设置了android:id</td>
+</tr>
+<tr>
+<td>MainFragment.java</td>
+<td>使用函数动态加载了布局文件; 设置一个按钮, 用来切换到另一个fragment, 切换过程也是动态的; addToBackStack用来把之前fragment放到后退堆栈, 可以用后退键回到前一个fragment</td>
+</tr>
+<tr>
+<td>fragment_main.xml</td>
+<td>和activity的布局配置完全一样, 布局类型+各种组件. 这里有一个按钮, 用来切换到另一个Fragment</td>
+</tr>
+<tr>
+<td>AnotherFragment.java</td>
+<td>使用函数动态加载了布局文件; 通过按钮演示了如何用代码返回前一个Fragment</td>
+</tr>
+<tr>
+<td>fragment_another.xml</td>
+<td>和activity的布局配置完全一样.这里有一个按钮, 用来返回到前一个Fragment</td>
+</tr>
+</tbody>
+</table>
+<p>总结:</p>
+<pre><code class="lang-text">MainActivity.java的作用: 仅作为一个容器.
+Fragment.java的作用: 替换以前的Activity, 配置界面, 相应按钮等事件
+Fragment的切换通过getFragmentManager(), 需要一个container(属于Activity)和一个Fragment(new AnotherFragment)
+</code></pre>
+<p>AndroidManifest.xml: 仅配置了一个Activity</p>
+<pre><code class="lang-xml">&lt;application
+        android:allowBackup=&quot;true&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/AppTheme&quot; &gt;
+        &lt;activity
+            android:name=&quot;.MainActivity&quot;
+            android:label=&quot;@string/app_name&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+</code></pre>
+<p>MainActivity.java: 使用函数动态切换了fragment</p>
+<pre><code class="lang-java">public class MainActivity extends FragmentActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment()).commit();
+    }
+}
+</code></pre>
+<p>activity_main.xml: 仅配置了布局类型, 用作fragment的容器, 且给布局设置了android:id</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    android:id=&quot;@+id/fragmentContainer&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>MainFragment.java: 使用函数动态加载了布局文件; 设置一个按钮, 用来切换到另一个fragment, 切换过程也是动态的; addToBackStack用来把之前fragment放到后退堆栈, 可以用后退键回到前一个fragment</p>
+<pre><code class="lang-java">public class MainFragment extends Fragment
+{
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View viewRoot = inflater.inflate(R.layout.fragment_main, container, false);
+        viewRoot.findViewById(R.id.btnStartAnotherFragment).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragmentContainer, new AnotherFragment()).commit();
+            }
+        });
+        return viewRoot;
+    }
+}
+</code></pre>
+<p>fragment_main.xml: 和activity的布局配置完全一样, 布局类型+各种组件. 这里有一个按钮, 用来切换到另一格Fragment</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+              android:orientation=&quot;vertical&quot;
+              android:layout_width=&quot;match_parent&quot;
+              android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;TextView
+        android:text=&quot;MainFragment&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnStartAnotherFragment&quot;
+        android:text=&quot;Start Another Fragment&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>AnotherFragment.java: 使用函数动态加载了布局文件; 通过按钮演示了如何用代码返回前一个Fragment</p>
+<pre><code class="lang-java">public class AnotherFragment extends Fragment
+{
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View viewRoot = inflater.inflate(R.layout.fragment_another, container, false);
+        viewRoot.findViewById(R.id.btnBack).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getFragmentManager().popBackStack();
+            }
+        });
+        return viewRoot;
+    }
+}
+</code></pre>
+<p>fragment_another.xml: 和activity的布局配置完全一样.这里有一个按钮, 用来返回到前一个Fragment</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+              android:orientation=&quot;vertical&quot;
+              android:layout_width=&quot;match_parent&quot;
+              android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;TextView
+        android:text=&quot;AnotherFragment&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnBack&quot;
+        android:text=&quot;Back&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<pre><code class="lang-text">Fragment两个版本
+android.support.v4.app.Fragment     Android1.6之后都能用, 兼容性高, 推荐
+android.app.Fragment            Android3.0之后才能用, 兼容性低
+
+Activity两个版本
+android.support.v4.app.FragmentActivity  过时了
+android.support.v7.app.AppCompatActivity  新版本的Activity, 推荐, 功能多; 使用getSupportFragmentManager获取FragmentManager
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

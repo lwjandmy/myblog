@@ -1,0 +1,42 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker mysql helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-mysql-helloworld">docker mysql helloworld</h1>
+<p>启动mysql容器</p>
+<pre><code class="lang-bash">sudo docker run --name mysql-icrc -e MYSQL_ROOT_PASSWORD=lwj123 -e MYSQL_DATABASE=test -p 3306:3306 -d mysql:latest
+</code></pre>
+<p>设置不区分大小写</p>
+<p>关闭only_full_group_by</p>
+<pre><code class="lang-bash">sudo docker exec -it mysql-icrc bash
+echo &#39;[mysqld]&#39; &gt; /etc/mysql/conf.d/table_name_insensitive.cnf
+echo &#39;lower_case_table_names = 1&#39; &gt;&gt; /etc/mysql/conf.d/table_name_insensitive.cnf
+echo &#39;sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&#39; &gt;&gt; /etc/mysql/conf.d/table_name_insensitive.cnf
+sudo docker restart mysql-icrc
+</code></pre>
+<p>数据库: test
+用户名: root
+密码: lwj123</p>
+<p><a href="https://hub.docker.com/_/mysql/">https://hub.docker.com/_/mysql/</a></p>
+<p>变量:</p>
+<p>MYSQL_ROOT_PASSWORD root账号的密码</p>
+<p>MYSQL_DATABASE 初始自动创建的数据库</p>
+<p>MYSQL_USER, MYSQL_PASSWORD 初始自动创建的用户 用户名和密码</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

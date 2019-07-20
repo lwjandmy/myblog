@@ -1,0 +1,124 @@
+
+
+<html><head><meta charset="UTF-8"><title>bash eval 一个脚本 多个功能 用function隔离功能
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="bash-eval-function-">bash eval 一个脚本 多个功能 用function隔离功能</h1>
+<pre><code class="lang-txt">首先定义多个function
+
+列出所有function名:
+cat check.sh | egrep -i &#39;^function&#39;
+
+通过传入的function名执行function, 顺带传入参数:
+eval &quot;$*&quot;
+</code></pre>
+<pre><code class="lang-bash">#!/usr/bin/env bash
+
+
+
+# url校验失败, 执行此方法
+# 内部发送微信通知
+# 参数: 标题说明
+function onCheckUrlFailed()
+{
+    curl -k -d &quot;push=$(date +&#39;%Y-%m-%d %H:%M:%S&#39;) 警告: $1 访问异常 (此消息是机器自动发送)&quot; &#39;https://localhost:8443/queue/RestQueue&#39;
+}
+
+# 检测url地址返回信息是否正常
+# 参数: url地址 grep关键字 标题说明
+# 环境变量: CURL_ARGS curl命令的参数, 可设置--head只获取服务器返回的head
+function checkUrl()
+{
+    echo -n &quot;$(date +&#39;%Y-%m-%d %H:%M:%S&#39;)&quot; &quot;$3&quot; &quot;... &quot;
+    curl $CURL_ARGS &quot;$1&quot; 2&gt;&amp;1 | grep &quot;$2&quot; &gt; /dev/null
+    if [ &quot;$?&quot; = &quot;0&quot; ]; then
+        echo &quot;正常&quot;
+        return 0
+    else
+        echo &quot;异常!!!!!!!!!!!!!!!!!!&quot;
+        onCheckUrlFailed &quot;$3&quot;
+        return 1
+    fi
+}
+
+# 检测url地址返回内容是否正常
+# 参数: url地址 grep关键字 标题说明
+function checkBody()
+{
+    CURL_ARGS=&quot;--connect-timeout 5 --max-time 5&quot; checkUrl &quot;$1&quot; &quot;$2&quot; &quot;$3&quot;
+}
+
+# 检测url地址返回头是否正常
+# 参数: url地址 grep关键字 标题说明
+function checkHead()
+{
+    CURL_ARGS=&quot;--connect-timeout 5 --max-time 5 --head&quot; checkUrl &quot;$1&quot; &quot;$2&quot; &quot;$3&quot;
+}
+
+# 检测所有url地址是否正常
+function checkAllUrlHealth()
+{
+    echo &#39;--- 开始检测所有url地址是否正常 ---&#39;
+
+    checkHead &#39;http://ip/abc.apk&#39; &#39;200 OK&#39; &#39;APK下载链接&#39;
+    checkBody &#39;http://ip/jsonCall?key=value&#39; &#39;正常&#39; &#39;页面返回正常&#39;
+
+    echo &#39;--- 检测结束 ---&#39;
+    echo &#39;&#39;
+}
+
+# 循环检测所有url地址是否正常
+function loopCheckAllUrlHealth()
+{
+    while [ &quot;$(cat ./loop_control)&quot; = &quot;1&quot; ]; do
+        checkAllUrlHealth
+        sleep 60
+    done
+}
+
+
+
+# 不会终止的, 循环检测所有url地址是否正常
+function nohupLoopCheckAllUrlHealth()
+{
+    echo 1 &gt; loop_control
+    nohup ./check.sh loopCheckAllUrlHealth &gt;&gt; url_health_data.txt &amp;
+}
+
+# 停止循环检测所有url地址是否正常
+function stopLoopCheckAllUrlHealth()
+{
+    echo 0 &gt; loop_control
+}
+
+# 查看url检测结果
+function tailLoopCheckLog()
+{
+    tail -f url_health_data.txt
+}
+
+
+
+if [ &quot;$*&quot; = &quot;&quot; ]; then
+    cat check.sh | egrep -i &#39;^function&#39;
+else
+    eval &quot;$*&quot;
+fi
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

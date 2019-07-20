@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>apk文件结构和权限调整
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="apk-">apk文件结构和权限调整</h1>
+<pre><code class="lang-text">apk文件结构和权限调整
+
+apk是zip压缩格式
+
+AndroidManifest.xml 说明应用所需权限
+classes.dex 应用的可执行文件(Dalvik字节码)
+res目录，应用所需界面认定
+META-INF应用作者公钥证书与应用数字签名
+
+应用安装后，apk原封不动地移至/data/app目录下，
+实际运行的，是Dalvik将其中Classes.dex编译后的Classes.odex
+(存放在Dalvik缓存中)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>希尔排序
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">希尔排序</h1>
+<p>希尔排序想法是先对部分数据用插入排序, 使局部有序, 再对部分数据插入排序, 使更大的局部有序.</p>
+<p>部分数据的分类策略: 从长度/2开始, 第i和第i+长度/2两个为一组, 进行一次插入排序</p>
+<p>下一次以i和i+长度/2/2四个为一组, 进行一次插入排序</p>
+<p>...</p>
+<p>直到全部数据进行一次插入排序.</p>
+<hr>
+<p>例子:</p>
+<p>9 1 2 5 7 4  长度6</p>
+<p>5 1 2 9 7 4  按6/2=3为间隔, 两个为一组</p>
+<p>1 2 4 5 7 9  按6/2/2=1为间隔, 6个一组, 全排完.</p>
+<p>用到了插入排序的特性: 对几乎有序的数据的排序时间消耗接近O(n).</p>
+<p>原因: 插入排序从后往前遍历数据, 并插入到有序数据中, 若原数据几乎有序, 则插入进有序数据的过程中, 无需调整有序数据的位置, 所以O(n).</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

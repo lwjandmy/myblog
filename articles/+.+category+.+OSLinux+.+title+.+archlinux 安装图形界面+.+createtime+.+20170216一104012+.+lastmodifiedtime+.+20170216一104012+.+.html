@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>archlinux 安装图形界面
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="archlinux-">archlinux 安装图形界面</h1>
+<p><a href="http://lwjandmy.oschina.io/myblog/articles/+.+category+.+OSLinux+.+title+.+archlinux%20%E5%AE%89%E8%A3%85%20X%20server+.+createtime+.+20150314%E4%B8%80161600+.+lastmodifiedtime+.+20150314%E4%B8%80161600+.+.html">archlinux 安装 X server</a></p>
+<p><a href="https://wiki.archlinux.org/index.php/GNOME">GNOME</a></p>
+<p>pacman -Ss xf86  查看可安装的显卡驱动</p>
+<p>sudo pacman -S xf86-video-vesa  安装XFree86驱动vesa</p>
+<p>sudo pacman -S xorg  安装xorg组下所有包</p>
+<p>sudo pacman -S gnome 安装gnome组下所有包</p>
+<p>sudo pacman -S gdm  安装gdm gnome desktop manager</p>
+<p>sudo pacman -S swt  安装swt库</p>
+<p>sudo pacman -S gtk2  安装gtk2库</p>
+<p>sudo pacman -S wqy-bitmapfont  安装中文字体</p>
+<p>systemctl enable gdm  自动启动gdm服务</p>
+<p>systemctl start gdm  手动启动gdm服务</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

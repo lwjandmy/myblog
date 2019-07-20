@@ -1,0 +1,77 @@
+
+
+<html><head><meta charset="UTF-8"><title>thinkphp 用I函数获取用户提交的变量
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thinkphp-i-">thinkphp 用I函数获取用户提交的变量</h1>
+<h2 id="quick-start">Quick Start</h2>
+<pre><code class="lang-php">$var = $_POST[&#39;var_name&#39;];
+</code></pre>
+<p>等价于：</p>
+<pre><code class="lang-php">$var = I(&#39;post.var_name&#39;);
+</code></pre>
+<h2 id="-">函数声明</h2>
+<pre><code class="lang-php">I(&#39;变量类型.变量名/修饰符&#39;,[&#39;默认值&#39;],[&#39;过滤方法&#39;],[&#39;额外数据源&#39;])
+</code></pre>
+<hr>
+<p>---第一个参数，&#39;变量类型.变量名/修饰符&#39;---</p>
+<p>变量类型</p>
+<pre><code class="lang-text">get 获取GET参数
+post 获取POST参数
+param 自动判断请求类型获取GET、POST或者PUT参数(默认，可忽略）
+request 获取REQUEST 参数
+put 获取PUT 参数
+session 获取 $_SESSION 参数
+cookie 获取 $_COOKIE 参数
+server 获取 $_SERVER 参数
+globals 获取 $GLOBALS参数
+path 获取 PATHINFO模式的URL参数
+data 获取 其他类型的参数，需要配合额外数据源参数
+</code></pre>
+<p>使用变量修饰符</p>
+<pre><code class="lang-php">I(&#39;get.id/d&#39;);
+I(&#39;post.name/s&#39;);
+I(&#39;post.ids/a&#39;);
+</code></pre>
+<p>修饰符作用</p>
+<pre><code class="lang-text">s string 强制转换为字符串类型
+d decimal 强制转换为整形类型
+b bool 强制转换为布尔类型
+a array 强制转换为数组类型
+f float 强制转换为浮点类型
+</code></pre>
+<p>---第三个参数，[&#39;过滤方法&#39;]---</p>
+<p>传入过滤函数名，用htmlspecials过滤用户变量：</p>
+<pre><code class="lang-php">  I(&#39;post.name&#39;, &#39;&#39;, &#39;htmlspecialchars&#39;);   htmlspecialchars是默认过滤函数，即使不指定也会调用htmlspecialchars
+  可以设置多个默认过滤函数：&#39;DEFAULT_FILTER&#39; =&gt; &#39;strip_tags,htmlspecialchars&#39;
+  I(&#39;post.name&#39;) 等同于 htmlspecialchars(strip_tags($_POST[&#39;name&#39;]))
+</code></pre>
+<p>传入数组，则自动用array_map进行过滤处理:</p>
+<pre><code class="lang-php">  I(&#39;post.name&#39;, &#39;&#39;, array(&#39;htmlspecialchars&#39;, &#39;strip_tags&#39;));
+</code></pre>
+<p>传入过滤名称，自动用filter_var过滤：</p>
+<pre><code class="lang-php">  I(&#39;post.email&#39;,&#39;&#39;,&#39;email&#39;);      通过调用filter_list()可查看支持的过滤名称
+</code></pre>
+<p>传入正则表达式：</p>
+<pre><code class="lang-php">  I(&#39;get.name&#39;,&#39;&#39;,&#39;/^[A-Za-z]+$/&#39;);   如果正则表达式不通过，则返回第二个参数指定的默认值
+</code></pre>
+<p>获取$_POST整个数组：</p>
+<pre><code class="lang-php">I(&#39;post.&#39;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

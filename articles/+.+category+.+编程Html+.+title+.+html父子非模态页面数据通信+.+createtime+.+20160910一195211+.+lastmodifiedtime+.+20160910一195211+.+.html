@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>html父子非模态页面数据通信
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="html-">html父子非模态页面数据通信</h1>
+<p>parent.html</p>
+<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot;&gt;
+    function recv(str) {
+        alert(&quot;parent receive: &quot; + str);
+    }
+    function clk() {
+        var child_window = window.open(&#39;child.html&#39;, null, &#39;width=200,height=200&#39;);
+    }
+&lt;/script&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;clk()&quot; value=&quot;click me&quot;&gt;
+</code></pre>
+<p>child.html</p>
+<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot;&gt;
+    function clk() {
+        window.close();
+        window.opener.recv(&#39;i am child&#39;);
+    }
+&lt;/script&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;clk()&quot; value=&quot;close me&quot;&gt;
+</code></pre>
+<p>注意:</p>
+<p>最好放到服务器上测试, 直接浏览器打开文件来测试会提示禁止跨域js调用.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

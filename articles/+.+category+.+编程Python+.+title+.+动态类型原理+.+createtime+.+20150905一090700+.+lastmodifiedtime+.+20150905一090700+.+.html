@@ -1,0 +1,57 @@
+
+
+<html><head><meta charset="UTF-8"><title>动态类型原理
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">动态类型原理</h1>
+<p>变量a没有类型，a仅保存了一个指针，指向一个对象<br>此对象包含头部信息，记录了对象类型</p>
+<pre><code class="lang-Python">struct VARIOUS_TYPE { int type; void *data };
+a=3       ==    void *a = new VARIOUS_TYPE(type=1, data=new int(3));
+a=&#39;spam&#39;  ==    void *a = new VARIOUS_TYPE(type=2, data=new string(&#39;spam&#39;));
+a=1.23    ==    void *a = new VARIOUS_TYPE(type=3, data=new double(1.23));
+</code></pre>
+<p>变量的赋值是指针的赋值</p>
+<pre><code class="lang-Python">a=3       ==    void *a = new VARIOUS_TYPE(type=1, data=new int(3));
+b=a       ==    void *b = a;
+a=a+1     ==    void *a = new VARIOUS_TYPE(type=a-&gt;type, data=new int(*(int*)a-&gt;data+1)); 基本类型变量不可修改, 只能用新值覆盖旧值
+
+L1=[1,2,3]==    void *L1 = new list(1, 2, 3);
+L2=L1     ==    void *L2 = L1;      这里L1,L2指向同一个列表
+L1[0] = 0 ==    L1[0] = 0;          此时L1[0] == L2[0] == 0
+</code></pre>
+<p>变量的浅拷贝和深拷贝</p>
+<pre><code class="lang-Python">L2=L1     ==    L2 = L1             L2指向L1, 仅复制了指针
+L2=L1[:]  ==    L2 = new list(L1)   L2是L1的深拷贝，L2指向一个新的列表对象
+import copy
+L2=copy.copy(L1)   复制L1所指的列表对象
+L2=copy.deepcopy(L1)    复制L1所指的列表对象，和列表对象所有元素所指的其它对象
+</code></pre>
+<p>浅拷贝和深拷贝对变量比较的影响</p>
+<pre><code class="lang-Python">L2=L1
+L3=L1[:]
+L2 == L1     true   L1, L2所指对象值是否相同
+L3 == L1     true   L1, L3所指对象值是否相同
+L2 is L1     true   L1, L2指针是否相同
+L3 is L1     false  L1, L3指针是否相同
+</code></pre>
+<p>获得对象引用技术(浅拷贝导致引用计数增加, 离开作用域变量引用计数减少, 引用计数为0时对象内存回收)</p>
+<pre><code class="lang-Python">import sys
+sys.getrefcount(1)  获取 数字对象1 的引用次数
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

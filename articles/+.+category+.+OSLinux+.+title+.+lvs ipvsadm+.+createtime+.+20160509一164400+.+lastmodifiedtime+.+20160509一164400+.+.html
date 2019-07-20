@@ -1,0 +1,333 @@
+
+
+<html><head><meta charset="UTF-8"><title>lvs ipvsadm
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="lvs-ipvsadm">lvs ipvsadm</h1>
+<p><a href="http://jamesbond0479.blog.163.com/blog/static/24147582011320105720215/">LVS的三种转发模式</a></p>
+<hr>
+<p>用法1:</p>
+<p>说明: 管理虚拟服务器(virtual-service) 负载均衡策略(scheduling-method)</p>
+<p>简明格式: ipvsadm -A|-E|-D -t|-u host[:port] [-s rr] [-p 60]  ipvsadm 添加|修改|删除 虚拟服务器ip:port -s 轮训调度 持久化60s某客户端到同一真实服务器</p>
+<p>详细格式: ipvsadm COMMAND virtual-service [scheduling-method] [persistence options] 补充: COMMAND为大写参数
+COMMAND:</p>
+<p>-A --add-service  -E --edit-service  -D --delete-service</p>
+<p>virtual-service:</p>
+<p>-t --tcp-service host[:port]  -u --udp-service host[:port]  -f --fwmark-service integer</p>
+<p>scheduling-method:</p>
+<p>-s --schedular rr|wrr|lc|wlc|lblc|lblcr|dh|sh|sed|nq  轮训调度(Round Robin)|权重轮训调度(Weighted Round Robin)|最小连接调度(Least Connection)|加权最小连接调度(Weighted Least Connection)|...</p>
+<p>persistence options:</p>
+<p>-p --persistent [timeout]  某客户端的所有请求会被重定向到同一真实服务器, 用在一些需持续连接的场合, 如ssl,ftp. timeout指定最长持续时间</p>
+<hr>
+<p>用法2:</p>
+<p>说明: 管理虚拟服务器(virtual-service)与真实服务器(server-address)的关联 包转发模式(packet-forwarding-method) 权重(weight options)</p>
+<p>简明格式: ipvsadm -a|-e|-d -t|-u host[:port] -r host[:port] [-g|-i|-m] [-w 1]  ipvsadm 添加|修改|删除 虚拟服务器ip:port 真实服务器ip:port 网关模式|IP隧道模式|网络地址转换模式 权重</p>
+<p>详细格式: ipvsadm COMMAND virtual-service server-address [packet-forwarding-method] [weight options] 补充: COMMAND为小写参数</p>
+<p>COMMAND:</p>
+<p>-a --add-server  -e --edit-server  -d --delete-server</p>
+<p>virtual-service:</p>
+<p>-t --tcp-service host[:port]  -u --udp-service host[:port]  -f --fwmark-service integer</p>
+<p>server-address:</p>
+<p>-r --real-server host[:port]</p>
+<p>packet-forwarding-method:</p>
+<p>-g --gateway  网关模式(默认)</p>
+<p>-i --ipip IP隧道模式</p>
+<p>-m --masquerading 网络地址转换模式</p>
+<p>weight options:</p>
+<p>-w --weight integer  范围:[0-65535] 默认:1</p>
+<hr>
+<p>用法3:</p>
+<p>ipvsadm COMMAND</p>
+<p>COMMAND:</p>
+<p>-C --clear 清除虚拟服务器表  -R --restore 从stdin加载配置  -S --save 向stdout保存配置  -L -l --list 列出虚拟服务器表</p>
+<p>-Z --zero 清零包计数</p>
+<hr>
+<p>LVS三种工作模式:</p>
+<ol>
+<li><p>DR模式: (Direct Routing)直接路由模式</p>
+<p>客户端的包, LVS修改了包的目的MAC地址为真实服务器MAC地址. 为了让真实服务器收到客户端包, 需要LVS与真实服务器在同一网段.</p>
+<p>真实服务器收到包后, 发现包的目的ip是虚拟服务器而不是自己, 会抛弃包, 因此在真实服务器里要添加一个ip, ip为虚拟服务器的ip:</p>
+<pre><code class="lang-bash">sudo ip addr add 192.168.220.200 broadcast 192.168.220.200 dev lo
+</code></pre>
+<p>ARP问题, 由于真实服务器设置了LVS的ip, 为了防止arp请求时真实服务器返回了LVS的ip的arp请求, 要设置真实服务器的arp_ignore和arp_announce:</p>
+<pre><code class="lang-bash">sudo sysctl -w net.ipv4.conf.all.arp_ignore=1
+sudo sysctl -w net.ipv4.conf.all.arp_announce=2
+sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
+sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
+</code></pre>
+<p>同样为了防止真实服务器对ARP的干扰, 在虚拟服务器上, 要设置一个虚拟ip.</p>
+<p>不知道为什么不能用虚拟服务器上原来的ip, 但我测试, 用原来的ip后, 真实服务器不会响应自己的ip的arp请求, 但换成虚拟服务器的虚拟ip后, 就能响应arp了..</p>
+<p>在虚拟服务器上设置一个虚拟ip:</p>
+<pre><code class="lang-bash">sudo ip addr add 192.168.220.200 broadcast 192.168.220.200 dev ens33
+</code></pre>
+<p>DR例子:</p>
+<p>LVS(192.168.220.134)下执行:</p>
+<pre><code class="lang-bash">sudo ip addr add 192.168.220.200 broadcast 192.168.220.200 dev ens33  # 给虚拟服务器设置一个虚拟ip
+sudo ipvsadm -A -t 192.168.220.200:80 -s rr  # 配置ipvsadm
+sudo ipvsadm -a -t 192.168.220.200:80 -r 192.168.220.135:80 -g
+</code></pre>
+<p>真实服务器(192.168.220.135)下执行:</p>
+<pre><code class="lang-bash">sudo ip addr add 192.168.220.200 broadcast 192.168.220.200 dev lo  # 给真实服务器设置一个ip, 同虚拟服务器ip
+sudo sysctl -w net.ipv4.conf.all.arp_ignore=1  # 设置arp, 防止真实服务器与虚拟服务器在同ip情况下的arp干扰
+sudo sysctl -w net.ipv4.conf.all.arp_announce=2
+sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
+sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
+</code></pre>
+</li>
+<li><p>IP Tunneling模式(未完成, DR够用了, 累了):</p>
+<p>客户端的包, LVS修改了包的目的IP地址为真实服务器IP地址. 因此真实服务器与LVS不必在同一网段. 由于要处理IP Tunneling的解包封包, 效率低于DR模式.</p>
+<p>真实服务器需要配置tunl.</p>
+<p>ARP问题, 同DR模式.</p>
+<p>映射207.175.44.110:80到5个服务器 通过NAT</p>
+<pre><code class="lang-bash">ipvsadm -A -t 207.175.44.110:80 -s rr
+ipvsadm -a -t 207.175.44.110:80 -r 192.168.10.1:80 -m
+ipvsadm -a -t 207.175.44.110:80 -r 192.168.10.2:80 -m
+ipvsadm -a -t 207.175.44.110:80 -r 192.168.10.3:80 -m
+ipvsadm -a -t 207.175.44.110:80 -r 192.168.10.4:80 -m
+ipvsadm -a -t 207.175.44.110:80 -r 192.168.10.5:80 -m
+</code></pre>
+<p>映射207.175.44.110任何端口到5个服务器的响应端口 通过NAT</p>
+<pre><code class="lang-bash">ipvsadm -A -f 1 -s rr
+ipvsadm -a -f 1 -r 192.168.10.1:0 -m
+ipvsadm -a -f 1 -r 192.168.10.2:0 -m
+ipvsadm -a -f 1 -r 192.168.10.3:0 -m
+ipvsadm -a -f 1 -r 192.168.10.4:0 -m
+ipvsadm -a -f 1 -r 192.168.10.5:0 -m
+</code></pre>
+<p>将192.168.100.20:80请求映射到2个服务器 通过网关模式</p>
+<pre><code class="lang-bash">ipvsadm -A -t 192.168.100.20:80 -s rr
+ipvsadm -a -t 192.168.100.20:80 -r 192.168.100.116:80 -g
+ipvsadm -a -t 192.168.100.20:80 -r 192.168.100.117:80 -g
+</code></pre>
+</li>
+</ol>
+<hr>
+<p><a href="http://bbs.linuxtone.org/thread-6815-3-1.html">lvs做负载均衡出现的问题（访问非常慢）</a></p>
+<p>还没仔细看</p>
+<pre><code class="lang-text">
+通过vip访问http服务，非常慢，但是可以访问（轮询没有问题）；但是两台realserver流量突然飙升！关掉其中一台realserver后，正常，访问页快速多了
+
+
+
+
+
+
+
+1。采用的是dr（rr），先wlc也使用过，但是问题依旧；
+2。关掉任意一台realserver，然后反应都比较快，但是只要两台realserver都开启，两台realserver流量就突然飙升；
+3。通过ipvsadm -lnc可以看见很多“FIN_WAIT“，“SYN_RECV”状态；
+4。keepalived文件如下：
+
+# Configuration File for keepalived
+global_defs {
+   router_id LVS_1
+}
+vrrp_sync_group HTTPD  {
+  group {
+         VI_WEB
+         }
+}
+# FOR HTTPD
+vrrp_instance VI_WEB {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        172.16.129.19
+    }
+}
+#setting port 80 forward!
+virtual_server 172.16.129.19 80 {
+    delay_loop 6
+    lb_algo rr
+    lb_kind DR
+    persistence_timeout 60
+    protocol TCP
+
+real_server 172.16.129.11 80 {
+        weight 100
+        TCP_CHECK {
+        connect_timeout 3
+        nb_get_retry 3
+        delay_before_retry 3
+        connect_port 80
+        }
+    }
+  real_server 172.16.129.13 80 {
+        weight 100
+        TCP_CHECK {
+        connect_timeout 3
+        nb_get_retry 3
+        delay_before_retry 3
+        connect_port 80
+        }
+     }
+}
+
+
+
+
+
+
+具体设置，描述下，已经困扰我两周了！
+1。一共两台物理服务器，架构为：lvs+keepalived+apache！
+VIP:172.16.41.30
+node1.example.com :172.16.41.26
+node2.example.com: 172.16.41.25
+
+realserver.sh脚本如下：#vi /usr/local/sbin/realserver.sh
+#!/bin/bash
+# description: Config realserver lo and apply noarp
+        SNS_VIP=172.16.41.30
+        . /etc/rc.d/init.d/functions
+        case &quot;$1&quot; in
+        start)
+               ifconfig lo:0 $SNS_VIP netmask 255.255.255.255 broadcast $SNS_VIP
+               /sbin/route add -host $SNS_VIP dev lo:0
+               echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+               echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+               echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+               echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+               sysctl -p &gt;/dev/null 2&gt;&amp;1
+               echo &quot;RealServer Start OK&quot;
+               ;;
+        stop)
+               ifconfig lo:0 down
+               route del $SNS_VIP &gt;/dev/null 2&gt;&amp;1
+               echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+               echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+               echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+               echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+               echo &quot;RealServer Stoped&quot;
+               ;;
+        *)
+               echo &quot;Usage: $0 {start|stop}&quot;
+               exit 1
+        esac
+exit 0
+
+##########################
+keepalived.conf配置（master）：
+! Configuration File for keepalived
+global_defs {
+   router_id LVS_HTTP
+}
+  vrrp_sync_group HTTPD {
+       group {
+             VI_WEB
+             }
+}
+vrrp_instance VI_WEB {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        172.16.41.30
+    }
+}
+
+
+virtual_server 172.16.41.30 80 {
+    delay_loop 6
+    lb_algo rr
+    lb_kind DR
+#    persistence_timeout 50
+    protocol TCP
+    real_server 172.16.41.25 80 {
+        weight 3
+        TCP_CHECK {
+        connect_timeout 10
+        nb_get_retry 3
+        delay_before_retry 3
+        connect_port 80
+        }
+     }
+
+    real_server 172.16.41.26 80 {
+        weight 3
+        TCP_CHECK {
+        connect_timeout 10
+        nb_get_retry 3
+        delay_before_retry 3
+        connect_port 80
+        }
+     }
+   }
+
+############################
+
+2.由于lvs和realserver实际是安装在一台物理服务器上，而lvs需要设置ip转发功能，所以只能在两台物理服务器上同时设置参数：
+在文件/etc/sysctl.conf中：
+net.ipv4.ip_forward = 1
+然后执行命令：sysctl -p立即生效！
+
+3.问题：
+1）两台机器都可以响应http服务器（一两台机器测试没有问题），但是当10几个机器或者用ab测试工具测试一段时间后就会发现。两台物理设备流量一起飙升（就算没有client访问页一样）；
+2）但是配置方法一样， 把lvs和realserver服务器分开（4台物理设备），问题就解决了！
+
+
+
+
+
+你这个问题就是备机的Lvs规则也被启用  发到备机的连接无法处理，你能工作的连接是发到主机自身的web服务去了。备机没有vip时 会卡着 备机有vip是就会形成lvs双机互发连接.但是无法到达真正的web服务。但是转给自身web服务的连接能被处理 ，但是双机互发的形成风暴，就挂了。
+
+
+
+
+
+
+问题终于找出来了~~~感谢大家提供的信息；
+1）lvs+keepalived在两台物理服务器上部署的时候；
+1.因为lvs是基于内核的服务，所以两台物理服务器上服务都是启动，当两边都启动keepalived的时候，两台服务器服务器上ipvs服务都启动了，而且都已经加载了ipvs-dr策略，
+这个可以再两台服务器上涌ipvsadm命令看到都是这一台状态：
+root@node6 ~]# ipvsadm
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddressort Scheduler Flags
+  -&gt; RemoteAddressort           Forward Weight ActiveConn InActConn
+TCP  172.16.41.31:http rr persistent 50
+  -&gt; node6.example.com:http       Local   3      0          1         
+  -&gt; node1.example.com:http       Route   3      0          0   
+
+
+2.主lvs上面起了浮动ip，当数据包转发到备lvs时，由于备机lvs上面策略也启动了，所以备机接受到数据包以后也会转发到主lvs上面，所以就形成了广播风暴！！！！
+
+在备机lvs抓包：
+09:58:58.653532 IP 172.16.41.26.60490 &gt; 172.16.41.30.http: . ack 1 win 365 &lt;nop,nop,timestamp 157330636 157185220&gt;
+09:58:58.653754 IP 172.16.41.26.60490 &gt; 172.16.41.30.http: R 1:1(0) ack 1 win 365 &lt;nop,nop,timestamp 157330636 157185220&gt;
+09:59:03.790449 IP 172.16.41.30.44560 &gt; 172.16.41.26.http: S 2756013189:2756013189(0) win 5840 &lt;mss 1460,sackOK,timestamp 157190357 0,nop,wscale 7&gt;
+09:59:03.790519 IP 172.16.41.26.http &gt; 172.16.41.30.44560: S 2773918069:2773918069(0) ack 2756013190 win 5792 &lt;mss 1460,sackOK,timestamp 157335774 157190357,nop,wscale 4&gt;
+
+
+2）heartbeat+lvs再两台物理服务器上为什么不会出现这个情况：
+
+1.因为heartbeat服务启动的时候不会让备机lvs的服务加载策略，在备机lvs上执行ipvsadm命令可以确认到，所以当数据包转发到备机lvs的时候，备机不会转发到主lvs，不会形成广播风暴~~~~
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

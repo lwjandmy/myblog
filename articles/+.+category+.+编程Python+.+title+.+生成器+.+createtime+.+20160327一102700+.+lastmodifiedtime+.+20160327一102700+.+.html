@@ -1,0 +1,65 @@
+
+
+<html><head><meta charset="UTF-8"><title>生成器
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">生成器</h1>
+<p>生成器指一个函数, 它使用yield而不是return来返回数据</p>
+<p>yield会返回迭代器, 迭代器有<strong>iter</strong>, <strong>next</strong>方法.</p>
+<p>作用：</p>
+<ul>
+<li>优化内存占用</li>
+<li>不浪费多余运算（后面的运算不需要的情况）</li>
+</ul>
+<p>例子:</p>
+<pre><code class="lang-Python">def genpower(N):
+    for i in range(N):
+        yield i ** 2
+for i in genpower(5):
+    print(i, end=&quot; &quot;)
+</code></pre>
+<p>模拟map:</p>
+<pre><code class="lang-Python">def mymap(func, *seqs):
+    for args in zip(*seqs):
+        yield func(*args)
+</code></pre>
+<p>用生成器列表完成的模拟map:</p>
+<pre><code class="lang-Python">def mymap(func, *seqs):
+    return (func(*args) for args in zip(*seqs))
+</code></pre>
+<p>模拟zip和map:</p>
+<pre><code class="lang-Python">def myzip(*seqs):
+    seqs=[list(S) for S in seqs]
+    while all(seqs):
+        yield tuple(S.pop(0) for S in seqs)
+def mymapPad(*seqs, pad=None):
+    seqs = [list(S) for S in seqs]
+    while any(seqs):
+        yield tuple((S.pop(0) if S else pad) for S in seqs)
+</code></pre>
+<p>用生成器列表完成的模拟zip和map:</p>
+<pre><code class="lang-Python">def myzip(*seqs):
+    minlen = min(len(S) for S in seqs)
+    return [tuple(S[i] for S in seqs) for i in range(minlen)]
+def mymapPad(seqs, pad=None):
+    maxlen = max(len(S) for S in seqs)
+    index = range(maxlen)
+    return [tuple((S[i] if len(S) &gt; i else pad) for S in seqs) for i in index]
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

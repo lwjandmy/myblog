@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>PreparedStatement ResultSet为什么一定要close
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="preparedstatement-resultset-close">PreparedStatement ResultSet为什么一定要close</h1>
+<p><a href="http://docs.oracle.com/javase/tutorial/jdbc/basics/processingsqlstatements.html#closing_connections">Processing SQL Statements with JDBC</a></p>
+<p><a href="http://www.tuicool.com/articles/2q2IZ3">What resources you have to close and when</a></p>
+<p><a href="http://stackoverflow.com/questions/2225221/closing-database-connections-in-java#">Closing Database Connections in Java</a></p>
+<p>网上资料也没说明白为什么要close, 不close为什么会内存泄漏.</p>
+<p>猜测是: 数据库连接相关的资源, 在connection对象中会有引用.</p>
+<p>如果connection一直存在, 则PreparedStatement和ResultSet即使被垃圾回收, 但相关连接资源不会被释放, 时间长很多无用内存得不到回收.</p>
+<p>而PreparedStatement和ResultSet的close方法, 强制断开了Connection与资源的引用关系.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>Linux终端的乐趣之把玩字词计数 cat tr grep sort uniq sort head
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="linux-cat-tr-grep-sort-uniq-sort-head">Linux终端的乐趣之把玩字词计数 cat tr grep sort uniq sort head</h1>
+<p><a href="https://linux.cn/article-4088-1.html">Linux终端的乐趣之把玩字词计数</a></p>
+<p>计算一个文本文件中字和字符的出现频率</p>
+<pre><code class="lang-bash"># 准备操作的文件
+cd ~
+LANG=en_US.UTF-8 man man &gt; man.txt
+
+# 统计出现频率最高的词
+cat man.txt | tr &#39; &#39;  &#39;\012&#39; | tr &#39;[:upper:]&#39; &#39;[:lower:]&#39; | tr -d &#39;[:punct:]&#39; | grep &#39;[ a-z]&#39; | sort | uniq -c | sort -r -n | head
+
+# 统计出现频率最高的字母
+cat man.txt | fold -w1 | grep &#39;[ a-z]&#39; | sort | uniq -c | sort -r -n
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

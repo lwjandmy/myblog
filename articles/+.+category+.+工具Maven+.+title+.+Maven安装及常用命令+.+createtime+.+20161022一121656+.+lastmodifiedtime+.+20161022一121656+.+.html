@@ -1,0 +1,125 @@
+
+
+<html><head><meta charset="UTF-8"><title>Maven常用命令
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="maven-">Maven常用命令</h1>
+<p><a href="http://www.cnblogs.com/MyFavorite/archive/2012/03/18/2404330.html">5个必须掌握的maven命令</a>
+<a href="http://www.cnblogs.com/phoebus0501/archive/2011/05/10/2042511.html">转:MAVEN常用命令</a></p>
+<h2 id="-">安装</h2>
+<p>环境变量M2_HOME = D:\apache-maven-3.3.9</p>
+<p>Path += %M2_HOME%\bin</p>
+<h2 id="-">配置文件</h2>
+<p>%M2_HOME%\conf\settings.xml 全局设置</p>
+<p>~.m2\settings.xml 当前用户设置, 需要复制过来</p>
+<h2 id="-eclipse-url-">修改Eclipse更新url为国内镜像</h2>
+<p>Window -&gt; Preferences -&gt; Install/Update -&gt; Avaliable Software Sites</p>
+<p>更新Enabled的, Location由download.eclipse.org换成mirrors.ustc.edu.cn/eclipse</p>
+<p>其它可用的镜像可在eclipse官方上, 下载文件时, 选择镜像里, 找到镜像列表</p>
+<h2 id="-m2eclipse">安装m2eclipse</h2>
+<p>eclipse -&gt; Help -&gt; Install New Software -&gt; Add</p>
+<p>Name = m2e</p>
+<p>Location = <a href="http://m2eclipse.sonatype.org/sites/m2e">http://m2eclipse.sonatype.org/sites/m2e</a></p>
+<p>Mirror-Location = <a href="http://server16:20000/m2eclipse-mirror/sites/m2e/">http://server16:20000/m2eclipse-mirror/sites/m2e/</a></p>
+<p>全部安装(只一个插件)</p>
+<p>Name = m2e-extras</p>
+<p>Location = <a href="http://m2eclipse.sonatype.org/sites/m2e-extras">http://m2eclipse.sonatype.org/sites/m2e-extras</a></p>
+<p>Mirror-Location = <a href="http://server16:20000/m2eclipse-mirror/sites/m2e-extras/">http://server16:20000/m2eclipse-mirror/sites/m2e-extras/</a></p>
+<p>安装Maven SCM handler for Subclipse, Maven Integration for WTP, Project configurators for commonly used maven plugins</p>
+<h2 id="a-jdk-is-required-some-maven-plugins-may-not-work-">a JDK is required. Some Maven plugins may not work 问题</h2>
+<p>eclipse.ini添加vm配置指向JDK:</p>
+<pre><code class="lang-ini">-vm
+D:\java\jdk1.8.0_101\bin\javaw.exe
+</code></pre>
+<h2 id="-maven_opts-">设置MAVEN_OPTS启动参数环境变量(可选)</h2>
+<p>MAVEN_OPTS = -Xmx512m</p>
+<h2 id="-m2eclipse-maven-">设置m2eclipse的MAVEN位置</h2>
+<p>Eclipse -&gt; Windows -&gt; Preferences -&gt; Maven -&gt; Installation -&gt; Add</p>
+<p>mvn -DarchetypeCatalog=internal archetype:generate 创建项目 -DarchetypeCatalog=internal是不从apache上获取archetype-catalog.xml, 会卡住</p>
+<p>mvn eclipse:eclipse 生成eclipse项目</p>
+<p>mvn clean compile 编译项目</p>
+<p>mvn dependency:sources 下载源码</p>
+<p>mvn clean deploy 部署到远程仓库</p>
+<p>mvn source:jar 源码打包</p>
+<h2 id="-pom-xml-">配置阿里云国内镜像(不推荐 在pom.xml里麻烦)</h2>
+<p>apache-maven\conf\settings.xml</p>
+<pre><code class="lang-xml">&lt;mirror&gt;
+  &lt;id&gt;alimaven&lt;/id&gt;
+  &lt;name&gt;aliyun maven&lt;/name&gt;
+  &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
+  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;        
+&lt;/mirror&gt;
+</code></pre>
+<p>直接覆盖中央仓库url也可以, 参照&quot;用Nexus搭建Maven私服&quot;</p>
+<h2 id="-pom-xml-">配置代理(不推荐 在pom.xml里麻烦)</h2>
+<p>~.m2\settings.xml, 不存在则从安装目录复制, 编辑:</p>
+<pre><code class="lang-xml">&lt;proxies&gt;
+    &lt;proxy&gt;
+        &lt;id&gt;my-proxy&lt;/id&gt;
+        &lt;active&gt;true&lt;/active&gt;
+        &lt;protocal&gt;http&lt;/protocal&gt;
+        &lt;host&gt;192.168.1.1&lt;/host&gt;
+        &lt;port&gt;404&lt;/port&gt;
+        &lt;username&gt;username&lt;/username&gt;
+        &lt;password&gt;password&lt;/password&gt;
+        &lt;nonProxyHosts&gt;baidu.com|*.qq.com&lt;/nonProxyHosts&gt;
+    &lt;/proxy&gt;
+&lt;/proxies&gt;
+</code></pre>
+<hr>
+<h2 id="-nexus-">设置阿里云nexus, 最简单配置</h2>
+<p>不修改~/.m2/settings.xml, 或不添加这个文件</p>
+<p>设置环境变量MAVEN_HOME, 直接在apache-maven\conf\settings.xml增添以下配置即可:</p>
+<pre><code class="lang-xml">  &lt;profiles&gt;
+    &lt;profile&gt;
+      &lt;id&gt;aliyun-nexus&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;jdk&gt;1.6&lt;/jdk&gt;
+        &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
+      &lt;/activation&gt;
+      &lt;repositories&gt;
+        &lt;repository&gt;
+          &lt;id&gt;central&lt;/id&gt;
+          &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
+          &lt;layout&gt;default&lt;/layout&gt;
+          &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/releases&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/repository&gt;
+      &lt;/repositories&gt;
+      &lt;pluginRepositories&gt;
+        &lt;pluginRepository&gt;
+          &lt;id&gt;central&lt;/id&gt;
+          &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;
+          &lt;layout&gt;default&lt;/layout&gt;
+          &lt;releases&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/releases&gt;
+          &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+          &lt;/snapshots&gt;
+        &lt;/pluginRepository&gt;
+      &lt;/pluginRepositories&gt;
+    &lt;/profile&gt;
+  &lt;/profiles&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

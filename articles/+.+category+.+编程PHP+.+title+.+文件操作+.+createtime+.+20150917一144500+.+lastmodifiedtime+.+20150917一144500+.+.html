@@ -1,0 +1,43 @@
+
+
+<html><head><meta charset="UTF-8"><title>文件操作
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">文件操作</h1>
+<p>打开文件</p>
+<pre><code class="lang-PHP">$fp=fopen(&#39;text.txt&#39;,&#39;w&#39;);  r只读 w只写 x只写，文件存在时失败 a只写，从末尾追加 b二进制 t文本
+</code></pre>
+<p>读文件</p>
+<pre><code class="lang-PHP">fgets(fp)
+readfile(&#39;text.txt&#39;)
+file(&#39;text.txt&#39;)
+</code></pre>
+<p>写文件</p>
+<pre><code class="lang-PHP">fwrite($fp, &#39;abcde&#39;)
+</code></pre>
+<p>判断文件是否存在</p>
+<pre><code class="lang-PHP">file_exists(&#39;text.txt&#39;)
+</code></pre>
+<p>获取文件大小</p>
+<pre><code class="lang-PHP">filesize(&#39;text.txt&#39;)
+</code></pre>
+<p>删除文件</p>
+<pre><code class="lang-PHP">unlink(&#39;text.txt&#39;)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="pycharm-python-">PyCharm远程调试 远程翻译器法 和 Python远程调试服务法</h1>
+<h2 id="-">远程翻译器法</h2>
+<p>PyCharm -&gt; File -&gt; Settings -&gt; Project Interpreter -&gt; Add Remote -&gt; SSH Credentials</p>
+<p>填写ssh信息</p>
+<p>这种方式源码必须在本地, 不能再远程</p>
+<h2 id="python-">Python远程调试服务法, 待完成</h2>
+<p>PyCharm -&gt; Run -&gt; Edit Configurations -&gt; Python Remote Debug</p>
+<p>Local host name: 192.168.119.128</p>
+<p>Port: 5858</p>
+<p>复制JetBrains\PyCharm\debug-eggs\pycharm-debug.egg (python3是pycharm-debug-py3k.egg) 到远程 ~/egg/</p>
+<p>PYTHONPATH环境变量加上egg所在路径</p>
+<p>export PYTHONPATH=~/egg/pycharm-debug-py3k.egg</p>
+<p>测试python, 总出错, 待完成</p>
+<pre><code class="lang-python">import pydevd
+
+pydevd.settrace(&#39;192.168.119.128&#39;, port=5858, stdoutToServer=True, stderrToServer=True)
+
+print(&#39;hello&#39;)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,62 @@
+
+
+<html><head><meta charset="UTF-8"><title>go接口查询 给接口赋值对象的指针 而不是对象的值
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="go-">go接口查询 给接口赋值对象的指针 而不是对象的值</h1>
+<pre><code class="lang-go">type Obj struct { // 定义Obj结构
+    Name string
+}
+
+// 编译器对值类型的对象的方法, 自动生成一个引用类型的对象的方法
+func (obj Obj) GetName() string { // 增加Obj结构Name属性的get方法, 编译器会自动生成一个func (obj *Obj) GetName() string { return obj.Name }函数
+    return obj.Name
+}
+
+func (obj *Obj) SetName(name string) { // 增加Obj结构Name属性的set方法
+    obj.Name = name
+}
+
+type ReadOnlyName interface { // 定义只读接口, 注意这里的接口对应的对象类型是*Obj, 而不是Obj
+    GetName() string
+}
+
+type ReadWriteName interface { // 定义读写接口, 注意这里的接口对应的对象类型是*Obj, 而不是Obj
+    GetName() string
+    SetName(name string)
+}
+
+func main() {
+
+    // 这里转接口类型, 一定要用对象的指针去转接口类型, 因为对象拥有的函数(GetName, SetName)都对应对象的指针类型, 但缺少对应对象值类型的函数(缺少SetName方法)
+    var t ReadWriteName = Obj{&quot;obj0&quot;} // 编译时报错: Obj does not implement ReadWriteName (SetName method has pointer receiver)
+    t.SetName(&quot;new t name&quot;)
+
+    var obj1 ReadOnlyName = &amp;Obj{&quot;obj1&quot;}
+    if rwName, ok := obj1.(ReadWriteName); ok { // 接口查询
+        rwName.SetName(&quot;new obj1 name&quot;)
+        fmt.Println(&quot;obj1 is type ReadWriteName&quot;, rwName.GetName())
+    }
+    var obj2 ReadWriteName = &amp;Obj{&quot;obj2&quot;}
+    if roName, ok := obj2.(ReadOnlyName); ok { // 接口查询
+        fmt.Println(&quot;obj2 is type ReadOnlyName&quot;, roName.GetName())
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

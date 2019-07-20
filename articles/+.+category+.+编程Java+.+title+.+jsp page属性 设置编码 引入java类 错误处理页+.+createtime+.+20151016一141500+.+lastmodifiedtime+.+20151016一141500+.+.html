@@ -1,0 +1,51 @@
+
+
+<html><head><meta charset="UTF-8"><title>jsp page属性 设置编码 引入java类 错误处理页
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jsp-page-java-">jsp page属性 设置编码 引入java类 错误处理页</h1>
+<pre><code class="lang-text">---import属性可引入需要使用的java类---
+
+page_directive.jsp:
+&lt;%@ import=&quot;java.util.ArrayList,java.util.LinkedList&quot;%&gt;
+&lt;%
+    ArrayList arrayList = new ArrayList();
+    arrayList.add(1);
+    LinkedList linkedList = new LinkedList();
+    linkedList.add(1);
+%&gt;
+
+
+---errorPage=&quot;on_error.jsp&quot;   可指定发生异常时,跳转到哪个页面---
+isErrorPage=&quot;true&quot;   指定此页面是错误处理页面
+
+get_error.jsp:
+&lt;%@ errorPage=&quot;handle_error.jsp&quot;%&gt;
+&lt;%
+    int a, b, c;
+    a = 1;
+    b = 0;
+    c = a / b;
+%&gt;
+
+handle_error.jsp:
+&lt;%@ isErrorPage=&quot;true&quot;%&gt;
+程序发生异常!
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,52 @@
+
+
+<html><head><meta charset="UTF-8"><title>thinkphp 页面跳转 自定义 success error
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thinkphp-success-error">thinkphp 页面跳转 自定义 success error</h1>
+<p>Think\Controller类 内置了success和error方法</p>
+<p>页面跳转例子：</p>
+<pre><code class="lang-php">$New = M(&#39;New&#39;); //实例化New对象
+$result = $New-&gt;add($data);
+if($result){
+// 成功后跳转到新闻列表页面
+$this-&gt;success(&#39;新增成功，即将返回列表页面&#39;, &#39;/New/index&#39;);
+} else {
+// 错误页面的默认跳转页面是返回前一页，通常不需要设置
+$this-&gt;error(&#39;新增失败&#39;);
+}
+</code></pre>
+<p>默认错误跳转对应的模板文件</p>
+<pre><code class="lang-php">&#39;TMPL_ACTION_ERROR&#39; =&gt; THINK_PATH . &#39;Tpl/dispatch_jump.tpl&#39;,
+//默认成功跳转对应的模板文件
+&#39;TMPL_ACTION_SUCCESS&#39; =&gt; THINK_PATH . &#39;Tpl/dispatch_jump.tpl&#39;,
+</code></pre>
+<p>重新定义跳转模板:</p>
+<pre><code class="lang-php">//默认错误跳转对应的模板文件
+&#39;TMPL_ACTION_ERROR&#39; =&gt; &#39;Common@Public/error&#39;,
+//默认成功跳转对应的模板文件
+&#39;TMPL_ACTION_SUCCESS&#39; =&gt; &#39;Common@Public/success&#39;,
+
+模板文件可使用的模板变量：
+$message    页面成功提示信息
+$error    页面错误提示信息
+$waitSecond    跳转等待时间 单位为秒
+$jumpUrl    跳转页面地址
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

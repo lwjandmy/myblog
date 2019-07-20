@@ -25,11 +25,7 @@ co(function* () {
         let file_data = yield fs.readFileAsync(in_file_path, 'utf8');
         
         // 从file_data获取文章标题
-        const title = file_data.split('\r\n')[0].substring(2);
-		
-		console.log('file_path: ' + file_path)
-		console.log('title: ' + title)
-		return
+        const title = file_data.split('\n')[0].substring(2);
         
         // md -> html
         file_data = marked(file_data);

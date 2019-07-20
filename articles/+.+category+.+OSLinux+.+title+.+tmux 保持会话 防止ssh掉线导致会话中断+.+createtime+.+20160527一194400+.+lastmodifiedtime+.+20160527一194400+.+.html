@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>tmux 保持会话 防止ssh掉线导致会话中断
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tmux-ssh-">tmux 保持会话 防止ssh掉线导致会话中断</h1>
+<p>进入新会话</p>
+<pre><code class="lang-bash">tmux
+</code></pre>
+<p>列出已有会话</p>
+<pre><code class="lang-bash">tmux list-sessions
+</code></pre>
+<p>加入已有会话</p>
+<pre><code class="lang-bash">tmux attach
+</code></pre>
+<p>在tmux会话中:</p>
+<p>输入tmux命令</p>
+<pre><code class="lang-bash">Ctrl-b :
+</code></pre>
+<p>脱离当前会话, 之后可通过attach再次加入会话</p>
+<pre><code class="lang-bash">detach
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

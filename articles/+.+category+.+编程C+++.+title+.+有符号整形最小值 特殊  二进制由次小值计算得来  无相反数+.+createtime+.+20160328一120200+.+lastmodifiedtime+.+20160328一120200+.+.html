@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>有符号整形最小值 特殊  二进制由次小值计算得来  无相反数
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">有符号整形最小值 特殊  二进制由次小值计算得来  无相反数</h1>
+<p>例子</p>
+<pre><code class="lang-c++">    int i = 0x80000000;                                       先定义一个int类型的最小值.
+    cout &lt;&lt; i &lt;&lt; endl; // OUTPUT: -2147483648   先定义一个int类型的最小值.
+    cout &lt;&lt; hex &lt;&lt; i &lt;&lt; endl; // OUTPUT: 80000000  i的二进制表示无法直接计算, 需次小值-1
+    cout &lt;&lt; hex &lt;&lt; -i &lt;&lt; endl; // OUTPUT: 80000000  i的相反数是本身
+</code></pre>
+<p>代码定义了int类型的最小值-2147483648.</p>
+<p>两点特殊性</p>
+<ol>
+<li>它的二进制表示0x80000000无法直接计算得出, 必须由次小值-2147483647再减1才能得出二进制表示!</li>
+<li>它的相反数是它本身</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

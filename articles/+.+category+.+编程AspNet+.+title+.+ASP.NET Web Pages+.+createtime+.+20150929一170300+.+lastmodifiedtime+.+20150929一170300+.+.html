@@ -1,0 +1,261 @@
+
+
+<html><head><meta charset="UTF-8"><title>ASP.NET Web Pages
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="asp-net-web-pages">ASP.NET Web Pages</h1>
+<p><a href="http://www.w3school.com.cn/aspnet">ASP.NET 教程</a></p>
+<p>Web Pages 单页面模型</p>
+<p>ASP.NET Web Pages - 页面布局</p>
+<pre><code class="lang-text">    Layout.cshtml :
+        &lt;html&gt;
+        &lt;body&gt;
+        &lt;p&gt;This is header text&lt;/p&gt;
+        @RenderBody()
+        &lt;p&gt;?0?8 2012 W3School. All rights reserved.&lt;/p&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+    SomePage.cshtml :
+        @{Layout=&quot;Layout.cshtml&quot;;}
+        &lt;h1&gt;Welcome to W3Schools&lt;/h1&gt;
+        &lt;p&gt;
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod tempor 
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+        exercitation ullamco laborisnisi ut aliquip ex ea commodo consequat.
+        &lt;/p&gt;
+    文件名下划线开头，用户无法查看：
+        _header.cshtm
+        _footer.cshtml
+        _Layout.cshtml
+    Href方法把代码中的路径转换为浏览器能够理解的路径:
+        @{var myStyleSheet = &quot;~/Shared/Site.css&quot;;}
+        &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;@Href(myStyleSheet)&quot; /&gt;
+    全局页面AppStart和PageStart:
+        站点启动前执行启动代码_AppStart
+        任意页面之前运行代码_PageStart
+    表单
+        提交文字
+            &lt;html&gt;
+            &lt;body&gt; 
+            @{
+            if (IsPost) { 
+            string companyname = Request[&quot;companyname&quot;]; 
+            string contactname = Request[&quot;contactname&quot;]; 
+            &lt;p&gt;You entered: &lt;br /&gt;
+            Company Name: @companyname &lt;br /&gt;
+            Contact Name: @contactname &lt;/p&gt;
+            }
+            else
+            {
+            &lt;form method=&quot;post&quot; action=&quot;&quot;&gt;
+            Company Name:&lt;br /&gt;
+            &lt;input type=&quot;text&quot; name=&quot;CompanyName&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+            Contact Name:&lt;br /&gt;
+            &lt;input type=&quot;text&quot; name=&quot;ContactName&quot; value=&quot;&quot; /&gt;&lt;br /&gt;&lt;br /&gt;
+            &lt;input type=&quot;submit&quot; value=&quot;Submit&quot; class=&quot;submit&quot; /&gt;
+            &lt;/form&gt;
+            }
+            } 
+            &lt;/body&gt; 
+            &lt;/html&gt;
+        选择并显示图像
+            @{
+            var imagePath=&quot;&quot;; 
+            if (Request[&quot;Choice&quot;] != null)
+               {imagePath=&quot;images/&quot; + Request[&quot;Choice&quot;];} 
+            } 
+            &lt;!DOCTYPE html&gt; 
+            &lt;html&gt; 
+            &lt;body&gt; 
+            &lt;h1&gt;Display Images&lt;/h1&gt; 
+            &lt;form method=&quot;post&quot; action=&quot;&quot;&gt; 
+            I want to see: 
+            &lt;select name=&quot;Choice&quot;&gt; 
+              &lt;option value=&quot;Photo1.jpg&quot;&gt;Photo 1&lt;/option&gt; 
+              &lt;option value=&quot;Photo2.jpg&quot;&gt;Photo 2&lt;/option&gt; 
+              &lt;option value=&quot;Photo3.jpg&quot;&gt;Photo 3&lt;/option&gt; 
+            &lt;/select&gt; 
+            &lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt; 
+            @if (imagePath != &quot;&quot;)
+            {
+            &lt;p&gt;
+            &lt;img src=&quot;@imagePath&quot; alt=&quot;Sample&quot; /&gt;
+            &lt;/p&gt;
+            }  
+            &lt;/form&gt; 
+            &lt;/body&gt; 
+            &lt;/html&gt;
+
+ASP.NET Web Pages - 对象
+    Page对象的一些方法
+        href    使用指定的参数构建 URL。
+        RenderBody()    在布局页中，将呈现不在指定部分中的内容页部分。
+        RenderPage(page)    在其他页内呈现某一页的内容。
+        RenderSection(section)    在布局页中，将呈现指定部分的内容。
+        Write(object)    将指定的对象作为 HTML 编码的字符串写入。
+        WriteLiteral    无需先对指定的对象进行 HTML 编码，即可将其写入。
+    Page对象的一些属性
+        isPost    返回一个值（true 或 false），指示客户端用来请求网页的 HTTP 数据传输方法是否为 POST 请求。
+        Layout    获取或设置布局页的路径。
+        Page    提供对页面、布局页和分页之间共享的页数据的类似属性的访问。
+        Request    获得当前 HTTP 请求的 HttpRequest 对象。
+        Server    获取 HttpServerUtility 对象，该对象所提供的方法能够在网页处理过程中使用。
+    Page对象的Page属性
+        添加（使用）自己的属性
+            @{Page.Title=&quot;Home Page&quot;}
+            &lt;title&gt;@Page.Title&lt;/title&gt;
+
+ASP.NET Web Pages - 文件
+    建立文件~/App_Data/Persons.txt，内容：
+        Bill,Gates
+        Steve,Jobs
+        Mark,Zuckerberg
+    显示文本文件的数据：
+        @{
+        var dataFile = Server.MapPath(&quot;~/App_Data/Persons.txt&quot;);
+        Array userData = File.ReadAllLines(dataFile);
+        }
+
+        &lt;!DOCTYPE html&gt;
+        &lt;html&gt;
+        &lt;body&gt;
+
+        &lt;h1&gt;Reading Data from a File&lt;/h1&gt;
+        @foreach (string dataLine in userData) 
+        {
+          foreach (string dataItem in dataLine.Split(&#39;,&#39;)) 
+          {@dataItem &lt;text&gt; &lt;/text&gt;}
+          &lt;br /&gt;
+        }
+        &lt;/body&gt;
+        &lt;/html&gt;
+
+ASP.NET Web Pages - Database
+    Database 实例：
+        @{
+        var db = Database.Open(&quot;SmallBakery&quot;); 
+        var selectQueryString = &quot;SELECT * FROM Product ORDER BY Name&quot;; 
+        }
+        &lt;html&gt; 
+        &lt;body&gt; 
+        &lt;h1&gt;Small Bakery Products&lt;/h1&gt; 
+        &lt;table&gt; 
+        &lt;tr&gt;
+        &lt;th&gt;Id&lt;/th&gt; 
+        &lt;th&gt;Product&lt;/th&gt; 
+        &lt;th&gt;Description&lt;/th&gt; 
+        &lt;th&gt;Price&lt;/th&gt; 
+        &lt;/tr&gt;
+        @foreach(var row in db.Query(selectQueryString))
+        {
+        &lt;tr&gt; 
+        &lt;td&gt;@row.Id&lt;/td&gt; 
+        &lt;td&gt;@row.Name&lt;/td&gt; 
+        &lt;td&gt;@row.Description&lt;/td&gt; 
+        &lt;td align=&quot;right&quot;&gt;@row.Price&lt;/td&gt; 
+        &lt;/tr&gt; 
+        }
+        &lt;/table&gt; 
+        &lt;/body&gt; 
+        &lt;/html&gt;
+    WebGrid帮助器，更简单的显示数据的方法：
+        @{ 
+        var db = Database.Open(&quot;SmallBakery&quot;) ; 
+        var selectQueryString = &quot;SELECT * FROM Product ORDER BY Id&quot;; 
+        var data = db.Query(selectQueryString); 
+        var grid = new WebGrid(data); 
+        }
+        &lt;html&gt; 
+        &lt;head&gt; 
+        &lt;title&gt;Displaying Data Using the WebGrid Helper&lt;/title&gt; 
+        &lt;/head&gt; 
+        &lt;body&gt; 
+        &lt;h1&gt;Small Bakery Products&lt;/h1&gt; 
+        &lt;div id=&quot;grid&quot;&gt; 
+        @grid.GetHtml()
+        &lt;/div&gt; 
+        &lt;/body&gt; 
+        &lt;/html&gt;
+
+ASP.NET Web Pages - Chart 帮助器
+    Chart 帮助器，在图表中显示数据：
+        @{ 
+        var myChart = new Chart(width: 600, height: 400) 
+           .AddTitle(&quot;Employees&quot;) 
+           .AddSeries(chartType: &quot;column&quot;,
+              xValue: new[] {  &quot;Peter&quot;, &quot;Andrew&quot;, &quot;Julie&quot;, &quot;Mary&quot;, &quot;Dave&quot; }, 
+              yValues: new[] { &quot;2&quot;, &quot;6&quot;, &quot;4&quot;, &quot;5&quot;, &quot;3&quot; }) 
+           .Write();
+        }
+    来自数据库的表:
+        @{ 
+        var db = Database.Open(&quot;SmallBakery&quot;); 
+        var dbdata = db.Query(&quot;SELECT Name, Price FROM Product&quot;); 
+        var myChart = new Chart(width: 600, height: 400) 
+           .AddTitle(&quot;Product Sales&quot;) 
+           .DataBindTable(dataSource: dbdata, xField: &quot;Name&quot;)
+           .Write();
+        }
+    使用AddSeries代替DataBindTable:
+        @{ 
+        var db = Database.Open(&quot;SmallBakery&quot;); 
+        var dbdata = db.Query(&quot;SELECT Name, Price FROM Product&quot;); 
+        var myChart = new Chart(width: 600, height: 400) 
+           .AddTitle(&quot;Product Sales&quot;) 
+           .AddSeries(chartType:&quot;Pie&quot;,
+              xValue: dbdata, xField: &quot;Name&quot;,
+              yValues: dbdata, yFields: &quot;Price&quot;)
+           .Write();
+        }
+    来自XML数据的图表：
+        @using System.Data;
+        @{
+        var dataSet = new DataSet();
+        dataSet.ReadXmlSchema(Server.MapPath(&quot;data.xsd&quot;));
+        dataSet.ReadXml(Server.MapPath(&quot;data.xml&quot;));
+        var dataView = new DataView(dataSet.Tables[0]);
+        var myChart = new Chart(width: 600, height: 400)
+           .AddTitle(&quot;Sales Per Employee&quot;)
+           .AddSeries(&quot;Default&quot;, chartType: &quot;Pie&quot;,
+              xValue: dataView, xField: &quot;Name&quot;,
+              yValues: dataView, yFields: &quot;Sales&quot;)
+           .Write();}
+        }
+
+ASP.NET Web Pages - PHP
+    设置-&gt;启用PHP
+    创建 PHP 类型的新的空页面，名为&quot;index.php&quot;
+
+ASP.NET Web Pages - 发布网站
+    从开发机上把网站（所有文件夹和内容）复制到远程主机（服务器）上的应用程序文件夹
+    确保远程主机上的 bin 文件夹包含与开发机上相同的 dll 文件
+    bin文件夹应该包含这些文件：
+        Microsoft.Web.Infrastructure.dll
+        NuGet.Core.dll
+        System.Web.Helpers.dll
+        System.Web.Razor.dll
+        System.Web.WebPages.Administration.dll
+        System.Web.WebPages.Deployment.dll
+        System.Web.WebPages.dll
+        System.Web.WebPages.Razor.dll
+        WebMatrix.Data.dll
+        WebMatrix.WebData
+    复制 SQL 数据库（.sdf 文件）到服务器
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

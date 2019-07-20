@@ -1,0 +1,219 @@
+
+
+<html><head><meta charset="UTF-8"><title>tomcat jndi数据源 dbcp连接池 c3p0连接池 整理
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tomcat-jndi-dbcp-c3p0-">tomcat jndi数据源 dbcp连接池 c3p0连接池 整理</h1>
+<p><a href="http://www.cnblogs.com/fifiyong/p/6026230.html">连接池、数据源、JNDI三者间的关系及用法</a></p>
+<p><a href="https://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html">tomcat7-jdbc-pool</a></p>
+<p><a href="http://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html#Attributes">The Tomcat JDBC Connection Pool</a></p>
+<p><a href="http://commons.apache.org/proper/commons-dbcp/configuration.html">common-dbcp-configuration</a></p>
+<p><a href="http://commons.apache.org/proper/commons-dbcp/guide/jndi-howto.html">common-dbcp-jndi-howto</a></p>
+<p><a href="http://www.cnblogs.com/duanxz/p/3668614.html">DBCP连接池原理分析及配置用法</a></p>
+<p><a href="http://blog.csdn.net/zhaosg198312/article/details/3979435">JNDI 是什么</a></p>
+<p>连接池(比如dbcp)是由容器（比如Tomcat）提供的</p>
+<hr>
+<h2 id="tomcat-jndi-dbcp-">Tomcat JNDI数据源 DBCP连接池 例子</h2>
+<p>context.xml:</p>
+<pre><code class="lang-xml">        &lt;!-- 
+        Resource参数说明
+
+        initialSize 初始连接数
+        maxActive 最大连接数
+        maxWait 当无可用连接时, getConnection调用会等待的超时时间, 超时getConnection抛异常
+
+        removeAbandoned 已借走未归还的连接, 长时间不使用(忘了归还连接的情况), 是否被遗弃. 遗弃是说连接池把此连接从池中删掉(删时会关连接)
+        removeAbandonedTimeout 单位秒, 多少秒连接未使用, 被认定此连接应遗弃
+        logAbandoned 遗弃连接时, 是否打印日志
+
+        补充: 遗弃连接的时候, 可以控制是否打日志.
+        但无法做到: 只打日志不遗弃连接. 因为打日志的前提是执行遗弃连接动作.
+        遗弃连接时打印的日志的格式: 
+        警告: Connection has been abandoned PooledConnection[oracle.jdbc.driver.T4CConnection@e785a]:java.lang.Exception
+            at ...
+        --&gt;
+        &lt;Resource
+            name=&quot;jdbc/ljh&quot;
+            auth=&quot;Container&quot;
+            type=&quot;javax.sql.DataSource&quot;
+            username=&quot;user&quot;
+            password=&quot;pass&quot;
+            driverClassName=&quot;oracle.jdbc.OracleDriver&quot;
+            url=&quot;jdbc:oracle:thin:@192.168.1.1:1521:tsdb&quot;
+
+            initialSize=&quot;0&quot;
+            maxActive=&quot;8&quot;
+            maxWait=&quot;-1&quot;
+
+            removeAbandoned=&quot;true&quot;
+            removeAbandonedTimeout=&quot;10&quot;
+            logAbandoned=&quot;true&quot;
+        /&gt;
+</code></pre>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;resource-ref&gt;  
+    &lt;description&gt;DB Connection&lt;/description&gt;  
+    &lt;res-ref-name&gt;jdbc/TestDB&lt;/res-ref-name&gt;  
+    &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;  
+    &lt;res-auth&gt;Container&lt;/res-auth&gt;  
+&lt;/resource-ref&gt;
+</code></pre>
+<p>applicationContext.xml:</p>
+<pre><code class="lang-xml">&lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jndi.JndiObjectFactoryBean&quot;&gt;  
+    &lt;property name=&quot;jndiName&quot; value=&quot;java:/comp/env/jdbc/ljh&quot; /&gt;  
+&lt;/bean&gt;
+</code></pre>
+<p>test.java</p>
+<pre><code class="lang-java">Context context=new InitialContext();
+DataSource datasource = context.lookup(&quot;java:MySqlDS&quot;);
+context.lookup(&quot;java:/comp/env/jdbc/ljh&quot;);
+</code></pre>
+<hr>
+<h2 id="-mbean-dbcp-">使用mbean获取dbcp连接池状态</h2>
+<p>Dbcp.java</p>
+<pre><code class="lang-xml">public class Dbcp implements DbcpMBean {
+
+    private static final Logger logger = Logger.getLogger(Dbcp.class);
+
+    private static boolean mbeanInitialized = false;
+    {
+        if (false == mbeanInitialized) {
+            synchronized (this) {
+                if (false == mbeanInitialized) {
+                    try {
+                        mbeanInitialized = true;
+                        ManagementFactory.getPlatformMBeanServer().registerMBean(new Dbcp(), new ObjectName(&quot;com.cvicse.ts.mbeans:Dbcp=Dbcp&quot;));
+                    } catch (Exception e) {
+                        logger.debug(e, e);
+                    }
+                }
+            }
+        }
+    }
+
+    public String getPoolStatus() {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+        try {
+
+            Field field = org.apache.tomcat.dbcp.dbcp.BasicDataSource.class.getDeclaredField(&quot;connectionPool&quot;);
+            field.setAccessible(true);
+            AbandonedObjectPool connectionPool = (AbandonedObjectPool) field.get(org.springframework.web.context.ContextLoader.getCurrentWebApplicationContext().getBean(&quot;dataSource&quot;));
+
+            Field field2 = AbandonedObjectPool.class.getDeclaredField(&quot;trace&quot;);
+            field2.setAccessible(true);
+            List&lt;PoolableConnection&gt; traceList = (List&lt;PoolableConnection&gt;) field2.get(connectionPool);
+
+            printStream.println(String.format(&quot;当前使用的连接数: %d\n&quot;, traceList.size()));
+
+            int connectionIndex = 0;
+            for (PoolableConnection connection : traceList) {
+
+                ++connectionIndex;
+
+                Field field3 = AbandonedTrace.class.getDeclaredField(&quot;createdBy&quot;);
+                field3.setAccessible(true);
+                Exception exception = (Exception) field3.get(connection);
+
+                Field field4 = DelegatingConnection.class.getDeclaredField(&quot;_conn&quot;);
+                field4.setAccessible(true);
+                Connection connection2 = (Connection) field4.get(connection);
+
+                Field field5 = AbandonedTrace.class.getDeclaredField(&quot;lastUsed&quot;);
+                field5.setAccessible(true);
+                Long lastUsed = (Long) field5.get(connection);
+                SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+                String lastUsedStr = sdf.format(new Date(lastUsed));
+
+                printStream.println(String.format(&quot;连接%d: [%s], 上次使用时间: [%s]&quot;, connectionIndex, connection2.toString(), lastUsedStr));
+                exception.printStackTrace(printStream);
+                printStream.println();
+
+            }
+
+            return outputStream.toString();
+
+        } catch (Exception e) {
+            printStream.println(&quot;出现异常:&quot;);
+            e.printStackTrace(printStream);
+            return outputStream.toString();
+        }
+    }
+
+    @Override
+    public int getActive() {
+        return ((org.apache.tomcat.dbcp.dbcp.BasicDataSource)
+                org.springframework.web.context.ContextLoader.getCurrentWebApplicationContext().getBean(&quot;dataSource&quot;)).getNumActive();
+    }
+
+    @Override
+    public int getIdle() {
+        return ((org.apache.tomcat.dbcp.dbcp.BasicDataSource)
+                org.springframework.web.context.ContextLoader.getCurrentWebApplicationContext().getBean(&quot;dataSource&quot;)).getNumIdle();
+    }
+
+}
+</code></pre>
+<p>DbcpMBean.java</p>
+<pre><code class="lang-xml">public interface DbcpMBean {
+
+    String getPoolStatus();
+
+    int getActive();
+
+    int getIdle();
+
+}
+</code></pre>
+<p>applicationContext.xml</p>
+<pre><code class="lang-xml">&lt;bean class=&quot;com.Dbcp&quot; /&gt;
+</code></pre>
+<hr>
+<h2 id="tomcat-jndi-c3p0-">Tomcat JNDI数据源 C3P0连接池 例子</h2>
+<p><a href="http://blog.csdn.net/liangwenmail/article/details/47955945">使用JNDI的方式配置c3p0连接池</a></p>
+<p>context.xml:</p>
+<pre><code class="lang-xml">&lt;Resource name=&quot;jdbc/TestDB&quot;   
+            auth=&quot;Container&quot;   
+           factory=&quot;org.apache.naming.factory.BeanFactory&quot;  
+           type=&quot;com.mchange.v2.c3p0.ComboPooledDataSource&quot;  
+           driverClass=&quot;oracle.jdbc.driver.OracleDriver&quot;  
+               jdbcUrl=&quot;jdbc:oracle:thin:@localhost:1521:XE&quot;  
+               user=&quot;orcl&quot;  
+               password=&quot;newsnews&quot;/&gt;
+</code></pre>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;resource-ref&gt;  
+    &lt;description&gt;DB Connection&lt;/description&gt;  
+    &lt;res-ref-name&gt;jdbc/TestDB&lt;/res-ref-name&gt;  
+    &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;  
+    &lt;res-auth&gt;Container&lt;/res-auth&gt;  
+&lt;/resource-ref&gt;
+</code></pre>
+<p>applicationContext.xml:</p>
+<pre><code class="lang-xml">&lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jndi.JndiObjectFactoryBean&quot;&gt;  
+    &lt;property name=&quot;jndiName&quot; value=&quot;java:/comp/env/jdbc/TestDB&quot; /&gt;  
+&lt;/bean&gt;
+</code></pre>
+<p>test.java</p>
+<pre><code class="lang-java">Context context=new InitialContext();
+DataSource datasource = context.lookup(&quot;java:MySqlDS&quot;);
+context.lookup(&quot;java:/comp/env/jdbc/ljh&quot;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

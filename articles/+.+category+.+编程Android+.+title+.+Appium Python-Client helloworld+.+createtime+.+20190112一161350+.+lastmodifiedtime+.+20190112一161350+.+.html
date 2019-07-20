@@ -1,0 +1,88 @@
+
+
+<html><head><meta charset="UTF-8"><title>Appium Python-Client helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="appium-python-client-helloworld">Appium Python-Client helloworld</h1>
+<h2 id="-android-sdk">安装Android SDK</h2>
+<p><a href="https://www.androiddevtools.cn">https://www.androiddevtools.cn</a></p>
+<p>下载SDK Tools android-sdk_r24.4.1-windows.zip</p>
+<p>设置环境变量ANDROID_HOME=C:\Users\<user>\android-sdk-windows</p>
+<p>启动SDK Manager.exe</p>
+<p>下载Android 4.4.2  Inter x86 Atom System Image</p>
+<p>下载Extras Inter x86 Emulator Accelerator</p>
+<p>如果无法下载加速器, 下载这里的: <a href="https://github.com/intel/haxm/releases">https://github.com/intel/haxm/releases</a></p>
+<p>启动Android虚拟机</p>
+<p>执行Inter x86的镜像, 用命令启动 emulator -avd Android5.0.1, 总是提示Trying to vcpu execute at xxx</p>
+<p>换成Arm的镜像就可以了, 就是太慢</p>
+<h2 id="-appium-desktop">安装appium-desktop</h2>
+<p><a href="https://github.com/appium/appium-desktop/releases">https://github.com/appium/appium-desktop/releases</a></p>
+<p>下载文件appium-desktop-Setup-1.10.0-ia32.exe</p>
+<p>打开后, 会安装在C:\Users\<user>\AppData\Local\appium-desktop</p>
+<p>运行, 点&quot;Start Server&quot;</p>
+<h2 id="-">设计测试案例</h2>
+<p>JSON Representation</p>
+<pre><code class="lang-js">{
+  &quot;platformName&quot;: &quot;Android&quot;,
+  &quot;platformVersion&quot;: &quot;5.0.2&quot;,
+  &quot;deviceName&quot;: &quot;Android Emulator&quot;,
+  &quot;automationName&quot;: &quot;Test1&quot;,
+  &quot;appPackage&quot;: &quot;com.android.calculator2&quot;,
+  &quot;appActivity&quot;: &quot;.Calculator&quot;
+}
+</code></pre>
+<p>录制脚本(类型: Python)</p>
+<pre><code class="lang-python">el1 = driver.find_element_by_id(&quot;com.android.calculator2:id/digit_1&quot;)
+el1.click()
+el2 = driver.find_element_by_accessibility_id(&quot;plus&quot;)
+el2.click()
+el3 = driver.find_element_by_id(&quot;com.android.calculator2:id/digit_2&quot;)
+el3.click()
+el4 = driver.find_element_by_accessibility_id(&quot;equals&quot;)
+el4.click()
+</code></pre>
+<h2 id="-">准备测试脚本</h2>
+<p>创建目录C:\Users\li_wjie\Desktop\appium-test</p>
+<p>pip install Appium-Python-Client</p>
+<p>脚本内容:</p>
+<pre><code class="lang-python">import unittest
+from appium import webdriver
+
+desired_caps = {}
+desired_caps[&#39;platformName&#39;] = &#39;Android&#39;
+desired_caps[&#39;platformVersion&#39;] = &#39;5.0.2&#39;
+desired_caps[&#39;automationName&#39;] = &#39;Test1&#39;
+desired_caps[&#39;deviceName&#39;] = &#39;Android Emulator&#39;
+desired_caps[&#39;appPackage&#39;] = &#39;com.android.calculator2&#39;
+desired_caps[&#39;appActivity&#39;] = &#39;.Calculator&#39;
+
+driver = webdriver.Remote(&#39;http://localhost:4723/wd/hub&#39;, desired_caps)
+
+el1 = driver.find_element_by_id(&quot;com.android.calculator2:id/digit_1&quot;)
+el1.click()
+el2 = driver.find_element_by_accessibility_id(&quot;plus&quot;)
+el2.click()
+el3 = driver.find_element_by_id(&quot;com.android.calculator2:id/digit_2&quot;)
+el3.click()
+el4 = driver.find_element_by_accessibility_id(&quot;equals&quot;)
+el4.click()
+
+print(driver.find_element_by_id(&#39;com.android.calculator2:id/formula&#39;).text)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

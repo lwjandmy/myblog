@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>django 用generic views 实现读数据库 用模板显示数据
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="django-generic-views-">django 用generic views 实现读数据库 用模板显示数据</h1>
+<p>detail(表单显示), results(表单提交后显示结果)都完成相同的任务: 根据url参数从数据库读数据, 加载模板传入数据渲染模板<br>这些任务过程都是相同的, 因此有更简单的实现方法, 使用generic views</p>
+<p>使用generic views实现detail, results:</p>
+<p>polls/urls.py:</p>
+<pre><code class="lang-Python">urlpatterns = [
+    url(r&#39;^$&#39;, views.IndexView.as_view(), name = &#39;index&#39;),
+    url(r&#39;^(?P&lt;pk&gt;[0-9]+)/$&#39;, views.DetailView.as_view(), name = &#39;detail&#39;),
+    url(r&#39;^(?P&lt;pk&gt;[0-9]+)/results/$&#39;, views.ResultsView.as_view(), name = &#39;results&#39;),
+    url(r&#39;^(?P&lt;question_id&gt;[0-9]+)/vote/$&#39;, views.vote, name = &#39;vote&#39;)
+]
+</code></pre>
+<p>polls/views.py:</p>
+<pre><code class="lang-Python">class IndexView(generic.ListView):
+    template_name = &#39;polls/index.html&#39;       # ListView默认使用模板文件&lt;app name&gt;/&lt;model name&gt;_list.html
+    context_object_name = &#39;latest_question_list&#39;       # ListView会自动把&#39;question_list&#39;作为参数名传入模板中, 这里指定自己的变量名
+    def get_queryset(self):
+        return Question.objects.order_by(&#39;-pub_date&#39;)
+class DetailView(generic.DetailView):       # generic.DetailView需要得到primary key, 且需放在&#39;pk&#39;变量中; 因此在url配置中把主键变量名改为pk
+    model = Question       # 指定模型; 模型会自动传到模板文件中, 作为参数
+    template_name = &#39;polls/detail.html&#39;       # DetailView默认使用模板文件&lt;app name&gt;/&lt;model name&gt;_detail.html
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = &#39;polls/results.html&#39;
+def vote(request, question_id):
+    # same as old
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

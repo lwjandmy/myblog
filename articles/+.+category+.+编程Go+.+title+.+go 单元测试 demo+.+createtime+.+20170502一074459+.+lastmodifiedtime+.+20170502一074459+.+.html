@@ -1,0 +1,85 @@
+
+
+<html><head><meta charset="UTF-8"><title>go 单元测试 demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="go-demo">go 单元测试 demo</h1>
+<pre><code class="lang-bash"># 进入stringutil, 编写测试文件reverse_test.go 测试文件名要以_test.go结尾
+cd $GOPATH/src/github.com/lwjandmy/stringutil
+
+vi reverse_test.go
+</code></pre>
+<pre><code class="lang-go">package stringutil
+
+import &quot;testing&quot;
+
+func TestReverse(t *testing.T) {
+    cases := []struct {
+        in, want string
+    }{
+        {&quot;Hello, world&quot;, &quot;dlrow ,olleH&quot;},
+        {&quot;Hello, 世界&quot;, &quot;界世 ,olleH&quot;},
+        {&quot;&quot;, &quot;&quot;},
+    }
+    for _, c := range cases {
+        got := Reverse(c.in)
+        if got != c.want {
+            t.Errorf(&quot;Reverse(%q) == %q, want %q&quot;, c.in, got, c.want)
+        }
+    }
+}
+</code></pre>
+<pre><code class="lang-basg"># 执行测试
+go test github.com/lwjandmy/stringutil
+</code></pre>
+<hr>
+<h2 id="-">下载依赖包</h2>
+<pre><code class="lang-bash"># go get会自动从git地址下载源码, 编译源码, 安装源码
+go get github.com/golang/example/hello
+</code></pre>
+<hr>
+<h2 id="import-">import远程包</h2>
+<pre><code class="lang-bash"># 进入hello目录
+cd $GOPATH/src/github.com/lwjandmy/hello
+
+# 编辑hello.go
+vi hello.go
+</code></pre>
+<pre><code class="lang-go">package main
+
+import (
+        &quot;fmt&quot;
+        &quot;github.com/golang/example/stringutil&quot;
+)
+
+func main() {
+        fmt.Printf(&quot;Hello, world.\n&quot;)
+        fmt.Printf(stringutil.Reverse(&quot;\n!oG ,olleH&quot;))
+}
+</code></pre>
+<pre><code class="lang-bash"># 下载依赖包
+go get github.com/golang/example/stringutil
+
+# 编译&amp;安装
+go install github.com/lwjandmy/hello
+
+# 执行
+hello
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

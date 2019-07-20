@@ -1,0 +1,109 @@
+
+
+<html><head><meta charset="UTF-8"><title>读写xls文件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-xls-">读写xls文件</h1>
+<p>写入xls</p>
+<pre><code class="lang-PHP">&lt;?php
+    require_once(&quot;Classes/PHPExcel.php&quot;);
+
+    $xls = new PHPExcel;
+
+    $xls-&gt;setActiveSheetIndex(0)
+        -&gt;setCellValue(&quot;A1&quot;, &quot;A1&quot;)
+        -&gt;setCellValue(&quot;A2&quot;, &quot;A2&quot;)
+        -&gt;setCellValue(&quot;B1&quot;, &quot;B1&quot;)
+        -&gt;setCellValue(&quot;B2&quot;, &quot;B2&quot;);
+
+    $xlsWritter = PHPExcel_IOFactory::createWriter($xls, &quot;Excel2007&quot;);
+    $xlsWritter-&gt;save(&quot;test.xlsx&quot;);
+?&gt;
+</code></pre>
+<p>读取xls</p>
+<pre><code class="lang-PHP">&lt;?php
+
+    require_once(&quot;Classes/PHPExcel.php&quot;);
+
+    $xls = PHPExcel_IOFactory::load(&quot;dataimport.xlsx&quot;);
+
+    $arr = $xls-&gt;getActiveSheet()-&gt;toArray(null, true, true, true);
+
+    var_dump($arr);
+
+    // 数据形式:
+    // $arr[1]第一行
+        // $arr[1][A] 第一列
+        // $arr[1][B] 第二列
+    // $arr[2]第二行
+    // $arr[3]第三行
+    // ...
+
+//数据形式后来又变成了[0][0], [0][1], ....
+
+?&gt;
+</code></pre>
+<p>读取xls并导入mysql</p>
+<pre><code class="lang-PHP">&lt;?php
+    $file = $_FILES[&quot;file&quot;];
+    $filefullpath = $file[&quot;tmp_name&quot;];
+
+    require_once(&quot;../Classes/PHPExcel.php&quot;);
+    $xls = PHPExcel_IOFactory::load($filefullpath);
+    $arr = $xls-&gt;getActiveSheet()-&gt;toArray();
+
+    $db = new mysqli(&quot;localhost&quot;, &quot;learn_usr&quot;, &quot;123456&quot;, &quot;learn_db&quot;);
+
+    foreach ($arr as $key =&gt; $value)
+    {
+        $query = &quot;insert into data values (&#39;&quot; . $value[0] . &quot;&#39;, &#39;&quot; . $value[1] . &quot;&#39;)&quot;;
+        $db-&gt;query($query);
+    }
+?&gt;
+</code></pre>
+<p>读取mysql并写入xls</p>
+<pre><code class="lang-PHP">&lt;?php
+    require_once(&quot;../Classes/PHPExcel.php&quot;);
+
+    $db = new mysqli(&quot;localhost&quot;, &quot;learn_usr&quot;, &quot;123456&quot;, &quot;learn_db&quot;);
+    $query = &quot;select col1,col2 from data&quot;;
+    $res = $db-&gt;query($query);
+
+    $arr = Array();
+    // 注意mysqli_fetch_array后面的参数是MYSQL_NUM,和函数mysqli_fetch_row
+    //  效果一样, 否则生成的xls中每行都会重复一遍
+    while ($row = mysqli_fetch_array($res, MYSQL_NUM))
+    {
+        array_push($arr, $row);
+    }
+
+    header(&#39;Content-Encoding: none&#39;);
+    header(&#39;Content-Type: application/octet-stream&#39;);
+    header(&#39;Content-Disposition: attachment; filename=export.xlsx&#39;);
+    header(&#39;Pragma: no-cache&#39;);
+    header(&#39;Expires: 0&#39;);
+
+    $xls = new PHPExcel;
+    $xls-&gt;setActiveSheetIndex(0)-&gt;fromArray($arr);
+
+    $xlsWritter = PHPExcel_IOFactory::createWriter($xls, &quot;Excel2007&quot;);
+    $xlsWritter-&gt;save(&quot;php://output&quot;);
+?&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

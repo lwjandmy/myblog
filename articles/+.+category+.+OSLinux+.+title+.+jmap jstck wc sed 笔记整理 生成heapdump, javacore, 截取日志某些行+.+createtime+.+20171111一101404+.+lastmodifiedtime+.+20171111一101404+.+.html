@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>jmap jstck wc sed 笔记整理 生成heapdump, javacore, 截取日志某些行
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jmap-jstck-wc-sed-heapdump-javacore-">jmap jstck wc sed 笔记整理 生成heapdump, javacore, 截取日志某些行</h1>
+<pre><code class="lang-txt">生成heapdump
+jmap -dump:live,format=b,file=jmap.heapdump &lt;PID&gt;
+
+生成javacore
+jstack &lt;PID&gt; &gt; stack.javacore
+
+
+
+
+
+wc sysout.log
+
+
+sed -n &#39;2010345,3010345p&#39; sysout.log &gt; sysout.cut2.log
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

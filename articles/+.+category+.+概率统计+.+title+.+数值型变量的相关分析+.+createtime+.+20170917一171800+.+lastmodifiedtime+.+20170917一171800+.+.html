@@ -1,0 +1,76 @@
+
+
+<html><head><meta charset="UTF-8"><title>数值型变量的相关分析
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">数值型变量的相关分析</h1>
+<p>简单回归分析:</p>
+<p>已知两组数据:</p>
+<p>食物脂肪含量: 4 6 6 8</p>
+<p>食物热量: 110 120 120 164</p>
+<p>计算得到相关系数r</p>
+<p>再加两组数据:</p>
+<p>胆固醇: 4 5 6</p>
+<p>纳: 789</p>
+<p>4组数据, 两两之间计算相关系数, 得到:</p>
+<p>脂肪, 热量, 胆固醇, 纳相关系数表:</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>热量</th>
+<th>脂肪</th>
+<th>胆固醇</th>
+<th>钠</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>热量</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>脂肪</td>
+<td>0.91</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>胆固醇</td>
+<td>0.62</td>
+<td>0.69</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>钠</td>
+<td>0.73</td>
+<td>0.59</td>
+<td>0.41</td>
+<td>1.00</td>
+</tr>
+</tbody>
+</table>
+<p>相关系数的计算: 回归方程的斜率:</p>
+<p>回归方程:</p>
+<p>因变量 = 截距 + 斜率 * 自变量</p>
+<p>相关系数表的计算:</p>
+<pre><code class="lang-python">import numpy as np
+print(np.corrcoef([[1,2,3], [1,2,4], [1,2,5]]))
+</code></pre>
+<p>多元回归分析:</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

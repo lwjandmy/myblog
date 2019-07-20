@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>TCP 三次握手 四次挥手 重传机制总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tcp-">TCP 三次握手 四次挥手 重传机制总结</h1>
+<h2 id="tcp-">TCP三次握手</h2>
+<p><img src="pictures/8273592fc9fefaed44c3de3b2bf6237870ef7bf1.png" alt=""></p>
+<ol>
+<li>客户端发送SYN, 进入SYN-SEND状态.</li>
+<li>服务器发送SYN,ACK, 进入SYN-RCVD状态.</li>
+<li>客户端发送ACK, 进入ESTABLISHED状态.</li>
+<li>服务器收到ACK, 进入ESTABLISHED状态.</li>
+</ol>
+<hr>
+<h2 id="tcp-">TCP四次挥手</h2>
+<p><img src="pictures/ac6124b6b885d4b1ee11668dee6a34226ac81e35.png" alt=""></p>
+<ol>
+<li>客户端发送FIN, 进入FIN-WAIT-1状态.</li>
+<li>服务器发送ACK, 进入CLOSE-WAIT状态.</li>
+<li>服务器发送最后一个数据DATA.</li>
+<li>服务器发送FIN, 进入LAST-ACK状态.</li>
+<li>客户端发送ACK, 进入TIME-WAITDTL.</li>
+<li>服务器收到ACK, 进入CLOSED状态.</li>
+<li>客户端等待2MSL, 进入CLOSED状态. 若2MSL内又收到FIN, 说明服务器未收到ACK, 报文重传, 则再次发送ACK.</li>
+</ol>
+<hr>
+<h2 id="tcp-">TCP重传机制</h2>
+<p><img src="pictures/6a74ddce974909a22ff395416a56d0c69344e8b8.png" alt=""></p>
+<ol>
+<li>网络正常时, A发送数据DATA1, B发送ACK.</li>
+<li>网络拥堵时, A发送数据DATA2, B可能没收到, 也可能收到并发送ACK而A没收到ACK, 此时A经过2MSL(2倍最大报文段生存时间)后, 最终未收到ACK, 会将报文重传, 重发数据DATA2.</li>
+</ol>
+<hr>
+<h2 id="-timewait-">服务器timewait太多 修改配置</h2>
+<pre><code class="lang-bash">vi /etc/sysctl.conf
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_tw_reuse=1 # 让TIME_WAIT状态可以重用，这样即使TIME_WAIT占满了所有端口，也不会拒绝新的请求造成障碍 默认是0
+net.ipv4.tcp_tw_recycle=1 # 让TIME_WAIT尽快回收 默认0
+net.ipv4.tcp_fin_timeout=30
+/sbin/sysctl -p # 让修改生效
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

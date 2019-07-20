@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>find命令
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="find-">find命令</h1>
+<pre><code class="lang-bash">find /home/li -name &#39;*test*&#39; ! -type d -size +1M
+</code></pre>
+<p>在/home/li目录下, 查找文件名含&#39;test&#39;的文件, 大小大于1M, 排除文件夹类型.</p>
+<hr>
+<p>查找距离最近修改时间大于100天的文件</p>
+<p><a href="http://blog.csdn.net/liuzx32/article/details/45219849">Linux命令之find命令中的-mtime参数</a></p>
+<pre><code class="lang-bash">find . -mtime +100
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

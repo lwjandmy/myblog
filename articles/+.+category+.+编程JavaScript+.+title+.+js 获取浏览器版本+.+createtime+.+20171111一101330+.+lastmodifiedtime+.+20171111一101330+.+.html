@@ -1,0 +1,57 @@
+
+
+<html><head><meta charset="UTF-8"><title>js 获取浏览器版本
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-">js 获取浏览器版本</h1>
+<pre><code class="lang-js">function uaMatch(ua){    
+  var rMsie = /(msie\s|trident.*rv:)([\w.]+)/,    
+  rFirefox = /(firefox)\/([\w.]+)/,    
+  rOpera = /(opera).+version\/([\w.]+)/,    
+  rChrome = /(chrome)\/([\w.]+)/,    
+  rSafari = /version\/([\w.]+).*(safari)/;
+
+  var match = rMsie.exec(ua);    
+  if(match != null){    
+    return { browser : &quot;ie&quot;, version : match[2] || &quot;0&quot; };    
+  }    
+  var match = rFirefox.exec(ua);    
+  if (match != null) {    
+    return { browser : match[1] || &quot;&quot;, version : match[2] || &quot;0&quot; };    
+  }    
+  var match = rOpera.exec(ua);    
+  if (match != null) {    
+    return { browser : match[1] || &quot;&quot;, version : match[2] || &quot;0&quot; };    
+  }    
+  var match = rChrome.exec(ua);    
+  if (match != null) {    
+    return { browser : match[1] || &quot;&quot;, version : match[2] || &quot;0&quot; };    
+  }    
+  var match = rSafari.exec(ua);    
+  if (match != null) {    
+    return { browser : match[2] || &quot;&quot;, version : match[1] || &quot;0&quot; };    
+  }    
+  if (match != null) {    
+    return { browser : &quot;&quot;, version : &quot;0&quot; };    
+  }    
+}
+var browserMatch = uaMatch(navigator.userAgent.toLowerCase());  
+browserMatch
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

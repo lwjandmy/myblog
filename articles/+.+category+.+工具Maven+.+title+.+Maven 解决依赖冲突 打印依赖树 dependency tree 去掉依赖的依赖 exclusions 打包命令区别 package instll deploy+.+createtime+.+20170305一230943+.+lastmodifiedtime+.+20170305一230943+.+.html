@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>Maven 解决依赖冲突 打印依赖树 dependency tree 去掉依赖的依赖 exclusions 打包命令区别 package instll deploy
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="maven-dependency-tree-exclusions-package-instll-deploy">Maven 解决依赖冲突 打印依赖树 dependency tree 去掉依赖的依赖 exclusions 打包命令区别 package instll deploy</h1>
+<p><a href="http://stamen.iteye.com/blog/1554987">Maven解决类包依赖冲突</a></p>
+<h2 id="-">打印依赖树</h2>
+<pre><code class="lang-bash">mvn dependency:tree
+</code></pre>
+<h2 id="-">去掉依赖的依赖</h2>
+<pre><code class="lang-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;xx&lt;/groupId&gt;
+        &lt;artifactId&gt;xx&lt;/artifactId&gt;
+        &lt;version&gt;xx&lt;/version&gt;
+        &lt;exclusions&gt;
+            &lt;exclusion&gt;
+                &lt;artifactId&gt;xx&lt;/artifactId&gt;
+                &lt;groupId&gt;xx&lt;/groupId&gt;
+            &lt;/exclusion&gt;
+        &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h2 id="-">生命周期</h2>
+<p><a href="http://www.oracle.com/technetwork/cn/community/java/apache-maven-getting-started-2-405568-zhs.html">Apache Maven 入门篇下</a></p>
+<pre><code class="lang-text">process-resources 阶段：resources:resources
+compile 阶段：compiler:compile
+process-classes 阶段：(默认无目标)
+process-test-resources 阶段：resources:testResources
+test-compile 阶段：compiler:testCompile
+test 阶段：surefire:test
+prepare-package 阶段：(默认无目标)
+package 阶段：jar:jar
+install
+deploy
+</code></pre>
+<pre><code class="lang-text">package 将项目打包
+install 打包后安装到本地.m2仓库
+deploy 打包到中央仓库
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

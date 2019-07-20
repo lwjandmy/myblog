@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>cout 输出格式调整 格式备份恢复
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="cout-">cout 输出格式调整 格式备份恢复</h1>
+<p>格式调整</p>
+<pre><code class="lang-c++">#include &lt;iomanip&gt;
+    cout &lt;&lt; &quot;输出十六进制, 大写字母&quot; &lt;&lt; endl;
+    cout &lt;&lt; hex &lt;&lt; uppercase &lt;&lt; 123 &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;保留2位小数&quot; &lt;&lt; endl;
+    cout &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; M_PI &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;设置输出宽度5, 左对齐, 用*号填充&quot; &lt;&lt; endl;
+    cout &lt;&lt; setw(5) &lt;&lt; left &lt;&lt; setfill(&#39;*&#39;) &lt;&lt; 1 &lt;&lt; endl;
+</code></pre>
+<p>格式备份恢复</p>
+<pre><code class="lang-c++">ios state(0);
+state.copyfmt(cout); // 备份
+cout.copyfmt(state); // 恢复
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

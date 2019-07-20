@@ -1,0 +1,137 @@
+
+
+<html><head><meta charset="UTF-8"><title>android service 使用service 绑定service service生命周期
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-service-service-service-service-">android service 使用service 绑定service service生命周期</h1>
+<p>AndroidManifest.xml, activity_main.xml, MainActivity.java, MyService.java</p>
+<p>AndroidManifest.xml:</p>
+<pre><code class="lang-xml">        &lt;service
+            android:name=&quot;.MyService&quot;
+            android:enabled=&quot;true&quot;
+            android:exported=&quot;true&quot; &gt;
+        &lt;/service&gt;
+</code></pre>
+<p>activity_main.xml:</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;MainActivity&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnLaunchService&quot;
+        android:text=&quot;Launch Service&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnStopService&quot;
+        android:text=&quot;Stop Service&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnBindService&quot;
+        android:text=&quot;Bind Service&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnUnbindService&quot;
+        android:text=&quot;Unbind Service&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity.java:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.btnLaunchService).setOnClickListener(this);
+        findViewById(R.id.btnStopService).setOnClickListener(this);
+        findViewById(R.id.btnBindService).setOnClickListener(this);
+        findViewById(R.id.btnUnbindService).setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.btnLaunchService:
+                startService(new Intent(this, MyService.class));
+                break;
+            case R.id.btnStopService:
+                stopService(new Intent(this, MyService.class));
+                break;
+            case R.id.btnBindService:
+                bindService(new Intent(this, MyService.class), this, Context.BIND_AUTO_CREATE);
+                break;
+            case R.id.btnUnbindService:
+                unbindService(this);
+                break;
+            default:
+                System.out.println(&quot;Unknown Event from Listener&quot;);
+                break;
+        }
+    }
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    {
+        System.out.println(&quot;MainActivity::onServiceConnected()&quot;);
+    }
+    @Override
+    public void onServiceDisconnected(ComponentName name)
+    {
+        System.out.println(&quot;MainActivity::onServiceDisconnected()&quot;);
+    }
+}
+</code></pre>
+<p>MyService.java:</p>
+<pre><code class="lang-java">public class MyService extends Service
+{
+    public MyService() { }
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return new Binder();
+    }
+    @Override
+    public void onCreate()
+    { // startService调用时, 若服务已经在启动了, 此函数不会执行. 只有在服务开始运行时, 此函数被调用
+        super.onCreate();
+        System.out.println(&quot;MyService::onCreate()&quot;);
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    { // 每次startService调用, 此函数都会执行
+        System.out.println(&quot;MyService::onStartCommand()&quot;);
+        return super.onStartCommand(intent, flags, startId);
+    }
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        System.out.println(&quot;MyService::onDestroy()&quot;);
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

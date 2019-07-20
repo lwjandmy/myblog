@@ -1,0 +1,62 @@
+
+
+<html><head><meta charset="UTF-8"><title>JAXB helloworld xml和java对象 序列化 反序列化
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jaxb-helloworld-xml-java-">JAXB helloworld xml和java对象 序列化 反序列化</h1>
+<pre><code class="lang-java">    @XmlRootElement(name=&quot;root&quot;)
+    public static class ClassDemo implements Serializable {
+
+        @XmlTransient
+        private static final long serialVersionUID = 1234L;
+
+        @XmlElement(name=&quot;element&quot;)
+        public String a = &quot;你好&quot;;
+
+        @XmlAttribute(name=&quot;attr&quot;)
+        public String attr = &quot;good&quot;;
+
+        @XmlElement(name=&quot;list&quot;)
+        public List&lt;String&gt; list = Arrays.asList(&quot;a&quot;, &quot;b&quot;);
+
+    }
+
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, JAXBException {
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        JAXBContext context = JAXBContext.newInstance(ClassDemo.class);
+        Marshaller marshaller = context.createMarshaller();
+
+        ClassDemo demo = new ClassDemo();
+
+        marshaller.marshal(demo, os);
+
+        byte[] bytes = os.toByteArray();
+        System.out.println(new String(bytes, &quot;UTF-8&quot;));
+
+    }
+</code></pre>
+<p>JAXB Users Guide</p>
+<p><a href="https://javaee.github.io/jaxb-v2/doc/user-guide">https://javaee.github.io/jaxb-v2/doc/user-guide</a></p>
+<p>遇到的问题:</p>
+<p>如果类有多重继承关系, a 到 b, b 到 c, JAXB会提示c与其它元素没有直接关系</p>
+<p>不知道如果自己生成JAXBContext, 把b加到context里会不会避免这个错误, 要注意, 尽量不要出现多重继承</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>svn备份恢复命令
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="svn-">svn备份恢复命令</h1>
+<pre><code class="lang-bat">rem 备份test项目
+svnadmin dump F:/Repositories/test &gt; F:/svn_backup_test.dump
+rem 创建空的test项目
+svnadmin create E:/Repositories/test
+rem 恢复test项目
+svnadmin load E:/Repositories/test &lt; E:/svn_backup_test.dump
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

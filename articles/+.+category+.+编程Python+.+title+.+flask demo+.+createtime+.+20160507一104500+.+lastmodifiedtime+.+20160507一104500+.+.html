@@ -1,0 +1,147 @@
+
+
+<html><head><meta charset="UTF-8"><title>flask demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="flask-demo">flask demo</h1>
+<pre><code class="lang-Python">from flask import Flask
+app = Flask(__name__)
+
+
+@app.route(&#39;/&#39;)
+def index():
+    username =  request.cookies.get(&#39;username&#39;)
+    resp = make_response(render_template(...))
+    resp.set_cookie(&#39;username&#39;, &#39;the username&#39;)
+    return resp
+
+from flask import redirect, url_for
+@app.route(&#39;/redirect&#39;)
+def redirect():
+    return redirect(url_for(&#39;login&#39;))
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template(&#39;page_not_found.html&#39;), 404
+
+#@app.route(&#39;/hello&#39;)
+#def hello():
+#    return &#39;Hello World&#39;
+
+@app.route(&#39;/user/&lt;username&gt;&#39;)
+def show_user_profile(username):
+    return &#39;User {0}&#39;.format(username)
+
+@app.route(&#39;/post/&lt;int:post_id&gt;&#39;)
+def show_post(post_id):
+    return &#39;Post {0}&#39;.format(post_id)
+
+@app.route(&#39;/projects/&#39;)
+def projects():
+    return &#39;The project page&#39;
+
+@app.route(&#39;/about&#39;)
+def about():
+    return &#39;The about page&#39;
+
+
+from flask import render_template
+@app.route(&#39;/hello/&#39;)
+@app.route(&#39;/hello/&lt;name&gt;&#39;)
+def hello(name = None):
+    return render_template(&#39;hello.html&#39;, name = name)
+
+from flask import request
+with app.test_request_context(&#39;/hello&#39;, method = &#39;POST&#39;)
+    assert(request.path == &#39;/hello&#39;)
+    assert(request.method == &#39;POST&#39;)
+with app.request_context(environ):
+    assert(request.method == &#39;POST&#39;)
+
+@app.route(&#39;/login&#39;, methods = [&#39;GET&#39;, &#39;POST&#39;])
+def login():
+    error = None
+    if request.method == &#39;POST&#39;:
+        if valid_login(request.form[&#39;username&#39;],
+                        request.form[&#39;password&#39;]):
+            return log_the_user_in(request.form[&#39;username&#39;])
+        else:
+            error = &#39;Invalid username/password&#39;
+    return render_template(&#39;login.html&#39;, error = error)
+
+@app.route(&#39;/upload&#39;, methods = [&#39;GET&#39;, &#39;POST&#39;])
+def upload_file():
+    if request.method == &#39;POST&#39;:
+        f = request.files[&#39;the_file&#39;]
+        f.save(&#39;/var/www/uploads/uploaded_file.txt&#39;)
+        f.save(&#39;/var/www/uploads/uploaded/&#39; + secure_filename(f.filename))
+
+
+
+# session
+from flask import Flask, session, redirect, url_for, escape, request
+app = Flask(__name__)
+
+@app.route(&#39;/&#39;)
+def index():
+    if &#39;username&#39; in session:
+        return &#39;Logged in as %s&#39; % escape(session[&#39;username&#39;])
+    return &#39;You are not logged in&#39;
+
+@app.route(&#39;/login&#39;, methods = [&#39;GET&#39;, &#39;POST&#39;])
+def login():
+    if request.method == &#39;POST&#39;:
+        session[&#39;username&#39;] = request.form[&#39;username&#39;]
+        return redirect(url_for(&#39;index&#39;))
+    return &#39;&#39;&#39;
+        &lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+            &lt;p&gt;&lt;input type=text name=username&gt;
+            &lt;p&gt;&lt;input type=submit value=Login&gt;
+        &lt;/form&gt;
+    &#39;&#39;&#39;
+
+@app.route(&#39;/logout&#39;)
+def logout():
+    session.pop(&#39;username&#39;, None)
+    return redirect(url_for(&#39;index&#39;))
+
+app.secret_key = &#39;ASDFJADSKL;FJKLJSDF&#39;
+import os
+os.urandom(24) # generate secret key
+
+
+app.logger.debug(&#39;A value for debugging&#39;)
+app.logger.warning(&#39;A warning occurred (%d apples)&#39;, 42)
+app.logger.error(&#39;An eror occurred&#39;)
+
+
+
+if __name__ == &#39;__main__&#39;:
+    app.run(&#39;0.0.0.0&#39;)
+</code></pre>
+<p>templates/hello.html:</p>
+<pre><code class="lang-Html">&lt;!doctype html&gt;
+&lt;title&gt;Hello from Flask&lt;/title&gt;
+{% if name %}
+  &lt;h1&gt;Hello {{ name }}!&lt;/h1&gt;
+{% else %}
+  &lt;h1&gt;Hello World!&lt;/h1&gt;
+{% endif %}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

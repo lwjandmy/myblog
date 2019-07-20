@@ -1,0 +1,89 @@
+
+
+<html><head><meta charset="UTF-8"><title>java多线程陷阱 对基本类型变量封装的对象的同步 导致同步失效
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="java-">java多线程陷阱 对基本类型变量封装的对象的同步 导致同步失效</h1>
+<pre><code class="lang-java">public class TestSynchronizedBoolean {
+
+    public static volatile Boolean flag = Boolean.FALSE; // 初始为false
+
+    public static void main(String[] args) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (flag) { // 2. 线程1启动, synchronized(flag=Boolean.FALSE)
+                    try {
+
+                        flag = Boolean.TRUE; // 3. flag = Boolean.TRUE 关键! flag被修改了, 导致线程2启动时, synchronized(true)
+
+                        // 5.concurrent 线程1的同步flag资源访问的1分钟执行时间, 线程2理应等待.
+                        System.out.println(String.format(&quot;%s: enter thread&quot;, Thread.currentThread().getName()));
+                        Thread.sleep(1000);
+                        System.out.println(String.format(&quot;%s: exit thread&quot;, Thread.currentThread().getName()));
+
+                    } catch (Exception e) { }
+                }
+            }
+        }, &quot;thread1&quot;)
+        .start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100); // 1. 保证线程1先启动, 同时线程1启动后会修改flag
+                } catch (Exception e1) { }
+                synchronized (flag) { //  4. 线程2启动, synchronized(flag=Boolean.TRUE)
+                    try {
+
+                        // 5.concurrent 线程2的同步flag资源访问的1分钟执行时间, 线程1理应等待.
+                        System.out.println(String.format(&quot;%s: enter thread&quot;, Thread.currentThread().getName()));
+                        Thread.sleep(1000);
+                        System.out.println(String.format(&quot;%s: exit thread&quot;, Thread.currentThread().getName()));
+
+                    } catch (Exception e) { }
+                }
+            }
+        }, &quot;thread2&quot;)
+        .start();
+
+        // 6. 日志显示:
+//        thread1: enter thread
+//        thread2: enter thread
+//        thread1: exit thread
+//        thread2: exit thread
+
+        // 7. 如果注释掉&quot;3. flag = Boolean.TRUE&quot;, 日志显示:
+//        thread1: enter thread
+//        thread1: exit thread
+//        thread2: enter thread
+//        thread2: exit thread
+
+        // 原因: 由于java所有变量都是指针, synchronized(obj)是对obj指针指向的对象进行同步访问
+        // 因此必须保证obj所指向的对象是同一个, 同步访问才有效
+        // flag = Boolean.TRUE, 修改了flag指向的对象, 导致同步了两个对象: synchronized(Boolean.FALSE)和synchronized(Boolean.TRUE)
+
+        // 总结: 对基础类型封装的对象, 如Integer, Character, Boolean等, 不能当作synchronized的同步对象!
+        // 字符串对象, String, 不能当作synchronized的同步对象!
+
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

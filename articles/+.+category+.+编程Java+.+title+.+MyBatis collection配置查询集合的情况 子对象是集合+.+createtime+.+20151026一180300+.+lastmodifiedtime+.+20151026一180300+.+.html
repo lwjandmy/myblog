@@ -1,0 +1,134 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis collection配置查询集合的情况 子对象是集合
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-collection-">MyBatis collection配置查询集合的情况 子对象是集合</h1>
+<p>log4j.properties日志配置文件忽略, MyBatisConfig.xml主配置文件, User.xml用户映射, Visit.java访问记录, User.java用户, TestCollectionQuery.java主方法</p>
+<p>数据库:</p>
+<pre><code class="lang-sql">create table user_tbl(
+id int not null auto_increment primary key,
+username char(20),
+password char(20)
+);
+create table visit_tbl(
+id int not null primary key auto_increment,
+user_id int not null,
+visit_date datetime,
+visit_ip char(30)
+);
+</code></pre>
+<p>MyBatisConfig.xml:  主配置文件</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+    &lt;typeAliases&gt;
+        &lt;typeAlias alias=&quot;User&quot; type=&quot;org.learnmybatiscollectionquery.pojo.User&quot; /&gt;
+        &lt;typeAlias alias=&quot;Visit&quot; type=&quot;org.learnmybatiscollectionquery.pojo.Visit&quot;/&gt;
+    &lt;/typeAliases&gt;
+    &lt;environments default=&quot;development&quot;&gt;
+        &lt;environment id=&quot;development&quot;&gt;
+            &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+            &lt;dataSource type=&quot;POOLED&quot;&gt;
+                &lt;property name=&quot;driver&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
+                &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis_db&quot; /&gt;
+                &lt;property name=&quot;username&quot; value=&quot;mybatis_usr&quot; /&gt;
+                &lt;property name=&quot;password&quot; value=&quot;123456&quot; /&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/learnmybatiscollectionquery/map/User.xml&quot; /&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>User.xml:  用户映射</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn&quot;&gt;
+    &lt;resultMap type=&quot;User&quot; id=&quot;VisitMap&quot;&gt;
+        &lt;id property=&quot;id&quot; column=&quot;u_id&quot; /&gt;
+        &lt;result property=&quot;username&quot; column=&quot;username&quot; /&gt;
+        &lt;result property=&quot;password&quot; column=&quot;password&quot; /&gt;
+        &lt;!-- 这里的column是子表的主键 --&gt;
+        &lt;collection property=&quot;visitList&quot; javaType=&quot;ArrayList&quot; column=&quot;v_id&quot; ofType=&quot;Visit&quot;&gt;
+            &lt;result property=&quot;id&quot; column=&quot;v_id&quot; /&gt;
+            &lt;result property=&quot;userID&quot; column=&quot;user_id&quot; /&gt;
+            &lt;result property=&quot;visitDate&quot; column=&quot;visit_date&quot; /&gt;
+            &lt;result property=&quot;visitIP&quot; column=&quot;visit_ip&quot; /&gt;
+        &lt;/collection&gt;
+    &lt;/resultMap&gt;
+    &lt;select id=&quot;selectVisit&quot; resultMap=&quot;VisitMap&quot;&gt;
+        select u.id as u_id, u.username, u.password, v.id as v_id, v.user_id, v.visit_date, v.visit_ip
+        from user_tbl as u inner join visit_tbl as v
+        on u.id = v.user_id;
+    &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>Visit.java:  访问记录</p>
+<pre><code class="lang-java">public class Visit {
+    private int id;
+    private int userID;
+    private String visitIP;
+    private Date visitDate;
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String toString() { return &quot;Visit [id=&quot; + id + &quot;, userID=&quot; + userID + &quot;, visitIP=&quot; + visitIP + &quot;, visitDate=&quot; + visitDate + &quot;]&quot;; }
+    public int getUserID() { return userID; }
+    public void setUserID(int userID) { this.userID = userID; }
+    public String getVisitIP() { return visitIP; }
+    public void setVisitIP(String visitIP) { this.visitIP = visitIP; }
+    public Date getVisitDate() { return visitDate; }
+    public void setVisitDate(Date visitDate) { this.visitDate = visitDate; }
+}
+</code></pre>
+<p>User.java:  用户</p>
+<pre><code class="lang-java">public class User {
+    public String toString() { return &quot;User [id=&quot; + id + &quot;, username=&quot; + username + &quot;, password=&quot; + password + &quot;, visitList=&quot; + visitList + &quot;]&quot;; }
+    private int id;
+    private String username;
+    private String password;
+    List&lt;Visit&gt; visitList;
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public List&lt;Visit&gt; getVisitList() { return visitList; }
+    public void setVisitList(List&lt;Visit&gt; visitList) { this.visitList = visitList; }
+}
+</code></pre>
+<p>TestCollectionQuery.java:  主方法</p>
+<pre><code class="lang-java">public class TestCollectionQuery {
+    public static void main(String[] args) {
+        InputStream inputStream = TestCollectionQuery.class.getResourceAsStream(&quot;../../../org/learnmybatiscollectionquery/map/MyBatisConfig.xml&quot;);
+        SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlMapper.openSession();
+        List&lt;User&gt; listUser = session.selectList(&quot;selectVisit&quot;);
+        for (User user : listUser)
+            System.out.println(user);
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

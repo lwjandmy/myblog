@@ -1,0 +1,115 @@
+
+
+<html><head><meta charset="UTF-8"><title>nginx
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="nginx">nginx</h1>
+<h2 id="nginx-apache">nginx &amp; apache</h2>
+<p>虚拟机网络选择NAT, 此网络只能虚拟机之间互相访问, 虚拟机可以连接外网. 测试时可以再开一个虚拟机, 进行测试.</p>
+<p>nginx虚拟机:</p>
+<pre><code class="lang-bash">pacman -Sy nginx
+</code></pre>
+<p>配置/etc/nginx/nginx.conf,</p>
+<pre><code class="lang-conf">http {
+    upstream apache {
+        server 10.0.2.7;
+    }
+    server {
+        location / {
+            proxy_pass http://apache;
+        }
+    }
+}
+</code></pre>
+<p>apache虚拟机:</p>
+<pre><code class="lang-bash">pacman -Sy apache php php-apache
+</code></pre>
+<p>配置apache: /etc/httpd/conf/httpd.conf:</p>
+<pre><code class="lang-conf">#LoadModule mpm_event_module modules/mod_mpm_event.so
+LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+#LoadModule mpm_worker_module modules/mod_mpm_worker.so
+LoadModule php7_module modules/libphp7.so
+Include conf/extra/php7_module.conf
+</code></pre>
+<p>配置php: /etc/php/php.ini:</p>
+<pre><code class="lang-ini">extension=mysqli.so
+extension=pdo_mysql.so
+</code></pre>
+<p>建立测试文件: /srv/http/index.php:</p>
+<pre><code class="lang-php">$mysqli = new mysqli(&quot;10.0.2.10&quot;, &quot;remote&quot;, &#39;123456&quot;, &quot;test&quot;);
+$result = $mysqli-&gt;query(&quot;select * from test1&quot;);
+print_r($result-&gt;fetch_array());
+</code></pre>
+<p>mysql虚拟机:</p>
+<pre><code class="lang-bash">pacman -Sy mariadb
+mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+sudo systemctl start mariadb
+mysql, grant all privileges on *.* to remote@`%` identified by &#39;123456&#39;;
+</code></pre>
+<p>附加配置tomcat:</p>
+<pre><code class="lang-bash">pacman -S tomcat7
+</code></pre>
+<p>配置 /etc/tomcat7/server.xml, 可调整端口号</p>
+<p>配置nginx: </p>
+<pre><code class="lang-conf">upstream { server 10.0.2.7; server 10.0.2.7:8080; }
+</code></pre>
+<h2 id="nginx-php-fpm">nginx &amp;&amp; php-fpm</h2>
+<p>安装nginx php php-fpm</p>
+<pre><code class="lang-bash">sudo pacman -S nginx php php-fpm
+</code></pre>
+<p>配置/etc/nginx/nginx.conf:</p>
+<pre><code class="lang-conf">error_log /var/log/nginx/error.log;
+access_log /var/log/nginx/access.log;
+access_log /var/log/nginx/host.access.log;
+location ~ \.php$ {
+    include fastcgi_params;
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME /var/nginx/html/$fastcgi_script_name;  这里注意要指定php脚本路径
+}
+</code></pre>
+<p>改权限, 使日志可读</p>
+<pre><code class="lang-bash">sudo chmod -R 754 /var/log/nginx
+</code></pre>
+<p>配置/etc/php/php-fpm.d/www.conf</p>
+<pre><code class="lang-conf">listen = 127.0.0.1:9000
+</code></pre>
+<p>启动php-fpm, nginx</p>
+<pre><code class="lang-bash">sudo systemctl start php-fpm
+sudo systemctl start nginx
+</code></pre>
+<pre><code class="lang-bash">重新加载conf
+nginx -s reload
+
+关闭nginx
+nginx -s stop
+</code></pre>
+<hr>
+<h2 id="proxy_pass-">proxy_pass转发地址的注意点</h2>
+<p>location /some/path/ {
+    proxy_pass <a href="http://server">http://server</a>;
+}</p>
+<p>会把请求<a href="http://ip:port/some/path/转发到http://server/some/path/">http://ip:port/some/path/转发到http://server/some/path/</a></p>
+<p>location /some/path/ {
+    proxy_pass <a href="http://server/path/">http://server/path/</a>;
+}</p>
+<p>会把请求<a href="http://ip:port/some/path/转发到http://server/path/">http://ip:port/some/path/转发到http://server/path/</a></p>
+<p>proxy_pass后跟的转发地址, 如果不以&#39;/&#39;结尾, 则会把location配的url追加到转发地址后</p>
+<p>如果转发地址以&#39;/&#39;结尾, 则转发地址就是proxy_pass后的地址, 不会变.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

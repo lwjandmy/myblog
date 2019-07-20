@@ -1,0 +1,107 @@
+
+
+<html><head><meta charset="UTF-8"><title>x-editable 例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="x-editable-">x-editable 例子</h1>
+<pre><code class="lang-html">&lt;link href=&quot;//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;script src=&quot;http://code.jquery.com/jquery-2.0.3.min.js&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;link href=&quot;bootstrap-editable/css/bootstrap-editable.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;script src=&quot;bootstrap-editable/js/bootstrap-editable.js&quot;&gt;&lt;/script&gt;
+
+    &lt;a href=&quot;#&quot; id=&quot;test1&quot;&gt;test1&lt;/a&gt;
+
+    &lt;script&gt;
+        $(function () {
+
+            $(&#39;#test1&#39;).editable({
+                ajaxOptions: {
+                    type: &#39;GET&#39;,
+                    dataType: &#39;json&#39;
+                }, // ajax数据参数
+                autotext: &#39;auto&#39;, // 基于元素的值自动设置元素文本, 可选值: auto|always|never. 如下拉框{1: &#39;a&#39;, 2: &#39;b&#39;}, 值为1, 则文本为a
+                defaultValue: null, // 元素默认值, 可选值: null|undefined|&#39;&#39;
+                disabled: false, // 设置禁用
+                display: function(value, sourceData) {
+                    //display checklist as comma-separated values
+                    var html = [],
+                        checked = $.fn.editableutils.itemsByValue(value, sourceData);
+
+                    if(checked.length) {
+                        $.each(checked, function(i, v) { html.push($.fn.editableutils.escape(v.text)); });
+                        $(this).html(html.join(&#39;, &#39;));
+                    } else {
+                        $(this).empty();
+                    }
+                }, // 自定义显示样式
+                emptyclass: &#39;editable-empty&#39;, // 编辑框为空时的class样式类
+                emptytext: &#39;Empty&#39;, // 编辑框为空时显示的文本
+                error: function(response, newValue) {
+                    if(response.status === 500) {
+                        return &#39;Service unavailable. Please try later.&#39;;
+                    } else {
+                        return response.responseText;
+                    }
+                }, // 错误处理
+                highlight: &#39;#FFFF80&#39;, // 内容更新后, 高亮编辑框的颜色
+                mode: &#39;popup&#39;, // 编辑框模式, can be popup or inline
+                name: null, // 编辑框的名字, 用于提交到服务器, 可从id属性取值
+                onblur: &#39;cancel&#39;, // 用户点击编辑框外的响应, Can be cancel|submit|ignore
+                params: function(params) {
+                    //originally params contain pk, name and value
+                    params.a = 1;
+                    return params;
+                }, // 提交数据前的处理, 可增加自定义数据
+                pk: {
+                    id: 1,
+                    lang: &#39;en&#39;
+                }, // 编辑框主键, 支持复合主键
+                placement: &#39;top&#39;, // 编辑框位置, top|right|bottom|left
+                savenochange: false, // 当表单已提交, 修改的数据未保存, 是否保存
+                selector: null, // 指定选择器, 被选择的元素将可修改
+                send: &#39;auto&#39;, // 是否发送数据到服务器的策略, &#39;auto&#39;, &#39;always&#39;, &#39;never&#39;. &#39;auto&#39;是仅当pk和url定义时发送数据
+                showbuttons: true, // 在哪显示按钮, &#39;true&#39;显示按钮, 在左侧, &#39;false&#39;, 不显示按钮, &#39;left&#39;, 同&#39;true&#39;, 左侧显示按钮, &#39;bottom&#39;, 下方显示按钮
+                success: function(response, newValue) {
+                    if (0 != response.error) {
+                        return [&#39;操作失败&#39;, response.msg].join(&#39;, &#39;);
+                    }
+                    table.bootstrapTable(&#39;refresh&#39;, {
+                        url: &#39;url&#39;,
+                        query: {
+                            data: &#39;data&#39;
+                        }
+                    });
+                }, // 服务器返回成功的回调函数
+                toggle: &#39;click&#39;, // 定义何时出现编辑窗口. &#39;click&#39;, &#39;dblclick&#39;, &#39;mouseenter&#39;, &#39;manual&#39;, 需代码调用show/hide方法
+                type: &#39;text&#39;, // 输入类型, text|textarea|select|date|checklist
+                unsavedclass: &#39;editable-unsaved&#39;, // 值未提交到服务器时的class属性(在pk是空的或send为&#39;never&#39;时)
+                url: null, // 服务器地址
+                validate: function(value) {
+                    if($.trim(value) == &#39;&#39;) {
+                        return &#39;This field is required&#39;;
+                    }
+                }, // 校验方法
+                value: &#39;elements text&#39; // 输入框初始值
+            });
+
+        });
+    &lt;/script&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

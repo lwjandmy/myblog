@@ -1,0 +1,63 @@
+
+
+<html><head><meta charset="UTF-8"><title>express 路由
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="express-">express 路由</h1>
+<p>express 路由</p>
+<p>路由helloworld:</p>
+<pre><code class="lang-js">var express = require(&#39;express&#39;);
+var app = express();
+app.get(&#39;/&#39;, function(req, res)
+    {
+        res.send(&#39;hello world&#39;);
+    });
+</code></pre>
+<p>特殊的路由all:</p>
+<pre><code class="lang-js">app.all(&#39;/secret&#39;, function(req, res, next)
+    {
+        console.log(&#39;Accessing the secret section ...&#39;);
+        next();  控制权交给下一个处理函数
+    })
+</code></pre>
+<p>路由url可使用正则表达式:</p>
+<pre><code class="lang-js">app.get(&#39;/ab(cd)?e&#39;, function(req, res)
+    {
+        res.send(&#39;ab(cd)?e&#39;);
+    })
+</code></pre>
+<p>使用Router类:</p>
+<pre><code class="lang-js">var express = require(&#39;express&#39;)
+var router = express.Router();
+router.use(function timeLog(req, res, next)
+    {
+        console.log(&#39;Time: &#39;, Date.now());
+        next();
+    });
+router.get(&#39;/&#39;, function(req, res)
+    {
+        res.send(&#39;Birds home page&#39;);
+    });
+router.get(&#39;/about&#39;, function(req, res)
+    {
+        res.send(&#39;About birds&#39;);
+    });
+module.exports = router;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

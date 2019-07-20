@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>URL解析模块 urlparse
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="url-urlparse">URL解析模块 urlparse</h1>
+<p>功能: 解析(分解)URL成六块</p>
+<pre><code class="lang-Python">urlparse.urlparse(url)
+</code></pre>
+<p>Example:</p>
+<pre><code class="lang-Python">urlparse.urlparse(&#39;http://www.baidu.com/index.html;param1?query2#fragment3&#39;)
+# return ParseResult(scheme=&#39;http&#39;, netloc=&#39;www.baidu.com&#39;, path=&#39;/index.html&#39;, params=&#39;param1&#39;, query=&#39;query2&#39;, fragment=&#39;fragment3&#39;)
+</code></pre>
+<p>urlparse.urlparse相反的工作, URL拼接:</p>
+<pre><code class="lang-Python">urlparse.urlunparse(data)
+</code></pre>
+<p>又一个URL拼接, 和上面的区别?</p>
+<pre><code class="lang-Python">urlparse.urljoin(base, url)
+
+Example:
+
+urlparse.urljoin(&#39;http://www.baidu.com&#39;, &#39;/index.htm&#39;)
+# return &#39;http://www.baidu.com/index.htm&#39;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

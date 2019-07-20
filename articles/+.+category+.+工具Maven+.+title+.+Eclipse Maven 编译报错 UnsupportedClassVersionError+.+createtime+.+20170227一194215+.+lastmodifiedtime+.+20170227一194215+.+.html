@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>Eclipse Maven 编译报错 UnsupportedClassVersionError
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="eclipse-maven-unsupportedclassversionerror">Eclipse Maven 编译报错 UnsupportedClassVersionError</h1>
+<p>Exception in thread &quot;main&quot; java.lang.UnsupportedClassVersionError: org/apache/maven/cli/MavenCli : Unsupported major.minor version 51.0</p>
+<p>因为maven的版本太高, 换成3.2.5, 或修改项目jdk成1.7:</p>
+<pre><code class="lang-text">Eclipse -&gt; Java -&gt; Installed JREs -&gt; 增加jdk1.7, 设置jdk1.7为默认
+Eclipse -&gt; Java -&gt; Compiler, Compiler compliance level: 1.7
+项目右键 -&gt; 属性 -&gt; Java Build Path -&gt; Libraries, JDK: 1.7
+项目右键 -&gt; 属性 -&gt; Java Compiler, Compiler compliance level: 1.7
+项目右键 -&gt; 属性 -&gt; Project Facets,  Java: 1.7
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

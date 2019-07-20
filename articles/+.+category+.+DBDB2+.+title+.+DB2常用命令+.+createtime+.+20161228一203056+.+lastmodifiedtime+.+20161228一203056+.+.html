@@ -1,0 +1,330 @@
+
+
+<html><head><meta charset="UTF-8"><title>DB2常用命令
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="db2-">DB2常用命令</h1>
+<pre><code class="lang-text">http://jingyan.baidu.com/article/ac6a9a5e613e4c2b653eac1b.html
+http://blog.csdn.net/u011969811/article/details/45966659
+https://zhidao.baidu.com/question/264112182574373525.html
+http://www.ibm.com/developerworks/cn/data/library/techarticles/0212wieser/0212wieser.html
+http://www.cnblogs.com/QQParadise/articles/2376488.html
+http://blog.csdn.net/zwhfyy/article/details/28863833
+http://blog.chinaunix.net/uid-8052635-id-2034436.html
+http://blog.sina.com.cn/s/blog_442b7f1d010005tm.html
+http://king123654789.iteye.com/blog/1296492
+</code></pre>
+<hr>
+<h2 id="catalog-">catalog命令 编目</h2>
+<pre><code class="lang-text">进db2cmd:
+db2 catalog tcpip node pfnode remote 10.8.6.9 server 50015   【pfnode是db2 节点名】 
+db2 catalog db pfdb at node pfnode      【pfdb是 实例名】 
+db2 terminate 
+
+远程的数据库信息加载到本地一般分为两步
+
+第一步，catalog server端的node
+db2 catalog tcpip node db2node remote hostname server service_port  其中db2node是指定的结点名, hostname是数据库ip, service_port是数据库端口
+
+第二步，catalog 远端DB2 数据库
+db2 catalog database db_name as alias_name at node db2node  其中db_name是远程数据库的名字, alias_name是客户端实例名, db2node是结点名
+
+
+查看现有结点
+db2 list node directory
+</code></pre>
+<hr>
+<h2 id="-">数据库</h2>
+<pre><code class="lang-bash">创建数据库
+create database ngcms2 on E: using codeset UTF-8 territory CN
+
+连接数据库
+db2 connect to 数据库名称 user 用户名 using 密码
+
+断开数据库连接
+db2 disconnect current
+db2 quit
+
+查看数据库配置
+db2 get db cfg
+
+列出数据库
+list db directory 
+list node directory 
+
+删数据库
+db2 drop db CITYBANK
+</code></pre>
+<hr>
+<h2 id="-">表空间</h2>
+<pre><code class="lang-bash">创建表空间
+db2 &quot;create regular tablespace  tablespace1 pagesize 32k managed by database using(file &#39;/usr/yixiayizi/tablespace1&#39; 5g) bufferpool bp32k&quot;  
+db2 &quot;create regular tablespace  tablespace2 pagesize 32k managed by database using(file &#39;/usr/yixiayizi/tablespace2&#39; 10g) bufferpool bp32k&quot;  
+db2 &quot;create regular tablespace  tablespace3 pagesize 32k managed by database using(file &#39;/usr/yixiayizi/tablespace3&#39; 2g) bufferpool bp32k&quot;  
+注意(file &#39;/usr/yixiayizi/tablespace1&#39; 5g):
+第一个参数：
+ 当指向外置盘时，file改为device；
+ 当指向文件路径时，为file；
+第二个参数：需要是绝对路径；
+第三个参数：该表空间的大小；
+
+修改表空间
+
+增加表空间大小, 增加容器
+ALTER TABLESPACE TS1 ADD (DEVICE &#39;/dev/rhdisk9&#39; 10000)
+
+增加表空间大小, 修改容器大小
+ALTER TABLESPACE TS1 RESIZE (FILE &#39;/conts/cont0&#39; 2000, DEVICE &#39;/dev/rcont1&#39; 2000, FILE &#39;cont2&#39; 2000)
+ALTER TABLESPACE TS1 RESIZE (ALL 2000)
+
+增加表空间大小, 扩展容器大小
+ALTER TABLESPACE TS1 EXTEND (FILE &#39;/conts/cont0&#39; 1000, DEVICE &#39;/dev/rcont1&#39; 1000, FILE &#39;cont2&#39; 1000)
+ALTER TABLESPACE TS1 EXTEND (ALL 1000)
+
+容器单位, 页, 一页=4kb, 或8kb, 或16kb, 或32kb, 创建表空间时会指定一页的大小
+
+删除表空间
+db2 drop tablespace  tablespace1, tablespace2, tablespace3 
+
+查看表空间信息
+LIST TABLESPACES SHOW DETAIL
+</code></pre>
+<hr>
+<h2 id="-">缓冲池</h2>
+<pre><code class="lang-text">缓冲池属于数据库, 可用于多个表, 但要保证表空间大小=缓冲池页大小, 一个表空间只能有一个缓冲池.
+创建数据库时, 会默认创建缺省缓冲池, 名为IBMDEFAULTBP.
+缓冲池大小影响数据库性能.
+</code></pre>
+<hr>
+<h2 id="-">编码设置</h2>
+<pre><code class="lang-bash">db2三种级别字符集: 操作系统级LANG、实例级（客户端级）db2codepage、数据库级Database code page/set
+
+查看当前编码设置
+db2set -all
+
+设置编码, 1386=GBK, 1208=UTF-8
+db2set db2codepage=1208
+
+查看数据库配置
+db2 get db cfg
+通过Database code set可知数据库编码格式
+
+建数据库时指定数据库编码, 以后不能修改
+create database SRCDB using codeset GBK territory CN
+</code></pre>
+<hr>
+<h2 id="-db2-">查看db2版本</h2>
+<pre><code class="lang-bash">db2level
+</code></pre>
+<hr>
+<h2 id="db2-shell">db2的shell</h2>
+<pre><code class="lang-text">Start-&gt;Program-&gt;IBM DB2-&gt;Command Center
+</code></pre>
+<hr>
+<h2 id="db2-">db2启动</h2>
+<pre><code class="lang-bash">services.msc, db2开头的服务全开
+db2start
+</code></pre>
+<hr>
+<h2 id="restore-">RESTORE恢复数据</h2>
+<pre><code class="lang-bash">restore database testdb from &quot;/home/backup&quot; TAKEN AT 20150126132445 TO &quot;E:&quot; into testdb_new
+</code></pre>
+<hr>
+<h2 id="backup-">BACKUP备份数据</h2>
+<pre><code class="lang-bash">backup database testdb to &quot;/home/backup&quot; user testuser using testpass
+</code></pre>
+<h3 id="-1">离线全备份, 资料1</h3>
+<pre><code class="lang-bash">查看是否有用户使用db2
+db2 list applications for db dbname
+
+重启db2以断掉所有连接
+db2stop force 
+db2start 
+
+备份, 使用TSM作为备份的介质
+db2 backup database dbname use tsm 
+
+查看备份历史记录
+db2 list history backup all for dbname
+</code></pre>
+<h3 id="-2">离线全备份, 资料2</h3>
+<pre><code class="lang-bash">数据库置为“静默”状态
+db2 quiesce database immediate force connections
+
+重置连接
+db2 connect reset
+
+备份数据库testdb到/home/backup
+db2 backup database testdb to &quot;/home/backup&quot; user testuser using testpass
+
+连接db2数据库
+db2 connect to testdb user testuser using testpass
+
+解除数据库的“静默”状态
+db2 unquiesce database
+
+重置连接
+db2 connect reset
+</code></pre>
+<h3 id="-">在线备份</h3>
+<pre><code class="lang-bash">打开在线备份参数
+db2 update db cfg for dbname using userexit on 启用用户出口 
+db2 update db cfg for dbname using logretain on 启用归档日志 
+db2 update db cfg for dbname using trackmod on 启用增量备份功能
+
+开启后, 数据库处于backup pending状态，做数据库的离线全备份.
+
+在线备份
+db2 backup db dbname online use tsm 
+
+在线增量备份
+
+在线增量备份
+db2 backup db dbname online incremental use tsm
+</code></pre>
+<hr>
+<h2 id="db2-4-">db2数据导出格式, 4种</h2>
+<pre><code class="lang-text">ASC——非定界ASCII文件，是一个ASCII字符流。数据流中的行由行定界符分隔，而行中的每一列则通过起始和结束位置来定义。
+
+DEL——定界ASCII文件，也是一个ASCII字符流。数据流中的行由行定界符分隔，行中的列值由列定界符分隔。
+
+WSF——（work sheet format）为工作表格式，用于与Lotus系列的软件进行数据交换。
+
+PC/IXF——是集成交换格式（Integration Exchange Format，IXF）数据交换体系结构的改编版本。
+</code></pre>
+<hr>
+<h2 id="import-">import导入数据</h2>
+<pre><code class="lang-text">import方式不需要先建表结构, 只需要一个空库, load方式需要先建立表结构.
+如果表中存在自增长的IDENTITY列会出错, 只能使用db2 import指令来进行导入，相关的参数是IDENTITYIGNORE，IDENTITYMISSING
+
+导入c:\org.txt数据, del格式, 到表org
+import from c:\org.txt of del insert into org
+
+### import语句插入方式
+
+insert  在表中现有数据基础之上追加新数据
+insert_update  只用于有主键的表, 数据不存在则追加, 数据存在则更新
+replace  先清空表, 再追加数据
+replace_create  如果表存在, 则清空表, 追加数据; 如果表不存在, 则建表, 再追加数据
+
+
+load导入数据
+
+从光标类型文件中进行装入
+
+定义一个cursor
+declare mycur cursor for select * from org
+创建一个新表，结构与cursor相容
+create table org2 like org
+从cursor中装入
+load from mycur of cursor insert into org2
+
+除了可以从cursor中装入，还可以从文件、管道、设备中进行装入。而导入命令只能从文件中导入。
+</code></pre>
+<hr>
+<p>export导出数据</p>
+<pre><code class="lang-text">用DEL格式, 导出表org, 到文件c:\org.txt
+export to c:\org.txt of del select * from org
+
+大数据导出, 以def格式, 导出表emp_photo, 到文件d:\myfile.del, 其中blob数据存到d:\lob\, 路径必须存在! lobfile lobs modified by lobsinfile指定了文件名是lobs, 并根据数据量追加.001、.002等扩展名
+export to d:\myfile.del of del lobs to d:\lob\ lobfile lobs modified by lobsinfile select * from emp_photo
+</code></pre>
+<hr>
+<p>db2move导入导出数据</p>
+<pre><code class="lang-text">db2move mytestdb import –u db2inst1 –p thepasswd
+</code></pre>
+<hr>
+<p>db2look提取数据库结构DDL</p>
+<pre><code class="lang-text">db2look –d testdb –a –e –x –o testdb.sql
+</code></pre>
+<hr>
+<p>db2move导出全部数据</p>
+<pre><code class="lang-text">db2move是集成式的数据移动工具, 底层通过db2 export, db2 import, db2 load指令来完成任务. b2move导出的数据文件格式是IXF
+</code></pre>
+<p>导出指定的数据库中的全部数据</p>
+<pre><code class="lang-text">db2move testdb export –u user –p pass
+导出说明: 数据库testdb下全部数据导出到当前目录, 一个表对应一个.ixf文件和一个.msg文件. 另外db2move.lst记录.ixf文件和.msg文件与表的一一对应关系, EXPORT.out记录导出日志.
+</code></pre>
+<hr>
+<p>db2 export指令导出数据</p>
+<pre><code class="lang-text">进入db2控制台
+db2
+
+以del/ixf格式导出
+export to /home/backup/mytbl.txt of del select * from mytbl
+export to /home/backup/mytbl.ixf of ixf select * from mytbl
+
+断开连接
+connect reset
+quit
+</code></pre>
+<hr>
+<p>db2move导入（import）数据</p>
+<pre><code class="lang-text">进入db2控制台
+db2
+
+连接db2数据库
+connect to mytestdb user db2inst1 using thepasswd
+
+数据库mytestdb
+create database ngcms2 on E: using codeset UTF-8 territory CN
+
+提交库创建
+commit work
+
+断开连接
+connect reset
+terminate
+</code></pre>
+<p>删除数据库</p>
+<p>drop db sample_1 </p>
+<p>数据库当前正在使用</p>
+<p>list applications  查看链接该数据库有多少应用
+force applications all 杀掉这些应用db2</p>
+<p>连接数据库, 查看表空间
+connect to db2inst1
+list tablespaces</p>
+<p><a href="http://blog.itpub.net/8231934/viewspace-584635/">http://blog.itpub.net/8231934/viewspace-584635/</a>
+<a href="http://database.51cto.com/art/201510/495298.htm">http://database.51cto.com/art/201510/495298.htm</a></p>
+<ol>
+<li>命令行处理器, 生成重定向脚本</li>
+</ol>
+<p>restore database DB2INST1 from &quot;E:\民生&quot; TAKEN AT 20160531162029 TO &quot;E:&quot; into DB2INST1 redirect generate script &quot;E:\民生\import.sql&quot;</p>
+<ol>
+<li>命令窗口, 执行脚本
+db2 -svtf &quot;E:\民生\import.sql&quot;</li>
+</ol>
+<p>s 代表遇到错误时中止运行脚本<br>v 代表输出结果到屏幕<br>t 指以；号作为每行的分隔符<br>f 指后面需跟脚本文件名 </p>
+<p>查询所有表信息
+select tabname from syscat.tables where tabschema = current schema</p>
+<p>查询列信息
+select * from syscolumns where tbname=&#39;tabname&#39;</p>
+<p>导入DB2INST1.0.DB2.NODE0000.CATN0000.20160531162029.001到DB2INST1
+restore database DB2INST1 from &quot;E:\民生&quot; TAKEN AT 20160531162029 TO &quot;E:&quot; into DB2INST1 redirect generate script &quot;E:\民生\import.sql&quot;
+db2 -svtf &quot;E:\民生\import.sql&quot;</p>
+<p>导入NGCMS.0.DB2.NODE0000.CATN0000.20150126132445.001到NGCMS1
+restore database NGCMS from &quot;E:\民生&quot; TAKEN AT 20150126132445 TO &quot;E:&quot; into NGCMS1 redirect generate script &quot;E:\民生\import.sql&quot;
+db2 -svtf &quot;E:\民生\import.sql&quot;</p>
+<p>导出ngcms</p>
+<p>backup database ngcms to &quot;E:\民生\li_wjie_test&quot;</p>
+<p>connect to ngcms1 user db2admin using &#39;c##cxzx123&#39;
+select count(1) from ngcms.rbac_user</p>
+<p>connect to db2inst1 user db2admin using &#39;c##cxzx123&#39;
+select count(1) from ngcms.rbac_user</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

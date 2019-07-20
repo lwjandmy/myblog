@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>thinkphp 模板中输出变量 输出系统变量 模板使用函数 var md5 strtoupper default
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="thinkphp-var-md5-strtoupper-default">thinkphp 模板中输出变量 输出系统变量 模板使用函数 var md5 strtoupper default</h1>
+<p>输出系统变量：</p>
+<pre><code class="lang-php">{$Think.server.script_name} // 输出$_SERVER[&#39;SCRIPT_NAME&#39;]变量
+{$Think.session.user_id} // 输出$_SESSION[&#39;user_id&#39;]变量
+{$Think.get.pageNumber} // 输出$_GET[&#39;pageNumber&#39;]变量
+{$Think.cookie.name} // 输出$_COOKIE[&#39;name&#39;]变量
+</code></pre>
+<p>模板使用函数：</p>
+<pre><code class="lang-php">{$data.name|md5|strtoupper}  用|来进行函数调用
+    &lt;?php echo (md5($data[&#39;name&#39;])); ?&gt;
+{$create_time|date=&quot;y-m-d&quot;,###} 用逗号，表示参数；用###表示把前面的变量$create_time放到这里当做参数
+    &lt;?php echo (date(&quot;y-m-d&quot;,$create_time)); ?&gt;
+</code></pre>
+<p>变量默认值：</p>
+<pre><code class="lang-php">{$user.nickname|default=&quot;这家伙很懒，什么也没留下&quot;}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

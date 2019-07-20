@@ -1,0 +1,54 @@
+
+
+<html><head><meta charset="UTF-8"><title>用frameset,frame做多个版面效果
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-frameset-frame-">用frameset,frame做多个版面效果</h1>
+<pre><code class="lang-text">http://blog.csdn.net/manbufenglin/article/details/5765723
+
+
+    &lt;frameset rows=&quot;30px,*,50px&quot;&gt;
+        &lt;frame name=&quot;head&quot; src=&quot;user_main_head.php&quot;&gt;
+        &lt;frameset cols=&quot;200px,*&quot;&gt;
+            &lt;frame name=&quot;menu&quot; src=&quot;user_main_menu.php&quot;&gt;
+            &lt;frame id=&quot;content&quot; name=&quot;content&quot; src=&quot;user_main_content.php&quot;&gt;
+        &lt;/frameset&gt;
+        &lt;frame name=&quot;foot&quot; src=&quot;user_main_foot.php&quot;&gt;
+    &lt;/frameset&gt;
+
+
+
+
+$(window).load(function(){
+    menu1 = $(window.menu.document).find(&quot;#menu1&quot;); // 获取frame内元素的方法，这里的menu是frame的name属性
+    menu2 = $(window.menu.document).find(&quot;#menu2&quot;);
+    menu3 = $(window.menu.document).find(&quot;#menu3&quot;);
+
+    menu1.click(function(){
+        $(&quot;#content&quot;).attr(&quot;src&quot;, &quot;function1/index.php&quot;); // 控制frame加载网页的方法，这里的content是frame的id属性
+    });
+    menu2.click(function(){
+
+    });
+    menu3.click(function(){
+
+    });
+});
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

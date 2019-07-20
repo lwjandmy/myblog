@@ -1,0 +1,111 @@
+
+
+<html><head><meta charset="UTF-8"><title>awk命令(附URL编码程序)
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="awk-url-">awk命令(附URL编码程序)</h1>
+<p>例子文件1.txt:  </p>
+<pre><code class="lang-text">a b c
+1 2 3
+abc 123
+123 abc
+a1b 2c3
+1a2 b3c
+</code></pre>
+<p>语法: <code>awk &#39;[pattern]{action}&#39; FILE</code></p>
+<p>例:  </p>
+<pre><code class="lang-bash">awk &#39;{print $1}&#39; 1.txt
+cat 1.txt | awk &#39;{print $1;}&#39;
+</code></pre>
+<pre><code class="lang-text">awk以\n为切点，分割的每一行依次处理  
+对每一行，再以分隔符（默认空格OR制表符）分割，保存到$1 $2 $3...中, $0代表整行   
+大括号中语句末尾的分号不是必须
+</code></pre>
+<p>改变分隔符为冒号，冒号旁的单引号不是必须 -F(field-separator)</p>
+<pre><code class="lang-bash">awk -F&#39;:&#39; &#39;{print $1}&#39; 1.txt
+</code></pre>
+<p>pattern为BEGIN和END，表明在处理数据前和后做处理，可以对变量初始化等等</p>
+<pre><code class="lang-bash">awk &#39;BEGIN{i=0;} {print $0; ++i;} END{print &quot;Lines=&quot; i;}&#39; 1.txt
+</code></pre>
+<p>pattern为正则表达式，表明模糊匹配包含数字的行，再对这些行执行action，斜杠代表正则表达式</p>
+<pre><code class="lang-bash">awk &#39;/[0-9]+/{print $0;}&#39; 1.txt
+</code></pre>
+<p>action中模糊匹配（～表示）和完全匹配（==表示）</p>
+<pre><code class="lang-bash">awk &#39;{if($1~/[0-9]+/){print $1;}}&#39; 1.txt
+awk &#39;{if($1==&quot;123&quot;){print $1;}}&#39; 1.txt
+</code></pre>
+<hr>
+<p><a href="http://blog.csdn.net/gaoming655/article/details/7386630">awk 内置变量</a></p>
+<p>NF 分割成多少个字符串</p>
+<p>文件路径中获取文件名(分割\, 取最后一个字符串)</p>
+<pre><code class="lang-bash">awk -F &#39;\\&#39; &#39;{ print $NF }&#39;
+</code></pre>
+<p>其它资料:<br><a href="http://www.gnu.org/software/gawk/manual/gawk.html">The GNU Awk User’s Guide</a><br><a href="http://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858470.html">linux awk命令详解(入门）</a><br><a href="http://www.cnblogs.com/chengmo/archive/2010/10/08/1845913.html">awk内置命令和实例</a></p>
+<p>例子, 读取所有分割的字符:<br><code>awk &#39;{for(i=1;i&lt;=$NF;++i)print($i);}&#39; test.txt</code></p>
+<p>附: URL编码程序</p>
+<pre><code class="lang-bash">awk &#39;BEGIN{ out = &quot;&quot;; for (i = 0; i != 256; ++i) { tAscii = sprintf(&quot;%c&quot;, i); ASCII[tAscii] = i; } } { cnt = split($0,ch,&quot;&quot; ); for(i = 1; i &lt;= cnt; ++i) if (ch[i] ~ /[A-Za-z0-9\@\*\_\+\-\.]/) out = out ch[i]; else { tCh = sprintf(&quot;%%%X&quot;, ASCII[ch[i]]); out = out tCh; } } END{ print out }&#39; file
+</code></pre>
+<p>其中字符转ascii是个难题，因为awk在遇到字符转数字时，自动格式转换，而不是直接ascii替换.<br>由于可以ascii转字符（用scanf），所以建立了一个ascii[字符]=ascii的映射表，用查表方法得到字符的ascii.<br>awk里不存在字符类型，只有字符串和数字两个类型！！！</p>
+<hr>
+<h2 id="-">文件路径去掉最后的文件名</h2>
+<pre><code class="lang-bash">echo &#39;./xcom-i18n-web/pom.xml&#39; | awk -F/ &#39;{ for (i = 1; i &lt; NF; ++i) { printf &quot;%s/&quot;, $i; } print &quot;&quot;  }&#39;
+</code></pre>
+<hr>
+<h2 id="procmon-">procmon的文件路径筛选</h2>
+<pre><code class="lang-bash"># 用procmon 加上过滤条件:
+# Process Name is java.exe
+# Operation is CreateFile
+# 将结果保存: File -&gt; Save, 格式为csv
+# 执行此脚本, 将路径输出出来, 筛选如下:
+# 路径以tomcat/webapp/lbm开头
+# 文件名必须包含&#39;点&#39;, 过滤掉文件夹
+# 路径同名排除, 使路径唯一
+
+# 加载Logfile.CSV
+cat /Desktop/Logfile.CSV | \
+# 用&quot;,&quot;分隔符分开字符, 取第五个, 文件路径
+awk -F &#39;&quot;,&quot;&#39; &#39;{ print $5 }&#39; | \
+# 筛出路径以C:\\apache-tomcat-6.0.18\\webapps\\lbm开头的
+egrep &#39;^C:\\apache-tomcat-6.0.18\\webapps\\lbm&#39; | \
+# 去掉路径开头的&quot;C:\\apache-tomcat-6.0.18\\webapps\\lbm&quot;
+awk &#39;{ print substr($0, length(&quot;C:\\apache-tomcat-6.0.18\\webapps\\lbm&quot;) + 1) }&#39; | \
+# 去掉&quot;\localhost\lbm&quot;开头的路径信息
+awk &#39;{ sub(&quot;\\\\localhost\\\\lbm&quot;, &quot;&quot;); print $0 }&#39; | \
+# 去掉dojo-lib目录
+egrep -v &#39;^\\dojo-lib\\&#39; | \
+# 筛出文件, 筛掉文件夹
+egrep &#39;\\[^\\]+\.[^\\]+$&#39; | \
+# 显示进度 排序 使唯一
+pv | sort | uniq | \
+# 结果保存到文件
+tee file_access_log.log
+</code></pre>
+<hr>
+<h2 id="java-">java项目文件路径检索</h2>
+<pre><code class="lang-bash"># 遍历项目下WebContent下所有文件
+
+# 查找项目WebContent下所有文件的路径
+find /lbm/WebContent -name &#39;*.*&#39; | \
+# 去掉路径的前缀, 输出内容从WebContent开始向后
+awk &#39;{ print substr($0, length(&quot;/lbm/WebContent&quot;) + 1) }&#39; | \
+# 斜杠换为反斜杠
+sed &#39;s/\//\\/g&#39; | \
+tee project_files.txt
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

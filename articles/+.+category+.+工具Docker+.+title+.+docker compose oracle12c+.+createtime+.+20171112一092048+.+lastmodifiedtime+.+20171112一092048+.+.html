@@ -1,0 +1,75 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker compose oracle12c
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-compose-oracle12c">docker compose oracle12c</h1>
+<p>docker-compose.yaml</p>
+<pre><code class="lang-yaml">
+version: &quot;3&quot;
+
+services:
+  oracle:
+    image: sath89/oracle-12c
+    container_name: oracle
+    volumes:
+      - &quot;./docker_data:/external_data&quot;
+    networks:
+      - oracle
+    ports:
+      - 1521:1521
+      - 8080:8080
+    environment:
+      - DBCA_TOTAL_MEMORY=512 # 单位: MB
+    # command: /bin/sh
+
+networks:
+  oracle:
+</code></pre>
+<p>启动docker</p>
+<pre><code class="lang-bash">mkdir docker_data
+# 放置数据到docker_data
+sudo docker-compose up -d
+sudo docker-compose logs -f
+</code></pre>
+<p>数据库连接配置</p>
+<pre><code class="lang-txt">Host: localhost
+Port: 1521
+Database.ServiceName: xe.oracle.docker
+Database.SID: xe
+Username: system
+Password: oracle
+</code></pre>
+<p>sqlplus登录数据库</p>
+<pre><code class="lang-bash">sqlplus system/oracle@localhost:1521/xe.oracle.docker
+</code></pre>
+<p>web控制台 Oracle Application Express web management console</p>
+<pre><code class="lang-txt">http://localhost:8080/apex
+workspace: INTERNAL
+user: ADMIN
+password: 0Racle$
+new-password: 00Racle$$
+</code></pre>
+<p>web控制台 Oracle Enterprise Management console</p>
+<pre><code class="lang-txt">http://localhost:8080/em
+user: sys
+password: oracle
+connect as sysdba: true
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

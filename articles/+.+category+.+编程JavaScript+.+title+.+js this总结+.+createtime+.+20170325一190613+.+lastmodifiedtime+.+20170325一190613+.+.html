@@ -1,0 +1,51 @@
+
+
+<html><head><meta charset="UTF-8"><title>js this总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-this-">js this总结</h1>
+<h2 id="-">一句话总结</h2>
+<p>函数fun中的this指向调用者(env.fun()的调用者是env, fun()的调用者是this)</p>
+<hr>
+<h2 id="-">例</h2>
+<pre><code class="lang-js">var key1 = &quot;value_in_global&quot;;
+function fun1() { return this.key1; }
+env = { &quot;key1&quot;: &quot;value_in_env&quot;, &quot;fun1&quot;: fun1};
+</code></pre>
+<p>执行</p>
+<pre><code class="lang-js">fun1()
+</code></pre>
+<p>返回: &quot;value_in_global&quot;</p>
+<p>执行</p>
+<pre><code class="lang-js">env.fun1()
+</code></pre>
+<p>返回: &quot;value_in_env&quot;</p>
+<h3 id="-">解释</h3>
+<p>变量key1</p>
+<pre><code class="lang-text">在全局域中, 定义了key1 = &quot;value_in_global&quot;
+在env对象域中, 定义了key1 = &quot;value_in_env&quot;
+</code></pre>
+<p>函数fun1</p>
+<pre><code class="lang-text">在全局域和env对象域中, 有相同的fun1, 返回this.key
+</code></pre>
+<p>返回结果</p>
+<pre><code class="lang-text">fun1()的调用形式, 等价于this.fun1(), 这里的this是全局域, 因此fun1中返回的this.key1中的this是全局域, 返回&quot;value_in_global&quot;
+env.fun1(), fun1中返回的this.key1中的this是env对象域, 返回&quot;value_in_env&quot;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

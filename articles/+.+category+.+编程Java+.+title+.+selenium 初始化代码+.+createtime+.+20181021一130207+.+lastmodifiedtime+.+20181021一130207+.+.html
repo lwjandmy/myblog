@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>selenium 初始化代码
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="selenium-">selenium 初始化代码</h1>
+<pre><code class="lang-java">        // 设置驱动位置
+        System.setProperty(&quot;webdriver.chrome.driver&quot;, Thread.currentThread().getContextClassLoader().getResource(&quot;chromedriver.exe&quot;).getFile());
+        System.setProperty(&quot;webdriver.ie.driver&quot;, Thread.currentThread().getContextClassLoader().getResource(&quot;IEDriverServer.exe&quot;).getFile());
+
+        WebDriver driver = new ChromeDriver();
+
+        // 设置查询元素不存在, 等待时间
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        // 创建显示等待器
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+
+        try {
+            work(driver, wait);
+        } finally {
+//            driver.close();
+        }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

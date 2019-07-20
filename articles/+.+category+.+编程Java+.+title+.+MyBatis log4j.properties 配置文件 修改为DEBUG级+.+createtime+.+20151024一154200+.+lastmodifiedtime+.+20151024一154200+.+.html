@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis log4j.properties 配置文件 修改为DEBUG级
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-log4j-properties-debug-">MyBatis log4j.properties 配置文件 修改为DEBUG级</h1>
+<p>放src目录下</p>
+<pre><code class="lang-ini">log4j.rootLogger=DEBUG,Console
+
+# Console
+log4j.appender.Console=org.apache.log4j.ConsoleAppender
+log4j.appender.Console.layout=org.apache.log4j.PatternLayout
+log4j.appender.Console.layout.ConversionPattern=%d [%t] %-5p [%c] - %m%n
+
+log4j.logger.org.apache=INFO
+log4j.logger.java.sql.ResultSet=INFO
+log4j.logger.java.sql.Connection=DEBUG
+log4j.logger.java.sql.Statement=DEBUG
+log4j.logger.java.sql.PreparedStatement=DEBUG
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

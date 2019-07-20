@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>cat more less head tail命令总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="cat-more-less-head-tail-">cat more less head tail命令总结</h1>
+<p>cat 连接两个文件的内容，也可以显示单个文件:</p>
+<pre><code class="lang-bash">cat file1.txt file2.txt &gt; file3.txt   # 拼接两个文件
+cat file3.txt   # 显示文件内容
+</code></pre>
+<p>Shift+PageUP/DOWN  shell中翻页查看内容</p>
+<p>more 分屏显示内容,只能显示后面的内容，不能查看之前的内容（不能向回退）:</p>
+<pre><code class="lang-bash">more file3.txt
+</code></pre>
+<p>less 分屏显示内容，more的升级版，既可以向后，也可以向前</p>
+<pre><code class="lang-bash">less file3.txt
+</code></pre>
+<p>head tail 显示文件的前几行/后几行:</p>
+<pre><code class="lang-bash">head -n 2 file1.txt   # 显示前2行
+tail -n 3 file3.txt   # 显示后3行
+tail -f file3.txt     # 持续显示文件尾, 文件变化时, 会同时显示
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

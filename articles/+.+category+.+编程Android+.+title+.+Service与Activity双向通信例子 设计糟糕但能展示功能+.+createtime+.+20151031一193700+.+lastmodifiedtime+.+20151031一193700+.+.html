@@ -1,0 +1,246 @@
+
+
+<html><head><meta charset="UTF-8"><title>Service与Activity双向通信例子 设计糟糕但能展示功能
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="service-activity-">Service与Activity双向通信例子 设计糟糕但能展示功能</h1>
+<pre><code class="lang-text">AndroidManifest.xml,activity,service各一个, 测试互相传输数据
+activity_main.xml,布局, EditText输入数据; 4*Button,service的创建和绑定; Button,发送数据到service; TextView接收service的数据
+MainActivity.java
+@1 activity向service发送数据
+@2 service向activity发送数据, 使用到了Message&amp;Handler, 处理多线程请求的情况
+</code></pre>
+<p>AndroidManifest.xml:   activity,service各一个, 测试互相传输数据</p>
+<pre><code class="lang-xml">        &lt;activity
+            android:name=&quot;.MainActivity&quot;
+            android:label=&quot;@string/app_name&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+        &lt;service
+            android:name=&quot;.MyService&quot;
+            android:enabled=&quot;true&quot;
+            android:exported=&quot;true&quot; &gt;
+        &lt;/service&gt;
+</code></pre>
+<p>activity_main.xml:  布局, EditText输入数据; 4*Button,service的创建和绑定; Button,发送数据到service; TextView接收service的数据</p>
+<pre><code class="lang-xml">    &lt;EditText
+        android:id=&quot;@+id/editTextData&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnStartService&quot;
+        android:text=&quot;Start Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnStopService&quot;
+        android:text=&quot;Stop Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnBindService&quot;
+        android:text=&quot;Bind Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnUnbindService&quot;
+        android:text=&quot;Unbind Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnSyncData&quot;
+        android:text=&quot;Sync Data&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;TextView
+        android:id=&quot;@+id/textViewOutput&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity.java: 实现了Activity向Service发送数据, 接收Service发来的数据(通过Message,Handler处理异步线程)</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection, MyService.Callback
+{
+    EditText editTextData;
+    MyService.Binder binder; // Activity向Service发送数据,通过Binder @1-1
+    TextView textViewOutput; // Service向Activity发送数据, 通过Callback接口+Handler消息
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        editTextData = (EditText) findViewById(R.id.editTextData);
+        textViewOutput = (TextView) findViewById(R.id.textViewOutput);
+        findViewById(R.id.btnStartService).setOnClickListener(this);
+        findViewById(R.id.btnStopService).setOnClickListener(this);
+        findViewById(R.id.btnBindService).setOnClickListener(this);
+        findViewById(R.id.btnUnbindService).setOnClickListener(this);
+        findViewById(R.id.btnSyncData).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.btnStartService:
+                Intent intent = new Intent(this, MyService.class);
+                // 启动Service时传送数据给Service
+                intent.putExtra(&quot;editTextData&quot;, editTextData.getText().toString());
+                startService(intent);
+                break;
+            case R.id.btnStopService:
+                stopService(new Intent(this, MyService.class));
+                break;
+            case R.id.btnBindService:
+                // ServiceConnection接口用来配置IBinder, 这里MainActivity实现了ServiceConnection @1-2
+                bindService(new Intent(this, MyService.class), this, Context.BIND_AUTO_CREATE);
+                break;
+            case R.id.btnUnbindService:
+                unbindService(this);
+                break;
+            case R.id.btnSyncData:
+                // 通过IBinder, 随时传递数据给service @1-4
+                binder.setData(editTextData.getText().toString());
+                break;
+            default:
+                System.out.println(&quot;MainActivity::onClick unknown id&quot;);
+                break;
+        }
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    { // ServiceConnection接口的实现, 这里保存IBinder, 用来直接和service传输数据
+        binder = (MyService.Binder) service;
+        binder.getMyService().setCallback(this); // 设置Service向Activity发送数据的Callback接口(Activity实现了Callback接口) @2-2
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) { }
+
+    // 设置一个Handler成员, 用来接收异步线程消息 @2-5
+    private Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            textViewOutput.setText(msg.getData().getString(&quot;data&quot;));
+        }
+    };
+
+    // MyService中的接口Callback的实现, 用来接收Service消息 @2-4
+    // 调用线程是子线程, 不能直接操作Activity, 所以通过Handler, 用Message封装异步消息, 这里设计的很烂..
+    @Override
+    public void onDataChange(String data)
+    {
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString(&quot;data&quot;, data);
+        message.setData(bundle);
+        handler.sendMessage(message);
+    }
+}
+</code></pre>
+<p>MyService.java: Binder实现了接收外部的消息; 向外部提供了Callback接口,来接收Service发出的消息</p>
+<pre><code class="lang-java">public class MyService extends Service
+{
+    private boolean isRunning = false;
+    private String strEditText;
+
+    public MyService() { }
+
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return new Binder(); // 返回Binder, 用于接收Activity数据 @1-3
+    }
+
+    // 用来接收Activity数据的Binder
+    public class Binder extends android.os.Binder
+    {
+        public void setData(String data)
+        {
+            MyService.this.strEditText = data; // @1-5
+        }
+        public MyService getMyService()
+        {
+            return MyService.this;
+        }
+    }
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        // 工作线程,不合理: 1. strEditText非线程安全; 2. strEditText初始化在onStartCommand, 后于onCreate执行, 易产生未初始化的访问
+        isRunning = true;
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                super.run();
+                int i = 0;
+                while (isRunning)
+                {
+                    try
+                    {
+                        sleep(2000);
+                        ++i;
+                        String log = &quot;MyService::Thread &quot; + i + &quot; &quot; + strEditText;
+                        System.out.println(log);
+                        if (callback != null)
+                            callback.onDataChange(log); // Service通过接口向Activity发送数据 @2-3
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        // 在service启动时, 接收Activity发送的数据
+        strEditText = intent.getStringExtra(&quot;editTextData&quot;);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        isRunning = false;
+    }
+
+    // Service向Activity发送数据, 建立接口 @2-1
+    private Callback callback = null;
+    public interface Callback { void onDataChange(String data); }
+    public Callback getCallback() { return callback; }
+    public void setCallback(Callback callback) { this.callback = callback; }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

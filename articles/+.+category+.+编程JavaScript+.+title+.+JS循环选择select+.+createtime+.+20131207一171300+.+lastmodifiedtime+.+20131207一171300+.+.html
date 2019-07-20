@@ -1,0 +1,60 @@
+
+
+<html><head><meta charset="UTF-8"><title>JS循环选择select
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-select">JS循环选择select</h1>
+<p>界面:</p>
+<pre><code class="lang-html">&lt;html&gt;
+&lt;body&gt;
+&lt;select &gt;
+&lt;option value =&quot;1&quot;&gt;1&lt;/option&gt;
+&lt;option value =&quot;2&quot;&gt;2&lt;/option&gt;
+&lt;option value=&quot;3&quot;&gt;3&lt;/option&gt;
+&lt;option value=&quot;4&quot;&gt;4&lt;/option&gt;
+&lt;/select&gt;
+&lt;select &gt;
+&lt;option value =&quot;1&quot;&gt;1&lt;/option&gt;
+&lt;option value =&quot;2&quot;&gt;2&lt;/option&gt;
+&lt;option value=&quot;3&quot;&gt;3&lt;/option&gt;
+&lt;option value=&quot;4&quot;&gt;4&lt;/option&gt;
+&lt;/select&gt;
+&lt;select &gt;
+&lt;option value =&quot;1&quot;&gt;1&lt;/option&gt;
+&lt;option value =&quot;2&quot;&gt;2&lt;/option&gt;
+&lt;option value=&quot;3&quot;&gt;3&lt;/option&gt;
+&lt;option value=&quot;4&quot;&gt;4&lt;/option&gt;
+&lt;/select&gt;
+&lt;select &gt;
+&lt;option value =&quot;1&quot;&gt;1&lt;/option&gt;
+&lt;option value =&quot;2&quot;&gt;2&lt;/option&gt;
+&lt;option value=&quot;3&quot;&gt;3&lt;/option&gt;
+&lt;option value=&quot;4&quot;&gt;4&lt;/option&gt;
+&lt;/select&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>JS循环选择select脚本:</p>
+<pre><code class="lang-js">var i, iEnd;
+var selects = document.getElementsByTagName(&quot;select&quot;);
+iEnd = selects.length;
+for (i = 0; i != iEnd; ++i)
+    selects[i].options[i].selected = 1;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

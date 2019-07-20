@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>修改环境变量 不区分大小写
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">修改环境变量 不区分大小写</h1>
+<p>查看环境变量</p>
+<pre><code class="lang-sql">show global variables like &#39;%case%&#39;;
+</code></pre>
+<p>设置环境变量</p>
+<pre><code class="lang-sql">set global lower_case_table_names=1;
+</code></pre>
+<p>lower_case_table_names需要在my.cnf里修改, 重启后生效</p>
+<p>my.cnf追加</p>
+<pre><code class="lang-inf">lower_case_table_names=1
+</code></pre>
+<p>lower_case_table_names</p>
+<p>0, 区分大小写</p>
+<p>1, 不区分大小写</p>
+<p>注意: 必须在建表前, 先定义这个变量, 再创建数据库, 创建表. 否则如果先建好了大写的数据库和表, 再调整这个参数, 会提示找不到表了.....</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

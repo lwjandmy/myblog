@@ -1,0 +1,61 @@
+
+
+<html><head><meta charset="UTF-8"><title>pacman makepkg
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="pacman-makepkg">pacman makepkg</h1>
+<h2 id="-pacman">安装官方认证的, 编译过的包: pacman</h2>
+<p>pacman参数说明:</p>
+<pre><code class="lang-text">pacman -S    sync 同步, 也就是和服务器同步包, 即下载服务器上的包
+pacman -R   remove移除, 卸载程序
+pacman -Q   query查询, 这个查询的是本地, 功能少, 所以查询都用-S, 能查询远程包
+</code></pre>
+<p>pacman例子:</p>
+<p>安装包</p>
+<pre><code class="lang-bash">pacman -S zsh
+</code></pre>
+<p>i, info 包介绍</p>
+<pre><code class="lang-bash">pacman -Si zsh
+</code></pre>
+<p>s, search 搜索包, 搜索包含zsh关键字的所有包</p>
+<pre><code class="lang-bash">pacman -Ss zsh
+</code></pre>
+<p>移除包</p>
+<pre><code class="lang-bash">pacman -R
+</code></pre>
+<p>y,refresh 同步包列表, 从服务器下载最新包列表</p>
+<pre><code class="lang-bash">pacman -Sy
+</code></pre>
+<p>列出zsh包中包含了哪些文件(有用, 当你安装了个包, 不知道怎么用的时候)</p>
+<pre><code class="lang-bash">pacman -Ql zsh
+</code></pre>
+<hr>
+<h2 id="-aur-arch-user-repository-">安装AUR(Arch User Repository)中的包</h2>
+<p>AUR的包未得到官方认证, 是一些开发中的包, 内容为源码</p>
+<ol>
+<li>到AUR(aur.archlinux.org)上找需要的包, 找到Git Clone URL下的地址</li>
+<li><code>git clone URL</code></li>
+<li><code>cd URL-DIR, makepkg -s -i</code></li>
+</ol>
+<p>makepkg参数说明:</p>
+<pre><code class="lang-text">makepkg -s -i         s, sync 当依赖的其它包未安装时,自动调用pacman -S来安装依赖包;
+                      i, install 源代码打包成tar.bz后接着安装这个包
+</code></pre>
+<p>补充: 有些依赖包也在AUR中, 此时的-s选项不会自动安装, 需要先手动在AUR找到依赖包, 手动调用makepkg -s -i安装依赖包后再安装当前包.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

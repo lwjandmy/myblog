@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>SVN 服务端 提交时必须填写comment 允许修改历史comment
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="svn-comment-comment">SVN 服务端 提交时必须填写comment 允许修改历史comment</h1>
+<h2 id="svn-comment-comment">SVN 服务端 提交时必须填写comment 允许修改历史comment</h2>
+<p>右键项目, Properties, Hooks, Pre-commit hook</p>
+<pre><code class="lang-bat">@echo off
+setlocal
+set REPOS=%1
+set TXN=%2
+
+svnlook log &quot;%REPOS%&quot; -t &quot;%TXN%&quot; | findstr &quot;..........&quot; &gt; nul
+if %errorlevel% gtr 0 goto err
+exit 0
+
+:err
+echo 注释长度不足！请输入至少5个字符的注释！请重新填写注释! 1&gt;&amp;2
+exit 1
+</code></pre>
+<h3 id="svn-comment">SVN 服务端 允许修改comment</h3>
+<p>右键项目, Properties, Hooks, Pre-revision property change hook</p>
+<pre><code class="lang-bat">if &quot;%4&quot; == &quot;svn:log&quot; exit 0
+echo Property &#39;%4&#39; cannot be changed &gt;&amp;2
+exit 1
+后来发现, 什么也不输, 直接保存也行...
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>js toastr展示提示信息
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-toastr-">js toastr展示提示信息</h1>
+<pre><code class="lang-js">    loadStyle(&#39;https://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css&#39;);
+    loadScript(&#39;https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js&#39;);
+
+    function log(str) {
+        toastr.info(new Date().toLocaleString() + &#39; &#39; + str);
+    }
+
+        toastr.options.closeButton = true;
+        toastr.options.timeOut = 1000 * 60;
+        toastr.options.extendedTimeOut = 1000 * 60;
+        toastr.options.progressBar = true;
+
+        log(&#39;11分钟后, 关闭自己&#39;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

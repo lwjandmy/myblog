@@ -1,0 +1,37 @@
+
+
+<html><head><meta charset="UTF-8"><title>使用jdk的LRUCache 实现正则表达式对象缓存
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-jdk-lrucache-">使用jdk的LRUCache 实现正则表达式对象缓存</h1>
+<pre><code class="lang-java">        // LRUCache内部维护一个数组, 调整数组的前后次序, 实现LRU算法
+        LRUCache&lt;String, Pattern&gt; cache = new LRUCache&lt;String, Pattern&gt;(2) { // 缓存最大长度: 2
+            protected Pattern create(String regex) { // 根据key, 创建缓存数据value
+                System.out.println(&quot;构造Pattern: &quot; + regex);
+                return Pattern.compile(regex);
+            }
+            protected boolean hasName(Pattern pattern, String regex) { // 判断此value是否满足此key
+                return pattern.pattern().equals(regex);
+            }
+        };
+        cache.forName(&quot;[0-9]1&quot;);
+        cache.forName(&quot;[0-9]2&quot;);
+        cache.forName(&quot;[0-9]2&quot;);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

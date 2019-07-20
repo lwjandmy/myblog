@@ -1,0 +1,73 @@
+
+
+<html><head><meta charset="UTF-8"><title>js define 定义模块
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="js-define-">js define 定义模块</h1>
+<p><a href="http://www.cnblogs.com/happyPawpaw/archive/2012/05/31/2528864.html">http://www.cnblogs.com/happyPawpaw/archive/2012/05/31/2528864.html</a></p>
+<p>define 语法：</p>
+<pre><code class="lang-js">define([module-name?], [array-of-dependencies?], [module-factory-or-object]);
+</code></pre>
+<p>例子：</p>
+<pre><code class="lang-js">// 定义模块alpha，并依赖require,exports,beta模块，alpha模块内容是function(...)...
+define(&quot;alpha&quot;, [&quot;require&quot;, &quot;exports&quot;, &quot;beta&quot;], function (require, exports, beta) {
+　　exports.verb = function() {
+　　　　return beta.verb();
+　　　　//或者:
+　　　　return require(&quot;beta&quot;).verb();
+　　}
+
+});
+</code></pre>
+<p>模块名：模块名可以忽略，此时用js文件名当模块名</p>
+<p>第三个参数：</p>
+<p>如果第三个参数是一个对象：</p>
+<pre><code class="lang-js">define(&#39;china&#39;,[],{
+　　provinces: [ &#39;上海&#39;, &#39;江苏&#39;]
+　　fun1: function() { var x = 1; }
+});
+</code></pre>
+<p>则用来提供方法和数据</p>
+<p>如果第三个参数是一个函数：</p>
+<pre><code class="lang-js">define(function(){
+　　var p = require(&#39;china&#39;);
+});
+</code></pre>
+<p>适用于快速开发，函数中需要的模块就用var china = require(&#39;china&#39;)加载，</p>
+<p>define函数会先调用参数的function()的toString()方法,检查toString()字符中的require字符,并提前载入这些模块.</p>
+<p>第三个参数的例子：</p>
+<pre><code class="lang-js">define(function () {           参数是函数，并返回一个对象
+    return {
+        getHello: function () {
+            return &#39;Hello World&#39;;
+        }
+    };
+});
+define({
+        getHello: function () {      参数是对象
+            return &#39;Hello World2&#39;;
+        }
+});
+</code></pre>
+<p>define对第三个参数的处理过程，</p>
+<p>如果是对象，则直接保存。</p>
+<p>如果是函数，则调用后保存其返回值。</p>
+<p>而别的js需要调用这个模块时，</p>
+<p>define([&#39;gethello&#39;], function(gethello){xxx});     此时的gethello参数，就是define的参数，对象，或函数调用后的返回值</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

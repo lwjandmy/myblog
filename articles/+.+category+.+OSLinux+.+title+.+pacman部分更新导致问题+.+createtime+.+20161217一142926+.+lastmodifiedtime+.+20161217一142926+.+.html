@@ -1,0 +1,28 @@
+
+
+<html><head><meta charset="UTF-8"><title>pacman部分更新导致问题
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="pacman-">pacman部分更新导致问题</h1>
+<p><a href="https://wiki.archlinux.org/index.php/Pacman">Pacman</a></p>
+<p>原文</p>
+<p>When installing packages in Arch, avoid refreshing the package list without upgrading the system (for example, when a package is no longer found in the official repositories). In practice, do not run pacman -Sy package_name instead of pacman -Syu package_name, as this could lead to dependency issues.</p>
+<p>大概意思</p>
+<p>安装程序时, 当某个包在仓库里不存在时, 需要更新包列表, 但不要未更新系统就更新包列表, 即不要这么执行命令: pacman -Sy pkg_name, 而是应执行: pacman -Syu pkg_name, 其中S表示安装包, y表示更新包列表, u表示更新现有包. 否则会导致依赖出错!!!</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

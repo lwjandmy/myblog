@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>django 静态网页文件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="django-">django 静态网页文件</h1>
+<p>创建文件夹: polls/static<br>Django会从这个文件夹寻找静态文件</p>
+<p>创建文件夹: polls/static/polls/</p>
+<p>静态文件命名空间:<br>和模板文件一样, 静态文件也放在单独的polls文件夹里, 提供命名空间,<br>这样当多个app拥有同名的静态文件, 就可以通过命名空间来区分不同app的静态文件</p>
+<p>加入静态的样式表文件</p>
+<pre><code class="lang-CSS">polls/static/polls/style.css:
+li a {
+    color: green;
+}
+</code></pre>
+<p>使用样式表<br>polls/templates/polls/index.html:</p>
+<pre><code class="lang-Html">{% load staticfiles %}  从staticfiles模板库中, 加载static模板标记
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;{% static &#39;polls/style.css&#39; %}&quot; /&gt;  static标记生成静态文件的绝对URL路径
+&lt;!-- ... --&gt;
+</code></pre>
+<p>使用样式表设置背景图片:<br>创建文件夹polls/static/polls/images/<br>复制一张图片到: polls/static/polls/images/background.jpg  </p>
+<p>polls/static/polls/style.css:</p>
+<pre><code class="lang-CSS">&lt;!-- ... --&gt;
+body {
+    background: white url(&quot;images/background.jpg&quot;) no-repeat right bottom;
+}
+</code></pre>
+<p>说明: {% static %}不能用于静态文件中, 应当使用相对路径, 这样当STATIC_URL参数被修改后, 静态文件仍能被找到</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

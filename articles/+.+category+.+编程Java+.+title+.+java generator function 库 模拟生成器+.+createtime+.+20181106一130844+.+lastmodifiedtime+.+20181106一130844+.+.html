@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>java generator function 库 模拟生成器
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="java-generator-function-">java generator function 库 模拟生成器</h1>
+<p><a href="https://github.com/bmccutchon/java-generator-functions/tree/master/src/main/java/io/herrmann/generator">https://github.com/bmccutchon/java-generator-functions/tree/master/src/main/java/io/herrmann/generator</a></p>
+<pre><code class="lang-java">    public static void main(String[] args) {
+
+        GeneratorFunc&lt;Integer&gt; gen = s -&gt; {
+            s.yield(1);
+        };
+
+        for (Integer i : gen) {
+            System.out.println(i);
+        }
+
+    }
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

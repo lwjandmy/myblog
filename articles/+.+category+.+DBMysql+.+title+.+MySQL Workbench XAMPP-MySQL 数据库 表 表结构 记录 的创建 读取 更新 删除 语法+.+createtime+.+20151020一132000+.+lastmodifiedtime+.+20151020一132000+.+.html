@@ -1,0 +1,88 @@
+
+
+<html><head><meta charset="UTF-8"><title>MySQL Workbench XAMPP-MySQL 数据库 表 表结构 记录 的创建 读取 更新 删除 语法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mysql-workbench-xampp-mysql-">MySQL Workbench XAMPP-MySQL 数据库 表 表结构 记录 的创建 读取 更新 删除 语法</h1>
+<pre><code class="lang-text">------XAMPP启动MySQL------
+
+---启动MySQL---
+
+XAMPP Control Panel -&gt; MySQL, Start
+
+
+
+------MySQL Workbench------
+
+---建立连接---
+MySQL Workbench -&gt; 点&#39;加号&#39; -&gt; 设置connection name &#39;MySQL&#39; -&gt; OK
+点击新建立的连接, 连接MySQL
+
+---执行SQL语句---
+选中输入的SQL语句
+点闪电图案&#39;Executed the selected portion of the script&#39;
+
+---格式化/标准化数据库脚本代码---
+点刷子图案&#39;Beautiful/reformat the SQL script&#39;, 格式化标准化代码
+
+---保存数据库脚本---
+点保存按钮&#39;Save the script to a file&#39;
+
+
+
+------SQL 常用脚本------
+
+---数据库CRUD---
+创建数据库C: create database test_db;
+R:
+U:
+删除数据库D: drop database test_db;
+
+---表CRUD---
+创建表C: CREATE TABLE user_tbl ( user_name CHAR(20), age INT, signup_date DATE, PRIMARY KEY (user_name) );
+R: 
+修改表名U: alter table user_tbl1 rename user_tbl;
+删除表D: drop table user_tbl;
+
+---记录CRUD---
+创建记录C: insert into user_tbl values(&#39;admin&#39;, &#39;20&#39;, &#39;2015-10-01&#39;);
+读取记录R: SELECT user_name, age, signup_date FROM user_tbl WHERE user_name = &#39;admin&#39; AND age = 20;
+更新记录U: UPDATE user_tbl SET age = 21 WHERE user_name = &#39;admin&#39;;
+删除记录D: DELETE FROM user_tbl WHERE user_name = &#39;admin&#39;;
+
+---表结构CRUD---
+创建表结构C: alter table user_tbl add email char(50);
+察看表结构R: select * from user_tbl;       右键一个表 -&gt; Table Inspector -&gt; Columns
+修改表结构U: alter table user_tbl change age user_age int;
+删除表结构D: alter table user_tbl drop email;
+
+
+
+建表的例子:
+create table user_tbl(
+id int(11) unsigned not null auto_increment,
+name varchar(50) not null default &#39;&#39;,
+password varchar(50) not null default &#39;&#39;,
+email varchar(50) default &#39;&#39;,
+primary key (id)
+)
+engine = InnoDB
+default charset = utf8;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

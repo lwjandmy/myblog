@@ -1,0 +1,51 @@
+
+
+<html><head><meta charset="UTF-8"><title>流
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">流</h1>
+<pre><code class="lang-text">读取字节: File -&gt; FileInputStream (-&gt; BufferedInputStream)
+InputStream is = new BufferedInputStream(new FileInputStream(new File(&quot;test.dat&quot;)));
+
+读取字符(1): File -&gt; FileInputStream -&gt; InputStreamReader (-&gt; BufferedReader)
+Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(&quot;test.txt&quot;))));
+读取字符(2): File -&gt; FileReader (-&gt; BufferedReader)
+Reader reader = new BufferedReader(new FileReader(new File(&quot;test.txt&quot;)));
+
+字节流, 读取二进制字节, 类名以InputStream或OutputStream结尾
+Object
+|--InputStream()
+|  |--FileInputStream(File)       *由File构造InputStream*
+|  |--FilterInputStream(protected constructor)
+|  |  |--BufferedInputStream(InputStream) 装饰器
+
+字符流, 读取字符, 类名以Reader或Writer结尾
+Object
+|--Reader(protected constructor)
+|  |--InputStreamReader(InputStream)        *由InputStream构造Reader*
+|  |  |--FileReader(File)              *由File构造Reader*, 等于组合了FileInputStream和InputStreamReader
+|  |--BufferedReader(Reader)  装饰器
+
+字符转字节
+byte[] byteArray = String::getBytes(&quot;UTF-8&quot;); // 字符按照编码转换成字节
+
+ANSI编码, 不是具体的某一种编码, 不同地区使用不同编码标准. 字符可能对应不定长的字节
+UNICODE编码, 为各种语言的每个字符定义了唯一的编码, 因此可跨地区统一记录字符
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

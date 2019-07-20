@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>django 安装 创建工程 启动工程
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="django-">django 安装 创建工程 启动工程</h1>
+<p>安装:<br>环境变量PATH加入python目录, python/Scripts目录</p>
+<pre><code class="lang-shell">pip install django
+</code></pre>
+<p>创建工程:<br>进入工程目录</p>
+<pre><code class="lang-shell">django-admin startproject learndjango
+</code></pre>
+<p>工程目录结构:</p>
+<pre><code class="lang-text">learndjango/
+    manage.py 管理工程的工具
+    learndjango/
+        __init__.py 一个空文件, 目的是指明这个文件夹是一个package
+        settings.py 工程配置
+        urls.py URL映射
+        wsgi.py
+</code></pre>
+<p>设置数据库,时区: settings.py</p>
+<p>根据用到的app, 更新数据库和表</p>
+<pre><code class="lang-shell">python manage.py migrate
+</code></pre>
+<p>启动工程:</p>
+<pre><code class="lang-shell">python manage.py runserver
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

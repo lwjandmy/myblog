@@ -1,0 +1,36 @@
+
+
+<html><head><meta charset="UTF-8"><title>boot2docker 使用ssh远程连接
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="boot2docker-ssh-">boot2docker 使用ssh远程连接</h1>
+<p>VirtualBox启动boot2docker后, 想用ssh连接boot2docker环境</p>
+<p>如果boot2docker系统启动提示: Could not load host key: /usr/local/etc/ssh/ssh_host_ed25519_key</p>
+<p>需要生成ssh:</p>
+<pre><code class="lang-bash">ssh-keygen -t ed25519 -f /usr/local/etc/ssh/ssh_host_ed25519_key
+</code></pre>
+<p>在boot2docker里, ip addr, 找default的网卡, 记住ip地址(当前是ip6:</p>
+<pre><code class="lang-text">fe80::a00:27ff:fef9:51d8)
+</code></pre>
+<p><a href="https://github.com/boot2docker/boot2docker#user-content-ssh-into-vm">https://github.com/boot2docker/boot2docker#user-content-ssh-into-vm</a></p>
+<p>尝试ssh登录:</p>
+<pre><code class="lang-bash">ssh docker@fe80::a00:27ff:fef9:51d8
+</code></pre>
+<p>密码tcuser</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

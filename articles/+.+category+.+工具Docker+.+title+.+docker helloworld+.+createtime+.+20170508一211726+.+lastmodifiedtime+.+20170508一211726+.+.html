@@ -1,0 +1,152 @@
+
+
+<html><head><meta charset="UTF-8"><title>docker helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="docker-helloworld">docker helloworld</h1>
+<p><a href="http://www.docker.org.cn/book/docker/prepare-docker-5.html">prepare-docker</a></p>
+<p><a href="http://www.runoob.com/docker/docker-image-usage.html">docker-image-usage</a></p>
+<hr>
+<h2 id="linux-">Linux下安装</h2>
+<pre><code class="lang-bash">pacman -S docker docker-compose # 安装docker docker-compose
+sudo systemctl enable docker # 系统启动时自动启动docker服务
+sudo systemctl start docker # 启动docker服务
+sudo mkdir -p /etc/docker # 创建docker配置目录
+sudo tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39; # 设置aliyun镜像
+{
+  &quot;registry-mirrors&quot;: [&quot;https://xxx.mirror.aliyuncs.com&quot;]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+sudo docker search tutorial # 测试是否可用
+</code></pre>
+<hr>
+<h2 id="-">镜像与容器</h2>
+<p>镜像, 一个只读的文件</p>
+<p>容器, 是从某镜像为基础创建的运行实例, 运行实例不会修改镜像数据, 修改操作会保存在镜像之上的可写层, 可写层最终会变成镜像, 变为只读.</p>
+<p><img src="pictures/cf005ad693f3a8cad41556ef3145529016a5a1f6.png" alt=""></p>
+<hr>
+<h2 id="-">镜像</h2>
+<ol>
+<li><p>查找镜像</p>
+<pre><code class="lang-bash">docker search tutorial
+docker search httpd
+</code></pre>
+</li>
+<li><p>下载镜像</p>
+<pre><code class="lang-bash">docker pull ubuntu:13.10
+</code></pre>
+</li>
+<li><p>查看本地镜像</p>
+<pre><code class="lang-bash">docker images
+</code></pre>
+</li>
+<li><p>创建镜像</p>
+<ol>
+<li><p>基于容器创建镜像</p>
+<pre><code class="lang-bash">docker run ubuntu:13.10 touch test.txt # 在镜像上创建test.txt
+docker ps -a # 查看创建test.txt后的容器id, fc7b8511c294
+docker commit -m &#39;Add test.txt file&#39; fc7b8511c294 test_repo:test_tag # 用容器id fc7b8511c294创建新镜像
+docker images # 查看创建的新镜像
+</code></pre>
+</li>
+<li><p>基于本地模板创建镜像</p>
+<pre><code class="lang-bash">cat ubuntu.tar.gz | docker import - test_repo:test_tag # 以ubuntu.tar.gz为模板创建镜像
+docker images # 查看创建的新镜像
+</code></pre>
+</li>
+<li><p>基于Dockerfile创建镜像</p>
+<pre><code class="lang-dockerfile"># 指定基于什么基础镜像
+FROM ubuntu:13.10
+
+# 维护者信息
+MAINTAINER user user@email.com
+
+# 指定环境变量
+ENV VERSION 1.2.3
+
+# 指定工作路径
+WORKDIR /tmp
+
+# 镜像内执行的命令, 每条命令执行后将容器commit为新镜像, 后续命令以新镜像为基础镜像
+RUN cat /
+RUN echo &#39;hello Dockerfile&#39;
+
+# 告诉Docker服务器容器暴露的端口号
+EXPOSE 22
+
+# 容器启动时执行的命令, 每个Dockerfile只能有一个CMD
+CMD [&quot;echo&quot;, &quot;hello cmd&quot;]
+</code></pre>
+<p>创建镜像</p>
+<pre><code class="lang-bash">docker build
+</code></pre>
+</li>
+</ol>
+</li>
+<li><p>删除镜像</p>
+<pre><code class="lang-bash">docker rmi fc7b8511c294
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2 id="-">容器</h2>
+<ol>
+<li><p>创建并启动容器</p>
+<pre><code class="lang-bash">docker run ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39;
+docker run -d ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 以后台服务运行
+docker run -p 5000:5000 ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39; # 映射端口5000到5000
+</code></pre>
+</li>
+<li><p>在当前容器中执行命令</p>
+<pre><code class="lang-bash">docker exec ubuntu:13.10 echo &#39;Hello ubuntu in docker&#39;
+</code></pre>
+</li>
+<li><p>查看容器id, 容器大小</p>
+<pre><code class="lang-bash">docker ps -a -s
+</code></pre>
+</li>
+<li><p>查看容器输出信息</p>
+<pre><code class="lang-bash">docker logs -f 49c25062f661
+</code></pre>
+</li>
+<li><p>终止容器</p>
+<pre><code class="lang-bash">docker stop 49c25062f661
+</code></pre>
+</li>
+<li><p>启动容器</p>
+<pre><code class="lang-bash">docker start cdf8b9e60f30
+</code></pre>
+</li>
+<li><p>删除容器</p>
+<pre><code class="lang-bash">docker rm cdf8b9e60f30
+docker rm -f $(sudo docker ps -a -q)
+</code></pre>
+</li>
+<li><p>查看容器资源占用</p>
+<pre><code class="lang-bash">docker stats
+</code></pre>
+</li>
+<li><p>查看容器端口映射</p>
+<pre><code class="lang-bash">docker port 84f3e6b91390
+</code></pre>
+</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

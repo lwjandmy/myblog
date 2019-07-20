@@ -1,0 +1,139 @@
+
+
+<html><head><meta charset="UTF-8"><title>分类变量的相关分析
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">分类变量的相关分析</h1>
+<p>研究性别, 佩戴耳环, 两个变量间是否有关.</p>
+<p>性别: 男, 女</p>
+<p>佩戴耳环: 佩戴, 不佩戴</p>
+<p>收集如下数据:</p>
+<p>男, 不佩戴: 58人
+男, 佩戴: 22人
+女, 不佩戴: 2人
+女, 佩戴: 18人</p>
+<p>频率分布表:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>男</th>
+<th>女</th>
+<th>合计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不佩戴</td>
+<td>58</td>
+<td>2</td>
+<td>60</td>
+</tr>
+<tr>
+<td>佩戴</td>
+<td>22</td>
+<td>18</td>
+<td>40</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>80</td>
+<td>20</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>频率分布图:</p>
+<p><img src="pictures/cfcbe0e89c5c33b3b486973d03c78c59052a4a3f.png" alt=""></p>
+<p>现在假设性别和佩戴耳环无关, 那么:</p>
+<p>频率分布表的4个频率要重新计算, 使:</p>
+<pre><code class="lang-text">男性调查人数之和仍为80
+女性调查人数之和仍为20
+不佩戴人数之和 : 佩戴人数之和 = 60 : 40, 这保证了佩戴和不佩戴之间有关系, 但和性别无关.
+</code></pre>
+<p>性别和佩戴耳环无关, 频率分布表:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>男</th>
+<th>女</th>
+<th>合计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不佩戴</td>
+<td>?</td>
+<td>?</td>
+<td>60</td>
+</tr>
+<tr>
+<td>佩戴</td>
+<td>?</td>
+<td>?</td>
+<td>40</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>80</td>
+<td>20</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>性别和佩戴耳环无关, 频率分布图:</p>
+<p><img src="pictures/690bb19e2892396c90a5fd6c54565911bfa768a4.png" alt=""></p>
+<pre><code class="lang-text">已知男不佩戴和女不佩戴之和是60, 之比是80:20, 得到男不佩戴为48, 女不佩戴为12
+已知男佩戴和女佩戴之和是40, 之比是80:20, 得到男佩戴为32, 女佩戴为8
+</code></pre>
+<p>性别和佩戴耳环无关, 频率分布表:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>男</th>
+<th>女</th>
+<th>合计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不佩戴</td>
+<td>48</td>
+<td>12</td>
+<td>60</td>
+</tr>
+<tr>
+<td>佩戴</td>
+<td>32</td>
+<td>8</td>
+<td>40</td>
+</tr>
+<tr>
+<td>合计</td>
+<td>80</td>
+<td>20</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>以上得到的性别和佩戴耳环无关的频率分布, 称为&quot;期望频率&quot;</p>
+<p>X^2 = sum((观测频率 - 期望频率) ^ 2 / 期望频率)</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

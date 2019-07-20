@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>transactional注解的缺点 陷阱 会导致没有事物包裹
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="transactional-">transactional注解的缺点 陷阱 会导致没有事物包裹</h1>
+<p><a href="http://cncc.bingj.com/cache.aspx?q=debug+spring+transactional+annotation&amp;d=4931203915320706&amp;mkt=zh-CN&amp;setlang=zh-CN&amp;w=qP3hjDTZy3LCc6LAuN1Y1I4bE-sKZ8RR">Tips for Debugging Spring&#39;s @Transactional Annotation</a></p>
+<p><a href="http://blog.csdn.net/hardywang/article/details/51206511">Spring事务注解@Transactional的坑爹陷阱</a></p>
+<p><a href="http://m.blog.csdn.net/article/details?id=52055527">Spring注解事务诡异提交全面解析</a></p>
+<ol>
+<li>@Transactional只会使public的方法被事物包裹</li>
+<li>对象必须通过getBean的方法获取(即被spring管理, 通过spring获取), 方法才会加上事物代理. 如果直接new这个对象, 或通过Class.newInstance等, 是没有事物代理的, 也就不会有事务.</li>
+<li>@Transactional默认的配置是出现Exception异常时回滚, 但Throwable异常不会回滚, 改成@Transactional(rollbackFor = { Throwable.class })</li>
+<li>当发现@Transactional注解的方法没有事物时, 在方法上打断点, 看调用堆栈, 看是否被代理类所调用.</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

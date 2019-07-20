@@ -1,0 +1,56 @@
+
+
+<html><head><meta charset="UTF-8"><title>tomcat 配置编码 保证跨系统 编码统一UTF-8
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tomcat-utf-8">tomcat 配置编码 保证跨系统 编码统一UTF-8</h1>
+<pre><code class="lang-txt">对request和response的编码设置:
+
+配置过滤器, 调用request和response的setCharacterEncoding
+    &lt;filter&gt;
+        &lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
+        &lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;encoding&lt;/param-name&gt;
+            &lt;param-value&gt;UTF-8&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;forceEncoding&lt;/param-name&gt;
+            &lt;param-value&gt;true&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/filter&gt;
+    &lt;filter-mapping&gt;
+        &lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/filter-mapping&gt;
+
+需要的包:
+commons-logging
+spring-core
+spring-context
+spring-beans
+spring-web
+
+
+对URL的编码设置:
+
+配置tomcat/conf/server.xml
+在&lt;Connector xxx/&gt; 中增加URIEncoding=&quot;UTF-8&quot;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,65 @@
+
+
+<html><head><meta charset="UTF-8"><title>svn备份bat脚本 百分号取参数 if判断 定义变量 call调用 取日期 遍历文件夹
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="svn-bat-if-call-">svn备份bat脚本 百分号取参数 if判断 定义变量 call调用 取日期 遍历文件夹</h1>
+<p>env.bat</p>
+<pre><code class="lang-bat">rem svn仓库磁盘路径
+set REPO_PATH=E:/Repositories
+
+rem 备份路径
+set REPO_BACKUP_PATH=E:/Repositories_backups
+
+rem 全量备份路径
+set REPO_BACKUP_FULL_PATH=%REPO_BACKUP_PATH%/full-dump
+
+rem 增量备份路径
+set REPO_BACKUP_INCR_PATH=%REPO_BACKUP_PATH%/increment-dump
+</code></pre>
+<p>full-dump-one.bat</p>
+<pre><code class="lang-bat">@echo off
+
+call env.bat
+
+rem 检查是否传入参数，必须把项目名作为参数传入
+if &quot;%1%&quot;==&quot;&quot; goto noargs
+goto hasargs
+
+:noargs
+echo 调用语法：full-dump-one svn项目名
+echo 如：full-dump-one code-generator
+pause
+exit
+
+:hasargs
+call svnadmin dump %REPO_PATH%/%1 &gt; %REPO_BACKUP_FULL_PATH%/svn_backup_%1_%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%.dump
+</code></pre>
+<p>full-dump-all.bat</p>
+<pre><code class="lang-bat">@echo off
+
+call env.bat
+
+for /f &quot;tokens=*&quot; %%i in (&#39;dir /ad /b &quot;%REPO_PATH%&quot;&#39;) do (call full-dump-one %%i)
+
+echo 备份完成
+
+pause
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

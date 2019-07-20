@@ -1,0 +1,55 @@
+
+
+<html><head><meta charset="UTF-8"><title>马尔代夫代换
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">马尔代夫代换</h1>
+<pre><code class="lang-text">设一个线性方程:
+x2 = k*x1 + b.
+若连续迭代:
+x3 = k*x2 + b.
+x4 = k*x3 + b.
+x5 = k*x4 + b.
+...
+为了求xn, 可进行马尔代夫代换:
+设: x2 + C = k*(x1 + C)
+带入: x2 = k*x1 + b,
+可解出C.
+这样可迭代出:
+xn + C = (x1 + C) * k^(n-1).
+
+当k&lt;1时, 等式右侧无限小, 可求出xn!!.
+
+
+
+例题:
+假设淘宝网上某商品A在任一时刻t内若有人浏览，则该商品在下一时刻t+1内无人浏览的概率为0.35（即下一时刻的浏览情况仅与当前时段相关），
+定义此条件概率为 P(O_{t+1}=0|O_t=1)=0.35(即用“1”代表有人浏览的事件，用“0”代表无人浏览的事件），
+类似得定义 P(O_{t+1}=1|O_t=1)=0.65，P(O_{t+1}=0|O_t=0)=0.4，P(O_{t+1}=1|O_t=0)=0.6。
+若此 商品A在t=0时有人浏览，它在t=100000时有人浏览的概率是____。
+
+定义Pt是t时刻有浏览, 则1 - Pt是无浏览.
+得迭代: Pt+1 = 0.65*Pt + 0.60*(1-Pt).
+设: Pt+1 + C = k*(Pt + C)
+求出C = - 0.6/0.95.
+则最终得出迭代方程:
+Pt - 0.6/0.95  =  (P1 - 0.6/0.95) * 0.05^t
+解得Pt = 0.6/0.95.
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

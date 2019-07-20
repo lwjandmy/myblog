@@ -1,0 +1,51 @@
+
+
+<html><head><meta charset="UTF-8"><title>jsp helloworld 部署Tomcat
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jsp-helloworld-tomcat">jsp helloworld 部署Tomcat</h1>
+<pre><code class="lang-jsp">&lt;%
+    String str = &quot;hello world&quot;;
+    out.print(str);
+%&gt;
+</code></pre>
+<p>部署到Tomcat </p>
+<p>Servers视图, 右键Tomcat, Add and Remove</p>
+<p>启动Tomcat</p>
+<p>Servers视图, 右键Tomcat, Start</p>
+<p>访问站点:</p>
+<p>localhsot:8080/project_name/index.jsp</p>
+<p>JSP声明代码:</p>
+<pre><code class="lang-jsp">&lt;%!
+    String str = &quot;hello world&quot;;
+%&gt;
+&lt;%
+//    String str = &quot;hello world&quot;;
+    out.print(str);
+%&gt;
+
+
+
+JSP表达式:
+
+JSP表达式输出:
+```jsp
+&lt;%=&quot;hello jsp!&quot; %&gt;&lt;br /&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

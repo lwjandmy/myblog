@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>kie server搭建并集成到workbench
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="kie-server-workbench">kie server搭建并集成到workbench</h1>
+<p>下载KIE Execution Server  kie-server-distribution-6.5.0.Final.zip</p>
+<p>重命名kie-server-6.5.0.Final-webc.war  --&gt;  kie-server.war放到tomcat/webapps</p>
+<p>TOMCAT_HOME/conf/tomcat-users.xml增加用户</p>
+<pre><code class="lang-xml">&lt;role rolename=&quot;kie-server&quot;/&gt;
+&lt;user username=&quot;kieserver&quot; password=&quot;kieserver&quot; roles=&quot;kie-server&quot;/&gt;
+</code></pre>
+<p>startup.sh加参数 放catalina.sh 或 setenv.sh里</p>
+<pre><code class="lang-bat">-Dorg.kie.server.id=first-kie-server
+-Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server
+-Dorg.kie.server.controller=http://localhost:8080/kie-wb/rest/controller
+-Dorg.kie.server.controller.user=admin
+-Dorg.kie.server.controller.pwd=admin
+</code></pre>
+<p>测试server是否启动</p>
+<pre><code class="lang-text">http://localhost:8080/kie-server/services/rest/server/
+http://localhost:8080/kie-server/services/rest/server/containers/mortgages
+http://localhost:8080/kie-server/services/rest/server/containers/mortgages
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

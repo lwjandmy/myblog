@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>adb命令
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="adb-">adb命令</h1>
+<p>进入fastboot</p>
+<pre><code class="lang-shell">adb reboot bootloader
+</code></pre>
+<p>解除oem锁定</p>
+<pre><code class="lang-shell">fastboot oem unlock     adb版本：2.0.0.0
+</code></pre>
+<p>刷入recovery</p>
+<pre><code class="lang-shell">fastboot flash recovery recovery.img
+</code></pre>
+<p>手动进入第三方recovery<br>关机状态下,音量下键+开机键</p>
+<p>关闭adb服务</p>
+<pre><code class="lang-shell">adb kill-server
+</code></pre>
+<p>连接设备</p>
+<pre><code class="lang-shell">adb devices
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

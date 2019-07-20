@@ -1,0 +1,186 @@
+
+
+<html><head><meta charset="UTF-8"><title>d3 放射状布局 数据生成解析 可调角度 文字方向矫正 动态尺寸
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="d3-">d3 放射状布局 数据生成解析 可调角度 文字方向矫正 动态尺寸</h1>
+<p>index.html</p>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;测试分层布局&lt;/title&gt;
+    &lt;script src=&quot;js/d3.v4.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;js/jquery.1.9.1.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        svg {
+            border: 1px solid red;
+        }
+        path.link {
+            fill: none;
+            stroke-opacity: 0.4;
+            stroke-width: 10.5px;
+            cursor: pointer;
+            stroke: #f00;
+            color: #f00;
+            background-color: #f00;
+            border-color: #f00;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;script&gt;
+        function draw(data) {
+
+            // 画布尺寸
+            var width = 1000;
+            var height = 700;
+
+            // 旋转微调
+            var rotateoffset = 810;
+
+            // 数据分层初始化, 得到根
+            var root = d3.hierarchy(data, function (d) { return d.child });
+
+            // 用默认配置, 得到树形分层函数
+            var tree_fn = d3.tree()
+                .size([360, height / 2 - 100]) // 角度范围, 半径范围
+                .separation(function (a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth });
+
+            // 进行树形分层
+            // x 根据同一depth的节点数, 均分区间[0,1]. 如第一个节点, x=0; 第二个节点, x=0.5; 第三个节点, x=1
+            // y 根据树的depth, 均分区间[0,1]. 如depth=0, y=0; depth=1, y=0.5; depth=2, y=1
+            root = tree_fn(root);
+
+            // 数据x坐标微调
+            root.each(function (d) {
+               d.x = (d.x + rotateoffset) % 360;
+            });
+
+            // 把树形坐标, 先转换为弧度和半径(x认为是弧度, y认为是半径), 然后根据弧度和半径计算对应的物理坐标, 返回
+            function project(x, y) {
+                var angle = x / 180 * Math.PI, radius = y;
+                return [radius * Math.cos(angle), radius * Math.sin(angle)];
+            }
+
+            var svg = d3.select(&#39;body&#39;)
+                .append(&#39;svg&#39;);
+
+            svg.attr(&#39;width&#39;, width + &#39;px&#39;)
+                .attr(&#39;height&#39;, height + &#39;px&#39;);
+
+            var g = svg.append(&#39;g&#39;);
+
+            // 连线
+            g.selectAll(&quot;.link&quot;)
+                .data(root.descendants().slice(1))
+                .enter()
+                .append(&quot;path&quot;)
+                .classed(&#39;link&#39;, true)
+                .attr(&quot;d&quot;, function (d) {
+                    return &quot;M&quot; + project(d.x, d.y)
+                        + &quot;C&quot; + project(d.x, (d.y + d.parent.y) / 2)
+                        + &quot; &quot; + project(d.parent.x, (d.y + d.parent.y) / 2)
+                        + &quot; &quot; + project(d.parent.x, d.parent.y);
+                });
+
+            // 结点
+            g.selectAll(&quot;.node&quot;)
+                .data(root.descendants())
+                .enter()
+                .append(&quot;g&quot;)
+                .attr(&quot;transform&quot;, function (d) {
+                    return &quot;translate(&quot; + project(d.x, d.y) + &quot;)&quot;;
+                })
+                .append(&quot;text&quot;)
+                .attr(&quot;dy&quot;, &quot;.31em&quot;)
+                .attr(&quot;x&quot;, function (d) { // 文字横坐标微调不能动, 否则文字与连线过紧
+                    return (d.x &lt; 90 || d.x &gt; 270) === !d.children ? 6 : -6;
+                })
+                .style(&quot;text-anchor&quot;, function (d) { // 文字锚点固定不能动, 否则文字会挡住连线
+                    return (d.x &lt; 90 || d.x &gt; 270) === !d.children ? &quot;start&quot; : &quot;end&quot;;
+                })
+                .attr(&quot;transform&quot;, function (d) { // 文字旋转固定不能动, 否则文字会倒着
+                    if (d.depth == 0) // 第一个节点, 不旋转
+                        return &#39;&#39;;
+                    return &quot;rotate(&quot; + ((d.x &lt; 90 || d.x &gt; 270) ? d.x : (d.x + 180)) + &quot;)&quot;;
+                })
+                .text(function (d) { return d.data.k; });
+
+            // 放大缩小
+            var zoom = d3.zoom();
+            svg.call(zoom.on(&quot;zoom&quot;, function zoomed() {
+                g.attr(&quot;transform&quot;, d3.event.transform);
+            }));
+
+            // 初始化视口坐标映射
+            svg.call(zoom.translateBy, width / 2, height / 2);
+
+        }
+
+        d3.json(&#39;data.json&#39;, draw);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>data.json</p>
+<pre><code class="lang-js">{
+  &quot;k&quot;: &quot;1&quot;,
+  &quot;child&quot;: [
+    {
+      &quot;k&quot;: &quot;1.1&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.2&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.3&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.4&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.5&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.6&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.7&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.8&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.9&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.10&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.11&quot;
+    },
+    {
+      &quot;k&quot;: &quot;1.12&quot;
+    }
+  ]
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

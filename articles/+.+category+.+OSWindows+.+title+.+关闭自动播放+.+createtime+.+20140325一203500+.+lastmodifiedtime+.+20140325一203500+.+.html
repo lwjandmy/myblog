@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>关闭自动播放
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">关闭自动播放</h1>
+<pre><code class="lang-text">[组策略]
+gpedit.msc
+计算机配置
+管理模板
+系统
+&quot;关闭自动播放&quot;
+
+[服务]
+关闭Shell Hardware Detection服务
+
+[注册表]
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2
+Windows XP在插入光盘、闪存时将扫描里面有没有autorun.inf文件，如果有，就会将autorun.inf文件指定的自启动程序添加到“MountPoints2”注册表项，并且让鼠标右击对象后出来的菜单中除了正常的“打开”命令外，还出现“自动播放”、“AUTO”等其他的右键菜单命令，如果autorun.inf中指定的是病毒文件，那就会导致中毒，即所谓U盘病毒。
+因此，需要禁止任何程序读写“MountPoints2”注册表项，就可以禁止系统在双击光盘、闪存的盘符时自动运行autorun.inf，让你直接进入文件夹。
+禁止方法：右击MountPoints2项，点击弹出弹出菜单中的“权限”-“安全”，将“everyone”的“完全控制”权限关闭。
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>sql server 2005 添加数据库和对应用户
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="sql-server-2005-">sql server 2005 添加数据库和对应用户</h1>
+<pre><code class="lang-text">添加数据库:
+
+右键Databases-&gt;New Database(或者Attach)
+按需要设置
+
+
+添加登录用户:
+Security-&gt;Logins,右键New Login
+设置登录名,认证方式,
+
+改左边的User Mapping标签下的:
+对应操作的数据库打勾,
+下面的权限添加public和db_owner, 不要都选中,否则登录不上..
+
+左边的Status, 选中Grant和Enabled(为什么还未知,Grant不会是给其它用户提升权限的吧...)
+
+OK
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

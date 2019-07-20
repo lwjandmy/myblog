@@ -1,0 +1,35 @@
+
+
+<html><head><meta charset="UTF-8"><title>freemarker demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="freemarker-demo">freemarker demo</h1>
+<pre><code class="lang-java">        Configuration config = new Configuration(Configuration.VERSION_2_3_23);
+        config.setTemplateLoader(new ClassTemplateLoader(Object.class, &quot;/&quot;));
+        config.setClassicCompatible(true); // 如果上下文不存在ftl模板里需要的变量, 不会使渲染时报错
+
+        Template template = config.getTemplate(&quot;/test.ftl&quot;);
+
+        Map&lt;?, ?&gt; ftlData;
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        template.process(ftlData, new OutputStreamWriter(outputStream, &quot;UTF-8&quot;));
+        System.out.println(outputStream.toString(&quot;UTF-8&quot;));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

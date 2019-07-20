@@ -1,0 +1,127 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis foreach标记 用于生成循环样式的sql语句
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-foreach-sql-">MyBatis foreach标记 用于生成循环样式的sql语句</h1>
+<p>log4j.properties省略, MyBatisConfig.xml主配置文件, User.xml用户表映射配置文件, User.java用户类, TestForeachTag.java主方法</p>
+<p>数据库:</p>
+<pre><code class="lang-sql">create table `user_tbl` (
+  `id` int(10) not null auto_increment,
+  `username` varchar(20) not null,
+  `password` varchar(20) not null,
+  primary key (`id`)
+);
+
+insert into `user_tbl` values
+(1,&#39;test1&#39;,&#39;test1&#39;),
+(2,&#39;test2&#39;,&#39;test2&#39;);
+</code></pre>
+<p>MyBatisConfig.xml:   主配置文件</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+    &lt;typeAliases&gt;
+        &lt;typeAlias alias=&quot;User&quot; type=&quot;org.learnmybatisforeachtag.pojo.User&quot; /&gt;
+    &lt;/typeAliases&gt;
+    &lt;environments default=&quot;development&quot;&gt;
+        &lt;environment id=&quot;development&quot;&gt;
+            &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+            &lt;dataSource type=&quot;POOLED&quot;&gt;
+                &lt;property name=&quot;driver&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
+                &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis_db&quot; /&gt;
+                &lt;property name=&quot;username&quot; value=&quot;mybatis_usr&quot; /&gt;
+                &lt;property name=&quot;password&quot; value=&quot;123456&quot; /&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/learnmybatisforeachtag/map/User.xml&quot; /&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>User.xml:   用户表映射配置文件</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn.UserMapper&quot;&gt;
+    &lt;!-- 使用foreach标签生成集合where in --&gt;
+    &lt;select id=&quot;selectUserByForeach&quot; parameterType=&quot;List&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl
+        where id in
+        &lt;!-- 生成(a,b,c) --&gt;
+        &lt;foreach collection=&quot;list&quot; open=&quot;(&quot; close=&quot;)&quot;  separator=&quot;,&quot; index=&quot;index&quot; item=&quot;item&quot;&gt;
+            ${item}
+        &lt;/foreach&gt;
+    &lt;/select&gt;
+    &lt;!-- 使用foreach标签生成集合insert into values --&gt;
+    &lt;insert id=&quot;insertUserByForeach&quot; parameterType=&quot;List&quot;&gt;
+        insert into user_tbl(username,password) values
+        &lt;foreach collection=&quot;list&quot; separator=&quot;,&quot; index=&quot;index&quot; item=&quot;item&quot;&gt;
+            (#{item.username},#{item.password})
+        &lt;/foreach&gt;
+    &lt;/insert&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>User.java:   用户类</p>
+<pre><code class="lang-java">public class User {
+    private Integer id;
+    private String username;
+    private String password;
+    public User() {}
+    public User(String username, String password) { this.username = username; this.password = password; }
+    public String toString() { return &quot;User [id=&quot; + id + &quot;, username=&quot; + username + &quot;, password=&quot; + password + &quot;]&quot;; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+}
+</code></pre>
+<p>TestForeachTag.java:   主方法</p>
+<pre><code class="lang-java">public class TestForeachTag {
+    public static void main(String[] args) {
+        InputStream inputStream = TestForeachTag.class.getResourceAsStream(&quot;../../../org/learnmybatisforeachtag/map/MyBatisConfig.xml&quot;);
+        SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlMapper.openSession();
+
+        { // 使用foreach标签生成集合where in
+        List&lt;Integer&gt; intList = new ArrayList&lt;&gt;();
+        intList.add(1);
+        intList.add(2);
+        List&lt;User&gt; userList = session.selectList(&quot;selectUserByForeach&quot;, intList);
+        for (User user : userList)
+            System.out.println(user);
+        }
+
+                { // 使用foreach标签生成集合insert into values
+        List&lt;User&gt; userList = new ArrayList&lt;&gt;();
+        userList.add(new User(&quot;test11&quot;, &quot;test11&quot;));
+        userList.add(new User(&quot;test12&quot;, &quot;test12&quot;));
+        session.insert(&quot;insertUserByForeach&quot;, userList);
+        session.commit();
+        }
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

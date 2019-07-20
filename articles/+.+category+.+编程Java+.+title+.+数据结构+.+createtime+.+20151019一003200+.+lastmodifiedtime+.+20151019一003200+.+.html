@@ -1,0 +1,70 @@
+
+
+<html><head><meta charset="UTF-8"><title>数据结构
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">数据结构</h1>
+<p>Iterable</p>
+<pre><code class="lang-text">|--Collection
+|   |--List
+|   |   |--ArrayList
+|   |   |--Vector
+|   |--Set 元素不能重复
+|   |   |--HashSet
+|   |   |--TreeSet
+|   |--Queue
+|   |   |--Deque
+</code></pre>
+<p>Collection<br>集合, 即动态的数组</p>
+<p>List, ArrayList, Vector:</p>
+<pre><code class="lang-java">List&lt;int&gt; list = new ArrayList&lt;int&gt;;  OR  List&lt;int&gt; list = new Vector&lt;int&gt;;
+list.add(123);
+list.remove(0);
+list.size();
+list.indexOf(456);
+</code></pre>
+<p>ArrayList 异步处理方式 性能高 非线程安全<br>Vector     同步处理方式 性能低 线程安全</p>
+<p>Set, HashSet, TreeSet:</p>
+<pre><code class="lang-java">Set&lt;int&gt; set = new HashSet&lt;int&gt;;  OR  Set&lt;int&gt; set = new TreeSet&lt;int&gt;;
+set.add(1);
+set.remove(0);
+</code></pre>
+<p>Iterator:</p>
+<pre><code class="lang-java">Iterator&lt;int&gt; iter = list.iterator();
+while (iter.hasNext()
+  System.out.println(iter.next());
+</code></pre>
+<p>Map:</p>
+<pre><code class="lang-text">|--HashMap
+|--Hashtable
+</code></pre>
+<pre><code class="lang-java">Map&lt;int, int&gt; map = new HashMap&lt;int, int&gt;(); OR Map&lt;int, int&gt; map = new Hashtable&lt;int, int&gt;();
+map.put(1, 100);
+map.get(1);
+map.containsKey(1);
+map.containsValue(100);
+// 遍历
+Iterator&lt;Map.Entry&lt;int, int&gt; &gt; iter = map.entrySet().iterator();
+while (iter.hasNext())
+{
+  Map.Entry&lt;int, int&gt; entry = iter.next();
+  System.out.println(entry.getKey() + entry.getValue());
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

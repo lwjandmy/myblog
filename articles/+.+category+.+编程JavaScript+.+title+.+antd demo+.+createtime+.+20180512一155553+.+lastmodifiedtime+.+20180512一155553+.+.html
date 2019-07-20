@@ -1,0 +1,1082 @@
+
+
+<html><head><meta charset="UTF-8"><title>antd demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="antd-demo">antd demo</h1>
+<pre><code class="lang-js">import React, { Component } from &#39;react&#39;;
+import ReactDOM from &#39;react-dom&#39;;
+import { Button, Icon, Layout, Affix, AutoComplete,
+  Cascader, Checkbox, DatePicker, TimePicker,
+  Radio, Select, Slider, Switch, Upload,
+  Transfer, Form, Input, Row, Col, Modal, InputNumber,
+  Tooltip, Avatar, Badge, Calendar, Card, Carousel,
+  Collapse, List, Popover, Tabs, Tag, Timeline, Alert,
+  message, notification, Progress, Popconfirm, Spin,
+  Anchor, BackTop, Divider, LocaleProvider, Table,
+  Tree,
+} from &#39;antd&#39;;
+
+import zh_CN from &#39;antd/lib/locale-provider/zh_CN&#39;;
+import &#39;moment/locale/zh-cn&#39;;
+
+const { Header, Footer, Sider, Content } = Layout;
+const { MonthPicker, WeekPicker, RangePicker } = DatePicker;
+const { Option, OptGroup } = Select;
+const { TextArea } = Input;
+const { Meta } = Card;
+const { Panel } = Collapse;
+const { TabPane } = Tabs;
+const { Link } = Anchor;
+const { Column, ColumnGroup } = Table;
+const { TreeNode } = Tree;
+
+const FormItem = Form.Item;
+const InputGroup = Input.Group;
+
+const TestButton = () =&gt; (
+  &lt;div&gt;
+    &lt;Button type=&quot;primary&quot;&gt;type=primary&lt;/Button&gt;
+    &lt;Button type=&quot;default&quot;&gt;type=default&lt;/Button&gt;
+    &lt;Button type=&quot;dashed&quot;&gt;type=dashed&lt;/Button&gt;
+    &lt;Button type=&quot;danger&quot;&gt;type=danger&lt;/Button&gt;
+    &lt;br /&gt;
+    &lt;Button icon=&quot;search&quot;&gt;icon=search&lt;/Button&gt;
+    &lt;Button icon=&quot;download&quot;&gt;icon=download&lt;/Button&gt;
+    &lt;Button icon=&quot;left&quot;&gt;icon=left&lt;/Button&gt;
+    &lt;Button icon=&quot;right&quot;&gt;icon=right&lt;/Button&gt;
+    &lt;br /&gt;
+    &lt;Button size=&quot;small&quot;&gt;size=small&lt;/Button&gt;
+    &lt;Button size=&quot;default&quot;&gt;size=default&lt;/Button&gt;
+    &lt;Button size=&quot;large&quot;&gt;size=large&lt;/Button&gt;
+    &lt;br /&gt;
+    &lt;Button loading={true}&gt;loading=true&lt;/Button&gt;
+    &lt;br /&gt;
+    &lt;Button ghost=&quot;true&quot;&gt;ghost=true&lt;/Button&gt;
+    &lt;Button disabled=&quot;true&quot;&gt;disabled=true&lt;/Button&gt;
+    &lt;Button onClick={() =&gt; alert(&#39;onClick&#39;)}&gt;onClick&lt;/Button&gt;
+  &lt;/div&gt;
+);
+
+const TestIcon = () =&gt; (
+  &lt;div&gt;
+    &lt;Icon type=&quot;link&quot;&gt;link&lt;/Icon&gt;
+    &lt;Icon type=&quot;question&quot;&gt;question&lt;/Icon&gt;
+    &lt;Icon type=&quot;info&quot;&gt;info&lt;/Icon&gt;
+  &lt;/div&gt;
+);
+
+const TestLayout = () =&gt; (
+  &lt;div&gt;
+    &lt;Layout&gt;
+      &lt;Header&gt;头&lt;/Header&gt;
+      &lt;Layout&gt;
+        &lt;Sider&gt;
+          左侧1&lt;br /&gt;
+          左侧2&lt;br /&gt;
+        &lt;/Sider&gt;
+        &lt;Content&gt;内容&lt;/Content&gt;
+      &lt;/Layout&gt;
+      &lt;Footer&gt;脚&lt;/Footer&gt;
+    &lt;/Layout&gt;
+  &lt;/div&gt;
+);
+
+const TestAffix = () =&gt; (
+  &lt;div&gt;
+    &lt;Affix offsetTop={10}&gt;
+      &lt;Button type=&quot;primary&quot;&gt;Affix offsetTop=10&lt;/Button&gt;
+    &lt;/Affix&gt;
+    &lt;Affix offsetBottom={10} target={() =&gt; window}&gt;
+      &lt;Button type=&quot;primary&quot;&gt;Affix offsetBottom=10&lt;/Button&gt;
+    &lt;/Affix&gt;
+  &lt;/div&gt;
+);
+
+const TestAutoComplete = () =&gt; (
+  &lt;AutoComplete
+    placeholder=&quot;AutoComplete 手机号&quot;
+    dataSource={[&#39;123&#39;, &#39;456&#39;]}
+    onSearch={() =&gt; alert(&#39;查询&#39;)}
+    onSelect={() =&gt; alert(&#39;选中&#39;)}
+  /&gt;
+);
+
+const TestDateTimerPicker = () =&gt; (
+  &lt;div&gt;
+    &lt;DatePicker placeholder=&quot;选择年月日&quot; /&gt;
+    &lt;MonthPicker placeholder=&quot;选择年月&quot; /&gt;
+    &lt;WeekPicker placeholder=&quot;选择周&quot; /&gt;
+    &lt;RangePicker placeholder=&quot;从到&quot; /&gt;
+    &lt;DatePicker showTime placeholder=&quot;选择年月日时分秒&quot; format=&quot;YYYY-MM-DD HH:mm:ss&quot; /&gt;
+    &lt;TimePicker placeholder=&quot;选择时分秒&quot; /&gt;
+  &lt;/div&gt;
+);
+
+const TestCascader = () =&gt; (
+  &lt;div&gt;
+    &lt;Cascader
+      options={[
+        {
+          value: &#39;1&#39;,
+          label: &#39;选项展示一&#39;,
+          isLeaf: false,
+          children: [
+            { value: &#39;11&#39;, label: &#39;选项展示一一&#39;, isLeaf: true, disabled: true },
+            { value: &#39;12&#39;, label: &#39;选项展示一二&#39;, isLeaf: true, disabled: false },
+          ] },
+        { value: &#39;2&#39;, label: &#39;选项展示二&#39;, isLeaf: false },
+      ]}
+      loadData={() =&gt; alert(&#39;load data, then change options&#39;)}
+      placeholder=&quot;Cascader 选择&quot;
+    /&gt;
+  &lt;/div&gt;
+);
+
+const TestCheckboxRadioSelect = () =&gt; (
+  &lt;div&gt;
+    &lt;Checkbox.Group defaultValue={[&#39;A&#39;]} onChange={() =&gt; alert(&#39;checkbox changed&#39;)}&gt;
+      &lt;Checkbox value=&quot;A&quot;&gt;A default&lt;/Checkbox&gt;
+      &lt;Checkbox value=&quot;B&quot; disabled={true}&gt;B disabled=true&lt;/Checkbox&gt;
+    &lt;/Checkbox.Group&gt;
+    &lt;Radio.Group defaultValue=&quot;A&quot;&gt;
+      &lt;Radio value=&quot;A&quot;&gt;A default&lt;/Radio&gt;
+      &lt;Radio value=&quot;B&quot;&gt;B&lt;/Radio&gt;
+      &lt;Radio value=&quot;C&quot; disabled={true}&gt;C disabled=true&lt;/Radio&gt;
+    &lt;/Radio.Group&gt;
+    &lt;Select mode=&quot;tags&quot; defaultValue={[&#39;11&#39;, &#39;12&#39;]}&gt;
+      &lt;OptGroup label=&quot;group1&quot;&gt;
+        &lt;Option value=&quot;11&quot;&gt;value11&lt;/Option&gt;
+        &lt;Option value=&quot;12&quot;&gt;value12&lt;/Option&gt;
+      &lt;/OptGroup&gt;
+      &lt;OptGroup label=&quot;group2&quot;&gt;
+        &lt;Option value=&quot;21&quot;&gt;value21&lt;/Option&gt;
+      &lt;/OptGroup&gt;
+    &lt;/Select&gt;
+  &lt;/div&gt;
+);
+
+const TestSlider = () =&gt; (
+  &lt;div&gt;
+    &lt;Slider marks={{ 0: &#39;0摄氏度&#39;, 37: &#39;体温&#39;, 100: &#39;煮熟&#39; }} onAfterChange={() =&gt; alert(&#39;after change&#39;)} /&gt;
+    &lt;Slider range marks={{ 0: &#39;0摄氏度&#39;, 37: &#39;体温&#39;, 100: &#39;煮熟&#39; }} /&gt;
+    &lt;Slider included={false} marks={{ 0: &#39;0摄氏度&#39;, 37: &#39;体温&#39;, 100: &#39;煮熟&#39; }} /&gt;
+    &lt;Slider step={10} marks={{ 0: &#39;0摄氏度&#39;, 37: &#39;体温&#39;, 100: &#39;煮熟&#39; }} /&gt;
+    &lt;Slider step={null} marks={{ 0: &#39;0摄氏度&#39;, 37: &#39;体温&#39;, 100: &#39;煮熟&#39; }} /&gt;
+  &lt;/div&gt;
+);
+
+const TestSwitch = () =&gt; (
+  &lt;div&gt;
+    &lt;Switch /&gt;
+    &lt;Switch loading defaultChecked /&gt;
+    &lt;Switch checkedChildren={&lt;Icon type=&quot;check&quot; /&gt;} unCheckedChildren={&lt;Icon type=&quot;cross&quot; /&gt;} /&gt;
+    &lt;Switch checkedChildren={&#39;开&#39;} unCheckedChildren={&#39;关&#39;} /&gt;
+  &lt;/div&gt;
+);
+
+const TestUpload = () =&gt; (
+  &lt;div&gt;
+    &lt;Upload&gt;
+      &lt;Button icon=&quot;upload&quot;&gt;Click to Upload&lt;/Button&gt;
+    &lt;/Upload&gt;
+    &lt;Upload.Dragger&gt;
+      &lt;Button icon=&quot;upload&quot;&gt;Drag to Upload&lt;/Button&gt;
+    &lt;/Upload.Dragger&gt;
+  &lt;/div&gt;
+);
+
+const TestTransfer = () =&gt; (
+  &lt;Transfer
+    dataSource={[
+      { key: 1, title: &#39;title1&#39; },
+      { key: 2, title: &#39;title2&#39; },
+    ]}
+    targetKeys={[1]}
+    onChange={() =&gt; alert(&#39;change&#39;)}
+    titles={[&#39;Source&#39;, &#39;Target&#39;]}
+    render={record =&gt; record.title}
+    showSearch
+    searchPlaceholder=&quot;搜索条件&quot;
+  /&gt;
+);
+
+
+const TestInput = () =&gt; (
+  &lt;div&gt;
+    &lt;InputNumber min={0} max={10} step={0.01} /&gt;
+    &lt;InputNumber
+      defaultValue={1000}
+      min={0}
+      max={10000}
+      formatter={value =&gt; `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, &#39;,&#39;)}
+      parser={value =&gt; value.replace(/\$\s?|(,*)/g, &#39;&#39;)}
+    /&gt;
+    &lt;InputNumber
+      defaultValue={100}
+      min={0}
+      max={100}
+      formatter={value =&gt; `${value}%`}
+      parser={value =&gt; value.replace(&#39;%&#39;, &#39;&#39;)}
+    /&gt;
+    &lt;Input
+      addonAfter={
+        &lt;Select defaultValue=&quot;.com&quot; style={{ width: 80 }}&gt;
+          &lt;Option value=&quot;.com&quot;&gt;.com&lt;/Option&gt;
+          &lt;Option value=&quot;.jp&quot;&gt;.jp&lt;/Option&gt;
+          &lt;Option value=&quot;.cn&quot;&gt;.cn&lt;/Option&gt;
+          &lt;Option value=&quot;.org&quot;&gt;.org&lt;/Option&gt;
+        &lt;/Select&gt;
+      }
+      placeholder=&quot;后缀域名选项&quot;
+    /&gt;
+    &lt;Input
+      addonAfter={&lt;Icon type=&quot;setting&quot; /&gt;}
+      placeholder=&quot;后缀icon图标&quot;
+    /&gt;
+
+    &lt;TextArea placeholder=&quot;自动调整大小, 默认2行6列&quot; autosize={{ minRows: 2, maxRows: 6 }} /&gt;
+
+    &lt;InputGroup compact&gt;
+      &lt;Select defaultValue=&quot;Option1&quot;&gt;
+        &lt;Option value=&quot;Option1&quot;&gt;选项1&lt;/Option&gt;
+        &lt;Option value=&quot;Option2&quot;&gt;选项2&lt;/Option&gt;
+      &lt;/Select&gt;
+      &lt;Input style={{ width: &#39;50%&#39; }} placeholder=&quot;内容&quot; /&gt;
+      &lt;InputNumber placeholder={0} /&gt;
+    &lt;/InputGroup&gt;
+    &lt;br /&gt;
+    &lt;InputGroup compact&gt;
+      &lt;Select defaultValue=&quot;1&quot;&gt;
+        &lt;Option value=&quot;1&quot;&gt;在此时间范围内&lt;/Option&gt;
+        &lt;Option value=&quot;2&quot;&gt;在此时间范围外&lt;/Option&gt;
+      &lt;/Select&gt;
+      &lt;Input style={{ width: 100, textAlign: &#39;center&#39; }} placeholder=&quot;0&quot; /&gt;
+      &lt;Input style={{ width: 30, borderLeft: 0, pointerEvents: &#39;none&#39;, backgroundColor: &#39;#fff&#39; }} placeholder=&quot;~&quot; disabled /&gt;
+      &lt;Input style={{ width: 100, textAlign: &#39;center&#39;, borderLeft: 0 }} placeholder=&quot;100&quot; /&gt;
+    &lt;/InputGroup&gt;
+    &lt;br /&gt;
+    &lt;InputGroup compact&gt;
+      &lt;Select defaultValue=&quot;Home&quot;&gt;
+        &lt;Option value=&quot;Home&quot;&gt;家&lt;/Option&gt;
+        &lt;Option value=&quot;Company&quot;&gt;公司&lt;/Option&gt;
+      &lt;/Select&gt;
+      &lt;Cascader
+        style={{ width: &#39;70%&#39; }}
+        options={[
+          {
+            value: &#39;zhejiang&#39;,
+            label: &#39;浙江&#39;,
+            children: [{
+              value: &#39;hangzhou&#39;,
+              label: &#39;杭州&#39;,
+              children: [{
+                value: &#39;xihu&#39;,
+                label: &#39;西湖&#39;,
+              }],
+            }],
+          }
+        ]}
+        placeholder=&quot;请选择地址&quot;
+      /&gt;
+    &lt;/InputGroup&gt;
+  &lt;/div&gt;
+);
+
+
+const LoginForm = Form.create()(
+  class extends Component {
+    render() {
+      const { getFieldDecorator, validateFields } = this.props.form;
+      return (
+        &lt;Form
+          layout=&quot;horizontal&quot;
+          onSubmit={(e) =&gt; {
+            e.preventDefault();
+            validateFields((err, values) =&gt; {
+              alert(&#39;err: &#39; + JSON.stringify(err));
+              alert(&#39;values: &#39; + JSON.stringify(values));
+            });
+          }}&gt;
+          &lt;FormItem label=&quot;用户名&quot;&gt;
+            {
+              getFieldDecorator(&#39;userName&#39;, {
+                rules: [{ required: true, message: &#39;请输入用户名&#39; }],
+              })(
+                &lt;Input prefix={&lt;Icon type=&quot;user&quot; style={{ color: &#39;rgba(0,0,0,.25)&#39; }} /&gt;} placeholder=&quot;张三&quot; /&gt;
+              )
+            }
+          &lt;/FormItem&gt;
+          &lt;FormItem label=&quot;密码&quot;&gt;
+            {getFieldDecorator(&#39;password&#39;, {
+              rules: [
+                { required: true, message: &#39;请输入密码&#39; },
+                {
+                  validator: (rule, value, callback) =&gt; {
+                    if (value &amp;&amp; value.length &gt;= 6)
+                      callback();
+                    else
+                      callback(&#39;校验:&#39; + value);
+                  } 
+                }
+              ],
+            })(
+              &lt;Input prefix={&lt;Icon type=&quot;lock&quot; style={{ color: &#39;rgba(0,0,0,.25)&#39; }} /&gt;} type=&quot;password&quot; placeholder=&quot;123456&quot; /&gt;
+            )}
+          &lt;/FormItem&gt;
+          &lt;FormItem label=&quot;E-mail&quot;&gt;
+            {
+              getFieldDecorator(&#39;email&#39;, {
+                rules: [
+                  { required: true, message: &#39;请输入邮箱&#39; },
+                  { type: &#39;email&#39;, message: &#39;邮箱格式不正确&#39; },
+                ]
+              })(
+                &lt;Input placeholder=&quot;a@b.c&quot; /&gt;
+              )
+            }
+          &lt;/FormItem&gt;
+          &lt;FormItem label=&quot;住址&quot;&gt;
+            {
+              getFieldDecorator(&#39;residence&#39;, {
+                rules: [
+                  { type: &#39;array&#39;, required: true, message: &#39;请选择住址&#39; },
+                ],
+              })(
+                &lt;Cascader placeholder={&#39;浙江...&#39;} options={[
+                  {
+                    value: &#39;zhejiang&#39;,
+                    label: &#39;浙江&#39;,
+                    children: [
+                      {
+                        value: &#39;hangzhou&#39;,
+                        label: &#39;杭州&#39;,
+                        children: [
+                          {
+                            value: &#39;xihu&#39;,
+                            label: &#39;西湖&#39;,
+                          },
+                        ]
+                      }
+                    ],
+                  },
+                ]} /&gt;
+              )
+            }
+          &lt;/FormItem&gt;
+          &lt;FormItem label=&quot;电话号码&quot;&gt;
+            {
+              getFieldDecorator(&#39;phone&#39;, {
+                rules: [
+                  { required: true, message: &#39;请输入电话号码&#39; },
+                ],
+              })(
+                &lt;Input addonBefore={
+                  getFieldDecorator(&#39;prefix&#39;, {
+                    initialValue: &#39;86&#39;,
+                  })(
+                    &lt;Select&gt;
+                      &lt;Option value=&quot;86&quot;&gt;+86&lt;/Option&gt;
+                      &lt;Option value=&quot;87&quot;&gt;+87&lt;/Option&gt;
+                    &lt;/Select&gt;
+                  )
+                } /&gt;
+              )
+            }
+          &lt;/FormItem&gt;
+
+          &lt;FormItem
+            label=&quot;验证码&quot;
+            extra=&quot;验证是否为人工录入&quot;
+          &gt;
+            &lt;Row gutter={8}&gt;
+              &lt;Col span={12}&gt;
+                {getFieldDecorator(&#39;captcha&#39;, {
+                  rules: [{ required: true, message: &#39;请输入验证码&#39; }],
+                })(
+                  &lt;Input /&gt;
+                )}
+              &lt;/Col&gt;
+              &lt;Col span={12}&gt;
+                &lt;Button&gt;获取验证码&lt;/Button&gt;
+              &lt;/Col&gt;
+            &lt;/Row&gt;
+          &lt;/FormItem&gt;
+          &lt;FormItem&gt;
+            {
+              getFieldDecorator(&#39;agreement&#39;, {
+                valuePropName: &#39;checked&#39;,
+                rules: [{ required: true, message: &#39;请确认&#39; }],
+              })(
+                &lt;Checkbox&gt;我已阅读&lt;a href=&quot;&quot;&gt;手册&lt;/a&gt;&lt;/Checkbox&gt;
+              )
+            }
+          &lt;/FormItem&gt;
+          &lt;FormItem&gt;
+            &lt;Button type=&quot;primary&quot; htmlType=&quot;submit&quot;&gt;
+              登陆
+            &lt;/Button&gt;
+          &lt;/FormItem&gt;
+        &lt;/Form&gt;
+      );
+    }
+  }
+);
+
+const SearchForm = Form.create()(
+  class extends React.Component {
+    state = {
+      expand: false,
+    };
+    getFields() {
+      const { getFieldDecorator } = this.props.form;
+      const count = this.state.expand ? 10 : 6;
+      const fields = [];
+      for (let i = 0; i &lt; 10; i++) {
+        fields.push(
+          &lt;Col span={8} key={i} style={{ display: i &lt; count ? &#39;block&#39; : &#39;none&#39; }}&gt;
+            &lt;FormItem label={`条件${i}标题`}&gt;
+              {
+                getFieldDecorator(`field${i}`, {
+                  rules: [{
+                    required: true,
+                    message: `条件${i}不能为空`,
+                  }],
+                })(
+                  &lt;Input placeholder={`比如${i}`} /&gt;
+                )
+              }
+            &lt;/FormItem&gt;
+          &lt;/Col&gt;
+        );
+      }
+      return fields;
+    }
+
+    render() {
+      const { validateFields } = this.props.form;
+      return (
+        &lt;Form
+          onSubmit={
+            (e) =&gt; {
+              e.preventDefault();
+              validateFields((err, values) =&gt; {
+                alert(&#39;err: &#39; + JSON.stringify(err));
+                alert(&#39;values: &#39; + JSON.stringify(values));
+              });
+            }
+           }
+        &gt;
+          &lt;Row gutter={24}&gt;{this.getFields()}&lt;/Row&gt;
+          &lt;Row&gt;
+            &lt;Col span={24}&gt;
+              &lt;Button type=&quot;primary&quot; htmlType=&quot;submit&quot;&gt;搜索&lt;/Button&gt;
+              &lt;Button onClick={() =&gt; {
+                this.props.form.resetFields()
+              }}&gt;重置&lt;/Button&gt;
+              &lt;a onClick={() =&gt; {
+                this.setState({ expand: !this.state.expand })
+              }}&gt;{this.state.expand ? &#39;收起&#39; : &#39;展开&#39;} &lt;Icon type={this.state.expand ? &#39;up&#39; : &#39;down&#39;} /&gt;&lt;/a&gt;
+            &lt;/Col&gt;
+          &lt;/Row&gt;
+        &lt;/Form&gt;
+      );
+    }
+  }
+);
+
+const CreateForm = Form.create()(
+  class extends React.Component {
+    render() {
+      const { form, visible, setVisible } = this.props;
+      const { getFieldDecorator, validateFields, resetFields } = form;
+      return (
+        &lt;Modal
+          visible={visible}
+          title=&quot;新建用户&quot;
+          okText=&quot;新增&quot;
+          onOk={
+            () =&gt; {
+              validateFields((err, values) =&gt; {
+                alert(&#39;err: &#39; + JSON.stringify(err));
+                alert(&#39;values: &#39; + JSON.stringify(values));
+                resetFields();
+                setVisible(false);
+              });
+            }
+          }
+          onCancel={
+            () =&gt; {
+              resetFields();
+              setVisible(false);
+            }
+          }
+        &gt;
+          &lt;Form layout=&quot;vertical&quot;&gt;
+            &lt;FormItem label=&quot;标题&quot;&gt;
+              {
+                getFieldDecorator(&#39;title&#39;, {
+                  rules: [{ required: true, message: &#39;请输入标题&#39; }],
+                })(
+                  &lt;Input /&gt;
+                )
+              }
+            &lt;/FormItem&gt;
+            &lt;FormItem label=&quot;描述&quot;&gt;
+              {getFieldDecorator(&#39;description&#39;)(&lt;Input type=&quot;textarea&quot; /&gt;)}
+            &lt;/FormItem&gt;
+            &lt;FormItem label=&quot;界限&quot;&gt;
+              {
+                getFieldDecorator(&#39;modifier&#39;, {
+                  initialValue: &#39;public&#39;,
+                })(
+                  &lt;Radio.Group&gt;
+                    &lt;Radio value=&quot;public&quot;&gt;公有&lt;/Radio&gt;
+                    &lt;Radio value=&quot;private&quot;&gt;私有&lt;/Radio&gt;
+                  &lt;/Radio.Group&gt;
+                )
+              }
+            &lt;/FormItem&gt;
+          &lt;/Form&gt;
+        &lt;/Modal&gt;
+      );
+    }
+  }
+);
+
+class CollectionsPage extends React.Component {
+  state = {
+    visible: false,
+  };
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;Button
+          type=&quot;primary&quot;
+          onClick={() =&gt; { this.setState({ visible: true }) }}
+        &gt;新增&lt;/Button&gt;
+        &lt;CreateForm
+          visible={this.state.visible}
+          setVisible={(visible) =&gt; { this.setState({ visible: visible }) }}
+        /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+
+class NumericInput extends React.Component {
+  render() {
+    const { value, onChange } = this.props;
+    return (
+      &lt;Tooltip
+        trigger={[&#39;focus&#39;]}
+        title={() =&gt; &#39;tip&#39; + value }
+        placement=&quot;topLeft&quot;
+      &gt;
+        &lt;Input
+          {...this.props}
+          onChange={onChange.bind(this)}
+          placeholder=&quot;请输入&quot;
+        /&gt;
+      &lt;/Tooltip&gt;
+    );
+  }
+}
+
+class NumericInputDemo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: &#39;&#39; };
+  }
+  onChange = (element) =&gt; {
+    const { value } = element.target;
+    this.setState({ value });
+  }
+  render = () =&gt; (
+    &lt;NumericInput
+      style={{ width: 120 }}
+      value={this.state.value}
+      onChange={this.onChange}
+    /&gt;
+  )
+}
+
+const TestAvatarBadge = () =&gt; (
+  &lt;div&gt;
+    &lt;Badge count={1}&gt;&lt;Avatar shape=&quot;square&quot; icon=&quot;user&quot; /&gt;&lt;/Badge&gt;
+    &lt;Badge dot&gt;&lt;Avatar shape=&quot;square&quot; icon=&quot;user&quot; /&gt;&lt;/Badge&gt;
+    &lt;Badge status=&quot;success&quot; text=&quot;Success&quot; /&gt;
+    &lt;Badge status=&quot;error&quot; text=&quot;Error&quot; /&gt;
+    &lt;Badge status=&quot;default&quot; text=&quot;Default&quot; /&gt;
+    &lt;Badge status=&quot;processing&quot; text=&quot;Processing&quot; /&gt;
+    &lt;Badge status=&quot;warning&quot; text=&quot;Warning&quot; /&gt;
+  &lt;/div&gt;
+);
+
+const TestCalendar = () =&gt; (
+  &lt;div&gt;
+    &lt;Calendar
+      fullscreen={false}
+      dateCellRender={ value =&gt; 8 === value.date() ? &#39;八号没事干&#39; : null }
+      monthCellRender={ value =&gt; 8 === value.month() ? &#39;八月没事干&#39; : null }
+    /&gt;
+  &lt;/div&gt;
+);
+
+const TestCard = () =&gt; (
+  &lt;div&gt;
+    &lt;Card
+      style={{ width: 300 }}
+      cover={&lt;img alt=&quot;example&quot; src=&quot;https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png&quot; /&gt;}
+      actions={[&lt;Icon type=&quot;setting&quot; /&gt;, &lt;Icon type=&quot;edit&quot; /&gt;, &lt;Icon type=&quot;ellipsis&quot; /&gt;]}
+    &gt;
+      &lt;Meta
+        avatar={&lt;Avatar src=&quot;https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png&quot; /&gt;}
+        title=&quot;Card title&quot;
+        description=&quot;This is the description&quot;
+      /&gt;
+    &lt;/Card&gt;
+  &lt;/div&gt;
+);
+
+const TestCarousel = () =&gt; (
+  &lt;div&gt;
+    &lt;Carousel effect=&quot;fade&quot; autoplay&gt;
+      &lt;div&gt;&lt;h3&gt;Carousel 1&lt;/h3&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;h3&gt;Carousel 2&lt;/h3&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;h3&gt;Carousel 3&lt;/h3&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;h3&gt;Carousel 4&lt;/h3&gt;&lt;/div&gt;
+    &lt;/Carousel&gt;
+  &lt;/div&gt;
+);
+
+const TestCollapse = () =&gt; (
+  &lt;div&gt;
+    &lt;Collapse&gt;
+      &lt;Panel header=&quot;This is panel header 1&quot; key=&quot;1&quot;&gt;
+        &lt;Collapse defaultActiveKey=&quot;1&quot;&gt;
+          &lt;Panel header=&quot;This is panel nest panel&quot; key=&quot;1&quot;&gt;
+            &lt;p&gt;text&lt;/p&gt;
+          &lt;/Panel&gt;
+        &lt;/Collapse&gt;
+      &lt;/Panel&gt;
+      &lt;Panel header=&quot;This is panel header 2&quot; key=&quot;2&quot;&gt;
+        &lt;p&gt;text&lt;/p&gt;
+      &lt;/Panel&gt;
+      &lt;Panel header=&quot;This is panel header 3&quot; key=&quot;3&quot;&gt;
+        &lt;p&gt;text&lt;/p&gt;
+      &lt;/Panel&gt;
+    &lt;/Collapse&gt;
+  &lt;/div&gt;
+);
+
+const IconText = ({ type, text }) =&gt; (
+  &lt;span&gt;
+    &lt;Icon type={type} style={{ marginRight: 8 }} /&gt;
+    {text}
+  &lt;/span&gt;
+);
+
+const TestList = () =&gt; (
+  &lt;div&gt;
+    &lt;List
+      itemLayout=&quot;vertical&quot;
+      size=&quot;large&quot;
+      pagination={{
+        onChange: (page) =&gt; {
+          console.log(page);
+        },
+        pageSize: 5,
+      }}
+      dataSource={[
+        { title: &#39;title1&#39;, href: &#39;http://href1&#39;, avatar: &#39;http://avatar1&#39;, description: &#39;description1&#39;, content: &#39;content1&#39; },
+        { title: &#39;title2&#39;, href: &#39;http://href2&#39;, avatar: &#39;http://avatar2&#39;, description: &#39;description2&#39;, content: &#39;content2&#39; },
+        { title: &#39;title3&#39;, href: &#39;http://href3&#39;, avatar: &#39;http://avatar3&#39;, description: &#39;description3&#39;, content: &#39;content3&#39; },
+        { title: &#39;title4&#39;, href: &#39;http://href4&#39;, avatar: &#39;http://avatar4&#39;, description: &#39;description4&#39;, content: &#39;content4&#39; },
+        { title: &#39;title5&#39;, href: &#39;http://href5&#39;, avatar: &#39;http://avatar5&#39;, description: &#39;description5&#39;, content: &#39;content5&#39; },
+      ]}
+      footer={&lt;div&gt;footer&lt;/div&gt;}
+      renderItem={item =&gt; (
+        &lt;List.Item
+          key={item.title}
+          actions={[&lt;IconText type=&quot;star-o&quot; text=&quot;1&quot; /&gt;, &lt;IconText type=&quot;like-o&quot; text=&quot;2&quot; /&gt;, &lt;IconText type=&quot;message&quot; text=&quot;3&quot; /&gt;]}
+          extra={&lt;img width={272} alt=&quot;logo&quot; src=&quot;https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png&quot; /&gt;}
+        &gt;
+          &lt;List.Item.Meta
+            avatar={&lt;Avatar src={item.avatar} /&gt;}
+            title={&lt;a href={item.href}&gt;{item.title}&lt;/a&gt;}
+            description={item.description}
+          /&gt;
+          {item.content}
+        &lt;/List.Item&gt;
+      )}
+    /&gt;
+  &lt;/div&gt;
+);
+
+class TestPopover extends React.Component {
+  state = {
+    visible: false,
+  }
+  hide = () =&gt; {
+    this.setState({
+      visible: false,
+    });
+  }
+  handleVisibleChange = (visible) =&gt; {
+    this.setState({ visible });
+  }
+  render() {
+    return (
+      &lt;Popover
+        content={&lt;a onClick={this.hide}&gt;Close&lt;/a&gt;}
+        title=&quot;Title&quot;
+        trigger=&quot;click&quot;
+        visible={this.state.visible}
+        onVisibleChange={this.handleVisibleChange}
+      &gt;
+        &lt;Button type=&quot;primary&quot;&gt;Click me&lt;/Button&gt;
+      &lt;/Popover&gt;
+    );
+  }
+}
+
+const TestTooltip = () =&gt; (
+  &lt;div&gt;
+    &lt;Tooltip placement=&quot;topLeft&quot; title=&quot;提示文字&quot; arrowPointAtCenter&gt;
+      &lt;Button&gt;鼠标经过提示文字&lt;/Button&gt;
+    &lt;/Tooltip&gt;
+  &lt;/div&gt;
+);
+
+
+class TestTabs extends React.Component {
+  constructor(props) {
+    super(props);
+    this.newTabIndex = 0;
+    const panes = [
+      { title: &#39;Tab 1&#39;, content: &#39;Content of Tab Pane 1&#39;, key: &#39;1&#39; },
+      { title: &#39;Tab 2&#39;, content: &#39;Content of Tab Pane 2&#39;, key: &#39;2&#39; },
+    ];
+    this.state = {
+      activeKey: panes[0].key,
+      panes,
+    };
+  }
+
+  onChange = (activeKey) =&gt; {
+    this.setState({ activeKey });
+  }
+  onEdit = (targetKey, action) =&gt; {
+    this[action](targetKey);
+  }
+  add = () =&gt; {
+    const panes = this.state.panes;
+    const activeKey = `newTab${this.newTabIndex++}`;
+    panes.push({ title: &#39;New Tab&#39;, content: &#39;New Tab Pane&#39;, key: activeKey });
+    this.setState({ panes, activeKey });
+  }
+  remove = (targetKey) =&gt; {
+    let activeKey = this.state.activeKey;
+    let lastIndex;
+    this.state.panes.forEach((pane, i) =&gt; {
+      if (pane.key === targetKey) {
+        lastIndex = i - 1;
+      }
+    });
+    const panes = this.state.panes.filter(pane =&gt; pane.key !== targetKey);
+    if (lastIndex &gt;= 0 &amp;&amp; activeKey === targetKey) {
+      activeKey = panes[lastIndex].key;
+    }
+    this.setState({ panes, activeKey });
+  }
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;div style={{ marginBottom: 16 }}&gt;
+          &lt;Button onClick={this.add}&gt;ADD&lt;/Button&gt;
+        &lt;/div&gt;
+        &lt;Tabs
+          hideAdd
+          onChange={this.onChange}
+          activeKey={this.state.activeKey}
+          type=&quot;editable-card&quot;
+          onEdit={this.onEdit}
+        &gt;
+          {this.state.panes.map(pane =&gt; &lt;TabPane tab={pane.title} key={pane.key}&gt;{pane.content}&lt;/TabPane&gt;)}
+        &lt;/Tabs&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+const TestTag = () =&gt; (
+  &lt;div&gt;
+    &lt;Tag color=&quot;magenta&quot;&gt;magenta&lt;/Tag&gt;
+    &lt;Tag color=&quot;red&quot;&gt;red&lt;/Tag&gt;
+    &lt;Tag color=&quot;volcano&quot;&gt;volcano&lt;/Tag&gt;
+    &lt;Tag color=&quot;orange&quot;&gt;orange&lt;/Tag&gt;
+    &lt;Tag color=&quot;gold&quot;&gt;gold&lt;/Tag&gt;
+    &lt;Tag color=&quot;lime&quot;&gt;lime&lt;/Tag&gt;
+    &lt;Tag color=&quot;green&quot;&gt;green&lt;/Tag&gt;
+    &lt;Tag color=&quot;cyan&quot;&gt;cyan&lt;/Tag&gt;
+    &lt;Tag color=&quot;blue&quot;&gt;blue&lt;/Tag&gt;
+    &lt;Tag color=&quot;geekblue&quot;&gt;geekblue&lt;/Tag&gt;
+    &lt;Tag color=&quot;purple&quot;&gt;purple&lt;/Tag&gt;
+  &lt;/div&gt;
+);
+
+const TestTimeline = () =&gt; (
+  &lt;div&gt;
+    &lt;Timeline&gt;
+      &lt;Timeline.Item color=&quot;green&quot;&gt;Create a services site 2015-09-01&lt;/Timeline.Item&gt;
+      &lt;Timeline.Item color=&quot;green&quot;&gt;Create a services site 2015-09-01&lt;/Timeline.Item&gt;
+      &lt;Timeline.Item color=&quot;red&quot;&gt;
+        &lt;p&gt;Solve initial network problems 1&lt;/p&gt;
+        &lt;p&gt;Solve initial network problems 2&lt;/p&gt;
+        &lt;p&gt;Solve initial network problems 3 2015-09-01&lt;/p&gt;
+      &lt;/Timeline.Item&gt;
+      &lt;Timeline.Item&gt;
+        &lt;p&gt;Technical testing 1&lt;/p&gt;
+        &lt;p&gt;Technical testing 2&lt;/p&gt;
+        &lt;p&gt;Technical testing 3 2015-09-01&lt;/p&gt;
+      &lt;/Timeline.Item&gt;
+    &lt;/Timeline&gt;
+  &lt;/div&gt;
+);
+
+const TestAlert = () =&gt; (
+  &lt;div&gt;
+    &lt;Alert message=&quot;成功 showIcon&quot; type=&quot;success&quot; showIcon /&gt;
+    &lt;Alert message=&quot;提示 banner&quot; type=&quot;info&quot; banner /&gt;
+    &lt;Alert message=&quot;警告 description&quot; description=&quot;详情&quot; type=&quot;warning&quot; showIcon /&gt;
+    &lt;Alert message=&quot;错误 showIcon&quot; type=&quot;error&quot; showIcon /&gt;
+  &lt;/div&gt;
+);
+
+const TestMessage = () =&gt; (
+  &lt;Button onClick={
+    () =&gt; {
+      const hide = message.loading(&#39;加载中&#39;, 0);
+      setTimeout(hide, 2000);
+    }
+  }&gt;展示加载中2秒&lt;/Button&gt;
+);
+
+const TestNotification = () =&gt; (
+  &lt;Button type=&quot;primary&quot; onClick={
+    () =&gt; {
+      notification.open({
+        key: &#39;123456&#39;,
+        message: &#39;标题&#39;,
+        description: &#39;内容&#39;,
+        icon: &lt;Icon type=&quot;smile-circle&quot; style={{ color: &#39;#108ee9&#39; }} /&gt;,
+        btn: &lt;Button onClick={ () =&gt; notification.close(&#39;123456&#39;) }&gt;Close&lt;/Button&gt;
+      });
+    }
+  }&gt;打开提示框&lt;/Button&gt;
+);
+
+const TestProgress = () =&gt; (
+  &lt;div&gt;
+    &lt;Progress percent={70} status=&quot;active&quot; /&gt;
+    &lt;Progress type=&quot;circle&quot; percent={70} format={percent =&gt; `${percent} Days`} /&gt;
+    &lt;Progress type=&quot;dashboard&quot; percent={70} /&gt;
+  &lt;/div&gt;
+);
+
+const TestPopconfirm = () =&gt; (
+  &lt;Popconfirm title=&quot;确定吗?&quot; okText=&quot;是的按钮&quot; cancelText=&quot;不是按钮&quot;&gt;
+    &lt;a href=&quot;#&quot;&gt;删除&lt;/a&gt;
+  &lt;/Popconfirm&gt;
+);
+
+const TestSpin = () =&gt; (
+  &lt;Spin tip=&quot;加载中...&quot; indicator={
+    &lt;Icon type=&quot;loading&quot; style={{ fontSize: 24 }} spin /&gt;
+  } /&gt;
+);
+
+const TestAnchor = () =&gt; (
+  &lt;Anchor affix={false}&gt;
+    &lt;Link href=&quot;#components-anchor-demo-basic&quot; title=&quot;Basic demo&quot; /&gt;
+    &lt;Link href=&quot;#components-anchor-demo-fixed&quot; title=&quot;Fixed demo&quot; /&gt;
+    &lt;Link href=&quot;#API&quot; title=&quot;API&quot;&gt;
+      &lt;Link href=&quot;#Anchor-Props&quot; title=&quot;Anchor Props&quot; /&gt;
+      &lt;Link href=&quot;#Link-Props&quot; title=&quot;Link Props&quot; /&gt;
+    &lt;/Link&gt;
+  &lt;/Anchor&gt;
+);
+
+const TestBackTop = () =&gt; (
+  &lt;div&gt;
+    &lt;BackTop&gt;
+      &lt;div style={{
+        &#39;background-color&#39;: &#39;#1088e9&#39;,
+        &#39;text-align&#39;: &#39;center&#39;,
+        &#39;border-radius&#39;: &#39;4px&#39;,
+      }}&gt;回到开头&lt;/div&gt;
+    &lt;/BackTop&gt;
+  &lt;/div&gt;
+);
+
+const TestDivider = () =&gt; (
+  &lt;div&gt;
+    &lt;p&gt;下方切分.&lt;/p&gt;
+    &lt;Divider /&gt;
+    &lt;p&gt;下方切分, 带文字.&lt;/p&gt;
+    &lt;Divider&gt;切分&lt;/Divider&gt;
+    &lt;p&gt;下方切分, 虚线.&lt;/p&gt;
+    &lt;Divider dashed /&gt;
+    &lt;p&gt;内容.&lt;/p&gt;
+  &lt;/div&gt;
+);
+
+class TestTree extends React.Component {
+  state = {
+    treeData: [
+      { title: &#39;Expand to load&#39;, key: &#39;0&#39; },
+      { title: &#39;Expand to load&#39;, key: &#39;1&#39; },
+      { title: &#39;Tree Node&#39;, key: &#39;2&#39;, isLeaf: true },
+    ],
+  }
+  onLoadData = (treeNode) =&gt; {
+    return new Promise((resolve) =&gt; {
+      if (treeNode.props.children) {
+        resolve();
+        return;
+      }
+      setTimeout(() =&gt; {
+        treeNode.props.dataRef.children = [
+          { title: &#39;Child Node&#39;, key: `${treeNode.props.eventKey}-0` },
+          { title: &#39;Child Node&#39;, key: `${treeNode.props.eventKey}-1` },
+        ];
+        this.setState({
+          treeData: [...this.state.treeData],
+        });
+        resolve();
+      }, 1000);
+    });
+  }
+  renderTreeNodes = (data) =&gt; {
+    return data.map((item) =&gt; {
+      if (item.children) {
+        return (
+          &lt;TreeNode title={item.title} key={item.key} dataRef={item}&gt;
+            {this.renderTreeNodes(item.children)}
+          &lt;/TreeNode&gt;
+        );
+      }
+      return &lt;TreeNode {...item} dataRef={item} /&gt;;
+    });
+  }
+  render() {
+    return (
+      &lt;Tree loadData={this.onLoadData}&gt;
+        {this.renderTreeNodes(this.state.treeData)}
+      &lt;/Tree&gt;
+    );
+  }
+}
+
+const TestTable = props =&gt; {
+
+  const dataSource = [];
+
+  for (let i = 1; i &lt; 100; ++i) {
+    dataSource.push({ key: `${i}`, name: &#39;胡彦斌&#39;, age: i, address: `西湖区湖底公园${i}号` })
+  }
+
+  const columns = [
+    { title: &#39;姓名&#39;, dataIndex: &#39;name&#39;, key: &#39;name&#39; },
+    { title: &#39;年龄&#39;, dataIndex: &#39;age&#39;, key: &#39;age&#39; },
+    { title: &#39;住址&#39;, dataIndex: &#39;address&#39;, key: &#39;address&#39; },
+  ];
+
+  return (
+    &lt;div&gt;
+      &lt;Table
+        dataSource={dataSource}
+        columns={columns}
+        pagination={{
+          onChange: (page, pageSize) =&gt; alert(`page: ${page}, pageSize: ${pageSize}`),
+          onShowSizeChange: (page, pageSize) =&gt; alert(`page: ${page}, pageSize: ${pageSize}`),
+          total: dataSource.length,
+          defaultPageSize: 5,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total, current) =&gt; `共${total}条, 当前展示第${current[0]}至第${current[1]}条`
+        }}
+      /&gt;
+    &lt;/div&gt;
+  )
+
+}
+
+const Test = () =&gt; (
+  &lt;div&gt;
+    {/*
+
+    */}
+    &lt;TestButton /&gt;&lt;br /&gt;
+    &lt;TestIcon /&gt;&lt;br /&gt;
+    &lt;TestLayout /&gt;&lt;br /&gt;
+    &lt;TestAffix /&gt;&lt;br /&gt;
+    &lt;TestAutoComplete /&gt;&lt;br /&gt;
+    &lt;TestCascader /&gt;&lt;br /&gt;
+    &lt;TestDateTimerPicker /&gt;&lt;br /&gt;
+    &lt;TestCheckboxRadioSelect /&gt;&lt;br /&gt;
+    &lt;TestSlider /&gt;&lt;br /&gt;
+    &lt;TestSwitch /&gt;&lt;br /&gt;
+    &lt;TestUpload /&gt;&lt;br /&gt;
+    &lt;TestTransfer /&gt;&lt;br /&gt;
+    &lt;TestInput /&gt;&lt;br /&gt;
+    &lt;LoginForm /&gt;&lt;br /&gt;
+    &lt;SearchForm /&gt;&lt;br /&gt;
+    &lt;CollectionsPage /&gt;&lt;br /&gt;
+    &lt;NumericInputDemo /&gt;&lt;br /&gt;
+    &lt;TestAvatarBadge /&gt;&lt;br /&gt;
+    &lt;TestCalendar /&gt;&lt;br /&gt;
+    &lt;TestCard /&gt;&lt;br /&gt;
+    &lt;TestCarousel /&gt;&lt;br /&gt;
+    &lt;TestCollapse /&gt;&lt;br /&gt;
+    &lt;TestList /&gt;&lt;br /&gt;
+    &lt;TestPopover /&gt;&lt;br /&gt;
+    &lt;TestTooltip /&gt;&lt;br /&gt;
+    &lt;TestTabs /&gt;&lt;br /&gt;
+    &lt;TestTag /&gt;&lt;br /&gt;
+    &lt;TestTimeline /&gt;&lt;br /&gt;
+    &lt;TestAlert /&gt;&lt;br /&gt;
+    &lt;TestMessage /&gt;&lt;br /&gt;
+    &lt;TestNotification /&gt;&lt;br /&gt;
+    &lt;TestProgress /&gt;&lt;br /&gt;
+    &lt;TestPopconfirm /&gt;&lt;br /&gt;
+    &lt;TestSpin /&gt;&lt;br /&gt;
+    &lt;TestAnchor /&gt;&lt;br /&gt;
+    &lt;TestBackTop /&gt;&lt;br /&gt;
+    &lt;TestDivider /&gt;&lt;br /&gt;
+    &lt;TestTree /&gt;&lt;br /&gt;
+    &lt;TestTable /&gt;
+  &lt;/div&gt;
+);
+
+ReactDOM.render(&lt;LocaleProvider locale={zh_CN}&gt;&lt;Test /&gt;&lt;/LocaleProvider&gt;, document.getElementById(&#39;root&#39;));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

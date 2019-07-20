@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>地址栏,执行外链脚本模板
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">地址栏,执行外链脚本模板</h1>
+<p>地址栏,执行外链脚本模板</p>
+<pre><code class="lang-js">javascript:(function(){var s=document.createElement(&#39;script&#39;);s.src=&#39;...........&#39;;document.body.appendChild(s)})();
+</code></pre>
+<p>补充:
+在ie9或更高的ie,chrome firefox中 复制由javascript:开头的字符,开头的字符会自动去掉,
+因此需要先输入javascript:再复制后面的脚本, 或先输入j后复制剩余的字符, 保证字符不会被剪切</p>
+<p>若js文件中有中文, 建议指定charset为gb2312,例:</p>
+<pre><code class="lang-js">javascript:(function(){var s=document.createElement(&#39;script&#39;);s.charset=&#39;gb2312&#39;;s.src=&#39;https://raw.github.com/a80386/PasteChangePiGaiOrg/master/PasteChangePiGaiOrg.js&#39;;document.body.appendChild(s)})();
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

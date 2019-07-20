@@ -1,0 +1,221 @@
+
+
+<html><head><meta charset="UTF-8"><title>MyBatis if choose where set trim标记例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="mybatis-if-choose-where-set-trim-">MyBatis if choose where set trim标记例子</h1>
+<p>log4j.properties忽略, MyBatisConfig.xml主配置文件, User.xml用户表映射文件, User.java用户类, TestIfChooseTag.java主函数类</p>
+<p>数据库:</p>
+<pre><code class="lang-sql">create table `user_tbl` (
+  `id` int(10) not null auto_increment,
+  `username` varchar(20) not null,
+  `password` varchar(20) not null,
+  primary key (`id`)
+);
+
+insert into `user_tbl` values
+(1,&#39;test1&#39;,&#39;test1&#39;),
+(2,&#39;test2&#39;,&#39;test2&#39;);
+</code></pre>
+<p>MyBatisConfig.xml:   主配置文件</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+    &lt;typeAliases&gt;
+        &lt;typeAlias alias=&quot;User&quot; type=&quot;org.learnmybatisifchoosetag.pojo.User&quot; /&gt;
+    &lt;/typeAliases&gt;
+    &lt;environments default=&quot;development&quot;&gt;
+        &lt;environment id=&quot;development&quot;&gt;
+            &lt;transactionManager type=&quot;JDBC&quot; /&gt;
+            &lt;dataSource type=&quot;POOLED&quot;&gt;
+                &lt;property name=&quot;driver&quot; value=&quot;com.mysql.jdbc.Driver&quot; /&gt;
+                &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis_db&quot; /&gt;
+                &lt;property name=&quot;username&quot; value=&quot;mybatis_usr&quot; /&gt;
+                &lt;property name=&quot;password&quot; value=&quot;123456&quot; /&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;org/learnmybatisifchoosetag/map/User.xml&quot; /&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>User.xml:   用户表映射文件</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.learn&quot;&gt;
+    &lt;!-- 使用if标记 --&gt;
+    &lt;select id=&quot;selectUserByIf&quot; parameterType=&quot;User&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl
+            where 1=1
+            &lt;!-- 如果传入的user有username属性, 则在查询数据库时查询和username值相似的记录 --&gt;
+            &lt;if test=&quot;username != null&quot;&gt;
+                and username like #{username}
+            &lt;/if&gt;
+    &lt;/select&gt;
+    &lt;!-- 使用choose标记 --&gt;
+    &lt;select id=&quot;selectUserByChoose&quot; parameterType=&quot;User&quot; resultType=&quot;User&quot; &gt;
+        select * from user_tbl where 1=1
+        &lt;choose&gt;
+            &lt;when test=&quot;username != null&quot;&gt;
+                and username like #{username}
+            &lt;/when&gt;
+            &lt;when test=&quot;id != null&quot;&gt;
+                and id = #{id}
+            &lt;/when&gt;
+            &lt;otherwise&gt;
+                and password is not null
+            &lt;/otherwise&gt;
+        &lt;/choose&gt;
+    &lt;/select&gt;
+    &lt;!-- 使用where标记 --&gt;
+    &lt;select id=&quot;selectUserByWhere&quot; parameterType=&quot;User&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl
+        &lt;where&gt;
+            &lt;if test=&quot;username != null&quot;&gt;
+                and username like #{username}
+            &lt;/if&gt;
+            &lt;if test=&quot;id != null&quot;&gt;
+                and id = #{id}
+            &lt;/if&gt;
+        &lt;/where&gt;
+    &lt;/select&gt;
+    &lt;!-- 使用trim标记完成where标记功能 --&gt;
+    &lt;select id=&quot;selectUserByTrim&quot; parameterType=&quot;User&quot; resultType=&quot;User&quot;&gt;
+        select * from user_tbl
+        &lt;trim prefix=&quot;where&quot; prefixOverrides=&quot;and|or&quot;&gt;
+            &lt;if test=&quot;username != null&quot;&gt;
+                and username like #{username}
+            &lt;/if&gt;
+            &lt;if test=&quot;id != null&quot;&gt;
+                and id = #{id}
+            &lt;/if&gt;
+        &lt;/trim&gt;
+    &lt;/select&gt; 
+    &lt;!-- 使用set标记 --&gt;
+    &lt;update id=&quot;updateUserBySet&quot; parameterType=&quot;User&quot;&gt;
+        update user_tbl
+        &lt;set&gt;
+            &lt;if test=&quot;username != null&quot;&gt;
+                username = #{username},
+            &lt;/if&gt;
+            &lt;if test=&quot;password != null&quot;&gt;
+                password = #{password},
+            &lt;/if&gt;
+        &lt;/set&gt;
+        where id = #{id}
+    &lt;/update&gt;
+    &lt;!-- 使用trim标记完成set标记功能 --&gt;
+    &lt;update id=&quot;updateUserByTrim&quot; parameterType=&quot;User&quot;&gt;
+        update user_tbl
+        &lt;trim prefix=&quot;set&quot; suffix=&quot;where id = #{id}&quot; suffixOverrides=&quot;,&quot;&gt;
+            &lt;if test=&quot;username != null&quot;&gt;
+                username = #{username},
+            &lt;/if&gt;
+            &lt;if test=&quot;password != null&quot;&gt;
+                password = #{password},
+            &lt;/if&gt;
+        &lt;/trim&gt;
+    &lt;/update&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>User.java:   用户类</p>
+<pre><code class="lang-java">public class User {
+    private Integer id;
+    private String username;
+    private String password;
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String toString() { return &quot;User [id=&quot; + id + &quot;, username=&quot; + username + &quot;, password=&quot; + password + &quot;]&quot;; }
+}
+</code></pre>
+<p>TestIfChooseTag.java:   主函数类</p>
+<pre><code class="lang-java">public class TestIfChooseTag {
+    public static void main(String[] args) {
+        InputStream inputStream = TestIfChooseTag.class.getResourceAsStream(&quot;../../../org/learnmybatisifchoosetag/map/MyBatisConfig.xml&quot;);
+        SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession session = sqlMapper.openSession();
+
+        { // 使用if标记
+        User user = new User();
+        user.setUsername(&quot;%test1%&quot;);
+        List&lt;User&gt; userList = session.selectList(&quot;selectUserByIf&quot;, user);
+        for (User user2 : userList)
+            System.out.println(user2);
+        }
+
+        { // 使用choose标记
+        User user = new User();
+        // 通过注释/不注释代码来查看sql语句的变化
+    //    user.setUsername(&quot;%test%&quot;);
+    //    user.setId(1);
+        List&lt;User&gt; userList = session.selectList(&quot;selectUserByChoose&quot;, user);
+        for (User user2 : userList)
+            System.out.println(user2);
+        }
+
+        { // 使用where标记
+        User user = new User();
+        // 通过注释/不注释代码来查看sql语句的变化
+    //    user.setUsername(&quot;%test%&quot;);
+    //    user.setId(1);
+        List&lt;User&gt; userList = session.selectList(&quot;selectUserByWhere&quot;, user);
+        for (User user2 : userList)
+            System.out.println(user2);
+        }
+
+        { // 使用trim标记完成where标记功能
+        User user = new User();
+        // 通过注释/不注释代码来查看sql语句的变化
+    //    user.setUsername(&quot;%test%&quot;);
+        user.setId(1);
+        List&lt;User&gt; userList = session.selectList(&quot;selectUserByTrim&quot;, user);
+        for (User user2 : userList)
+            System.out.println(user2);
+        }
+
+        { // 使用set标记
+        User user = new User();
+        user.setId(3);
+        user.setUsername(&quot;new username by set&quot;);
+        user.setPassword(&quot;new password by set&quot;);
+        session.update(&quot;updateUserBySet&quot;, user);
+        session.commit();
+        }
+
+        { // 使用trim标记完成set标记功能
+        User user = new User();
+        user.setId(4);
+        user.setUsername(&quot;new username by trim&quot;);
+        user.setPassword(&quot;new password by trim&quot;);
+        session.update(&quot;updateUserByTrim&quot;, user);
+        session.commit();
+        }
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

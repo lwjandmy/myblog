@@ -1,0 +1,130 @@
+
+
+<html><head><meta charset="UTF-8"><title>spring数据注入的四种方式 配置自动扫描加载包下所有bean
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="spring-bean">spring数据注入的四种方式 配置自动扫描加载包下所有bean</h1>
+<p>testbeaninject\src\main\java\com\test\testbeaninject\App.java</p>
+<pre><code>package com.test.testbeaninject;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
+
+@Component
+public class App 
+{
+    private Integer i1;
+    private Integer i2;
+    @Resource // 通过名字(i3)来注入数据.
+    private Integer i3;
+    @Autowired // 通过类型(Long)来注入数据, 若存在多个Long, 出异常
+    private Long i4;
+
+    public App() { }
+    public App(Integer i1) { this.i1 = i1; }
+
+    public Integer getI2() { return i2; }
+    public void setI2(Integer i2) { this.i2 = i2; }
+
+    public Integer getI3() { return i3; }
+    public void setI3(Integer i3) { this.i3 = i3; }
+
+    public Long getI4() { return i4; }
+    public void setI4(Long i4) { this.i4 = i4; }
+
+    @Override
+    public String toString() { return &quot;App [i1=&quot; + i1 + &quot;, i2=&quot; + i2 + &quot;, i3=&quot; + i3 + &quot;, i4=&quot; + i4 + &quot;]&quot;;}
+
+    public static void main( String[] args )
+    {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+        System.out.println(context.getBean(&quot;app1&quot;)); // 输出: App [i1=1, i2=null, i3=3, i4=4], i1=1是通过构造函数注入数据 
+        System.out.println(context.getBean(&quot;app2&quot;)); // App [i1=null, i2=2, i3=3, i4=4], i2=2是通过set方法注入数据
+        System.out.println(context.getBean(&quot;app&quot;)); // App [i1=null, i2=null, i3=3, i4=4], i3=3是通过@Resource通过bean的名字(i3)找到bean并注入, i4=4是通过类型(Long)找到bean并注入 
+    }
+}
+</code></pre><p>testbeaninject\src\main\resources\applicationContext.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;  
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot; 
+    xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+    xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;  
+    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot; 
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot; 
+    xmlns:util=&quot;http://www.springframework.org/schema/util&quot; 
+    xmlns:jdbc=&quot;http://www.springframework.org/schema/jdbc&quot;  
+    xmlns:cache=&quot;http://www.springframework.org/schema/cache&quot;  
+    xsi:schemaLocation=&quot;  
+    http://www.springframework.org/schema/context  
+    http://www.springframework.org/schema/context/spring-context.xsd  
+    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+    http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans.xsd  
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx.xsd  
+    http://www.springframework.org/schema/jdbc  
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd  
+    http://www.springframework.org/schema/cache  
+    http://www.springframework.org/schema/cache/spring-cache-3.1.xsd  
+    http://www.springframework.org/schema/aop  
+    http://www.springframework.org/schema/aop/spring-aop.xsd  
+    http://www.springframework.org/schema/util  
+    http://www.springframework.org/schema/util/spring-util.xsd&quot;&gt;
+
+    &lt;!-- 启用@Components等注解 --&gt;
+    &lt;context:annotation-config /&gt;
+
+    &lt;!-- 自动扫描包下所有bean --&gt;
+    &lt;context:component-scan base-package=&quot;com.cvicse.test.testbeaninject&quot; /&gt;
+
+    &lt;bean id=&quot;app1&quot; class=&quot;com.cvicse.test.testbeaninject.App&quot;&gt;
+        &lt;!-- 通过构造方法注入数据 --&gt;
+        &lt;constructor-arg name=&quot;i1&quot; value=&quot;1&quot; /&gt;    
+    &lt;/bean&gt;
+
+    &lt;bean id=&quot;app2&quot; class=&quot;com.cvicse.test.testbeaninject.App&quot;&gt;
+        &lt;!-- 通过set方法注入数据 --&gt;
+        &lt;property name=&quot;i2&quot; value=&quot;2&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- @Resource 通过名字i3找到注入的数据 --&gt;
+    &lt;bean id=&quot;i3&quot; class=&quot;java.lang.Integer&quot;&gt;
+        &lt;constructor-arg value=&quot;3&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- @Autowired通过类型找到注入的数据, 不通过bean的名字 --&gt;
+    &lt;bean class=&quot;java.lang.Long&quot;&gt;
+        &lt;constructor-arg value=&quot;4&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- 出现两个Long类型, @Autowired注解会出错 --&gt;
+    &lt;!-- 
+    &lt;bean class=&quot;java.lang.Long&quot;&gt;
+        &lt;constructor-arg value=&quot;5&quot; /&gt;
+    &lt;/bean&gt;
+    --&gt;
+
+&lt;/beans&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,79 @@
+
+
+<html><head><meta charset="UTF-8"><title>greasemonkey 模板 含jQuery
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="greasemonkey-jquery">greasemonkey 模板 含jQuery</h1>
+<pre><code class="lang-js">// 所有内容都写在main中, main把$设置参数设置为jQuery, 防止与外界库互相干扰
+function main($)
+{
+    function on_start_click()
+    {
+        alert(&quot;start&quot;);
+        $(&quot;#output&quot;).append(&quot;start&quot;);
+    }
+
+    function on_stop_click()
+    {
+        alert(&quot;stop&quot;);
+        $(&quot;#output&quot;).append(&quot;stop&quot;);
+    }
+
+    // 定义一个自己的空间:
+    //   开始, 结束按钮; 用于表格内容输出的div
+    //   在这里定义其它需要的页面控件
+    $(&quot;body&quot;).prepend(&quot;\
+        &lt;div id=&#39;myspace&#39; style=&#39;position:absolute;z-index:9999;left:10px;top:10px;border:2px solid red;&#39;&gt;\
+            &lt;input id=&#39;start&#39; type=&#39;button&#39; value=&#39;start&#39;/&gt;\
+            &lt;input id=&#39;stop&#39; type=&#39;button&#39; value=&#39;stop&#39;/&gt;\
+            &lt;p&gt;&lt;/p&gt;\
+            &lt;div id=&#39;output&#39;&gt;&lt;/div&gt;\
+        &lt;/div&gt;\
+        &quot;);
+
+    // 设置按钮响应
+    $(&quot;#start&quot;).click(on_start_click);
+    $(&quot;#stop&quot;).click(on_stop_click);
+
+    // 在这里设置其它消息响应, 环境配置等等
+}
+
+// 回调调用时, jQuery加载完成, 这里使用函数参数赋值$, 防止符号冲突
+function onload_jquery()
+{
+    jQuery.noConflict();
+    main(jQuery)
+}
+
+// 加载jquery
+function load_js(url, onload_function)
+{
+    var jquery_tag_for_inject = document.createElement(&#39;script&#39;); // 创建script标签
+    jquery_tag_for_inject.src = url; // 设置src属性
+    jquery_tag_for_inject.type = &quot;text/javascript&quot;; // 设置type属性
+    typeof onload_function != &quot;undefined&quot; &amp;&amp; (jquery_tag_for_inject.onload = onload_function); // 设置回调
+    (
+        document.getElementsByTagName(&#39;head&#39;)[0] ||
+        document.getElementsByTagName(&#39;body&#39;)[0]
+    ).appendChild(jquery_tag_for_inject); // 注入网页
+}
+
+load_js(&#39;https://code.jquery.com/jquery-1.11.2.js&#39;, onload_jquery);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,94 @@
+
+
+<html><head><meta charset="UTF-8"><title>zxing 生成二维码
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="zxing-">zxing 生成二维码</h1>
+<p>QrCodeUtils.java</p>
+<pre><code class="lang-java">public class QrCodeUtils {
+
+    public static Map&lt;EncodeHintType, Object&gt; getEncodeHint() {
+        Map&lt;EncodeHintType, Object&gt; hints = new HashMap&lt;EncodeHintType, Object&gt;();
+        hints.put(EncodeHintType.CHARACTER_SET, &quot;UTF-8&quot;);
+        hints.put(EncodeHintType.ERROR_CORRECTION, 
+                ErrorCorrectionLevel.forBits(TransferUtils.getIntSystemParam(&quot;ErrorCorrectionLevel&quot;)));
+        return hints;
+    }
+
+    public static Map&lt;DecodeHintType, Object&gt; getDecodeHint() {
+        Map&lt;DecodeHintType, Object&gt; hints = new HashMap&lt;DecodeHintType, Object&gt;();
+        hints.put(DecodeHintType.CHARACTER_SET, &quot;UTF-8&quot;);
+        // 可以解析的编码类型
+        List&lt;BarcodeFormat&gt; decodeFormats = new ArrayList&lt;BarcodeFormat&gt;();
+        decodeFormats.add(BarcodeFormat.QR_CODE);
+        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+        return hints;
+    }
+
+    /**
+     * 编码string成二维码
+     * @param contents
+     * @param width
+     * @param height
+     * @return
+     * @throws WriterException
+     */
+    public static BufferedImage encodeQrCode(String contents, int width, int height) throws WriterException {
+        MultiFormatWriter writer = new MultiFormatWriter();
+        BitMatrix matrix = writer.encode(contents, BarcodeFormat.QR_CODE, width, height, getEncodeHint());
+        BufferedImage image = new BufferedImage(matrix.getWidth(), matrix.getHeight(), BufferedImage.TYPE_INT_RGB);
+        final int BLACK = 0xFF000000;
+        final int WHITE = 0xFFFFFFFF;
+        for (int w = 0; w &lt; matrix.getWidth(); ++w) {
+            for (int h = 0; h &lt; matrix.getHeight(); ++h) {
+                image.setRGB(w, h, matrix.get(w, h) ? BLACK : WHITE);
+            }
+        }
+        return image;
+    }
+
+    /**
+     * 解码二维码成string
+     * @param image
+     * @return
+     */
+    public static String decodeQrCode(BufferedImage image) {
+        BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(image);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+        MultiFormatReader reader = new MultiFormatReader();
+        Result result;
+        try {
+            result = reader.decode(bitmap, getDecodeHint());
+        } catch (NotFoundException e) {
+            return &quot;&quot;;
+        }
+        return result.getText();
+    }
+
+}
+</code></pre>
+<p>截屏获取二维码数据</p>
+<pre><code class="lang-java">Robot robot = new Robot();
+BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, 100, 100));
+String qrCodeStr = QrCodeUtils.decodeQrCode(image);
+</code></pre>
+<p>生成二维码数据</p>
+<pre><code class="lang-java">label.setIcon(new ImageIcon(QrCodeUtils.encodeQrCode(&quot;hello qr code&quot;, 100, 100))));
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

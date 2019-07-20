@@ -1,0 +1,89 @@
+
+
+<html><head><meta charset="UTF-8"><title>Order by排序导致相同数据查询结果顺序不固定问题解决
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="order-by-">Order by排序导致相同数据查询结果顺序不固定问题解决</h1>
+<h2 id="-">建测试表</h2>
+<pre><code class="lang-sql">create table test_orderby_order (
+id integer,
+name varchar(20));
+</code></pre>
+<h2 id="-">加入初始数据</h2>
+<pre><code class="lang-sql">insert into test_orderby_order (id, name) values (&#39;1&#39;, &#39;test&#39;);
+insert into test_orderby_order (id, name) values (&#39;2&#39;, &#39;test&#39;);
+insert into test_orderby_order (id, name) values (&#39;3&#39;, &#39;test&#39;);
+insert into test_orderby_order (id, name) values (&#39;4&#39;, &#39;test&#39;);
+insert into test_orderby_order (id, name) values (&#39;5&#39;, &#39;test&#39;);
+</code></pre>
+<h2 id="rowid-rownum-">rowid和rownum整理</h2>
+<ol>
+<li>rowid: 数据存储在物理设备上的地址.</li>
+</ol>
+<p>*.  rownum: 数据被查出时的顺序, select出的数据的rownum从1到n, 但order by后的数据的rownum会被打乱. </p>
+<p>参考: <a href="https://my.oschina.net/zimingforever/blog/86615">ORACLE的ORDERBY非稳定的排序</a></p>
+<h2 id="1-">1.    不排序查询</h2>
+<pre><code class="lang-sql">select rownum, id, name from test_orderby_order;
+</code></pre>
+<p>结果</p>
+<pre><code class="lang-text">ROWNUM ID NAME 
+------ -- ---- 
+1      1  test 
+2      2  test 
+3      3  test 
+4      4  test 
+5      5  test
+</code></pre>
+<p>从rownum看到, select出的数据顺序, 就是rownum的值.</p>
+<h2 id="2-name-">2.    按name排序查询</h2>
+<pre><code class="lang-sql">select rownum, id, name from test_orderby_order order by name;
+</code></pre>
+<p>结果</p>
+<pre><code class="lang-text">ROWNUM ID NAME 
+------ -- ---- 
+1      1  test 
+2      2  test 
+5      5  test 
+4      4  test 
+3      3  test
+</code></pre>
+<p>从rownum看到, select出的数据被order by name打乱了.</p>
+<h2 id="3-name-rowid-">3.    按name和rowid排序</h2>
+<pre><code class="lang-sql">select rownum, id, name from test_orderby_order order by name, rowid;
+</code></pre>
+<p>结果</p>
+<pre><code class="lang-text">ROWNUM ID NAME 
+------ -- ---- 
+1      1  test 
+2      2  test 
+3      3  test 
+4      4  test 
+5      5  test
+</code></pre>
+<p>发现rownum又按顺序了, 即order by name, rowid未改变select出的数据的顺序.</p>
+<h2 id="-">结论</h2>
+<ol>
+<li><p>查询语句中order by name, 如果name列的数据有相同的值, 那么查询结果顺序不固定.</p>
+</li>
+<li><p>通过order by name, rowid可使查询结果固定.</p>
+</li>
+<li><p>只测试了oracle数据库, 版本Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - Production</p>
+</li>
+</ol>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

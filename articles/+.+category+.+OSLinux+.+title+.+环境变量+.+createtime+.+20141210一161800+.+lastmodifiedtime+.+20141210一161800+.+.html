@@ -1,0 +1,43 @@
+
+
+<html><head><meta charset="UTF-8"><title>环境变量
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">环境变量</h1>
+<p><a href="http://blog.csdn.net/stpeace/article/details/45567977">linux shell “永久环境变量”、“临时环境变量”和&quot;普通变量&quot;之完全解读</a></p>
+<p><a href="http://blog.csdn.net/yzsind/article/details/2393895">linux 中 set,env,export,declare显示shell变量的区别</a></p>
+<p><a href="https://www.gnu.org/software/bash/manual/bashref.html#Command-Execution-Environment">Bash Reference Manual 3.7.3 Command Execution Environment</a></p>
+<p><a href="https://www.gnu.org/software/bash/manual/bashref.html#Environment">Bash Reference Manual 3.7.4 Environment</a></p>
+<p><a href="https://www.gnu.org/software/bash/manual/bashref.html#The-Set-Builtin">Bash Reference Manual 4.3.1 The Set Builtin</a></p>
+<hr>
+<p>环境变量: 一组键值对.</p>
+<p>普通变量与环境变量区别: 程序执行前, 将环境变量内容读取并加入普通变量, 同时标记此变量可导出给子进程.</p>
+<p>设置变量的导出属性</p>
+<pre><code class="lang-bash">declare -x name[=value]
+</code></pre>
+<p>去掉变量的导出属性</p>
+<pre><code class="lang-bash">declare +x name[=value]
+</code></pre>
+<p>列出所有含导出属性的变量</p>
+<pre><code class="lang-bash">declare -x
+</code></pre>
+<p>列出所有变量</p>
+<pre><code class="lang-bash">declare -p
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

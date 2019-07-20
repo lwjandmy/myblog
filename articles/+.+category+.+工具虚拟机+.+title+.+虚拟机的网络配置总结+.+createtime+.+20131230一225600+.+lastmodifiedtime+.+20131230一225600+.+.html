@@ -1,0 +1,51 @@
+
+
+<html><head><meta charset="UTF-8"><title>虚拟机的网络配置总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">虚拟机的网络配置总结</h1>
+<p>虚拟机的网络配置总结</p>
+<p>几个术语:</p>
+<p>虚拟网卡 每个虚拟机自带一个虚拟网卡, 在网上邻居里可以看到. 也可手动添加多个
+主机网卡 安装VM时自动安装的vmnet1和vmnet8 2个网卡,如图:</p>
+<p><img src="pictures/2b6a7c3c0606962d2f0ec1baa0221638ee777fe5.gif" alt="虚拟网卡 主机网卡"></p>
+<p>虚拟交换机 共10个, vmnet0-vmnet9. 注意和上面的主机网卡区分:</p>
+<p>主机网卡(vmnet1和vmnet8)与虚拟网卡是对应的, 都可以在网上邻居里找到, 都代表一块网卡
+而虚拟交换机是软件模拟的一个交换机, 用于连接主机网卡和虚拟网卡的, 代表交换机, 网卡由网线连到交换机上</p>
+<p>VM中网络配置三个选项总结</p>
+<p>桥接</p>
+<p><img src="pictures/4867a4285187eada46fa919e0ea683483bb6b909.gif" alt="桥接"></p>
+<p>接法: 所有虚拟机连同主机接到vmnet0交换机上
+需求: 无需DHCP和NAT
+工作方式: 开启网卡的mass模式, 来接收主机和虚拟机的网络通信数据, 实现桥接
+特点: 虚拟机和主机分别获取两个ip地址, 虚拟机和主机在网络中是对等的</p>
+<p>NAT</p>
+<p><img src="pictures/eff6a71dbdf55475589b2489a500621453a175c1.gif" alt="NAT"></p>
+<p>图片中于NAT设备和网络间加上&quot;主机&quot;, 且NAT设备即为虚拟的NAT设备, 更易理解此图.
+接法: 所有的虚拟机连同主机接到vmnet8交换机上. 其中主机用vmnet8网卡接到vmnet8交换机上(注意区分)
+需求: DHCP, NAT
+工作方式: DHCP分配IP地址, 由于虚拟NAT设备架在主机和虚拟机间, 所以虚拟机网卡有共同网关而主机没有网关
+特点: 虚拟机间可以互相通信且虚拟机可向主机通信, 而主机不能向虚拟机通信.</p>
+<p>Host-only</p>
+<p><img src="pictures/f1bc2894bc0fefcfb764eae091cfca45a1324729.gif" alt="Host-only"></p>
+<p>接法: 所有的虚拟机连同主机接到vmnet1交换机上. 其中主机用vmnet1网卡接到vmnet1交换机上(注意区分)
+需求: DHCP
+工作方式: DHCP分配IP地址
+特点: 仅为虚拟机向主机通信, 虚拟机间以及主机向虚拟机无法通信</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

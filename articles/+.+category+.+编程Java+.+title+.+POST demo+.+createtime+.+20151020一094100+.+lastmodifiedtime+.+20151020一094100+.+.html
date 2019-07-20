@@ -1,0 +1,68 @@
+
+
+<html><head><meta charset="UTF-8"><title>POST demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="post-demo">POST demo</h1>
+<pre><code class="lang-java">URL url = new URL(&quot;http://www.baidu.com&quot;);
+HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+connection.addRequestProperty(&quot;encoding&quot;, &quot;UTF-8&quot;);
+connection.setDoInput(true);
+connection.setDoOutput(true);
+connection.setRequestMethod(&quot;POST&quot;);
+
+OutputStream os = connection.getOutputStream();
+OutputStreamWriter osw = new OutputStreamWriter(os);
+BufferedWriter bw = new BufferedWriter(osw);
+
+bw.write(&quot;id=1&amp;key=2&quot;);
+bw.flush();
+
+InputStream is = connection.getInputStream();
+InputStreamReader isr = new InputStreamReader(is);
+BufferedReader br = new BufferedReader(isr);
+
+String line;
+StringBuilder builder = new StringBuilder();
+while ((line = br.readLine()) != null)
+{
+  builder.append(line);
+}
+bw.close();
+osw.close();
+os.close();
+br.close();
+isr.close();
+is.close();
+
+System.out.println(builder.toString());
+</code></pre>
+<p>使用apache的httpcomponents-client库实现POST请求</p>
+<pre><code class="lang-java">HttpClient client = HttpClients.createDefault();
+HttpPost post = new HttpPost(&quot;http://www.baidu.com&quot;);
+List&lt;BasicNameValuePair&gt; parameters = new ArrayList&lt;&gt;();
+parameters.add(new BasicNameValuePair(&quot;key&quot;, &quot;123&quot;));
+parameters.add(new BasicNameValuePair(&quot;type&quot;, &quot;txt&quot;));
+post.setEntity(new UrlEncodedFormEntity(parameters, &quot;UTF-8&quot;));
+HttpResponse response = client.execute(post);
+HttpEntity entity = response.getEntity();
+String result = EntityUtils.toString(entity, &quot;UTF-8&quot;);
+System.out.println(result);
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

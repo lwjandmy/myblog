@@ -1,0 +1,58 @@
+
+
+<html><head><meta charset="UTF-8"><title>android intent 通过浏览器启动本地Activity 未成功..
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-intent-activity-">android intent 通过浏览器启动本地Activity 未成功..</h1>
+<pre><code class="lang-xml">AndroidManifest.xml,设置intent的category指定可被浏览器访问, 
+launch.html,启动Activity的网页
+未成功, 可能是我打开的是本地launch.html文件, 没有把网页放到服务器上.
+</code></pre>
+<p>AndroidManifest.xml:</p>
+<pre><code class="lang-xml">        &lt;activity
+            android:name=&quot;.LocalAppActivity&quot;
+            android:label=&quot;@string/title_activity_local_app&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;data android:scheme=&quot;app&quot; /&gt;
+                &lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+                &lt;!-- 指定可被浏览器访问 --&gt;
+                &lt;category android:name=&quot;ANDROID.INTENT.CATEGORY.BROWSABLE&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+</code></pre>
+<p>launch.html:</p>
+<pre><code class="lang-xml">&lt;a href=&quot;app://hello&quot;&gt;Launch App&lt;/a&gt;
+</code></pre>
+<p>LocalAppActivity:</p>
+<pre><code class="lang-java">public class LocalAppActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_local_app);
+        // 获取传入的uri参数
+        Uri uri = getIntent().getData();
+        System.out.println(uri);
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

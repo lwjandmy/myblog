@@ -1,0 +1,65 @@
+
+
+<html><head><meta charset="UTF-8"><title>jdk 动态代理 demo Proxy newProxyInstance InvocationHandler
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jdk-demo-proxy-newproxyinstance-invocationhandler">jdk 动态代理 demo Proxy newProxyInstance InvocationHandler</h1>
+<p>Test.java</p>
+<pre><code class="lang-java">public class Test implements TestInterface {
+
+    @Override
+    public String output() { return &quot;test&quot;; }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+        TestInvocationHandler handler = new TestInvocationHandler();
+        handler.setTarget(test);
+
+        TestInterface testImplement = (TestInterface) Proxy.newProxyInstance(Test.class.getClassLoader(), Test.class.getInterfaces(), handler);
+
+        String output = testImplement.output();
+        System.out.println(output);
+    }
+
+}
+</code></pre>
+<p>TestInterface.java</p>
+<pre><code class="lang-java">public interface TestInterface {
+    public String output();
+}
+</code></pre>
+<p>TestInvocationHandler.java</p>
+<pre><code class="lang-java">public class TestInvocationHandler implements InvocationHandler {
+    private TestInterface target;
+
+    public TestInterface getTarget() { return target; }
+
+    public void setTarget(TestInterface target) { this.target = target; }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Object result = method.invoke(target, args);
+        if (&quot;output&quot;.equals(method.getName())) {
+            result = result + &quot;proxy&quot;;
+        }
+        return result;
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

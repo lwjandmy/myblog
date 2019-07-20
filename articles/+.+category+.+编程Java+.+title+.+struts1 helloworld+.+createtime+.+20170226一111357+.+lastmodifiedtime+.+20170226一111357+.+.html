@@ -1,0 +1,124 @@
+
+
+<html><head><meta charset="UTF-8"><title>struts1 helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="struts1-helloworld">struts1 helloworld</h1>
+<p>pom.xml</p>
+<pre><code class="lang-xml">        &lt;dependency&gt;
+            &lt;groupId&gt;struts&lt;/groupId&gt;
+            &lt;artifactId&gt;struts&lt;/artifactId&gt;
+            &lt;version&gt;1.2.9&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<p>web.xml</p>
+<pre><code class="lang-xml">    &lt;servlet&gt;
+        &lt;servlet-name&gt;action&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.apache.struts.action.ActionServlet&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;config&lt;/param-name&gt;
+            &lt;param-value&gt;/WEB-INF/struts-config.xml&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;action&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.do&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+</code></pre>
+<p>struts-config.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE struts-config PUBLIC &quot;-//Apache Software Foundation//DTD Struts Configuration 1.1//EN&quot; &quot;http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd&quot;&gt;
+&lt;struts-config&gt;
+
+  &lt;form-beans&gt;
+    &lt;form-bean name=&quot;testForm&quot; type=&quot;com.TestForm&quot; /&gt;
+  &lt;/form-beans&gt;
+
+  &lt;action-mappings&gt;
+    &lt;action name=&quot;testForm&quot; path=&quot;/testAction&quot; type=&quot;TestAction&quot; parameter=&quot;operAtt&quot;&gt;
+      &lt;forward name=&quot;main&quot; path=&quot;/main.jsp&quot; /&gt;
+      &lt;forward name=&quot;success&quot; path=&quot;/success.jsp&quot; /&gt;
+    &lt;/action&gt;
+  &lt;/action-mappings&gt;
+
+&lt;/struts-config&gt;
+</code></pre>
+<p>TestAction.java</p>
+<pre><code class="lang-java">public class TestAction extends DispatchAction {
+
+    public ActionForward defaultForward(
+            ActionMapping mapping,
+            ActionForm form,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        return mapping.findForward(&quot;main&quot;);
+    }
+
+    public ActionForward testSubmit(
+            ActionMapping mapping,
+            ActionForm form,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        return mapping.findForward(&quot;success&quot;);
+    }
+
+}
+</code></pre>
+<p>TestForm.java</p>
+<pre><code class="lang-java">public class TestForm extends ActionForm {
+    private List&lt;List&lt;String&gt;&gt; data;
+    public List&lt;List&lt;String&gt;&gt; getData() { return data; }
+    public void setData(List&lt;List&lt;String&gt;&gt; data) { this.data = data; }
+}
+</code></pre>
+<p>main.jsp</p>
+<pre><code class="lang-jsp">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;%@ taglib uri=&quot;http://jakarta.apache.org/struts/tags-logic&quot; prefix=&quot;logic&quot;%&gt;
+&lt;%@ taglib uri=&quot;http://jakarta.apache.org/struts/tags-bean&quot; prefix=&quot;bean&quot;%&gt;
+&lt;%@ taglib uri=&quot;http://jakarta.apache.org/struts/tags-html&quot; prefix=&quot;html&quot;%&gt;
+&lt;%@ page import=&quot;TestAction&quot;%&gt;
+&lt;%@ page isELIgnored=&quot;false&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/bootstrap-table.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;common:form action=&quot;testAction&quot; method=&quot;post&quot;&gt;
+        &lt;html:hidden property=&quot;operAtt&quot; value=&quot;testSubmit&quot;/&gt;
+
+                &lt;logic:iterate id=&quot;line&quot; name=&quot;testForm&quot; property=&quot;data&quot; indexId=&quot;lineIndexId&quot;&gt;
+                    &lt;tr&gt;
+                        &lt;logic:iterate id=&quot;cell&quot; name=&quot;line&quot; indexId=&quot;cellIndexId&quot;&gt;
+                            &lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;data(${lineIndexId })(${cellIndexId })&quot; value=&quot;${cell }&quot;&gt;&lt;/td&gt;
+                        &lt;/logic:iterate&gt;
+                    &lt;/tr&gt;
+                &lt;/logic:iterate&gt;
+
+        &lt;script src=&quot;js/jquery.js&quot;&gt;&lt;/script&gt;
+
+    &lt;/common:form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

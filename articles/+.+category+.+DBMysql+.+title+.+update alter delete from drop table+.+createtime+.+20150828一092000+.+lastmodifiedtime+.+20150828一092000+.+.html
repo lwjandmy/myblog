@@ -1,0 +1,71 @@
+
+
+<html><head><meta charset="UTF-8"><title>update alter delete from drop table
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="update-alter-delete-from-drop-table">update alter delete from drop table</h1>
+<pre><code class="lang-mysql">UPDATE [LOW_PRIORITY] [IGNORE] tablename
+SET column1=expression1, column2=expression2, ...
+[WHERE condition]
+[ORDER BY order_criteria]
+[LIMIT number]
+</code></pre>
+<p>提高书价10%:</p>
+<pre><code class="lang-mysql">update books
+set price = price * 1.1;
+</code></pre>
+<p>修改某一行</p>
+<pre><code class="lang-mysql">update customers
+set address = &#39;250 Olsens Road&#39;
+where customerid = 4;
+</code></pre>
+<pre><code class="lang-mysql">ALTER TABLE [IGNORE] tablename alteration [, alteration ...]
+</code></pre>
+<p>改变表项数据类型,修改customers表中,name项的最大长度:</p>
+<pre><code class="lang-mysql">alter table customers
+modify name char(70) not null;
+</code></pre>
+<p>增加表项,在orders表中增加一个税收列(tax):</p>
+<pre><code class="lang-mysql">alter table orders
+add tax float(6, 2) after amount;
+</code></pre>
+<p>删除一列表项:</p>
+<pre><code class="lang-mysql">alter table orders
+drop tax;
+</code></pre>
+<pre><code class="lang-mysql">DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM table
+[WHERE condition]
+[ORDER BY order_cols]
+[LIMIT number]
+</code></pre>
+<p>删除一项:</p>
+<pre><code class="lang-mysql">delete from customers
+where customerid = 5;
+</code></pre>
+<pre><code class="lang-mysql">DROP TABLE table;
+</code></pre>
+<p>删除整个表:</p>
+<pre><code class="lang-mysql">drop table table
+</code></pre>
+<pre><code class="lang-mysql">DROP DATABASE database;
+</code></pre>
+<p>删除整个数据库:</p>
+<pre><code class="lang-mysql">drop database database;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

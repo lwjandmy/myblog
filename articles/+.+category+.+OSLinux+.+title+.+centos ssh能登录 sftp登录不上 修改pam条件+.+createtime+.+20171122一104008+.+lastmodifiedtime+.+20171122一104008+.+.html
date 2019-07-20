@@ -1,0 +1,59 @@
+
+
+<html><head><meta charset="UTF-8"><title>centos ssh能登录 sftp登录不上 修改pam条件
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="centos-ssh-sftp-pam-">centos ssh能登录 sftp登录不上 修改pam条件</h1>
+<p>查看系统认证日志</p>
+<pre><code class="lang-bash">tail -f /var/log/secure
+</code></pre>
+<p>原因</p>
+<p>可能想禁止root用户通过认证?</p>
+<p>修改pam条件</p>
+<pre><code class="lang-bash">vim /etc/pam.d/password-auth-ac
+</code></pre>
+<p>auth配置中, 加一条:</p>
+<pre><code class="lang-ini">auth     sufficient    pam_succeed_if.so uid &lt; 1000 quiet
+</code></pre>
+<p>最终变成:</p>
+<pre><code class="lang-ini">auth        required      pam_env.so
+auth        required      pam_faildelay.so delay=2000000
+auth        sufficient    pam_unix.so nullok try_first_pass
+# auth        requisite     pam_succeed_if.so uid &gt;= 1000 quiet_success
+auth     sufficient    pam_succeed_if.so uid &lt; 1000 quiet
+auth        required      pam_deny.so
+
+account     required      pam_unix.so
+account     sufficient    pam_localuser.so
+account     sufficient    pam_succeed_if.so uid &lt; 1000 quiet
+account     required      pam_permit.so
+
+password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3 authtok_type=
+password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok
+
+
+password    required      pam_deny.so
+
+session     optional      pam_keyinit.so revoke
+session     required      pam_limits.so
+-session     optional      pam_systemd.so
+session     [success=1 default=ignore] pam_succeed_if.so service in crond quiet use_uid
+session     required      pam_unix.so
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

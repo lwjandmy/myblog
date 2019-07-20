@@ -1,0 +1,25 @@
+
+
+<html><head><meta charset="UTF-8"><title>finally块中不应抛出异常
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="finally-">finally块中不应抛出异常</h1>
+<p>try和catch块中若抛出异常, finally块中的return, break, throw语句会覆盖之前抛出的异常, 会使外部收不到异常.</p>
+<p>finally中若出现异常, 绝对不能像外throw, 只能记录, 打印日志.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

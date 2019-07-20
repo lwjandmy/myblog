@@ -1,0 +1,128 @@
+
+
+<html><head><meta charset="UTF-8"><title>android launchMode standard singleTop singleInstance singleTask演示说明
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-launchmode-standard-singletop-singleinstance-singletask-">android launchMode standard singleTop singleInstance singleTask演示说明</h1>
+<pre><code class="lang-text">standard 每次创建Activity, 则栈中加入新Activity
+singleTop 当创建的Activity在栈顶, 即为当前Activity时, 使用当前的Activity(single)而不创建新Activity
+singleInstance 栈中只存在一个Activity, 当又创建了一个Activity时, 栈底的Activity会回到栈顶
+singleTask 栈中只存在一个Activity, 当又创建了一个Activity时, 栈底的Activity会变成栈顶, 且之前的栈顶Activity被弹出.
+</code></pre>
+<p>例子:</p>
+<p>通过改变AndroidManifest.xml中MainActivity的android:launchMode属性, 来查看不同效果.</p>
+<p>activity_main.xml主Activity的布局, activity_another.xml另一个Activity的布局, MainActivity.java主Activity, AnotherActivity.java另一个Activity</p>
+<p>activity_main.xml:   主Activity的布局</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;Main Activity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;TextView
+        android:id=&quot;@+id/textView&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btnLaunchMainActivity&quot;
+        android:text=&quot;Launch Main Activity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btnLaunchAnotherActivity&quot;
+        android:text=&quot;Launch Another Activity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>activity_another.xml:   另一个Activity的布局</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;Another Activity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;TextView
+        android:id=&quot;@+id/textView&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btnLaunchMainActivity&quot;
+        android:text=&quot;Launch Main Activity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity.java:   主Activity</p>
+<pre><code class="lang-xml">public class MainActivity extends AppCompatActivity
+{
+    private TextView textView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.textView);
+        textView.setText(String.format(&quot;TaskId: %d, Current Activity: %s&quot;, getTaskId(), toString()));
+        findViewById(R.id.btnLaunchMainActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
+            }
+        });
+        findViewById(R.id.btnLaunchAnotherActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(MainActivity.this, AnotherActivity.class));
+            }
+        });
+    }
+}
+</code></pre>
+<p>AnotherActivity.java:   另一个Activity</p>
+<pre><code class="lang-xml">public class AnotherActivity extends AppCompatActivity
+{
+    private TextView textView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_another);
+        textView = (TextView) findViewById(R.id.textView);
+        textView.setText(String.format(&quot;TaskId: %d, Current Activity: %s&quot;, getTaskId(), toString()));
+        findViewById(R.id.btnLaunchMainActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(AnotherActivity.this, MainActivity.class));
+            }
+        });
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

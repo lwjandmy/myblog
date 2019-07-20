@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>gunicorn demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="gunicorn-demo">gunicorn demo</h1>
+<p>编辑测试文件test.py:</p>
+<pre><code class="lang-Python">def app(environ, start_response):
+    data = b&#39;Hello, World!\n&#39;
+    status = &#39;200 OK&#39;
+    response_headers = [
+        (&#39;Content-Type&#39;, &#39;text/plain&#39;),
+        (&#39;Content-Length&#39;, str(len(data)))
+    ]
+    start_response(status, response_headers)
+    return iter([data])
+</code></pre>
+<p>执行&amp;测试:</p>
+<pre><code class="lang-shell">gunicorn --bind=0.0.0.0:8000 --workers=2 --worker-class=gevent test:app
+ab -c 100 -n 500 http://192.168.137.102:8000/      # 118 req per sec
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

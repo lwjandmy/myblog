@@ -1,0 +1,46 @@
+
+
+<html><head><meta charset="UTF-8"><title>java远程调试例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="java-">java远程调试例子</h1>
+<p>jvm启动参数增加</p>
+<pre><code class="lang-sh">-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=9999,server=y,suspend=n
+</code></pre>
+<p>例子</p>
+<pre><code class="lang-sh">java -cp test-for-remote.jar -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=9999,server=y,suspend=n org.Main
+</code></pre>
+<p>含义</p>
+<pre><code class="lang-txt">-Xdebug 启动调试
+-Xnoagent 禁用sun调试器
+-Djava.compiler=NONE 禁用JIT编译器
+-Xrunjdwp:transport=dt_socket,address=9999,server=y,suspend=n
+dt_socket 套接字传输
+address=9999 监听端口
+server=y 作为调试服务器
+suspend=n 不等待调试客户端直接启动
+</code></pre>
+<p>Eclipse中, Debug Configurations中, Remote Java Application下, 新增一个</p>
+<pre><code class="lang-txt">Name: test-remote 起一个名字
+Project: test-for-remote 对应哪个项目, Eclipse会从项目中找源码
+Host: localhost 远程服务IP
+Port: 9999 远程服务调试端口
+</code></pre>
+<p>启动服务后, 启动Eclipse中remote调试.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

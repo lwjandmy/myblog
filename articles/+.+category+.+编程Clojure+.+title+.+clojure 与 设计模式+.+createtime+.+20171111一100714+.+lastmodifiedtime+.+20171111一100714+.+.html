@@ -1,0 +1,413 @@
+
+
+<html><head><meta charset="UTF-8"><title>clojure 与 设计模式
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="clojure-">clojure 与 设计模式</h1>
+<pre><code class="lang-txt">单例模式
+
+一个类, 只能拥有一个对象.
+
+直接定义方法
+(def fun1
+    (fn []
+        (println &quot;i am fun1&quot;)
+        &quot;result&quot;
+    )
+)
+(fun1)
+
+
+工厂模式
+
+一个对象, 用于创建其它对象.
+
+使用Clojure的MultiMethod, defmulti, defmethod
+
+(defmulti run(fn [t] t))
+
+(defmethod run
+    :RedPig
+    [t]
+    (println &quot;RedPig run&quot;))
+
+(defmethod run
+    :GreenPig
+    [t]
+    (println &quot;GreenPig run&quot;))
+
+(defmethod run
+    :BluePig
+    [t]
+    (println &quot;BluePig run&quot;))
+
+(run :RedPig)
+
+
+抽象工厂
+
+(defmulti run (fn [t] t))
+
+(defmethod run
+    [:RedPig :Netherlands]
+    [t]
+    (println &quot;Netherlands RedPig run&quot;))
+
+(defmethod run
+    [:GreenPig :Netherlands]
+    [t]
+    (println &quot;Netherlands GreenPig run&quot;))
+
+(defmethod run
+    [:BluePig :Netherlands]
+    [t]
+    (println &quot;Netherlands BluePig run&quot;))
+
+(defmethod run
+    [:RedPig :NewZealand]
+    [t]
+    (println &quot;NewZealand RedPig run&quot;))
+
+(defmethod run
+    [:GreenPig :NewZealand]
+    [t]
+    (println &quot;NewZealand GreenPig run&quot;))
+
+(defmethod run
+    [:BluePig :NewZealand]
+    [t]
+    (println &quot;NewZealand BluePig run&quot;))
+
+(run [:BluePig :Netherlands])
+
+
+原型模式
+
+Clojure中所有数据不可变, 修改一个数据, 原数据并没改变, 而是返回新数据, 因此无需原型模式.
+
+
+生成器模式
+
+无需生成器模式, 因为无需构建对象.
+
+可用multimethod模式
+
+(defn type [d t]
+    (assoc d :type t))
+
+(defn size [d t]
+    (assoc d :size t))
+
+(def drink {})
+
+(-&gt; drink (type :tea) (size :large))
+
+
+门面模式
+
+为一组接口提供统一的接口, 使接口一致.
+
+(defn turn-on-camera []
+    (println &quot;开启摄像头&quot;))
+
+(defn turn-on-light []
+    (println &quot;打开闪光灯&quot;))
+
+(defn turn-on-sensor []
+    (println &quot;开启感应器&quot;))
+
+(defn turn-on-facade []
+    (turn-on-camera)
+    (turn-on-light)
+    (turn-on-sensor))
+
+
+代理模式
+
+为其他对象提供一种代理, 以控制对此对象的访问.
+
+(defn factory []
+    (println &quot;Create item&quot;))
+
+(defn shop [f]
+    (println &quot;追加服务&quot;)
+    (f))
+
+
+适配器模式
+
+将一个接口转换成另一个接口, 解决接口兼容问题.
+
+使用first-class function
+
+(defn drive []
+    (println &quot;drive&quot;))
+
+(defn run []
+    (println &quot;run&quot;))
+
+(defn do-drive [f]
+    (f))
+
+(do-drive drive)
+(do-drive run)
+
+
+组合模式
+
+将对象组合成树形结构, 以表示&quot;部分-整体&quot;的层次结构. 使得用户对单个对象和组合对象的使用具有一致性.
+
+Clojure是对树的操作, 提供了clojure.zip, clojure.walk, tree-seq
+
+
+装饰模式
+
+动态地给对象增加额外的职责, 比定义子类更灵活.
+
+
+桥接模式
+
+将抽象部分与实现部分分离, 使它们都可以独立变化.
+
+可用first-class function实现
+
+(ns samsung)
+
+(defn on []
+    (println &quot;Samsung is turned on.&quot;))
+
+(defn off []
+    (println &quot;Samsung is turned off.&quot;))
+
+(defn switch-channel [channel]
+    (println &quot;Samsung: channel - &quot; + channel))
+
+(ns sony)
+
+(defn on []
+    (println &quot;Sony is turned on.&quot;))
+
+(defn off []
+    (println &quot;Sony is turned off.&quot;))
+
+(defn switch-channel [channel[
+    (println &quot;Sony: channel - &quot; + channel))
+
+(ns remotecontroller)
+
+(defn turn-on [f]
+    (f))
+
+(defn turn-off [f]
+    (f))
+
+(defn set-channel [f arg]
+    (f arg))
+
+(ns client
+    (:require [sony :as tv]
+        [remotecontroller :as c))
+    (c/turn-on tv/on)
+    (c/set-channel tv/switch-channel 3)
+    (c/turn-off tv/off)
+
+
+享元模式
+
+使用共享, 使大量细粒度对象占用较小内存.
+
+Clojure中数据都是唯一的, 因此不需要这种模式.
+
+
+模板模式
+
+定义一个操作的算法骨架, 将骨架内小方法延迟到子类.
+
+(defn show [body]
+    (println &quot;Header&quot;)
+    (body)
+    (println &quot;Footer&quot;))
+
+(defn index []
+    (println &quot;Index&quot;))
+
+(defn detail []
+    (println &quot;Detail&quot;))
+
+(show index)
+(show detail)
+
+
+备忘录模式
+
+在不破坏封装性的前提下, 捕获一个对象的内部状态, 并在该对象之外保存这个状态.
+以后就可将该对象回复到保存的状态.
+
+Clojure直接对数据进行操作, 没有对象的概念.
+
+
+观察者模式
+
+当对象状态改变时, 所有依赖于它的对象都会得到通知.
+
+(def a (atom {}))
+
+(defn func-a []
+    (println &quot;func-a invoke&quot;))
+
+(defn func-b []
+    (println &quot;fun-b invoke&quot;))
+
+(add-watch a :watcherA
+    (fn [key atom old-state new-state]
+        (func-a)))
+
+(add-watch a :watcherB
+    (fn [key atom old-state new-state]
+        (func-b)))
+
+(reset! a{:foo &quot;bar&quot;})
+
+
+责任链模式
+
+多个对象都有机会处理请求, 将这些对象连成链.
+
+(defn handler-request1 [condition]
+    (if (= &quot;ConcreteHandler1&quot; condition)
+        (println &quot;ConcreteHandler handled&quot;)
+        (println &quot;ConcreteHandler1 passed&quot;)))
+
+(defn handler-request2 [condition]
+    (if (= &quot;ConcreteHandler2&quot; condition)
+        (println &quot;ConcreteHandler2 handled&quot;)
+        (println &quot;ConcreteHandler2 passed&quot;)))
+
+(defn handler-requestn [condition]
+    (println &quot;ConcreteHandlern handled&quot;))
+
+(-&gt;&gt; &quot;ConcreteHandler2&quot;
+    handler-request1
+    handler-request2
+    handler-requestn)
+
+
+命令模式
+
+将请求封装为对象, 支持请求排队或记录请求日志, 支持可取消的操作.
+
+使用first-class function可实现, 参考桥接模式.
+
+
+状态模式
+
+在对象的内部状态改变时, 改变它的行为. 对象看起来似乎修改了它的类.
+
+(def order (atom {:status :unPay}))
+
+(defmulti invoke (fn [ord] (:status @ord)))
+
+(defmethod invoke
+    :unPay
+    [ord]
+    (println &quot;UnPay&quot;)
+    (swap! order assoc :status :send))
+
+(defmethod invoke
+    :send
+    [ord]
+    (println &quot;Send&quot;)
+    (swap! order assoc :status :unPay))
+
+(invoke order)
+(invoke order)
+
+
+策略模式
+
+定义一系列算法, 把它们一个个封装起来, 使它们可相互替换. 使算法可独立于使用者而变化.
+
+使用高阶函数实现.
+
+(defn context [f]
+    (f))
+
+(defn strategy1 []
+    (println &quot;Strategy1&quot;))
+
+(defn strategy2 []
+    (println &quot;Strategy2&quot;))
+
+(context strategy1)
+(context strategy2)
+
+
+中介者模式
+
+用一个&quot;中介对象&quot;来封装一系列的对象交互.
+中介对象使对象不需要显示地相互引用, 从而使其耦合松散, 而且可以独立的改变它们之间的交互.
+
+(def a {atom {}))
+(def b (atom {}))
+
+(defn func-a []
+    (println &quot;func-a invoke&quot;))
+
+(defn func-b []
+    (println &quot;func-b invoke&quot;))
+
+(add-watch a :watcherA
+    (fn [key atom old-state new-state]
+        (func-a)))
+
+(add-watch b :watcherB
+    (fn [key atom old-state new-state]
+        (func-b)))
+
+(reset! a {:foo &quot;bar&quot;})
+(reset! b {:foo &quot;bar&quot;})
+
+
+解释器模式
+
+定义&quot;语言&quot;, 语言的文法的&quot;表示&quot;, &quot;解释器&quot;, 这个&quot;解释器&quot;使用该&quot;表示&quot;来解释语言中的句子.
+
+不带上下文的解析器, 其实就是内部DSL
+
+(defmacro assign [a v]
+    &#39;(def ~a ~v))
+
+(assign x false)
+(assign y true)
+(assign c true)
+
+(assign exp &#39;(or (and c x) (and y (not x))))
+
+(println &quot;x =&quot; x)
+(println &quot;y =&quot; y)
+(println exp &quot;=&quot; (eval exp))
+
+
+访问者模式
+
+表示一个作用于某对象结构中的个元素的操作. 可在不改变各元素的类的前提下定义作用于这些元素的新操作.
+
+Clojure没有类似的结构体, 如复杂的树结构. 可使用Clojure提供的数据操作函数来操作即可.
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,30 @@
+
+
+<html><head><meta charset="UTF-8"><title>ramdisk dev shm
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="ramdisk-dev-shm">ramdisk dev shm</h1>
+<p><a href="http://blog.csdn.net/heyutao007/article/details/7051269">/dev/shm</a></p>
+<p>shm, share memory, 所有程序可共享的内存</p>
+<p>作用: 作为ramdisk，把内存当磁盘用</p>
+<p>调节shm大小：</p>
+<pre><code class="lang-bash">mount -o remount,size=2G /dev/shm
+</code></pre>
+<p>df -h可查看调整后大小</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

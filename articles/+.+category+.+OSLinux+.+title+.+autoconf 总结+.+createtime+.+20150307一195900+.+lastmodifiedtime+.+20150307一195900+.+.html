@@ -1,0 +1,75 @@
+
+
+<html><head><meta charset="UTF-8"><title>autoconf 总结
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="autoconf-">autoconf 总结</h1>
+<p><a href="http://blog.csdn.net/fd315063004/article/details/7785504">大型项目使用Automake/Autoconf完成编译配置</a></p>
+<p><a href="http://www.linuxidc.com/Linux/2014-09/107014.htm">Linux下的Autoconf和AutoMake</a></p>
+<p><a href="http://www.cnblogs.com/itech/archive/2010/11/28/1890220.html">Linux下autoconf和automake使用</a></p>
+<hr>
+<h2 id="helloworld-">helloworld 使用过程</h2>
+<ol>
+<li><p>执行autoscan</p>
+<pre><code class="lang-bash">autoscan
+</code></pre>
+<p>生成文件configure.scan  autoscan.log</p>
+</li>
+</ol>
+<ul>
+<li><p>修改configure.scan:</p>
+<p>添加AM_INIT_AUTOMAKE(helloworld, 1.0)   格式: AM_INIT_AUTOMAKE(PACKAGE,VERSION)
+添加AC_OUTPUT(Makefile)</p>
+<p>改名configure.scan为configure.in</p>
+<pre><code class="lang-bash">mv configure.scan configure.in
+</code></pre>
+</li>
+<li><p>执行aclocal</p>
+<pre><code class="lang-bash">aclocal
+</code></pre>
+<p>此命令由configure.in生成aclocal.m4文件</p>
+</li>
+</ul>
+<ul>
+<li><p>执行autoconf</p>
+<pre><code class="lang-bash">autoconf
+</code></pre>
+<p>此命令由configure.in和aclocal.m4生成configure文件</p>
+</li>
+</ul>
+<ul>
+<li><p>新建Makefile.am, 添加</p>
+<pre><code class="lang-ini">AUTOMAKE_OPTIONS=foreign      foreign，用一般软件套件标准来检查。缺省gnu，尽可能地检查包是否服从GNU标准
+bin_PROGRAMS=helloworld       要产生的执行档名称，多个用空格符隔开
+helloworld_SOURCES=main.cpp   定义hello这个执行档的源文件，若有多个执行档，则每个执行档都要定义相对的filename_SOURCES
+</code></pre>
+<p>新建config.h.in:</p>
+<pre><code class="lang-bash">touch config.h.in
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>执行automake</p>
+<pre><code class="lang-bash">automake --add-missing
+</code></pre>
+<p>此命令根据Makefile.am生成文件Makefile.in, depcomp, install-sh和missing</p>
+</li>
+</ul>
+<p><img src="pictures/61dbacb4cba56fbe0535797c93e673beb3301cb8.gif" alt="过程图"></p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

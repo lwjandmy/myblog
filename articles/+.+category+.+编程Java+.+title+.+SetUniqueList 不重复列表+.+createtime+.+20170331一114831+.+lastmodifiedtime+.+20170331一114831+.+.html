@@ -1,0 +1,31 @@
+
+
+<html><head><meta charset="UTF-8"><title>SetUniqueList 不重复列表
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="setuniquelist-">SetUniqueList 不重复列表</h1>
+<pre><code class="lang-java">import org.apache.commons.collections.list.SetUniqueList;
+
+// 构造唯一列表, 包含: 1, 2, 3
+SetUniqueList list = SetUniqueList.decorate(new ArrayList&lt;Integer&gt;(Arrays.asList(1, 2, 3, 3, 2, 1)));
+list.add(1); // 返回false, 不加入
+list.add(4); // 返回true, 加入
+list.addAll(Arrays.asList(1, 2, 3)); // 返回false, 未加入
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

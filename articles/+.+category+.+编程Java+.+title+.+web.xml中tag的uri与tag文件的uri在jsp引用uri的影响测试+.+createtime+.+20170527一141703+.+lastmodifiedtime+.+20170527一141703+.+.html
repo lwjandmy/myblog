@@ -1,0 +1,219 @@
+
+
+<html><head><meta charset="UTF-8"><title>web.xml中tag的uri与tag文件的uri在jsp引用uri的影响测试
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="web-xml-tag-uri-tag-uri-jsp-uri-">web.xml中tag的uri与tag文件的uri在jsp引用uri的影响测试</h1>
+<hr>
+<p>测试web.xml中不配置tablib, 在jsp中直接引入tablib, 容器会自动从WEB-INF\tld下读取所有tld文件, 应用tld文件中的<uri>taguri-tld</uri>定义.</p>
+<p>pom.xml:</p>
+<pre><code class="lang-xml">    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+            &lt;version&gt;2.3&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+</code></pre>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+&lt;web-app&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>WEB-INF\tld\tld-sub1\tld1.tld:</p>
+<pre><code class="lang-tld">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE taglib PUBLIC &quot;-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN&quot; &quot;http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd&quot;&gt;
+&lt;taglib&gt;
+    &lt;tlibversion&gt;1.0&lt;/tlibversion&gt;
+    &lt;jspversion&gt;1.1&lt;/jspversion&gt;
+    &lt;shortname&gt;tag&lt;/shortname&gt;
+    &lt;uri&gt;taguri-tld&lt;/uri&gt;
+    &lt;tag&gt;
+        &lt;name&gt;TestTag1&lt;/name&gt;
+        &lt;tagclass&gt;com.cvicse.cxzx.test.tld.tag.TestTag1&lt;/tagclass&gt;
+    &lt;/tag&gt;
+&lt;/taglib&gt;
+</code></pre>
+<p>TestTag1.java:</p>
+<pre><code class="lang-java">package com.cvicse.cxzx.test.tld.tag;
+
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTag;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+
+public class TestTag1 extends BodyTagSupport {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public int doStartTag() throws JspException {
+        try {
+            pageContext.getOut().append(&quot;pageContext-doStartTag&quot;);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return BodyTag.EVAL_BODY_INCLUDE;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+        try {
+            pageContext.getOut().append(&quot;pageContext-doEndTag&quot;);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return BodyTag.EVAL_PAGE;
+    }
+
+}
+</code></pre>
+<p>index.jsp:</p>
+<pre><code class="lang-jsp">&lt;%@ taglib uri=&quot;taguri-tld&quot; prefix=&quot;tld1&quot;%&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;Hello World!&lt;/h2&gt;
+&lt;tld1:TestTag1&gt;&lt;/tld1:TestTag1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>测试结果:</p>
+<pre><code class="lang-text">Hello World!
+
+pageContext-doStartTagpageContext-doEndTag
+</code></pre>
+<p>说明:</p>
+<p>web.xml中不配置taglib, 容器启动时自动读取WEB-INF\tld下所有tld文件, tld文件中定义的uri, 将用在jsp中的tab uri属性中.</p>
+<hr>
+<p>测试web.xml中配置和tld的uri, 同时tld文件中也有自己的uri, 那么jsp中引入tld的uri时, 用到哪个? 以那个为准?</p>
+<p>pom.xml: 同上</p>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+&lt;web-app&gt;
+    &lt;taglib&gt;
+        &lt;taglib-uri&gt;taguri-webxml&lt;/taglib-uri&gt;
+        &lt;taglib-location&gt;/WEB-INF/tld/tld-sub1/tld1.tld&lt;/taglib-location&gt;
+    &lt;/taglib&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>WEB-INF\tld\tld-sub1\tld1.tld: 同上</p>
+<p>TestTag1.java: 同上</p>
+<p>index.jsp:</p>
+<pre><code class="lang-jsp">&lt;%@ taglib uri=&quot;taguri-tld&quot; prefix=&quot;tld1&quot;%&gt;
+&lt;%@ taglib uri=&quot;taguri-webxml&quot; prefix=&quot;tld2&quot;%&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;Hello World!&lt;/h2&gt;
+&lt;tld1:TestTag1&gt;&lt;/tld1:TestTag1&gt;
+&lt;tld2:TestTag1&gt;&lt;/tld2:TestTag1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>测试结果:</p>
+<pre><code class="lang-text">Hello World!
+
+pageContext-doStartTagpageContext-doEndTag pageContext-doStartTagpageContext-doEndTag
+</code></pre>
+<p>说明:</p>
+<p>web.xml中定义了tld的uri, tld文件中也有自己的uri, 那么两者都可用, jsp里用哪种都可以.</p>
+<hr>
+<p>测试web.xml中定义的tld的uri, 是另一个tld的uri, 此时jsp中通过uri引用的tld是哪个? 也就是, uri同时通过web.xml和uri自己的uri定义, uri重名, 优先选用哪个?</p>
+<p>pom.xml: 同上</p>
+<p>增加TestTag2:</p>
+<pre><code class="lang-java">package com.cvicse.cxzx.test.tld.tag;
+
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTag;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+
+public class TestTag2 extends BodyTagSupport {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public int doStartTag() throws JspException {
+        try {
+            pageContext.getOut().append(&quot;pageContext-doStartTag 2&quot;);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return BodyTag.EVAL_BODY_INCLUDE;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+        try {
+            pageContext.getOut().append(&quot;pageContext-doEndTag 2&quot;);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return BodyTag.EVAL_PAGE;
+    }
+
+}
+</code></pre>
+<p>增加WEB-INF\tld\tld-sub1\tld2.tld:</p>
+<pre><code class="lang-tld">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE taglib PUBLIC &quot;-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN&quot; &quot;http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd&quot;&gt;
+&lt;taglib&gt;
+    &lt;tlibversion&gt;1.0&lt;/tlibversion&gt;
+    &lt;jspversion&gt;1.1&lt;/jspversion&gt;
+    &lt;shortname&gt;tag&lt;/shortname&gt;
+    &lt;uri&gt;taguri-tld2&lt;/uri&gt;
+    &lt;tag&gt;
+        &lt;name&gt;TestTag1&lt;/name&gt;
+        &lt;tagclass&gt;com.cvicse.cxzx.test.tld.tag.TestTag2&lt;/tagclass&gt;
+    &lt;/tag&gt;
+&lt;/taglib&gt;
+</code></pre>
+<p>web.xml:</p>
+<pre><code class="lang-xml">&lt;!DOCTYPE web-app PUBLIC
+ &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;
+ &quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot; &gt;
+&lt;web-app&gt;
+    &lt;taglib&gt;
+        &lt;taglib-uri&gt;taguri-tld2&lt;/taglib-uri&gt;
+        &lt;taglib-location&gt;/WEB-INF/tld/tld-sub1/tld1.tld&lt;/taglib-location&gt;
+    &lt;/taglib&gt;
+&lt;/web-app&gt;
+</code></pre>
+<p>index.jsp:</p>
+<pre><code class="lang-jsp">&lt;%@ taglib uri=&quot;taguri-tld2&quot; prefix=&quot;tld&quot;%&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;Hello World!&lt;/h2&gt;
+&lt;tld:TestTag1&gt;&lt;/tld:TestTag1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>测试结果:</p>
+<pre><code class="lang-text">Hello World!
+
+pageContext-doStartTagpageContext-doEndTag
+</code></pre>
+<p>说明:</p>
+<p>两个tld文件, web.xml中配置的第一个tld文件的uri, 是第二个tld文件内定义的uri, 此时jsp中通过uri引用tld, 引用的是第一个tld的, 即优先采用web.xml中定义的uri.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

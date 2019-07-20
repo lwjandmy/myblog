@@ -1,0 +1,45 @@
+
+
+<html><head><meta charset="UTF-8"><title>try-with-resources语法 JDK7新增 自动调用close方法释放资源
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="try-with-resources-jdk7-close-">try-with-resources语法 JDK7新增 自动调用close方法释放资源</h1>
+<p><a href="http://www.oracle.com/technetwork/articles/java/trywithresources-401775.html">Better Resource Management with Java SE 7: Beyond Syntactic Sugar</a></p>
+<pre><code class="lang-java">public class TestAutoCloseInTryWithResources implements AutoCloseable {
+
+    @Override
+    public void close() throws Exception {
+        System.out.println(&quot;close called!&quot;);
+    }
+
+    public void work() throws Exception {
+        System.out.println(&quot;work called!&quot;);
+        throw new Exception(&quot;test exception&quot;); // 这句无论是否注释掉, close方法都会被调用
+    }
+
+    public static void main(String[] args) throws Exception {
+        // try-with-resources语法, JDK7新增, 只要TestAutoCloseInTryWithResources实现了AutoCloseable接口, try结束时会自动调用close
+        try (TestAutoCloseInTryWithResources test = new TestAutoCloseInTryWithResources()) {
+            test.work();
+        } catch (Exception e) { }
+    }
+
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

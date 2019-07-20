@@ -1,0 +1,120 @@
+
+
+<html><head><meta charset="UTF-8"><title>django 使用view
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="django-view">django 使用view</h1>
+<p>添加view步骤:  </p>
+<pre><code class="lang-Python"># polls/views.py:
+def index(request):
+    return HttpResponse(&quot;polls/index&quot;)
+polls/urls.py(新建):
+urlpatterns = [
+    # regex参数指定了url正则匹配; view指定了需要哪个view函数响应; kwargs关键字参数; name为url命名, 在模板中的表单url可方便获取
+    url(r&#39;^$&#39;, views.index, name = &#39;index&#39;)
+]
+# learndjango/urls.py:
+urlpatterns = [
+    # ...
+    url(r&#39;^polls/&#39;, include(&#39;polls.urls&#39;))
+]
+</code></pre>
+<p>访问view:<br><a href="http://localhost:8000/polls">http://localhost:8000/polls</a></p>
+<p>view中传递参数:</p>
+<pre><code class="lang-Python"># polls/views.py:
+def detail(request, question_id):
+    return HttpResponse(&quot;polls/detail, question_id={0}&quot;.format(question_id))
+def results(request, question_id):
+    return HttpResponse(&quot;polls/results, question_id={0}&quot;.format(question_id))
+def vote(request, question_id):
+    return HttpResponse(&quot;polls/vote, question_id={0}&quot;.format(question_id))
+# polls/urls.py:
+urlpatterns = [
+    # ...
+    url(r&#39;^(?P&lt;question_id&gt;[0-9]+)/$&#39;, views.detail, name= &#39;detail&#39;),
+    url(r&#39;^(?P&lt;question_id&gt;[0-9]+)/results/$&#39;, views.result, name = &#39;results&#39;),
+    url(r&#39;^(?P&lt;question_id&gt;[0-9]+)/vote/$&#39;, views.vote, name = &#39;vote&#39;)
+]
+</code></pre>
+<p>这里的regex中, 编写顺序:[0-9]+筛选数字; ([0-9]+)数字提取; (?P<question_id>[0-9]+)数字提取到question_id变量</p>
+<p>view中读取数据库并显示:</p>
+<pre><code class="lang-Python">def index(request):
+    latest_question_list = polls.models.Question.objects.order_by(&#39;-pub_date&#39;)
+    output = &#39;, &#39;.join([p.question_text for p in latest_question_list])
+    return HttpResponse(output)
+</code></pre>
+<p>view中使用模板显示:<br>创建文件夹: polls/templates/<br>说明: learndjango/settings.py中TEMPLATES中&#39;BACKEND&#39;:&#39;django.template.backends.django.DjangoTemplates&#39;, 指定了DjangoTemplates backend, 它会在INSTALLED_APPS中寻找每个app目录下的&#39;templates&#39;文件夹, 作为模板位置<br>创建文件夹: polls/templates/polls/<br>创建模板: polls/templates/polls/index.html<br>说明: 这里为什么不把模板直接放在polls/templates/下, 而是放在子文件夹polls中, 是因为如果有其它app的模板和当前模板重名, 则会引起异常</p>
+<p>index.html:</p>
+<pre><code class="lang-Html">{% if latest_question_list %}
+    &lt;ul&gt;
+        {% for question in latest_question_list %}
+            &lt;li&gt;&lt;a href=&quot;/polls/{{ question.id }}/&quot;&gt;{{ question.question_text }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+{% else %}
+    &lt;p&gt;No polls.&lt;/p&gt;
+{% endif %}
+</code></pre>
+<p>views.py:</p>
+<pre><code class="lang-Python">def index(request):
+    latest_question_list = polls.models.Question.objects.order_by(&#39;-pub_date&#39;)
+    template = loader.get_template(&#39;polls/index.html&#39;)
+    context = RequestContext(request, { &#39;latest_question_list&#39;: latest_question_list })
+    return HttpResponse(template.render(context))
+</code></pre>
+<p>使用语法糖render简化view的编写:</p>
+<pre><code class="lang-Python">def index(request):
+    latest_question_list = polls.models.Question.objects.order_by(&#39;-pub_date&#39;)
+    context = { &#39;latest_question_list&#39;: latest_question_list }
+    return render(request, &#39;polls/index.html&#39;, context)  参数说明: request, 模板名, 字典; 返回HttpResponse
+</code></pre>
+<p>view中使用Http404:</p>
+<pre><code class="lang-Python">def detail(request, question_id):
+    try:
+        question = polls.models.Question.objects.get(pk = question_id)
+        return render(request, &#39;polls/detail.html&#39;, { &#39;question&#39;: question })
+    except polls.models.Question.DoesNotExist:
+        raise Http404(&quot;Question does not exist&quot;)
+</code></pre>
+<p>detail.html:</p>
+<pre><code class="lang-Html">&lt;h1&gt;{{ question.question_text }}&lt;/h1&gt;
+&lt;ul&gt;
+    {% for choice in question.choice_set.all %}
+        &lt;li&gt;{{ choice.choice_text }}&lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+</code></pre>
+<p>使用语法糖get_object_or_404简化Http404编写:</p>
+<pre><code class="lang-Python">def detail(request, question_id):
+    question = get_object_or_404(polls.models.Question, pk = question_id)
+    return render(request, &#39;polls/detail.html&#39;, { &#39;question&#39;: question})
+</code></pre>
+<p>模板中去掉硬编码url, 避免异常, 换成自动生成的表单url, 通过url的name:</p>
+<pre><code class="lang-Html"> &lt;!-- &lt;li&gt;&lt;a href=&quot;/polls/{{ question.id }}/&quot;&gt;{{ question.question_text }}&lt;/a&gt;&lt;/li&gt; --&gt;
+ &lt;li&gt;&lt;a href=&quot;{% url &#39;detail&#39; question.id %}&quot;&gt;{{ question.question_text }}&lt;/a&gt;&lt;/li&gt;
+</code></pre>
+<p>说明: polls/urls.py中的urlpatterns中的url中的name属性为此url指定了名字, 因此可以在上面通过&#39;detail&#39;名字找到url, 生成表单url, question.id设置了url中regex中需要捕获的(?P<question_id>[0-9]+)参数</p>
+<p>为url设置命名空间<br>learnproject/urls.py:</p>
+<pre><code class="lang-Python">url(r&#39;^polls/&#39;, include(&#39;polls.urls&#39;, namespace = &#39;polls&#39;))
+</code></pre>
+<p>polls/templates/polls/index.html:</p>
+<pre><code class="lang-Html">            &lt;!-- &lt;li&gt;&lt;a href=&quot;{% url &#39;detail&#39; question.id %}&quot;&gt;{{ question.question_text }}&lt;/a&gt;&lt;/li&gt; --&gt;
+            &lt;li&gt;&lt;a href=&quot;{% url &#39;polls:detail&#39; question.id %}&quot;&gt;{{ question.question_text }}&lt;/a&gt;&lt;/li&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

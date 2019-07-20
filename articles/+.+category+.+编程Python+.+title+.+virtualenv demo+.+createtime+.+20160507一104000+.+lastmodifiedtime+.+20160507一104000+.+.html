@@ -1,0 +1,44 @@
+
+
+<html><head><meta charset="UTF-8"><title>virtualenv demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="virtualenv-demo">virtualenv demo</h1>
+<p>安装virtualenv</p>
+<pre><code class="lang-shell">sudo pip install virtualenv
+</code></pre>
+<p>创建新文件夹</p>
+<pre><code class="lang-shell">mkdir -p ~/learn_virtualenv/env1
+</code></pre>
+<p>在新文件夹下建立环境</p>
+<pre><code class="lang-shell">virtualenv ~/learn_virtualenv/env1
+</code></pre>
+<p>进入新文件夹</p>
+<pre><code class="lang-shell">cd ~/learn_virtualenv/env1
+</code></pre>
+<p>进入新环境</p>
+<pre><code class="lang-shell">source bin/activate
+</code></pre>
+<p>在新环境下执行一些python安装</p>
+<pre><code class="lang-shell">sudo pip install gunicorn
+</code></pre>
+<p>离开新环境</p>
+<pre><code class="lang-shell">deactive
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

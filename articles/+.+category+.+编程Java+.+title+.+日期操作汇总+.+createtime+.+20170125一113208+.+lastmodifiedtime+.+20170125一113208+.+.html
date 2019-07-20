@@ -1,0 +1,51 @@
+
+
+<html><head><meta charset="UTF-8"><title>日期操作汇总
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-">日期操作汇总</h1>
+<p><a href="http://yaoayao.iteye.com/blog/953958">JAVA的Date类与Calendar类比较</a></p>
+<p>在JDK1.0中，Date类是唯一的一个代表时间的类，但是由于Date类不便于实现国际化，所以从JDK1.1版本开始，推荐使用Calendar类进行时间和日期处理。</p>
+<h2 id="calendar-string">Calendar -&gt; String</h2>
+<pre><code class="lang-java">Calendar calendat = Calendar.getInstance();
+SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+String dateStr = sdf.format(calendar.getTime());
+</code></pre>
+<h2 id="string-calendar">String -&gt; Calendar</h2>
+<pre><code class="lang-java">String str=&quot;2010-5-27&quot;;
+SimpleDateFormat sdf= new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+Date date =sdf.parse(str);
+Calendar calendar = Calendar.getInstance();
+calendar.setTime(date);
+</code></pre>
+<h2 id="date-calendar">Date -&gt; Calendar</h2>
+<pre><code class="lang-java">Calendar calendar = Calendar.getInstance();
+calendar.setTime(new java.util.Date());
+</code></pre>
+<h2 id="calendar-date">Calendar -&gt; Date</h2>
+<pre><code class="lang-java">Calendar calendar = Calendar.getInstance();
+java.util.Date date =calendar.getTime();
+</code></pre>
+<h2 id="long-date">Long -&gt; Date</h2>
+<pre><code class="lang-java">new Date(lastUsed)
+</code></pre>
+<h2 id="date-long">Date -&gt; Long</h2>
+<pre><code class="lang-java">date.getTime()
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

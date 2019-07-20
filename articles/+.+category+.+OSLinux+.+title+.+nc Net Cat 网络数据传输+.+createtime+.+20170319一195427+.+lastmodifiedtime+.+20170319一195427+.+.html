@@ -1,0 +1,40 @@
+
+
+<html><head><meta charset="UTF-8"><title>nc Net Cat 网络数据传输
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="nc-net-cat-">nc Net Cat 网络数据传输</h1>
+<p>nc, Net Cat, 网络工具, 使用TCP,UDP,UNIX-domain套接字, 执行一次发送或接收命令</p>
+<p>linux下安装</p>
+<pre><code class="lang-bash">sudo pacman -S netcat
+</code></pre>
+<pre><code class="lang-bash"># 监听, 端口8080
+nc -l 8080
+
+# 建立连接, ip和port
+nc localhost 8080
+
+# 向url发送请求
+printf &quot;GET / HTTP/1.1\r\n\r\n&quot; | nc baidu.com 80
+
+# 端口扫描, 超时时间2秒
+nc -w 2 -z baidu.com 20-30
+echo &quot;QUIT&quot; | nc -w 2 baidu.com 20-30
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

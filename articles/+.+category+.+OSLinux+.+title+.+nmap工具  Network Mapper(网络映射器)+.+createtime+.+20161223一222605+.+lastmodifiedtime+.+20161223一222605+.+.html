@@ -1,0 +1,69 @@
+
+
+<html><head><meta charset="UTF-8"><title>nmap工具  Network Mapper(网络映射器)
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="nmap-network-mapper-">nmap工具  Network Mapper(网络映射器)</h1>
+<p><a href="https://nmap.org/man/zh/">Nmap参考指南</a></p>
+<h2 id="-">安装</h2>
+<p>Windows上, 安装nmap(<a href="https://nmap.org/download.html">https://nmap.org/download.html</a>), 安装npcap(<a href="https://github.com/nmap/npcap/releases">https://github.com/nmap/npcap/releases</a>)</p>
+<p>Linux上, sudo pacman -S nmap</p>
+<h2 id="-nmap-">一个典型的nmap扫描</h2>
+<pre><code class="lang-bash">nmap -A baidu.com qq.com
+</code></pre>
+<hr>
+<h2 id="-">详细参数</h2>
+<h3 id="-">目标格式</h3>
+<pre><code class="lang-text">baidu.com qq.com/24 10.0-255.0-255.1-254
+</code></pre>
+<h3 id="-">扫描主机</h3>
+<pre><code class="lang-bash">nmap -sL 列出扫描目标, 不发送任何报文, 仅进行反向域名解析获取主机名
+</code></pre>
+<pre><code class="lang-bash">nmap -sP Ping扫描方式, 只探测服务器是否在线
+</code></pre>
+<h3 id="-">端口扫描方式</h3>
+<pre><code class="lang-bash">nmap -sS/sT/sA/sW/sM SYN/Connect()/ACK/Window/Maimon 扫描方式
+</code></pre>
+<pre><code class="lang-bash">nmap -sN/sF/sX Null/FIN/Xmas 扫描方式
+</code></pre>
+<pre><code class="lang-bash">nmap -sI Idlescan 空闲扫描
+</code></pre>
+<h3 id="-">版本扫描</h3>
+<pre><code class="lang-bash">nmap -sV 扫描端口服务的版本
+</code></pre>
+<h3 id="-">操作系统扫描</h3>
+<pre><code class="lang-bash">nmap -O 扫描操作系统
+</code></pre>
+<h3 id="-">输出</h3>
+<pre><code class="lang-bash">nmap -v 打印详细日志
+</code></pre>
+<pre><code class="lang-bash">nmap -vv 打印更详细日志
+</code></pre>
+<h3 id="-">杂项</h3>
+<pre><code class="lang-bash">nmap -A 等价于nmap -sV -O 开启操作系统扫描和端口服务版本扫描
+</code></pre>
+<hr>
+<h2 id="-">例子</h2>
+<h3 id="-ip">扫描在线ip</h3>
+<pre><code class="lang-bash">nmap -sP 192.168.32.1/24
+</code></pre>
+<h3 id="-">扫描主机的端口</h3>
+<pre><code class="lang-bash">nmap -A 192.168.32.31
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

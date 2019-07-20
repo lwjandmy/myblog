@@ -1,0 +1,176 @@
+
+
+<html><head><meta charset="UTF-8"><title>android intent 通过intent-filter,action,访问外部activity 通过intent-filter,data,区分同名intent
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-intent-intent-filter-action-activity-intent-filter-data-intent">android intent 通过intent-filter,action,访问外部activity 通过intent-filter,data,区分同名intent</h1>
+<pre><code class="lang-text">主配置文件: AndroidManifest.xml,   通过配置exported=&quot;false&quot;禁止外部访问activity; 指定intent的action的名字.
+MainActivity:  activity_main.xml, MainActivity.java,   用来启动MyActivity, 演示Intent通过类创建,通过intent的action名创建
+MyActivity:    myactivity.xml, MyActivity.java,     用来被其它Activity启动的Activity, 内容只有一行文本
+Activity2: activity2.xml, Activity2.java   和MyActivity的intent的action同名, 演示启动时选择启动哪个Activity. 主配置文件中, 加入了intent的data属性,通过data区分同名的intent.
+
+另一个模块app1 :
+MainActivity:  activity_main.xml, MainActivity.java,   用来启动MyActivity&amp;Activity2, 演示intent的action同名时选择启动哪个Activity的情况, 演示通过添加intent的data属性, 通过data属性对同名intent的action的筛选.
+</code></pre>
+<p>AndroidManifest.xml</p>
+<pre><code class="lang-xml">        &lt;activity
+            android:name=&quot;.MainActivity&quot;
+            android:label=&quot;@string/app_name&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+        &lt;!-- exported=&quot;false&quot; 不允许外部应用访问当前Activity --&gt;
+        &lt;activity
+            android:name=&quot;.MyActivity&quot;
+            android:exported=&quot;false&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;!-- 指定Intent的名字, 可通过名字字符串创建Intent, 启动Activity --&gt;
+                &lt;action android:name=&quot;com.learnandroid.learnintent.intent.action.MyActivity&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;!-- 这个Activity的Intent和上面的重名, 当通过Intent启动Activity时, 会提示选择启动哪个Activity --&gt;
+        &lt;activity
+            android:name=&quot;.Activity2&quot;
+            android:label=&quot;@string/title_activity_2&quot;
+            android:theme=&quot;@style/AppTheme.NoActionBar&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;!-- intent的action和上面同名, 当通过intent启动activity时, 会提示打开哪个activity --&gt;
+                &lt;action android:name=&quot;com.learnandroid.learnintent.intent.action.MyActivity&quot;/&gt;
+                &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+                &lt;!-- 通过data标签, 可以区分同名Intent --&gt;
+                &lt;data android:scheme=&quot;app&quot;/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+</code></pre>
+<p>activity_main.xml:</p>
+<pre><code class="lang-xml">    &lt;Button
+        android:id=&quot;@+id/btnLaunchMyActivity&quot;
+        android:text=&quot;Launch MyActivity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity.java:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.btnLaunchMyActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // 直接指定MyActivity类, 创建Intent
+            //    startActivity(new Intent(MainActivity.this, MyActivity.class));
+                // 通过配置文件, 通过字符串找到Activity, 创建Intent. 可在其它应用中访问到当前Activity
+            //    startActivity(new Intent(&quot;com.learnandroid.learnintent.intent.action.MyActivity&quot;));
+                // 通过Activity的常量ACTION, 提供字符串, 避免字符串输入出错
+                startActivity(new Intent(MyActivity.ACTION));
+            }
+        });
+    }
+}
+</code></pre>
+<p>myactivity.xml:</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;This is MyActivity&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MyActivity.java:</p>
+<pre><code class="lang-java">public class MyActivity extends Activity
+{
+    public static final String ACTION = &quot;com.learnandroid.learnintent.intent.action.MyActivity&quot;;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.myactivity);
+    }
+}
+</code></pre>
+<p>activity2.xml:</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;This is activity 2&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>Activity2.java:</p>
+<pre><code class="lang-java">public class Activity2 extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_2);
+    }
+}
+</code></pre>
+<p>另一个模块app1 :
+activity_main.xml:</p>
+<pre><code class="lang-xml">    &lt;TextView
+        android:text=&quot;This is App1&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnLaunchMyActivity&quot;
+        android:text=&quot;Start MyActivity from app1&quot;
+        android:textAllCaps=&quot;false&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.btnLaunchMyActivity).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                try
+                {
+                    // 会提示要启动哪个Activity
+                //    startActivity(new Intent(&quot;com.learnandroid.learnintent.intent.action.MyActivity&quot;));
+                    // 由于指定了Uri, 即使Intent重名, 依然可以通过intent-filter的data区分两个Intent
+                    startActivity(new Intent(&quot;com.learnandroid.learnintent.intent.action.MyActivity&quot;, Uri.parse(&quot;app://hello&quot;)));
+                }
+                catch (Exception e)
+                {
+                    Toast.makeText(MainActivity.this, &quot;Launch Activity Failed&quot;, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

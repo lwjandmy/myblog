@@ -1,0 +1,214 @@
+
+
+<html><head><meta charset="UTF-8"><title>HttpServletRequest读取body中参数 HttpServletRequestInvocationHandler动态代理HttpServletRequest的getParameter方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="httpservletrequest-body-httpservletrequestinvocationhandler-httpservletrequest-getparameter-">HttpServletRequest读取body中参数 HttpServletRequestInvocationHandler动态代理HttpServletRequest的getParameter方法</h1>
+<h2 id="httpservletrequest-body-">HttpServletRequest读取body中参数</h2>
+<pre><code class="lang-java">public static Map&lt;String, String&gt; readBodyParameters(HttpServletRequest request) throws IOException {
+
+    LinkedHashMap&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();
+
+    String line = request.getReader().readLine();
+
+    if (null != line) {
+        for (String kv : Splitter.on(&#39;&amp;&#39;).trimResults().omitEmptyStrings().split(line)) {
+
+            Iterator&lt;String&gt; kviterator = Splitter.on(&#39;=&#39;).trimResults().omitEmptyStrings().split(kv).iterator();
+            String key;
+            String value;
+
+            if (kviterator.hasNext()) {
+                key = kviterator.next();
+                if (kviterator.hasNext()) {
+                    value = kviterator.next();
+                    parameters.put(key, value);
+                }
+            }
+        }
+    }
+
+    return parameters;
+}
+</code></pre>
+<hr>
+<h2 id="httpservletrequest-body-">HttpServletRequest读取body中参数</h2>
+<pre><code class="lang-java">public static Map&lt;String, String&gt; readUrlParameters(HttpServletRequest request) throws UnsupportedEncodingException {
+
+    LinkedHashMap&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();
+
+    String line = request.getQueryString();
+
+    if (null != line) {
+        for (String kv : Splitter.on(&#39;&amp;&#39;).trimResults().omitEmptyStrings().split(line)) {
+
+            Iterator&lt;String&gt; kviterator = Splitter.on(&#39;=&#39;).trimResults().omitEmptyStrings().split(kv).iterator();
+            String key;
+            String value;
+
+            if (kviterator.hasNext()) {
+                key = kviterator.next();
+                if (kviterator.hasNext()) {
+                    value = URLDecoder.decode(kviterator.next(), &quot;UTF-8&quot;);
+                    parameters.put(key, value);
+                }
+            }
+        }
+    }
+
+    return parameters;
+}
+</code></pre>
+<hr>
+<h2 id="httpservletrequestinvocationhandler-httpservletrequest-getparameter-">HttpServletRequestInvocationHandler动态代理HttpServletRequest的getParameter方法</h2>
+<p>HttpServletRequestInvocationHandler.java</p>
+<pre><code class="lang-java">/**
+ * &lt;br&gt;对HttpServletRequest的getParameter方法进行增强, 可读取body和url中参数信息, 并进行UTF-8编码转码
+ * &lt;br&gt;默认的HttpServletRequest的getParameter方法只能读取POST请求的body内容, 对PUT和DELETE请求无法读取body内容
+ * @author li_wjie
+ *
+ */
+public class HttpServletRequestInvocationHandler implements InvocationHandler {
+
+    private HttpServletRequest target;
+
+    private Map&lt;String, String&gt; bodyParameters;
+    private Map&lt;String, String&gt; urlParameters;
+
+    public static Map&lt;String, String&gt; readBodyParameters(HttpServletRequest request) throws IOException {
+
+        LinkedHashMap&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();
+
+        String line = request.getReader().readLine();
+
+        if (null != line) {
+            for (String kv : Splitter.on(&#39;&amp;&#39;).trimResults().omitEmptyStrings().split(line)) {
+
+                Iterator&lt;String&gt; kviterator = Splitter.on(&#39;=&#39;).trimResults().omitEmptyStrings().split(kv).iterator();
+                String key;
+                String value;
+
+                if (kviterator.hasNext()) {
+                    key = kviterator.next();
+                    if (kviterator.hasNext()) {
+                        value = URLDecoder.decode(kviterator.next(), &quot;UTF-8&quot;);
+                        parameters.put(key, value);
+                    }
+                }
+            }
+        }
+
+        return parameters;
+    }
+
+    public static Map&lt;String, String&gt; readUrlParameters(HttpServletRequest request) throws UnsupportedEncodingException {
+
+        LinkedHashMap&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();
+
+        String line = request.getQueryString();
+
+        if (null != line) {
+            for (String kv : Splitter.on(&#39;&amp;&#39;).trimResults().omitEmptyStrings().split(line)) {
+
+                Iterator&lt;String&gt; kviterator = Splitter.on(&#39;=&#39;).trimResults().omitEmptyStrings().split(kv).iterator();
+                String key;
+                String value;
+
+                if (kviterator.hasNext()) {
+                    key = kviterator.next();
+                    if (kviterator.hasNext()) {
+                        value = URLDecoder.decode(kviterator.next(), &quot;UTF-8&quot;);
+                        parameters.put(key, value);
+                    }
+                }
+            }
+        }
+
+        return parameters;
+    }
+
+    public HttpServletRequest getTarget() {
+        return target;
+    }
+
+    public void setTarget(HttpServletRequest target) {
+        this.target = target;
+    }
+
+    public String getBodyParameter(String name) throws IOException {
+
+        if (null == bodyParameters) {
+            bodyParameters = readBodyParameters(target);
+        }
+        return bodyParameters.get(name);
+
+    }
+
+    public String getUrlParameter(String name) throws UnsupportedEncodingException {
+
+        if (null == urlParameters) {
+            urlParameters = readUrlParameters(target);
+        }
+        return urlParameters.get(name);
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        if (&quot;getParameter&quot;.equals(method.getName())) {
+
+            Object result;
+
+            result = getBodyParameter(args[0].toString());
+            if (null != result)
+                return result;
+
+            result = getUrlParameter(args[0].toString());
+            if (null != result)
+                return result;
+
+            result = method.invoke(target, args);
+            if (null != result &amp;&amp; !&quot;&quot;.equals(result)) {
+                throw new Exception(&quot;通过解析body和url得不到的参数, 缺通过原getParameter得到了参数, 考虑解析body和url中参数有漏参!&quot;);
+            }
+            return result;
+
+        } else {
+            return method.invoke(target, args);
+        }
+    }
+
+}
+</code></pre>
+<p>RestfulServlet.java</p>
+<pre><code class="lang-java">public class RestfulServlet extends HttpServlet {
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpServletRequestInvocationHandler httpServletRequestInvocationHandler = new HttpServletRequestInvocationHandler();
+        httpServletRequestInvocationHandler.setTarget(req);
+        super.service((HttpServletRequest) Proxy.newProxyInstance(
+                req.getClass().getClassLoader(),
+                req.getClass().getInterfaces(),
+                httpServletRequestInvocationHandler), resp);
+    }
+
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

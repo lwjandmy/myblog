@@ -1,0 +1,107 @@
+
+
+<html><head><meta charset="UTF-8"><title>hibernate helloworld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="hibernate-helloworld">hibernate helloworld</h1>
+<pre><code class="lang-sql">create table user (id varchar(20), name varchar(20));
+
+select * from user;
+</code></pre>
+<p>hibernate.cfg.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC 
+&quot;-//Hibernate/HibernateConfiguration DTD 3.0//EN&quot; 
+&quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;
+
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        &lt;property name=&quot;hibernate.connection.url&quot;&gt;jdbc:db2://192.168.32.167:50000/DB2INST1&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.driver_class&quot;&gt;com.ibm.db2.jcc.DB2Driver&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.username&quot;&gt;ngcms&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.password&quot;&gt;c##cxzx123&lt;/property&gt;
+        &lt;property name=&quot;dialect&quot;&gt;org.hibernate.dialect.DB2Dialect&lt;/property&gt;
+        &lt;property name=&quot;hibernate.show_sql&quot;&gt;true&lt;/property&gt;
+
+        &lt;mapping resource=&quot;User.hbm.xml&quot; /&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;
+</code></pre>
+<p>User.hbm.xml</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot;?&gt;  
+&lt;!DOCTYPE hibernate-mapping PUBLIC   
+&quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;  
+&quot;http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd&quot;&gt;
+
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;com.cvicse.cxzx.hibernatehelloworld.User&quot;&gt;
+        &lt;id name=&quot;id&quot; /&gt;
+        &lt;property name=&quot;name&quot; /&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;
+</code></pre>
+<p>User.java</p>
+<pre><code class="lang-java">package com.cvicse.cxzx.hibernatehelloworld;
+
+public class User {
+    private String id;  
+    private String name;  
+    public String getId() {  
+          return id;  
+    }  
+    public void setId(String id) {  
+          this.id = id;  
+    }  
+    public String getName() {  
+          return name;  
+    }  
+    public void setName(String name) {  
+          this.name = name;  
+    } 
+}
+</code></pre>
+<p>App.java</p>
+<pre><code class="lang-java">package com.cvicse.cxzx.hibernatehelloworld;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class App 
+{
+    public static void main( String[] args )
+    {
+        Configuration cfg = new Configuration().configure();  
+        SessionFactory sessionFactory = cfg.buildSessionFactory();  
+
+        Session session = sessionFactory.openSession();  
+        session.beginTransaction();  
+
+        User user = new User();  
+        user.setId(&quot;0001&quot;);  
+        user.setName(&quot;Name&quot;);
+
+        session.save(user);  
+        session.getTransaction().commit();  
+
+        sessionFactory.close(); 
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

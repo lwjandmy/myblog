@@ -1,0 +1,67 @@
+
+
+<html><head><meta charset="UTF-8"><title>DTD 文档类型定义 XML中用法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="dtd-xml-">DTD 文档类型定义 XML中用法</h1>
+<pre><code class="lang-text">DTD Document Type Definition, 文档类型定义 定义 XML 文档的合法构建模块
+http://www.w3school.com.cn/dtd/index.asp
+
+外部文档声明:
+&lt;!DOCTYPE 根元素 SYSTEM &quot;文件名&quot;&gt;
+例子:
+&lt;!DOCTYPE note SYSTEM &quot;note.dtd&quot;&gt;
+
+XML包含DTD:
+&lt;!DOCTYPE 根元素 [元素声明]&gt;
+例子:
+&lt;!DOCTYPE note [               此文档是 note 类型的文档
+  &lt;!ELEMENT note (to,from,heading,body)&gt;     note 元素有四个元素：&quot;to,from,heading,body&quot;
+  &lt;!ELEMENT to      (#PCDATA)&gt;       to 元素为&quot;#PCDATA&quot;类型
+  &lt;!ELEMENT from    (#PCDATA)&gt;
+  &lt;!ELEMENT heading (#PCDATA)&gt;
+  &lt;!ELEMENT body    (#PCDATA)&gt;
+]&gt;
+
+XML构建模块:
+元素   &lt;元素&gt;&lt;/元素&gt;
+属性   &lt;元素 属性=&quot;属性内容&quot;&gt;&lt;/元素&gt;
+实体   &lt;元素&gt;实体&lt;/元素&gt;
+PCDATA parsed character data 会被解析器解析的文本 这些文本将被解析器检查实体以及标记
+CDATA character data 不会被解析器解析的文本 这些文本中的标签不会被当作标记来对待, 其中的实体也不会被展开
+
+元素: http://www.w3school.com.cn/dtd/dtd_elements.asp
+&lt;!ELEMENT br EMPTY&gt;     空元素
+&lt;!ELEMENT from (#PCDATA)&gt;     只有 PCDATA 的元素
+&lt;!ELEMENT note ANY&gt;     带有任何内容的元素
+&lt;!ELEMENT note (to,from,heading,body)&gt;    带有子元素（序列）的元素
+&lt;!ELEMENT note (message)&gt;     声明只出现一次的元素
+&lt;!ELEMENT note (message+)&gt;    声明最少出现一次的元素
+&lt;!ELEMENT note (message*)&gt;     声明出现零次或多次的元素
+&lt;!ELEMENT note (message?)&gt;     声明出现零次或一次的元素
+&lt;!ELEMENT note (to,from,header,(message|body))&gt;     声明“非.../既...”类型的内容
+&lt;!ELEMENT note (#PCDATA|to|from|header|message)*&gt;     声明混合型的内容
+
+属性:
+http://www.w3school.com.cn/dtd/dtd_attributes.asp
+
+实体:
+http://www.w3school.com.cn/dtd/dtd_entities.asp
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,196 @@
+
+
+<html><head><meta charset="UTF-8"><title>graphql demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="graphql-demo">graphql demo</h1>
+<pre><code class="lang-java">
+import static graphql.Scalars.GraphQLInt;
+import static graphql.Scalars.GraphQLString;
+import static graphql.schema.GraphQLArgument.newArgument;
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.schema.GraphQLObjectType.newObject;
+
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import graphql.GraphQL;
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.StaticDataFetcher;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.errors.SchemaProblem;
+
+public class HelloWorld {
+
+    public static void main1(String[] args) throws SchemaProblem, UnsupportedEncodingException {
+
+
+        System.out
+                .println((Object) GraphQL
+                        .newGraphQL(new SchemaGenerator().makeExecutableSchema(
+                                new SchemaParser().parse(new InputStreamReader(
+                                        HelloWorld.class.getResourceAsStream(&quot;/graphql.txt&quot;), &quot;UTF-8&quot;)),
+                                RuntimeWiring.newRuntimeWiring().type(&quot;Query&quot;, builder -&gt; {
+                                    builder.dataFetcher(&quot;me&quot;, new StaticDataFetcher(123));
+                                    builder.dataFetcher(&quot;world&quot;, new StaticDataFetcher(456));
+                                    return builder;
+                                }).build()))
+                        .build().execute(&quot;{ me { name } }&quot;).getData());
+
+    }
+
+    public static class User {
+        private int id;
+        private int age;
+        private int sex;
+        private String name;
+        private String pic;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public int getSex() {
+            return sex;
+        }
+
+        public void setSex(int sex) {
+            this.sex = sex;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPic() {
+            return pic;
+        }
+
+        public void setPic(String pic) {
+            this.pic = pic;
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+        /**
+         * 用户结构
+         */
+        GraphQLOutputType userType = newObject().name(&quot;User&quot;)
+                .field(newFieldDefinition().name(&quot;id&quot;).type(GraphQLInt).build())
+                .field(newFieldDefinition().name(&quot;age&quot;).type(GraphQLInt).build())
+                .field(newFieldDefinition().name(&quot;sex&quot;).type(GraphQLInt).build())
+                .field(newFieldDefinition().name(&quot;name&quot;).type(GraphQLString).build())
+                .field(newFieldDefinition().name(&quot;pic&quot;).type(GraphQLString).build()).build();
+
+         /**
+         * 查询单个用户信息
+         * @return
+         */
+        GraphQLFieldDefinition userField = GraphQLFieldDefinition.newFieldDefinition().name(&quot;user&quot;)
+                .argument(newArgument().name(&quot;id&quot;).type(GraphQLInt).build()).type(userType).dataFetcher(environment -&gt; {
+                    // 获取查询参数
+                    int id = environment.getArgument(&quot;id&quot;);
+
+                    // 执行查询, 这里随便用一些测试数据来说明问题
+                    User user = new User();
+                    user.setId(id);
+                    user.setAge(id + 15);
+                    user.setSex(id % 2);
+                    user.setName(&quot;Name_&quot; + id);
+                    user.setPic(&quot;pic_&quot; + id + &quot;.jpg&quot;);
+                    return user;
+                }).build();
+
+        /**
+         * 查询多个会员信息
+         * @return
+         */
+        GraphQLFieldDefinition usersField = GraphQLFieldDefinition.newFieldDefinition().name(&quot;users&quot;)
+                .argument(newArgument().name(&quot;page&quot;).type(GraphQLInt).build())
+                .argument(newArgument().name(&quot;size&quot;).type(GraphQLInt).build())
+                .argument(newArgument().name(&quot;name&quot;).type(GraphQLString).build()).type(new GraphQLList(userType))
+                .dataFetcher(environment -&gt; {
+                    // 获取查询参数
+                    int page = environment.getArgument(&quot;page&quot;);
+                    int size = environment.getArgument(&quot;size&quot;);
+                    String name = environment.getArgument(&quot;name&quot;);
+
+                    // 执行查询, 这里随便用一些测试数据来说明问题
+                    List&lt;User&gt; list = new ArrayList&lt;&gt;(size);
+                    for (int i = 0; i &lt; size; i++) {
+                        User user = new User();
+                        user.setId(i);
+                        user.setAge(i + 15);
+                        user.setSex(i % 2);
+                        user.setName(name + &quot;_&quot; + page + &quot;_&quot; + i);
+                        user.setPic(&quot;pic_&quot; + i + &quot;.jpg&quot;);
+                        list.add(user);
+                    }
+                    return list;
+                }).build();
+
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                .query(newObject().name(&quot;GraphQuery&quot;).field(usersField).field(userField).build())
+                .build();
+
+        String query1 = &quot;{users(page:2,size:5,name:\&quot;john\&quot;) {id,sex,name,pic}}&quot;;
+        String query2 = &quot;{user(id:6) {id,sex,name,pic}}&quot;;
+        String query3 = &quot;{user(id:6) {id,sex,name,pic},users(page:2,size:5,name:\&quot;john\&quot;) {id,sex,name,pic}}&quot;;
+
+        Map&lt;String, Object&gt; result1 = (Map&lt;String, Object&gt;) new GraphQL(schema).execute(query1).getData();
+        Map&lt;String, Object&gt; result2 = (Map&lt;String, Object&gt;) new GraphQL(schema).execute(query2).getData();
+        Map&lt;String, Object&gt; result3 = (Map&lt;String, Object&gt;) new GraphQL(schema).execute(query3).getData();
+
+        // 查询用户列表
+        System.out.println(result1);
+        // 查询单个用户
+        System.out.println(result2);
+        // 单个用户、跟用户列表一起查
+        System.out.println(result3);
+
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

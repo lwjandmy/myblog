@@ -1,0 +1,80 @@
+
+
+<html><head><meta charset="UTF-8"><title>dbcp HelloWorld
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="dbcp-helloworld">dbcp HelloWorld</h1>
+<p>src/main/resources/dbcpconfig.properties:</p>
+<pre><code class="lang-ini"># http://commons.apache.org/proper/commons-dbcp/configuration.html
+
+# Connection Configuration
+username=root
+password=
+url=jdbc:mysql://127.0.0.1:3306/joomlatest
+driverClassName=com.mysql.cj.jdbc.Driver
+connectionProperties=serverTimezone=UTC;useUnicode=true;characterEncoding=utf8;autoReconnect=true;failOverReadOnly=false;
+</code></pre>
+<p>App.java</p>
+<pre><code class="lang-java">public class App 
+{
+    public static void main( String[] args ) throws Exception
+    {
+        Properties properties = new Properties();
+        properties.load(Object.class.getResourceAsStream(&quot;/dbcpconfig.properties&quot;));
+
+        BasicDataSource dataSource = BasicDataSourceFactory.createDataSource(properties);
+
+        Connection connection = dataSource.getConnection();
+
+        PreparedStatement prepareStatement = connection.prepareStatement(&quot;select * from jo_content&quot;);
+        ResultSet resultSet = prepareStatement.executeQuery();
+        while (resultSet.next()) {
+            String string = resultSet.getString(1);
+            System.out.println(string);
+        }
+        resultSet.close();
+        prepareStatement.close();
+        connection.close();
+    }
+}
+</code></pre>
+<p>applicationContext.xml</p>
+<pre><code class="lang-xml">    &lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp2.BasicDataSource&quot;&gt;
+
+        &lt;property name=&quot;username&quot; value=&quot;sdfae&quot; /&gt;
+        &lt;property name=&quot;password&quot; value=&quot;sdfae&quot; /&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:oracle:thin:@192.168.102.213:1521:tsdb&quot; /&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;oracle.jdbc.OracleDriver&quot; /&gt;
+        &lt;property name=&quot;connectionProperties&quot; value=&quot;&quot; /&gt;
+
+        &lt;property name=&quot;initialSize&quot; value=&quot;0&quot; /&gt;
+        &lt;property name=&quot;maxTotal&quot; value=&quot;8&quot; /&gt;
+        &lt;property name=&quot;maxIdle&quot; value=&quot;8&quot; /&gt;
+        &lt;property name=&quot;minIdle&quot; value=&quot;0&quot; /&gt;
+        &lt;property name=&quot;maxWaitMillis&quot; value=&quot;-1&quot; /&gt;
+
+        &lt;property name=&quot;removeAbandonedTimeout&quot; value=&quot;10&quot; /&gt;
+        &lt;property name=&quot;logAbandoned&quot; value=&quot;true&quot; /&gt;
+        &lt;property name=&quot;abandonedUsageTracking&quot; value=&quot;true&quot; /&gt;
+        &lt;property name=&quot;removeAbandonedOnMaintenance&quot; value=&quot;true&quot; /&gt;
+        &lt;property name=&quot;removeAbandonedOnBorrow&quot; value=&quot;true&quot; /&gt;
+
+    &lt;/bean&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

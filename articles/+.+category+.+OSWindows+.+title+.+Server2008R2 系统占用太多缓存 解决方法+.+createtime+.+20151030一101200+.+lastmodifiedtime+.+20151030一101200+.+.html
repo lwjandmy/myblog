@@ -1,0 +1,39 @@
+
+
+<html><head><meta charset="UTF-8"><title>Server2008R2 系统占用太多缓存 解决方法
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="server2008r2-">Server2008R2 系统占用太多缓存 解决方法</h1>
+<p><a href="http://www.microsoft.com/en-us/download/details.aspx?id=9258">Microsoft Windows Dynamic Cache Service下载</a></p>
+<p>配置</p>
+<p>编辑DynCache.reg:</p>
+<pre><code class="lang-reg">MaxSystemCacheMBytes可以改成十进制的200, 限制最大不超过200MB
+</code></pre>
+<p>导入DynCache.reg注册表配置:</p>
+<p>双击DynCache.reg导入</p>
+<p>安装服务:</p>
+<p>复制Retail/AMD64/DynCache.exe 到 windows/system32/</p>
+<p>执行命令:  </p>
+<pre><code class="lang-bat">sc create DynCache binpath= %SystemRoot%\System32\DynCache.exe start= auto type= own DisplayName= &quot;Dynamic Cache Service&quot;
+</code></pre>
+<p>卸载服务的方法:</p>
+<pre><code class="lang-bat">sc stop DynCache
+sc delete DynCache
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

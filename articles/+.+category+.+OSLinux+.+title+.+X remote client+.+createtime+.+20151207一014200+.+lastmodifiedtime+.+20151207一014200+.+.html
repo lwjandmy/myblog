@@ -1,0 +1,76 @@
+
+
+<html><head><meta charset="UTF-8"><title>X remote client
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="x-remote-client">X remote client</h1>
+<h2 id="server-">Server电脑</h2>
+<p>安装xorg-server包</p>
+<p>配置xauth:</p>
+<pre><code class="lang-bash">add :0 . 26
+</code></pre>
+<p>启动X:</p>
+<pre><code class="lang-bash">X -listen tcp -auth ~/.Xauthority &amp;
+</code></pre>
+<h2 id="client-">Client电脑</h2>
+<p>安装xterm程序</p>
+<p>配置xauth:</p>
+<pre><code class="lang-bash">add server-ip:0 . 26
+</code></pre>
+<p>启动xterm:</p>
+<pre><code class="lang-bash">DISPLAY=server-ip:0 xterm &amp;
+</code></pre>
+<p>网络流程:</p>
+<pre><code class="lang-text">Server        Client
+用户输入 -&gt; 程序逻辑
+图像反馈 &lt;- 程序逻辑
+</code></pre>
+<p>分工总结:</p>
+<pre><code class="lang-text">Server: 图像处理(负责X底层,关系到GPU)
+Client: 任务处理(负责窗体事件响应和反馈, 窗口管理, 桌面管理, 功能实现, 关系到CPU), 执行目标都是Client系统
+</code></pre>
+<p>运用:</p>
+<p>平常电脑做Server, 服务器或树莓派做Client, 实现远程控制 &amp; 为树莓派添加虚拟显示器!</p>
+<p>例子:</p>
+<p>Server: 192.168.10.100 cygwin cygwin-Xserver</p>
+<p>Client: 192.168.220.145 linux</p>
+<p>进入cygwin:</p>
+<p>配置X权限</p>
+<pre><code class="lang-bash">xauth
+add :0 . 26     三个参数, 第一个是DISPLAY, 第二个表示算法类型, 用一个&#39;点&#39;表示MIT-MAGIC-COOKIE-1, 第三个表示密钥.
+exit
+</code></pre>
+<p>启动X服务</p>
+<pre><code class="lang-bash">X -listen tcp -auth ~/.Xauthority &amp;
+</code></pre>
+<p>进入Client:</p>
+<pre><code class="lang-bash">ssh li@192.168.220.145
+</code></pre>
+<p>(可选)进入tmux:</p>
+<pre><code class="lang-bash">tmux
+</code></pre>
+<p>配置X权限</p>
+<pre><code class="lang-bash">xauth
+add 192.168.10.100:0 . 26
+exit
+</code></pre>
+<p>启动一些gui程序</p>
+<pre><code class="lang-bash">DISPLAY=192.168.10.100:0 git gui &amp;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

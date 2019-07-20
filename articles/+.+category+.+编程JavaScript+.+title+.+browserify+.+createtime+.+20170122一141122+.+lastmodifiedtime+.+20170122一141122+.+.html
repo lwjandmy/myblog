@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>browserify
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="browserify">browserify</h1>
+<p><a href="http://browserify.org/">browserify</a></p>
+<p>nodejs中js间依赖可通过require, browserify工具使js所需的其它依赖全部读出并生成大而全的新的不存在任何外部依赖的js.</p>
+<p>安装browserify</p>
+<pre><code class="lang-bash">sudo cnpm install -g browserify
+</code></pre>
+<p>安装例子需要的uniq模块</p>
+<pre><code class="lang-bash">cnpm install uniq
+</code></pre>
+<p>编辑main.js</p>
+<pre><code class="lang-js">var unique = require(&#39;uniq&#39;);
+
+var data = [1, 2, 2, 3, 4, 5, 5, 5, 6];
+
+console.log(unique(data));
+</code></pre>
+<p>生成无依赖的bundle.js</p>
+<pre><code class="lang-bash">browserify main.js -o  bundle.js
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

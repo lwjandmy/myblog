@@ -1,0 +1,348 @@
+
+
+<html><head><meta charset="UTF-8"><title>jsch 下载 sftp文件 方法见交互 内部循环版 迭代器版 没有yield async机制 迭代器版实现较困难
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="jsch-sftp-yield-async-">jsch 下载 sftp文件 方法见交互 内部循环版 迭代器版 没有yield async机制 迭代器版实现较困难</h1>
+<p><a href="http://www.jcraft.com/jsch/examples/ScpFrom.java">jsch scp文件下载</a></p>
+<p><a href="http://www.jcraft.com/jsch/examples/ScpTo.java">jsch scp文件上传</a></p>
+<pre><code class="lang-java">package org.demo;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.ArrayUtils;
+
+import com.google.common.io.Closer;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
+
+public class SFtpClient {
+
+    public static void sftpDownloadCallback(String host, int port, String username, String password, String filepath, int blockSize, Consumer&lt;byte[]&gt; consumer) throws JSchException, IOException, InterruptedException {
+
+        Closer closer = Closer.create();
+
+        JSch jsch = new JSch();
+
+        JSch.setConfig(&quot;StrictHostKeyChecking&quot;, &quot;false&quot;);
+
+        Session session = jsch.getSession(username, host, port);
+
+        session.setUserInfo(new UserInfo() {
+            public String getPassphrase() { return password; }
+            public String getPassword() { return password; }
+            public boolean promptPassword(String paramString) { return true; }
+            public boolean promptPassphrase(String paramString) { return true; }
+            public boolean promptYesNo(String paramString) { return true; }
+            public void showMessage(String paramString) { }
+        });
+
+        session.connect();
+        closer.register(() -&gt; session.disconnect());
+
+        ChannelExec channel = (ChannelExec) session.openChannel(&quot;exec&quot;);
+
+        channel.setCommand(&quot;scp -f &quot; + filepath);
+
+        channel.connect();
+        closer.register(() -&gt; channel.disconnect());
+
+        InputStream is = channel.getInputStream();
+        closer.register(is);
+        OutputStream os = channel.getOutputStream();
+        closer.register(os);
+
+
+
+        // 文件下载步骤:
+        // 1. os: me -&gt; sftp, &#39;\0&#39;
+        // 2. is: me &lt;- sftp, 文件读写标志, 文件大小, 文件名
+        // 3. os: me -&gt; sftp, &#39;\0&#39;
+        // 4. is: me &lt;- sftp, 文件内容 + &#39;\0&#39;
+        // 5. os: me -&gt; sftp, &#39;\0&#39;
+
+
+
+        ///////////////////////////////////////////
+        // 1. os: me -&gt; sftp, &#39;\0&#39;
+        os.write(new byte[] { &#39;\0&#39; });
+        os.flush();
+
+
+        ///////////////////////////////////////////
+        // 2. is: me &lt;- sftp, 文件读写标志, 文件大小, 文件名
+        ByteArrayOutputStream baOs = new ByteArrayOutputStream();
+        {
+            int buf = 0;
+            while (0x0a != (buf = is.read())) {
+                baOs.write(buf);
+            }
+        }
+
+        Pattern regex = Pattern.compile(&quot;^(.)(\\d{4})[ ]+(\\d+)[ ]+(.*)$&quot;);
+
+        Matcher matcher = regex.matcher(Charset.forName(&quot;UTF-8&quot;).decode(ByteBuffer.wrap(baOs.toByteArray())));
+
+        matcher.find();
+
+//        String ack = matcher.group(1);
+//        String rwFlag = matcher.group(2);
+        Integer size = Integer.valueOf(matcher.group(3));
+//        String name = matcher.group(4);
+
+
+        ///////////////////////////////////////////
+        // 3. os: me -&gt; sftp, &#39;\0&#39;
+        os.write(new byte[] { &#39;\0&#39; });
+        os.flush();
+
+
+        ///////////////////////////////////////////
+        // 4. is: me &lt;- sftp, 文件内容 + &#39;\0&#39;
+        int totalReaded = 0;
+        byte[] buf = new byte[blockSize];
+
+        while (totalReaded != size) {
+
+            int readLen = Math.min(size - totalReaded, blockSize);
+            readLen = is.read(buf, 0, readLen);
+
+            totalReaded += readLen;
+
+            consumer.accept(ArrayUtils.subarray(buf, 0, readLen));
+
+        }
+
+        @SuppressWarnings(&quot;unused&quot;)
+        int end = is.read();
+
+
+        ///////////////////////////////////////////
+        // 5. os: me -&gt; sftp, &#39;\0&#39;
+        os.write(new byte[] { &#39;\0&#39; });
+        os.flush();
+
+
+        closer.close();
+
+
+    }
+
+    public static void testSftpDownloadCallback(String[] args) throws JSchException, IOException, InterruptedException {
+
+        File file = new File(&quot;22.doc&quot;);
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+
+        sftpDownloadCallback(&quot;localhost&quot;, 22, &quot;root&quot;, &quot;root&quot;, &quot;11.doc&quot;, 1024 * 1024 * 2, data -&gt; {
+            try {
+                System.out.println(data.length);
+                os.write(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        os.close();
+
+    }
+
+
+
+
+
+    public static Iterator&lt;byte[]&gt; sftpDownloadIterator(String host, int port, String username, String password, String filepath, int blockSize) throws JSchException, IOException {
+
+        Closer closer = Closer.create();
+
+        JSch jsch = new JSch();
+
+        JSch.setConfig(&quot;StrictHostKeyChecking&quot;, &quot;false&quot;);
+
+        Session session = jsch.getSession(username, host, port);
+
+        session.setUserInfo(new UserInfo() {
+            public String getPassphrase() { return password; }
+            public String getPassword() { return password; }
+            public boolean promptPassword(String paramString) { return true; }
+            public boolean promptPassphrase(String paramString) { return true; }
+            public boolean promptYesNo(String paramString) { return true; }
+            public void showMessage(String paramString) { }
+        });
+
+        session.connect();
+        closer.register(() -&gt; session.disconnect());
+
+        ChannelExec channel = (ChannelExec) session.openChannel(&quot;exec&quot;);
+
+        channel.setCommand(&quot;scp -f &quot; + filepath);
+
+        channel.connect();
+        closer.register(() -&gt; channel.disconnect());
+
+        InputStream is = channel.getInputStream();
+        closer.register(is);
+        OutputStream os = channel.getOutputStream();
+        closer.register(os);
+
+
+
+        // 文件下载步骤:
+        // 1. os: me -&gt; sftp, &#39;\0&#39;
+        // 2. is: me &lt;- sftp, 文件读写标志, 文件大小, 文件名
+        // 3. os: me -&gt; sftp, &#39;\0&#39;
+        // 4. is: me &lt;- sftp, 文件内容 + &#39;\0&#39;
+        // 5. os: me -&gt; sftp, &#39;\0&#39;
+
+
+
+        ///////////////////////////////////////////
+        // 1. os: me -&gt; sftp, &#39;\0&#39;
+        os.write(new byte[] { &#39;\0&#39; });
+        os.flush();
+
+
+        ///////////////////////////////////////////
+        // 2. is: me &lt;- sftp, 文件读写标志, 文件大小, 文件名
+        ByteArrayOutputStream baOs = new ByteArrayOutputStream();
+        {
+            int buf = 0;
+            while (0x0a != (buf = is.read())) {
+                baOs.write(buf);
+            }
+        }
+
+        Pattern regex = Pattern.compile(&quot;^(.)(\\d{4})[ ]+(\\d+)[ ]+(.*)$&quot;);
+
+        Matcher matcher = regex.matcher(Charset.forName(&quot;UTF-8&quot;).decode(ByteBuffer.wrap(baOs.toByteArray())));
+
+        matcher.find();
+
+//        String ack = matcher.group(1);
+//        String rwFlag = matcher.group(2);
+        Integer size = Integer.valueOf(matcher.group(3));
+//        String name = matcher.group(4);
+
+
+        ///////////////////////////////////////////
+        // 3. os: me -&gt; sftp, &#39;\0&#39;
+        os.write(new byte[] { &#39;\0&#39; });
+        os.flush();
+
+
+
+        return new Iterator&lt;byte[]&gt;() {
+
+            ///////////////////////////////////////////
+            // 4. is: me &lt;- sftp, 文件内容 + &#39;\0&#39;
+            int totalReaded = 0;
+            byte[] buf = new byte[blockSize];
+
+            @Override
+            public boolean hasNext() {
+                return totalReaded != size;
+            }
+
+            @Override
+            public byte[] next() {
+                try {
+                    int readLen = Math.min(size - totalReaded, blockSize);
+                    readLen = is.read(buf, 0, readLen);
+
+                    totalReaded += readLen;
+
+
+                    if (false == hasNext()) {
+                        finish();
+                    }
+
+                    return ArrayUtils.subarray(buf, 0, readLen);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            boolean finished = false;
+
+            public void finish() {
+                try {
+                    if (true == finished) {
+                        return;
+                    }
+
+                    @SuppressWarnings(&quot;unused&quot;)
+                    int end = is.read();
+
+
+                    ///////////////////////////////////////////
+                    // 5. os: me -&gt; sftp, &#39;\0&#39;
+                    os.write(new byte[] { &#39;\0&#39; });
+                    os.flush();
+
+
+                    closer.close();
+
+                    finished = true;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        };
+
+    }
+
+
+    public static void testSftpDownloadIterator(String[] args) throws JSchException, IOException {
+
+        File file = new File(&quot;22.doc&quot;);
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+
+        sftpDownloadIterator(&quot;localhost&quot;, 22, &quot;root&quot;, &quot;root&quot;, &quot;11.doc&quot;, 1024 * 1024 * 2).forEachRemaining(data -&gt; {
+            try {
+                System.out.println(data.length);
+                os.write(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        os.close();
+
+    }
+
+
+
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

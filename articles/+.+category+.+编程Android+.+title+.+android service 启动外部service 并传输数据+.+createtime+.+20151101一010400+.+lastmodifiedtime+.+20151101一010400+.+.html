@@ -1,0 +1,259 @@
+
+
+<html><head><meta charset="UTF-8"><title>android service 启动外部service 并传输数据
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="android-service-service-">android service 启动外部service 并传输数据</h1>
+<pre><code class="lang-text">App: 一个程序, 带有service, 用来被其它app启动
+AndroidMainfest.xml,配置了一个service
+AppService.java,定义了service,实现了onBind,其中通过AIDL返回Binder
+IAppServiceRemoteBinder.aidl, Android Interface Defination Language, 定义了接口, 用于service和外部沟通
+
+AnotherApp: 另一个程序, 用来访问App中的service, 并传输数据
+activity_main.xml,TextView指名了当前Activity是另一个App的,4*Button用于启动或绑定外部service,EditText和Button用于将用户输入的数据同步到service
+MainActivity.java,保存了service提供的Binder,向service发送数据
+IAppServiceRemoteBinder.aidl, 从App中原封不动的复制过来,用来提供接口
+
+其中的步骤:
+@1, 启动外部服务
+@2, 绑定外部服务并通信
+</code></pre>
+<p>App:</p>
+<p>AndroidMainfest.xml,配置了一个service:</p>
+<pre><code class="lang-xml">        &lt;service
+            android:name=&quot;.AppService&quot;
+            android:enabled=&quot;true&quot;
+            android:exported=&quot;true&quot; &gt;
+       &lt;/service&gt;
+</code></pre>
+<p>AppService.java,定义了service,实现了onBind,其中通过AIDL返回Binder:</p>
+<pre><code class="lang-java">public class AppService extends Service
+{
+    private String strData; // 外部传入的数据保存在这里
+    private boolean isRunning; // 标记线程是否继续运行
+    public AppService() { }
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        // 实现aidl文件定义的接口, 调用Stub得到IBinder @2-2
+        // 注意, 这里可以Build-&gt;Rebuild Project, 来让IDE识别aidl文件
+        return new IAppServiceRemoteBinder.Stub()
+        {
+            @Override
+            public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException
+            { }
+            @Override
+            public void setData(String data) throws RemoteException
+            {
+                AppService.this.strData = data;
+            }
+        };
+    }
+
+    @Override
+    public void onCreate()
+    {
+        // 新线程不断访问strData数据, 表示service是否收到了数据
+        super.onCreate();
+        System.out.println(&quot;AppService::onCreate()&quot;);
+        isRunning = true;
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    super.run();
+                    while (isRunning)
+                    {
+                        System.out.println(&quot;Thread: &quot; + strData);
+                        sleep(2000);
+                    }
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        System.out.println(&quot;AppService::onDestroy()&quot;);
+        isRunning = false;
+    }
+}
+</code></pre>
+<p>IAppServiceRemoteBinder.aidl, Android Interface Defination Language, 定义了接口, 用于service和外部沟通:</p>
+<pre><code class="lang-java">// IAppServiceRemoteBinder.aidl
+package com.learnandroid.startservicefromanotherapp;
+
+// Declare any non-default types here with import statements
+// @2-4:
+//  右键工程-&gt;New-&gt;Folder-&gt;AIDL Folder;
+//  右键AIDL Folder-&gt;New-&gt;Package, 创建外部服务所在的包名
+//  复制外部service的aidl文件到当前包下
+
+// 创建一个aidl Android Interface Defination Language文件 @2-1
+interface IAppServiceRemoteBinder {
+    /**
+     * Demonstrates some basic types that you can use as parameters
+     * and return values in AIDL.
+     */
+    void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
+            double aDouble, String aString);
+
+
+    // 添加其它需要的通信接口 @2-3
+    // 外部向service发送数据
+    void setData(String data);
+}
+</code></pre>
+<p>AndroidApp:</p>
+<pre><code class="lang-java">activity_main.xml,TextView指名了当前Activity是另一个App的,4*Button用于启动或绑定外部service,EditText和Button用于将用户输入的数据同步到service:
+    &lt;TextView
+        android:text=&quot;AnotherApplication&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnStartService&quot;
+        android:text=&quot;Start Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnStopService&quot;
+        android:text=&quot;Stop Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnBindService&quot;
+        android:text=&quot;Bind Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnUnbindService&quot;
+        android:text=&quot;Unbind Service&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;EditText
+        android:id=&quot;@+id/editTextInput&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+    &lt;Button
+        android:id=&quot;@+id/btnSyncData&quot;
+        android:text=&quot;Sync Data&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre>
+<p>MainActivity.java,保存了service提供的Binder,向service发送数据:</p>
+<pre><code class="lang-java">public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection
+{
+    private EditText editTextInput;
+    private Intent intentService;
+    private IAppServiceRemoteBinder binder; // 工程导入aidl文件后, 就可以使用binder了 @2-5
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        intentService = new Intent();
+        // 通过setComponent指定外部服务 @1-1
+        intentService.setComponent(new ComponentName(&quot;com.learnandroid.startservicefromanotherapp&quot;, &quot;com.learnandroid.startservicefromanotherapp.AppService&quot;));
+        setContentView(R.layout.activity_main);
+        editTextInput = (EditText) findViewById(R.id.editTextInput);
+        findViewById(R.id.btnStartService).setOnClickListener(this);
+        findViewById(R.id.btnStopService).setOnClickListener(this);
+        findViewById(R.id.btnBindService).setOnClickListener(this);
+        findViewById(R.id.btnUnbindService).setOnClickListener(this);
+        findViewById(R.id.btnSyncData).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        try
+        {
+            switch (v.getId())
+            {
+                case R.id.btnStartService:
+                    startService(intentService); // 启动外部服务@1-2
+                    break;
+                case R.id.btnStopService:
+                    stopService(intentService);
+                    break;
+                case R.id.btnBindService:
+                    bindService(intentService, this, Context.BIND_AUTO_CREATE);
+                    break;
+                case R.id.btnUnbindService:
+                    unbindService(this);
+                    break;
+                case R.id.btnSyncData:
+                    if (binder != null) // 调用binder的接口, 传送数据给service @2-7
+                        binder.setData(editTextInput.getText().toString());
+                    break;
+                default:
+                    System.out.println(&quot;MainActivity:onClick unknown id&quot;);
+            }
+        } catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    {
+        System.out.println(&quot;MainActivity::onServiceConnected()&quot;);
+        binder = IAppServiceRemoteBinder.Stub.asInterface(service); // 接收保存binder @2-6
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name)
+    {
+    }
+}
+</code></pre>
+<p>IAppServiceRemoteBinder.aidl, 从App中原封不动的复制过来,用来提供接口:</p>
+<pre><code class="lang-java">// IAppServiceRemoteBinder.aidl
+package com.learnandroid.startservicefromanotherapp;
+
+// Declare any non-default types here with import statements
+// @2-4:
+//  右键工程-&gt;New-&gt;Folder-&gt;AIDL Folder;
+//  右键AIDL Folder-&gt;New-&gt;Package, 创建外部服务所在的包名
+//  复制外部service的aidl文件到当前包下
+
+// 创建一个aidl Android Interface Defination Language文件 @2-1
+interface IAppServiceRemoteBinder {
+    /**
+     * Demonstrates some basic types that you can use as parameters
+     * and return values in AIDL.
+     */
+    void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
+            double aDouble, String aString);
+
+
+    // 添加其它需要的通信接口 @2-3
+    // 外部向service发送数据
+    void setData(String data);
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

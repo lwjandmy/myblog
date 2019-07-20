@@ -1,0 +1,38 @@
+
+
+<html><head><meta charset="UTF-8"><title>PuppyLinux安装nvidia驱动
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="puppylinux-nvidia-">PuppyLinux安装nvidia驱动</h1>
+<p>首先禁用nouveau</p>
+<pre><code class="lang-grub">kernel /Slacko/vmlinuz nouveau.modeset=0
+</code></pre>
+<p>进入linux后确保已经拥有dev和kernelsource的SFS，</p>
+<p>退出x窗口（wmexit）</p>
+<p>去掉nouveau模块, 这一步保证了xorgwizard时选项里的nvidia不需要重启</p>
+<pre><code class="lang-bash">modprobe -r nouveau
+</code></pre>
+<p>然后运行nvidia官方下载的驱动包</p>
+<pre><code class="lang-bash">nvidiaxxx.run
+</code></pre>
+<p>安装完成后使用nvidia驱动显示X桌面</p>
+<pre><code class="lang-bash">xorgwizard
+</code></pre>
+<p>选择nvidia.</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

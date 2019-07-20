@@ -1,0 +1,32 @@
+
+
+<html><head><meta charset="UTF-8"><title>was远程调试 jndi数据源名称配置
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="was-jndi-">was远程调试 jndi数据源名称配置</h1>
+<p>was远程调试步骤:</p>
+<p>was控制台 -&gt; 服务器 -&gt; WebSphere Application Server -&gt; server1 -&gt; 调试服务 -&gt; 勾选&quot;在服务器启动时启用服务&quot;, 记住JVM调试端口和was服务ip</p>
+<p>进was的Server Manager -&gt; Local Server -&gt; 筛选关键字&quot;was&quot; -&gt; 筛选结果右键&quot;Restart Services&quot;</p>
+<p>Eclipse -&gt; Run -&gt; Debug Configurations -&gt; 左侧Remote Java Application新建 -&gt; 选择项目, 输入Host和Port, 即可远程调试.</p>
+<p>注意关闭was服务器的防火墙, 否则连不上.</p>
+<p>was的jndi数据源名称</p>
+<pre><code class="lang-xml">不应配成&lt;value&gt;java:comp/env/jdbc/lbms&lt;/value&gt;
+而是配成&lt;value&gt;jdbc/lbms&lt;/value&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,28 @@
+
+
+<html><head><meta charset="UTF-8"><title>tomcat启动脚本打印日志
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="tomcat-">tomcat启动脚本打印日志</h1>
+<p>编辑catalina.bat</p>
+<p>分析: 从后往前, <code>if not &quot;%JPDA%&quot; == &quot;&quot; goto doJpda, if not &quot;%SECURITY_POLICY_FILE%&quot; == &quot;&quot; goto doSecurity</code>, 下面就是最常见的启动方式</p>
+<pre><code class="lang-bat">%_EXECJAVA% %JAVA_OPTS% %CATALINA_OPTS% %DEBUG_OPTS% -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=9527,suspend=n -Djava.endorsed.dirs=&quot;%JAVA_ENDORSED_DIRS%&quot; -classpath &quot;%CLASSPATH%&quot; -Dcatalina.base=&quot;%CATALINA_BASE%&quot; -Dcatalina.home=&quot;%CATALINA_HOME%&quot; -Djava.io.tmpdir=&quot;%CATALINA_TMPDIR%&quot; %MAINCLASS% %CMD_LINE_ARGS% %ACTION%
+</code></pre>
+<p>向前搜&#39;_EXECJAVA&#39;, 找到<code>set _EXECJAVA=start &quot;%TITLE%&quot; %_RUNJAVA%</code>, 这里用了start启动的tomcat, 换成<code>set _EXECJAVA=%_RUNJAVA%</code>, 这样可以看tomcat的启动日志了!</p>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
