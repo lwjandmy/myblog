@@ -1,6 +1,30 @@
 
 
 <html><head><meta charset="UTF-8"><title>导入和导出sql
+
+导入
+
+```sql
+mysql -h localhost -P 3306 -u root -p
+create database databse_name;
+use database database_name;
+source <filePath>;
+```
+
+导出
+
+```sql
+mysqldump -h localhost -P 3306 -u root -p 123456 db [table1 table2] > mysqldump.sql
+```
+
+--no-data, -d：只导出表结构
+
+mysqldump最后两个参数, 数据库名, 表名规则:
+
+mysqldump [OPTIONS] database [tables...]
+mysqldump [OPTIONS] --databases [OPTIONS] DB1 [DBS...]
+mysqldump [OPTIONS] --all-databases [OPTIONS]w
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

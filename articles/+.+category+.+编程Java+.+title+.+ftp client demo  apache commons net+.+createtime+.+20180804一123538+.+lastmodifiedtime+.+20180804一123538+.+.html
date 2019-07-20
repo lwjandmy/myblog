@@ -1,6 +1,44 @@
 
 
 <html><head><meta charset="UTF-8"><title>ftp client demo  apache commons net
+
+```java
+	public static void main(String[] args) throws SocketException, IOException {
+		
+		Closer closer = Closer.create();
+		
+		
+		FTPClient ftpClient = new FTPClient();
+		
+		ftpClient.setAutodetectUTF8(true);
+		
+		ftpClient.connect("localhost", 21);
+		closer.register(() -> ftpClient.disconnect());
+		
+		System.out.println("logined: " + ftpClient.login("anonymous", ""));
+		closer.register(() -> ftpClient.logout());
+		
+		System.out.println("listFiles: ");
+		Stream.of(ftpClient.listFiles()).forEach(file -> System.out.println(file.toString()));
+		
+		System.out.println("下载文件: ");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(ftpClient.retrieveFileStream("download-ftp-client-demo.txt"), "UTF-8"));
+		reader.lines().forEach(line -> System.out.println(line));
+		reader.close();
+		ftpClient.completePendingCommand();
+		
+		ftpClient.deleteFile("upload-ftp-client-demo.txt");
+		
+		System.out.println("上传文件: ");
+		OutputStream os = ftpClient.storeFileStream("upload-ftp-client-demo.txt");
+		os.write("this is file data from ftp client demo.".getBytes("UTF-8"));
+		os.close();
+		ftpClient.completePendingCommand();
+		
+		
+		closer.close();
+	}
+```
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

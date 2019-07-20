@@ -1,6 +1,336 @@
 
 
 <html><head><meta charset="UTF-8"><title>jsch 下载 sftp文件 方法见交互 内部循环版 迭代器版 没有yield async机制 迭代器版实现较困难
+
+[jsch scp文件下载](http://www.jcraft.com/jsch/examples/ScpFrom.java)
+
+[jsch scp文件上传](http://www.jcraft.com/jsch/examples/ScpTo.java)
+
+```java
+package org.demo;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.ArrayUtils;
+
+import com.google.common.io.Closer;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
+
+public class SFtpClient {
+	
+	public static void sftpDownloadCallback(String host, int port, String username, String password, String filepath, int blockSize, Consumer<byte[]> consumer) throws JSchException, IOException, InterruptedException {
+		
+		Closer closer = Closer.create();
+		
+		JSch jsch = new JSch();
+		
+		JSch.setConfig("StrictHostKeyChecking", "false");
+		
+		Session session = jsch.getSession(username, host, port);
+		
+		session.setUserInfo(new UserInfo() {
+			public String getPassphrase() { return password; }
+			public String getPassword() { return password; }
+			public boolean promptPassword(String paramString) { return true; }
+			public boolean promptPassphrase(String paramString) { return true; }
+			public boolean promptYesNo(String paramString) { return true; }
+			public void showMessage(String paramString) { }
+		});
+		
+		session.connect();
+		closer.register(() -> session.disconnect());
+		
+		ChannelExec channel = (ChannelExec) session.openChannel("exec");
+		
+		channel.setCommand("scp -f " + filepath);
+		
+		channel.connect();
+		closer.register(() -> channel.disconnect());
+		
+		InputStream is = channel.getInputStream();
+		closer.register(is);
+		OutputStream os = channel.getOutputStream();
+		closer.register(os);
+		
+		
+		
+		// 文件下载步骤:
+		// 1. os: me -> sftp, '\0'
+		// 2. is: me <- sftp, 文件读写标志, 文件大小, 文件名
+		// 3. os: me -> sftp, '\0'
+		// 4. is: me <- sftp, 文件内容 + '\0'
+		// 5. os: me -> sftp, '\0'
+		
+		
+		
+		///////////////////////////////////////////
+		// 1. os: me -> sftp, '\0'
+		os.write(new byte[] { '\0' });
+		os.flush();
+		
+		
+		///////////////////////////////////////////
+		// 2. is: me <- sftp, 文件读写标志, 文件大小, 文件名
+		ByteArrayOutputStream baOs = new ByteArrayOutputStream();
+		{
+			int buf = 0;
+			while (0x0a != (buf = is.read())) {
+				baOs.write(buf);
+			}
+		}
+		
+		Pattern regex = Pattern.compile("^(.)(\\d{4})[ ]+(\\d+)[ ]+(.*)$");
+		
+		Matcher matcher = regex.matcher(Charset.forName("UTF-8").decode(ByteBuffer.wrap(baOs.toByteArray())));
+		
+		matcher.find();
+			
+//		String ack = matcher.group(1);
+//		String rwFlag = matcher.group(2);
+		Integer size = Integer.valueOf(matcher.group(3));
+//		String name = matcher.group(4);
+		
+		
+		///////////////////////////////////////////
+		// 3. os: me -> sftp, '\0'
+		os.write(new byte[] { '\0' });
+		os.flush();
+		
+		
+		///////////////////////////////////////////
+		// 4. is: me <- sftp, 文件内容 + '\0'
+		int totalReaded = 0;
+		byte[] buf = new byte[blockSize];
+		
+		while (totalReaded != size) {
+			
+			int readLen = Math.min(size - totalReaded, blockSize);
+			readLen = is.read(buf, 0, readLen);
+			
+			totalReaded += readLen;
+			
+			consumer.accept(ArrayUtils.subarray(buf, 0, readLen));
+			
+		}
+		
+		@SuppressWarnings("unused")
+		int end = is.read();
+		
+		
+		///////////////////////////////////////////
+		// 5. os: me -> sftp, '\0'
+		os.write(new byte[] { '\0' });
+		os.flush();
+		
+		
+		closer.close();
+		
+		
+	}
+	
+	public static void testSftpDownloadCallback(String[] args) throws JSchException, IOException, InterruptedException {
+		
+		File file = new File("22.doc");
+		OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+		
+		sftpDownloadCallback("localhost", 22, "root", "root", "11.doc", 1024 * 1024 * 2, data -> {
+			try {
+				System.out.println(data.length);
+				os.write(data);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+		os.close();
+		
+	}
+	
+	
+	
+	
+	
+	public static Iterator<byte[]> sftpDownloadIterator(String host, int port, String username, String password, String filepath, int blockSize) throws JSchException, IOException {
+		
+		Closer closer = Closer.create();
+		
+		JSch jsch = new JSch();
+		
+		JSch.setConfig("StrictHostKeyChecking", "false");
+		
+		Session session = jsch.getSession(username, host, port);
+		
+		session.setUserInfo(new UserInfo() {
+			public String getPassphrase() { return password; }
+			public String getPassword() { return password; }
+			public boolean promptPassword(String paramString) { return true; }
+			public boolean promptPassphrase(String paramString) { return true; }
+			public boolean promptYesNo(String paramString) { return true; }
+			public void showMessage(String paramString) { }
+		});
+		
+		session.connect();
+		closer.register(() -> session.disconnect());
+		
+		ChannelExec channel = (ChannelExec) session.openChannel("exec");
+		
+		channel.setCommand("scp -f " + filepath);
+		
+		channel.connect();
+		closer.register(() -> channel.disconnect());
+		
+		InputStream is = channel.getInputStream();
+		closer.register(is);
+		OutputStream os = channel.getOutputStream();
+		closer.register(os);
+		
+		
+		
+		// 文件下载步骤:
+		// 1. os: me -> sftp, '\0'
+		// 2. is: me <- sftp, 文件读写标志, 文件大小, 文件名
+		// 3. os: me -> sftp, '\0'
+		// 4. is: me <- sftp, 文件内容 + '\0'
+		// 5. os: me -> sftp, '\0'
+		
+		
+		
+		///////////////////////////////////////////
+		// 1. os: me -> sftp, '\0'
+		os.write(new byte[] { '\0' });
+		os.flush();
+		
+		
+		///////////////////////////////////////////
+		// 2. is: me <- sftp, 文件读写标志, 文件大小, 文件名
+		ByteArrayOutputStream baOs = new ByteArrayOutputStream();
+		{
+			int buf = 0;
+			while (0x0a != (buf = is.read())) {
+				baOs.write(buf);
+			}
+		}
+		
+		Pattern regex = Pattern.compile("^(.)(\\d{4})[ ]+(\\d+)[ ]+(.*)$");
+		
+		Matcher matcher = regex.matcher(Charset.forName("UTF-8").decode(ByteBuffer.wrap(baOs.toByteArray())));
+		
+		matcher.find();
+			
+//		String ack = matcher.group(1);
+//		String rwFlag = matcher.group(2);
+		Integer size = Integer.valueOf(matcher.group(3));
+//		String name = matcher.group(4);
+		
+		
+		///////////////////////////////////////////
+		// 3. os: me -> sftp, '\0'
+		os.write(new byte[] { '\0' });
+		os.flush();
+		
+
+		
+		return new Iterator<byte[]>() {
+			
+			///////////////////////////////////////////
+			// 4. is: me <- sftp, 文件内容 + '\0'
+			int totalReaded = 0;
+			byte[] buf = new byte[blockSize];
+
+			@Override
+			public boolean hasNext() {
+				return totalReaded != size;
+			}
+
+			@Override
+			public byte[] next() {
+				try {
+					int readLen = Math.min(size - totalReaded, blockSize);
+					readLen = is.read(buf, 0, readLen);
+					
+					totalReaded += readLen;
+					
+					
+					if (false == hasNext()) {
+						finish();
+					}
+					
+					return ArrayUtils.subarray(buf, 0, readLen);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+			boolean finished = false;
+			
+			public void finish() {
+				try {
+					if (true == finished) {
+						return;
+					}
+					
+					@SuppressWarnings("unused")
+					int end = is.read();
+					
+					
+					///////////////////////////////////////////
+					// 5. os: me -> sftp, '\0'
+					os.write(new byte[] { '\0' });
+					os.flush();
+					
+					
+					closer.close();
+					
+					finished = true;
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+		};
+		
+	}
+	
+	
+	public static void testSftpDownloadIterator(String[] args) throws JSchException, IOException {
+		
+		File file = new File("22.doc");
+		OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+		
+		sftpDownloadIterator("localhost", 22, "root", "root", "11.doc", 1024 * 1024 * 2).forEachRemaining(data -> {
+			try {
+				System.out.println(data.length);
+				os.write(data);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+		os.close();
+	
+	}
+	
+	
+
+}
+
+```
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

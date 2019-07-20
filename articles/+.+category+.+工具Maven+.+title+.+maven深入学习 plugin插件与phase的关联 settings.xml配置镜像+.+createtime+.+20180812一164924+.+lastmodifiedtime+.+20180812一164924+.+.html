@@ -1,6 +1,379 @@
 
 
 <html><head><meta charset="UTF-8"><title>maven深入学习 plugin插件与phase的关联 settings.xml配置镜像
+
+
+------
+
+
+Mvn的两种命令GoalTask, LifecycleTask
+
+mvn命令后面可以跟两种Task: GoalTask, LifecycleTask
+
+如:
+
+```bash
+mvn clean:help -Ddetail=true
+mvn compile
+```
+
+GoalTask中会包含":"冒号, LifecycleTask中不会包含":"冒号
+
+GoalTask有三种冒号的形式:
+
+```bash
+groupId:artifactId:version:goal
+groupId:artifactId:goal
+prefix:goal
+```
+
+最后一种最常用, maven会通过prefix, 找到plugin的groupId, artifactId, version
+
+mvn GoalTask 会执行一个具体的Maven Plugin
+
+mvn LifecycleTask 会执行一个生命周期, 周期内再调用绑定的Maven Plugin
+
+
+
+
+
+------
+
+
+
+Maven Plugin 原理
+
+执行:
+
+```bash
+mvn clean:help -Ddetail=true
+```
+
+这个命令属于mvn GoalTask形式
+
+会找到maven-clean-plugin-2.5.jar中的META-INF/maven/plugin.xml
+
+里面记录了有哪些goal, 对应哪些实现类, 类里需要注入哪些参数
+
+```yaml
+mojos:
+	goal: help
+	implementation: org.apache.maven.plugin.clean.HelpMojo
+	parameters:
+		name: detail
+```
+		
+maven-clean-plugin-2.5.jar中有HelpMojo实现类, 有属性
+
+```java
+private boolean detail;
+private String goal;
+```
+
+有实现的方法
+
+```java
+public void execute()
+```
+
+maven从-Dname=value中获取数据注入HelpMojo, 执行execute.
+
+执行
+
+```bash
+mvn help:describe -Dcmd=compile
+
+```
+可以看phase的信息
+
+执行
+
+```bash
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-clean-plugin
+```
+
+可以看plugin的信息
+
+
+
+
+
+
+
+
+
+
+
+------
+
+
+
+Lifecycle和Phase原理
+
+Maven内置了3个Lifecycle: default, clean, site
+
+每个Lifecycle内, 有内置的固定的Phase:
+
+```txt
+default Phases: validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy
+clean Phases: pre-clean, clean, post-clean
+site Phases: pre-site, site, post-site, site-deploy
+```
+
+执行:
+
+```bash
+mvn compile
+```
+
+这个命令属于mvn LifecycleTask形式
+
+注意compile不是指内置的Lifecycle, 而是内置的Phase
+
+maven找到compile属于哪个Lifecycle(找到了default), 然后从这个Lifecycle的第一个Phase(即validate)开始直到目标Phase(compile)中的所有Phase:
+
+validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile
+
+这些就是maven要执行的所有Phase
+
+
+
+
+------
+
+
+
+
+Phase与插件的关联原理
+
+```txt
+在pom.xml中, <build>标签内, 会配置<plugins>
+每个plugin中, 会定义execution(意思是执行, 执行这个插件, 用于关联Phase与插件中的goal的)
+execution中首先定义phase是谁, 这样就与Lifecycle的Phase关联起来了
+然后定义执行插件里的哪些goal
+```
+
+```xml
+<build>
+	<plugins>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.1</version>
+			<executions>
+				<execution>
+					<id>default-compile</id>
+					<phase>compile</phase>
+					<configuration>
+						<models>
+						<model>src/main/mdo/maven.mdo</model>
+						</models>
+						<version>4.0.0</version>
+					</configuration>
+					<goals>
+						<goal>compile</goal>
+					</goals>
+				</execution>
+				<execution>
+					<id>default-testCompile</id>
+					<phase>test-compile</phase>
+					<goals>
+						<goal>testCompile</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+</build>
+```
+
+
+代码在:
+
+org.apache.maven.lifecycle.internal.DefaultLifecycleMappingDelegate.calculateLifecycleMappings(MavenSession, MavenProject, Lifecycle, String)
+
+代码的逻辑:
+
+```java
+// 由mvn compile命令计算出的所有phase
+List phaseList = [validate, initialize, ...];
+
+// 后面的循环会填充这个list, 里面记录了plugin的goal, 稍后执行所有的goal
+List pluginGoalList = [];
+
+For (plugin in pom.xml中的plugins)
+	For (execution in plugin.executions)
+		If (phaseList.包含(execution.phase))
+			For (goal in execution.goals)
+				pluginGoalList.add(plugin, goal)
+			Endfor
+		Endif
+	Endfor
+Endfor
+
+执行pluginGoalList, 即plugin的goal
+```
+
+```txt
+关于插件中属性的值的来源, 
+对mvn LifecycleTask的形式, 会从pom.xml中execution里的configuration里进行配置
+对mvn GoalTask的形式, 会从java系统属性和系统环境变量中获取值
+```
+
+
+
+
+
+
+
+
+------
+
+
+
+settiings.xml文件文档
+
+https://maven.apache.org/settings.html
+
+settiings.xml配置的主要作用: 设置国内镜像, 设置打包仓库的密码
+
+```xml
+<settings>
+  <localRepository>/path/to/local/repo/</localRepository> <!-- 设置本地仓库地址 -->
+  <pluginGroups> <!-- 执行mvn jetty:run 时 在这里配置jetty的groupId, 输命令时就简单了 -->
+    <pluginGroup>org.mortbay.jetty</pluginGroup>
+  </pluginGroups>
+  <servers> <!-- *** 配置打包到仓库时仓库的密码. 仓库地址是配在POM的respsitories里, 这里只存隐私信息, 用户名, 密码, 密钥 -->
+    <server>
+      <id>server001</id>
+      <username>my_login</username>
+      <password>my_password</password>
+    </server>
+  </servers>
+  <mirrors> <!-- *** 设置仓库的镜像 用来设置国内镜像 -->
+    <mirror>
+      <id>aliyun-nexus</id>
+      <name>aliyun-nexus</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+  <profiles> <!-- POM中profile的精简版, 只含4个元素: activation, properties, repositories, pluginRepositories -->
+    <profile>
+      <id>test</id>
+      <activation> <!-- 在什么环境下这个profile会生效, 这里的jdk只是定义什么环境下, 而不是设置jdk版本! -->
+        <activeByDefault>false</activeByDefault>
+        <jdk>1.5</jdk>
+      </activation>
+      <properties> <!-- *** 定义pom中用到的${user.install}的值 用来定义开发环境, 测试环境 -->
+        <user.install>${user.home}/our-project</user.install>
+      </properties>
+      <repositories /> <!-- 定义多个远程仓库, 当依赖jar来自多个仓库时, 需要配置 -->
+    </profile>
+  </profiles>
+  <activeProfiles><!-- 不使用profile中的activation判断, 强制生效 -->
+    <activeProfile>test</activeProfile>
+  </activeProfiles>
+</settings>
+```
+
+执行:
+
+```bash
+mvn help:effective-settings
+```
+
+可以看配置信息
+
+执行:
+
+```bash
+mvn help:all-profiles
+```
+
+可以看所有profile, 生效状态信息
+
+执行:
+
+```bash
+mvn help:help
+```
+
+可以看到help(或其它plugin)的帮助信息
+
+执行:
+
+```bash
+mvn help:evaluate
+```
+
+可以进入交互模式, 查看${expression}的结果
+
+执行:
+
+```bash
+mvn help:system
+```
+
+可以看系统信息(-Dk=v)和系统环境变量
+
+
+
+
+
+设置maven启动的环境变量, 避免因内存不够导致出错
+
+```bash
+MAVEN_OPTS=-Xms256m -Xmx512m
+```
+
+用5个线程同步下载jar
+
+```bash
+MAVEN_OPTS=-Dmaven.artifact.threads=5
+```
+
+
+
+
+
+
+
+
+
+
+------
+
+
+
+
+
+
+POM(Project Object Model) 项目对象模型
+
+https://maven.apache.org/pom.html
+
+所有pom默认继承字maven的自带默认super POM, 里面定义了一些预设配置, 如中央仓库地址
+
+执行
+
+```bash
+mvn help:effective-pom
+```
+
+查看生效的pom配置信息
+
+可以根据effective-pom当作模板, 修改项目的pom.xml
+
+
+
+
+
+
+
+
+
+
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

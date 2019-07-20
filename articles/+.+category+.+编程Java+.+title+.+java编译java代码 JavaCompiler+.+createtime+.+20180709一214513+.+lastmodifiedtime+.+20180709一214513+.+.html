@@ -1,6 +1,93 @@
 
 
 <html><head><meta charset="UTF-8"><title>java编译java代码 JavaCompiler
+
+```java
+	
+	/**
+	 * 编译java源码, 返回类
+	 * @param source
+	 * @param fullClassName
+	 * @param fileName
+	 * @param writer 可为null, 写入编译输出信息
+	 */
+	public static Class<?> compileJavaCode(String source, String fullClassName, String fileName, Writer writer) {
+		
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager stdFileManager = compiler.getStandardFileManager(null, null, null);
+		
+		byte[][] classByteArray = new byte[][] { null };
+		// fileManager重写StandardJavaFileManager中的getJavaFileForOutput, 返回文件输出流, 存储编译后的字节流
+		ForwardingJavaFileManager<JavaFileManager> fileManager = new ForwardingJavaFileManager<JavaFileManager>(stdFileManager) {
+			public JavaFileObject getJavaFileForOutput(Location location, String className, Kind kind, FileObject sibling) throws IOException {
+				// 重写SimpleJavaFileObject的openOutputStream, 返回ByteArrayOutputStream, 并在文件流关闭时存储字节流
+				return new SimpleJavaFileObject(URI.create("string:///" + fileName), Kind.CLASS) {
+					public OutputStream openOutputStream() throws IOException {
+						return new ByteArrayOutputStream() {
+							public void close() throws IOException {
+								classByteArray[0] = toByteArray();
+							}
+						};
+					}
+				};
+			}
+		};
+		
+		// 重写SimpleJavaFileObject的getCharContent, 返回java原文件
+		SimpleJavaFileObject sourceFileObject = new SimpleJavaFileObject(URI.create("string:///" + fileName), Kind.SOURCE) {
+			public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+				return CharBuffer.wrap(source);
+			}
+		};
+		
+		// 执行编译任务, 编译后的字节流存储在classByteArray[0]
+		Boolean status = compiler.getTask(writer, fileManager, null, null, null, Arrays.asList(sourceFileObject)).call();
+		
+		if (true == status && null != classByteArray[0]) {
+			// 重写ClassLoader的defineClass, 使之可调用(原本是protected), 根据字节流定义出类
+			return new ClassLoader() {
+				public Class<?> defClass(String name, byte[] b) {
+					return super.defineClass(name, b, 0, b.length);
+				}
+			}.defClass(fullClassName, classByteArray[0]);
+		} else {
+			return null;
+		}
+		
+	}
+	
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		
+		final String CLASSNAME = "Test";
+		final String PACKAGENAME = "org.test";
+		final String fullClassName = PACKAGENAME + "." + CLASSNAME;
+		final String fileName = CLASSNAME + ".java";
+		
+		StringBuilder source = new StringBuilder();
+		source.append("package " + PACKAGENAME + ";" + "\n");
+		source.append("public class " + CLASSNAME + "{" + "\n");
+		source.append("public " + CLASSNAME + "() {" + "\n");
+		source.append("System.out.println(123);" + "\n");
+		source.append("}" + "\n");
+		source.append("public void output(String str) {" + "\n");
+		source.append("System.out.println(str);" + "\n");
+		source.append("}" + "\n");
+		source.append("}" + "\n");
+		
+		CharArrayWriter writer = new CharArrayWriter();
+		Class<?> clazz = compileJavaCode(source.toString(), fullClassName, fileName, writer);
+		
+		if (null != clazz) {
+			Object object = clazz.newInstance();
+			object.getClass().getDeclaredMethod("output", String.class).invoke(object, "hello world");
+		} else {
+			System.err.println(writer.toString());
+		}
+		
+		
+	}
+
+```
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

@@ -1,6 +1,62 @@
 
 
 <html><head><meta charset="UTF-8"><title>stream pipeline helloworld
+
+待完成
+
+```txt
+
+ReferencePipeline: Stream
+
+
+中间操作:
+	无状态操作: filter map flatMap
+	有状态操作: distinct sorted limit
+
+结束操作:
+	非短路操作: forEach reduce collect
+	短路操作: findFirst findAny
+
+中间操作不真正执行, 而是对操作的描述
+结束操作会执行真正的计算
+
+
+
+Pipeline 管道, 用来记录中间操作
+
+ReferencePipeline: AbstractPipeline: PipelineHelper
+
+头 无状态操作 有状态操作
+Head: ReferencePipeline
+StatelessOp: ReferencePipeline
+StatefulOp: ReferencePipeline
+
+
+stage, 带管道的流, Head, StatelessOp, StatefulOp的实例对象就是stage
+
+
+
+Sink: 用于链接stage
+
+ChainedReference: Sink
+
+包含:
+begin
+accept
+end
+cancellationRequested 是否能尽早结束遍历, 用于短路操作
+
+每个stage都把操作实现在Sink里, 上游stage调用下游stage的accept
+
+
+
+stage的执行:
+Stream的filter返回新stage, 实现了AbstractPipeline.opWrapSink来返回stage实现的sink
+
+
+
+
+```
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

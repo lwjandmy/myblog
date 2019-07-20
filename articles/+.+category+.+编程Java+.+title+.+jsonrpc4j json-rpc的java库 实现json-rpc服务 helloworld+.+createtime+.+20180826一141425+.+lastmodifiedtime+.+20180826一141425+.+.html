@@ -1,6 +1,224 @@
 
 
 <html><head><meta charset="UTF-8"><title>jsonrpc4j json-rpc的java库 实现json-rpc服务 helloworld
+
+pom.xml
+
+```xml
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.briandilley.jsonrpc4j/jsonrpc4j -->
+		<dependency>
+			<groupId>com.github.briandilley.jsonrpc4j</groupId>
+			<artifactId>jsonrpc4j</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.portlet/portlet-api -->
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+	</dependencies>
+```
+
+index.html
+
+```html
+<html>
+<head>
+<meta charset="UTF-8">
+<title>test json rpc</title>
+<script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="js/jquery.jsonrpcclient.js"></script>
+</head>
+<body>
+
+	<input type="button" id="createUser" value="createUser"> <br />
+	
+	<input type="button" id="getUser" value="getUser"> <br />
+	
+	<input type="button" id="testListAndMap" value="testListAndMap"> <br />
+	
+	<script type="text/javascript">
+		jQuery(function ($) {
+			
+			var jsonRpc = new $.JsonRpcClient({ ajaxUrl: 'jsonRpc' });
+			
+			var success = function(result) {
+				console.log(result);
+				alert(JSON.stringify(result));
+			};
+			
+			var failed = function(error) {
+				console.log(error);
+				alert(JSON.stringify(error));
+			};
+			
+			$("#createUser").click(function () {
+				jsonRpc.call('createUser', ['a', 'b', 'c'], success, failed);
+			});
+			
+			$("#getUser").click(function () {
+				jsonRpc.call('getUser', [{ username: 'aa', password: 'bb' }], success, failed);
+			});
+			
+			$("#testListAndMap").click(function () {
+				jsonRpc.call('testListAndMap', [[{ k: 0, v: '0' }, { k: 1, v: '1' }]], success, failed);
+			});
+		});
+	</script>
+
+</body>
+</html>
+```
+
+web.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+  <servlet>
+  	<servlet-name>JsonRpcServlet</servlet-name>
+  	<servlet-class>org.demo.JsonRpcServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>JsonRpcServlet</servlet-name>
+  	<url-pattern>/jsonRpc</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
+```
+
+JsonRpcServlet.java
+
+```java
+public class JsonRpcServlet extends HttpServlet {
+
+	private JsonRpcServer jsonRpcServer = new JsonRpcServer(new UserService());
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		jsonRpcServer.handle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}
+```
+
+UserService
+
+```java
+public class UserService {
+
+	public User createUser(String userName, String password) {
+		User user = new User();
+		user.setUsername(userName);
+		user.setPassword(password);
+		return user;
+	}
+
+	public User getUser(User user) {
+		return user;
+	}
+	
+	public List<Map<String, Object>> testListAndMap(List<Map<String, Object>> param) {
+		return param;
+	}
+
+}
+
+```
+
+User.java
+
+```java
+public class User {
+	
+	private String username;
+	
+	private String password;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+}
+```
+
+
+
+
+------
+
+
+## 与springmvc结合
+
+pom.xml
+
+```xml
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>4.3.20.RELEASE</version>
+	</dependency>
+```
+
+applicationContext.xml
+
+```xml
+<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+<bean name="/service1" class="com.googlecode.jsonrpc4j.spring.JsonServiceExporter">
+	<property name="service"><bean class="org.demo.Service1" /></property>
+</bean>
+
+<bean name="/service2" class="com.googlecode.jsonrpc4j.spring.JsonServiceExporter">
+	<property name="service"><bean class="org.demo.Service2" /></property>
+</bean>
+	
+```
+
+在Service1和Service2里写代码即可, 无需实现接口
+
+请求地址是/service1和/service2
+
+
+
+
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

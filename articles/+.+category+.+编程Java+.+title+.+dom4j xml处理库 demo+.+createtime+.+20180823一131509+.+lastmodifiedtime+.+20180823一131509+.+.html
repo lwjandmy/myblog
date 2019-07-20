@@ -1,6 +1,145 @@
 
 
 <html><head><meta charset="UTF-8"><title>dom4j xml处理库 demo
+
+```java
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
+import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+// 去除空白字符的工具方法
+class Util {
+	public static String trimToOneLine(String str) {
+		str = StringUtils.replace(str, "\t", " ");
+		str = StringUtils.replace(str, "\n", " ");
+		str = StringUtils.replace(str, "", " ");
+		str = StringUtils.replace(str, "  ", " ");
+		str = StringUtils.trim(str);
+		return str;
+	}
+	public static String trimAllSpace(String str) {
+		str = StringUtils.replace(str, "\t", "");
+		str = StringUtils.replace(str, "\n", "");
+		str = StringUtils.replace(str, "", "");
+		str = StringUtils.replace(str, " ", "");
+		return str;
+	}
+}
+
+// 对Element功能的封装, 只暴漏最常用的功能, 简化使用
+class ElementWrapper {
+
+	private Element element;
+	
+	private LinkedHashMap<String, String> attr = new LinkedHashMap<String, String>();
+	
+	public ElementWrapper(Element element) {
+		super();
+		this.element = element;
+		element.attributeIterator().forEachRemaining(attr_ -> {
+			attr.put(Util.trimToOneLine(attr_.getName()), Util.trimToOneLine(attr_.getValue()));
+		});
+	}
+
+	public static ElementWrapper wrap(Element element) {
+		return new ElementWrapper(element);
+	}
+
+	public Element getElement() {
+		return element;
+	}
+
+	public LinkedHashMap<String, String> getAttr() {
+		return attr;
+	}
+	
+	public String getName() {
+		return Util.trimToOneLine(element.getName());
+	}
+	
+	public String getSelfContent() {
+		return Util.trimToOneLine(element.getText());
+	}
+	
+	public String getAllContent() {
+		return Util.trimToOneLine(element.getStringValue());
+	}
+	
+	public String getPath() {
+		return Util.trimToOneLine(element.getPath());
+ 	}
+	
+	public Iterator<ElementWrapper> elementIterator() {
+		Iterator<Element> srcIter = element.elementIterator();
+		return new Iterator<ElementWrapper>() {
+			@Override
+			public boolean hasNext() {
+				return srcIter.hasNext();
+			}
+			@Override
+			public ElementWrapper next() {
+				return ElementWrapper.wrap(srcIter.next());
+			}
+		};
+	}
+
+	@Override
+	public String toString() {
+		return "ElementWrapper [getElement()=" + getElement() + ", getAttr()=" + getAttr() + ", getName()=" + getName()
+				+ ", getSelfContent()=" + getSelfContent() + ", getAllContent()=" + getAllContent() + ", getPath()="
+				+ getPath() + ", elementIterator()=" + elementIterator() + "]";
+	}
+	
+}
+
+public class XmlProcessDemo {
+	
+	public static void main(String[] args) throws FileNotFoundException, DocumentException {
+		
+		String path = "";
+		
+		FileInputStream fileInputStream = new FileInputStream(path);
+		
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(fileInputStream);
+		ElementWrapper root = ElementWrapper.wrap(document.getRootElement());
+		
+		walkAllTable(root);
+		
+	}
+	
+	// 打印xml里所有table标签的信息
+	public static void walkAllTable(ElementWrapper element) {
+		if (element.getName().equalsIgnoreCase("table")) {
+			System.out.println("这是一个<table>");
+			// 标签名
+			System.out.println("Name: " + element.getName());
+			// 标签自己的内容, 不含下级子标签的内容
+			System.out.println("SelfContent: " + element.getSelfContent());
+			// 标签自己的内容以及下级子标签的内容
+			System.out.println("AllContent: " + element.getAllContent());
+			// 标签的绝对位置, 从根到标签, 可以看出标签出现的位置结构
+			System.out.println("Path: " + element.getPath());
+			// 标签的属性
+			System.out.println("Attr: " + element.getAttr());
+			System.out.println();
+			System.out.println();
+			
+		} else {
+			element.elementIterator().forEachRemaining(elem -> walkAllTable(elem));
+		}
+	}
+	
+}
+
+```
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

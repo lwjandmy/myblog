@@ -1,6 +1,30 @@
 
 
 <html><head><meta charset="UTF-8"><title>async await helloworld
+
+```js
+
+const jsonrpc = async (url, method, ...args) => {
+    const response = await axios.post(url, jrs.request(1, method, args))
+    return response.data.result
+}
+
+async function test() {
+    console.log(await jsonrpc('jsonrpc/service1', 'test2', 'haha'))
+    
+}
+
+test()
+
+
+```
+
+说明: 
+
+await必须在async函数内, 才能使用
+
+async函数返回类型为Promise
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

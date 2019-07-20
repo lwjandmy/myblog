@@ -1,6 +1,23 @@
 
 
 <html><head><meta charset="UTF-8"><title>java generator function 库 模拟生成器
+
+https://github.com/bmccutchon/java-generator-functions/tree/master/src/main/java/io/herrmann/generator
+
+```java
+	public static void main(String[] args) {
+		
+		GeneratorFunc<Integer> gen = s -> {
+			s.yield(1);
+		};
+		
+		for (Integer i : gen) {
+			System.out.println(i);
+		}
+		
+	}
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

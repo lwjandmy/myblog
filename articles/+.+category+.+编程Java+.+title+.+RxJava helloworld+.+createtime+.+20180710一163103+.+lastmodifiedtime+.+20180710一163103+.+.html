@@ -1,6 +1,48 @@
 
 
 <html><head><meta charset="UTF-8"><title>RxJava helloworld
+
+```java
+
+	// Observer 消费者 观察者 订阅者
+	static Observer<Integer> commonObserver = new Observer<Integer>() {
+		public void onSubscribe(Disposable paramDisposable) { System.out.println("onSubscribe"); }
+		public void onNext(Integer paramT) { System.out.println("onNext" + paramT); }
+		public void onError(Throwable paramThrowable) { System.out.println("onError"); }
+		public void onComplete() { System.out.println("onComplete"); }
+	};
+	
+	public static void testObservableAndObserver() {
+		// Observable 被观察者 产生数据, Observer 观察者 消费数据, Observable.subscribe绑定两者
+		Observable<Integer> observable = Observable.create(new ObservableOnSubscribe<Integer>() {
+			@Override
+			public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
+				for (int i = 0; i != 5; ++i) {
+					emitter.onNext(i);
+				}
+				emitter.onComplete();
+			}
+		});
+		observable.subscribe(commonObserver);
+	}
+	
+	public static void testPublishSubject() {
+		// PublishSubject绑定一个Observer观察者, 像一个被观察者一样, 能够onNext产生数据
+		PublishSubject<Integer> stringPublishSubject = PublishSubject.create();
+		stringPublishSubject.subscribe(commonObserver);
+		stringPublishSubject.onNext(11);
+		stringPublishSubject.onComplete();
+	}
+	
+	public static void main(String[] args) {
+		
+		testObservableAndObserver();
+		testPublishSubject();
+		
+	}
+
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

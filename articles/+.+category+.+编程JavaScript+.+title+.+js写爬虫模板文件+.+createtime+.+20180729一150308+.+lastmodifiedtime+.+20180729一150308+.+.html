@@ -1,6 +1,67 @@
 
 
 <html><head><meta charset="UTF-8"><title>js写爬虫模板文件
+
+```bash
+yarn init
+yarn add babel-cli babel-preset-es2015
+yarn add bluebird
+yarn add co
+yarn add request-promise
+```
+
+package.json
+
+```js
+{
+  ...
+  "scripts": {
+    "start": "babel-node index.js"
+  },
+  ...
+}
+```
+
+.babelrc
+
+```js
+{
+	"presets": ["es2015"]
+}
+```
+
+
+index.js
+
+```js
+import co from 'co'
+import request from 'request-promise'
+
+(() => {
+	try {
+		
+		co(function* () {
+			
+			const jsonString = yield request('http://www.xxx')
+			
+			const videoList = JSON.parse(jsonString)
+			
+			for (const video of videoList) {
+				
+				// ...
+			}
+
+		})
+
+
+	} catch (e) {
+		console.error('error:')
+		console.error(e)
+	}
+})()
+
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

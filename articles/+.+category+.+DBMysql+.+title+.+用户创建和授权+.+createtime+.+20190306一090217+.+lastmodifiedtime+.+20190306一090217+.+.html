@@ -1,6 +1,63 @@
 
 
 <html><head><meta charset="UTF-8"><title>用户创建和授权
+
+创建用户
+
+```sql
+CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+```
+
+授权
+
+```sql
+GRANT SELECT, INSERT ON db.* TO 'username'@'%';
+GRANT ALL PRIVILEGES ON db.* TO 'username'@'%';
+```
+
+
+
+
+查看用户
+
+```sql
+select * from mysql.user;
+```
+
+查看权限
+
+```sql
+show grants for 'username'@'%';
+```
+
+
+
+
+
+新用户同时能给其它用户授权
+
+```sql
+GRANT SELECT, INSERT ON db.* TO 'username'@'%' WITH GRANT OPTION;
+```
+
+设置密码
+
+```sql
+SET PASSWORD FOR 'username'@'%' = PASSWORD('newpassword');
+```
+
+撤销授权
+
+```sql
+REVOKE SELECT, INSERT ON db.* FROM 'username'@'%';
+```
+
+删除用户
+
+```sql
+DROP USER 'username'@'%';
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

@@ -1,6 +1,22 @@
 
 
 <html><head><meta charset="UTF-8"><title>汇编 函数调用 参数的传递和获取
+
+```txt
+调用函数时,堆栈情况:
+push把参数由右向左入栈 call把返回地址入栈
+
+函数内:
+push ebp 保存ebp
+mov ebp,esp EBP设为当前堆栈指针
+sub esb, n  分配局部空间n
+
+参数的获取:
+mov [ebp+0x8], eax 最左侧参数
+mov [ebp+0x4], eax call入栈的返回地址
+mov [ebp+0x0], eax 函数保存的ESB
+
+```
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

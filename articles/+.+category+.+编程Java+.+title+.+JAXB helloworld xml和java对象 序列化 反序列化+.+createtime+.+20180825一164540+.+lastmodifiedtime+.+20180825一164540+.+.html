@@ -1,6 +1,56 @@
 
 
 <html><head><meta charset="UTF-8"><title>JAXB helloworld xml和java对象 序列化 反序列化
+
+```java
+	@XmlRootElement(name="root")
+	public static class ClassDemo implements Serializable {
+		
+		@XmlTransient
+		private static final long serialVersionUID = 1234L;
+		
+		@XmlElement(name="element")
+		public String a = "你好";
+		
+		@XmlAttribute(name="attr")
+		public String attr = "good";
+		
+		@XmlElement(name="list")
+		public List<String> list = Arrays.asList("a", "b");
+		
+	}
+	
+	
+	public static void main(String[] args) throws IOException, ClassNotFoundException, JAXBException {
+		
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		
+		JAXBContext context = JAXBContext.newInstance(ClassDemo.class);
+		Marshaller marshaller = context.createMarshaller();
+		
+		ClassDemo demo = new ClassDemo();
+		
+		marshaller.marshal(demo, os);
+		
+		byte[] bytes = os.toByteArray();
+		System.out.println(new String(bytes, "UTF-8"));
+		
+	}
+```
+
+JAXB Users Guide
+
+https://javaee.github.io/jaxb-v2/doc/user-guide
+
+
+
+
+
+遇到的问题:
+
+如果类有多重继承关系, a 到 b, b 到 c, JAXB会提示c与其它元素没有直接关系
+
+不知道如果自己生成JAXBContext, 把b加到context里会不会避免这个错误, 要注意, 尽量不要出现多重继承
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

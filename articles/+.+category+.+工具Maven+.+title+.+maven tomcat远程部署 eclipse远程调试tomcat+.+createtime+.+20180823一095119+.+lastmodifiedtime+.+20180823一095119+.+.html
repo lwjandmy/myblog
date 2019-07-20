@@ -1,6 +1,56 @@
 
 
 <html><head><meta charset="UTF-8"><title>maven tomcat远程部署 eclipse远程调试tomcat
+
+
+## 配置maven自动打包发布到tomcat
+```pom
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.tomcat.maven</groupId>
+			<artifactId>tomcat7-maven-plugin</artifactId>
+			<version>2.2</version>
+			<executions>
+				<execution>
+					<phase>package</phase>
+					<goals>
+						<goal>redeploy</goal>
+					</goals>
+				</execution>
+			</executions>
+			<configuration>
+				<username>tomcat</username>
+				<password>tomcat</password>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+```
+
+
+## tomcat启动参数增加远程调试端口监听
+
+catalina.bat
+
+在%CATALINA_OPTS% %DEBUG_OPTS%中间加-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=9527,suspend=n
+
+
+
+## Eclipse启动远程调试, 配置ip和端口
+
+
+Eclipse -> Debug Configuration,
+
+Remote Java Application
+
+Connection Properties:
+
+Host: localhost
+
+Port: 9527
+
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

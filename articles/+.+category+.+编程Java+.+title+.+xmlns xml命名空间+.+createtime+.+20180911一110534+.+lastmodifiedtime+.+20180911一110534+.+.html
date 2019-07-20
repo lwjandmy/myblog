@@ -1,6 +1,44 @@
 
 
 <html><head><meta charset="UTF-8"><title>xmlns xml命名空间
+
+命名空间
+
+```xml
+<h:table xmlns:h="http://www.w3.org/TR/html4/">
+   <h:tr>
+	   <h:td>Apples</h:td>
+	   <h:td>Bananas</h:td>
+   </h:tr>
+</h:table>
+```
+
+xmlns:h="http://www.w3.org/TR/html4/" 定义命名空间, table, tr, td标签都要加上命名空间作为前缀h:table
+
+```xml
+<table xmlns="http://www.w3.org/TR/html4/">
+   <tr>
+	   <td>Apples</td>
+	   <td>Bananas</td>
+   </tr>
+</table>
+```
+
+xmlns="http://www.w3.org/TR/html4/" 定义默认的命名空间, table, tr, td的命名空间都确定了, 可简化写法. 默认的命名空间能向下继承, 所有子元素都得到了这个命名空间
+
+
+
+XSI命名空间
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+</beans>
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

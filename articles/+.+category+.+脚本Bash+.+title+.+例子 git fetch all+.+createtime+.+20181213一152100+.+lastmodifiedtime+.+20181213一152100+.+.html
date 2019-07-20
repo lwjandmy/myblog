@@ -1,6 +1,44 @@
 
 
 <html><head><meta charset="UTF-8"><title>例子 git fetch all
+
+fetch-one.sh
+
+```sh
+pushd $1
+git fetch
+popd
+```
+
+fetch-all.sh
+
+```sh
+find . -maxdepth 1 -type d ! -name '.' ! -name '.idea' | \
+xargs -n 1 sh ./fetch-one.sh
+```
+
+
+fetch-all2.sh
+
+```sh
+function fetch() {
+	pushd $1
+	git fetch
+	popd
+}
+
+find . -maxdepth 1 -type d | while read path; do
+	if [ "." == "$path" ]; then
+		continue
+	fi
+	if [ "./.idea" == "$path" ]; then
+		continue
+	fi
+	fetch $path
+done
+```
+
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

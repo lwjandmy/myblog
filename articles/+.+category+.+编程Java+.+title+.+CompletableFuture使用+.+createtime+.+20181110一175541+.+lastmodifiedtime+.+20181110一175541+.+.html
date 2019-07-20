@@ -1,6 +1,21 @@
 
 
 <html><head><meta charset="UTF-8"><title>CompletableFuture使用
+
+```java
+	// CompletableFuture
+	public static void main(String[] args) {
+		
+		// CompletableFuture 内部使用ForkJoinPool作为执行器, 执行异步任务, 并处理异步任务之间的先后执行关系
+		CompletableFuture<Void> completableFuture = CompletableFuture
+			.supplyAsync(() -> "Task1")
+			.thenApplyAsync(arg -> "Task2, " + arg)
+			.thenAcceptAsync(arg -> System.out.println("Task3, " + arg))
+			;
+		
+	}
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

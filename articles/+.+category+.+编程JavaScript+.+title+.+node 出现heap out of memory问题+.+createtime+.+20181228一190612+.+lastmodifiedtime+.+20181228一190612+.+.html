@@ -1,6 +1,24 @@
 
 
 <html><head><meta charset="UTF-8"><title>node 出现heap out of memory问题
+
+设置环境变量
+
+NODE_OPTIONS=--max-old-space-size=4096
+
+
+node_modules/.bin下, 调整webpack.cmd, umi.cmd, 命令中增加--max-old-space-size=4096参数
+
+```js
+node "%~dp0\..\umi\bin\umi.js" %*
+```
+
+改成
+
+```js
+node --max-old-space-size=4096 "%~dp0\..\umi\bin\umi.js" %*
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 

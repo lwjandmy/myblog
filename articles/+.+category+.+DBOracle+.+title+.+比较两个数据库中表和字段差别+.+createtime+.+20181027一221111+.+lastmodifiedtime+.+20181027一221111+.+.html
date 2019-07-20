@@ -1,6 +1,24 @@
 
 
 <html><head><meta charset="UTF-8"><title>比较两个数据库中表和字段差别
+
+
+先导出所有表和字段信息, 然后用比较工具比较
+
+
+
+Oracle数据库查询所有字段信息
+
+```sql
+select * from user_tab_columns;
+```
+
+Mysql数据库查询所有字段信息
+
+```sql
+select * from information_schema.COLUMNS;
+```
+
 </title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
 
 
