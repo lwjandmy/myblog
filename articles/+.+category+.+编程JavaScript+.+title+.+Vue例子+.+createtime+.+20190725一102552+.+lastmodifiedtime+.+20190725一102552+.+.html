@@ -1,0 +1,121 @@
+
+
+<html><head><meta charset="UTF-8"><title>Vue例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="vue-">Vue例子</h1>
+<p>src/pages/rbac/test/test1.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    &lt;!-- 1. 数据驱动页面: model -&gt; view, {{标签的内容}} :id=&quot;标签的属性&quot; --&gt;
+    1. 数据驱动页面
+    &lt;div v-bind:id=&#39;div_id&#39;&gt;{{ div_content }}&lt;/div&gt;
+    &lt;!-- 给标签绑定属性 v-bind:prop 缩写&quot;:prop&quot; --&gt;
+    &lt;div :id=&#39;div_id&#39;&gt;{{ div_content }}&lt;/div&gt;
+
+    &lt;!-- 2. 页面更新数据: eventController -&gt; model, @click=&quot;监听方法&quot; --&gt;
+    2. 页面更新数据
+    &lt;div v-on:click=&#39;div_click&#39;&gt;click me&lt;/div&gt;
+    &lt;!-- 给标签设置事件处理方法 v-on:event 缩写&quot;@event&quot; --&gt;
+    &lt;div @click=&#39;div_click&#39;&gt;click me&lt;/div&gt;
+
+    &lt;!-- 3. 表单的双向绑定: v-model是语法糖, 由&quot;:value&quot;属性和&quot;@input&quot;事件组成 --&gt;
+    3. 表单的双向绑定
+    &lt;input v-model=&#39;input_data&#39;&gt;
+    &lt;!-- 底层使用标签的&quot;:value&quot;属性和&quot;@input&quot;事件, 实现数据和表单的双向绑定 --&gt;
+    &lt;input :value=&quot;input_data&quot; @input=&quot;input_data = $event.target.value&quot;&gt;
+
+    &lt;!-- 4. 组件prop的双向绑定: &quot;:prop.sync&quot;是语法糖, 由&quot;:prop&quot;和&quot;@update:prop&quot;组成 --&gt;
+     4. 组件prop的双向绑定
+    &lt;Test2 :initPlusA.sync=&#39;input_data&#39; /&gt;
+    &lt;!-- 底层使用标签&quot;:prop&quot;和&quot;@update:prop&quot;组成, 组件内做2点:  --&gt;
+    &lt;!-- watch组件内plusA的变化, 变动时$emit(&#39;update:initPlusA&#39;, val)通知prop变动 --&gt;
+    &lt;!-- watch组件的prop变化, 变动时this.plusA = val将prop的值更新到组件内 --&gt;
+    &lt;Test2 :initPlusA=&#39;input_data&#39; @update:initPlusA=&#39;input_data = $event&#39; /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { Table, TableColumn, Button } from &#39;element-ui&#39;
+import { mapState, mapActions } from &#39;vuex&#39;
+import Test2 from &#39;./test2&#39;
+
+export default {
+  name: &#39;Test1&#39;,
+  components: {
+    Test2
+  },
+  data() {
+    return {
+      div_id: &#39;id1&#39;,
+      div_content: &#39;123&#39;,
+      input_data: &#39;&#39;,
+    }
+  },
+  methods: {
+    div_click() {
+      alert(&#39;click&#39;)
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+<p>src/pages/rbac/test/test2.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    &lt;input v-model=&quot;plusA&quot; /&gt;
+    &lt;input v-model=&quot;plusB&quot; /&gt;
+    &lt;input v-model=&quot;sum&quot; readonly /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &#39;Test2&#39;,
+  props: {
+    initPlusA: {
+      type: [String]
+    },
+    initPlusB: {
+      type: [String]
+    }
+  },
+  data() {
+    return {
+      plusA: this.initPlusA || 0,
+      plusB: this.initPlusB || 0
+    }
+  },
+  computed: {
+    sum() {
+      return (this.plusA - 0) + (this.plusB - 0)
+    }
+  },
+  watch: {
+    initPlusA(val) { // 父组件prop变化后, 同步到子组件data内
+      this.plusA = val
+    },
+    plusA(val) { // 子组件data变化后, 通知父组件prop变化, 父组件中@update:event触发事件
+      this.$emit(&#39;update:initPlusA&#39;, val)
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

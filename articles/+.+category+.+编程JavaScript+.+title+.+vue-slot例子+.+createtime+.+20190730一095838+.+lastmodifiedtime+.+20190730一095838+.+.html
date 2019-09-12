@@ -1,0 +1,53 @@
+
+
+<html><head><meta charset="UTF-8"><title>vue-slot例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="vue-slot-">vue-slot例子</h1>
+<p>父组件</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    slot的用法
+    &lt;ChildComponent&gt;
+      &lt;div slot=&quot;s1&quot;&gt;嵌入子组件的标签1&lt;/div&gt;
+      &lt;div slot=&quot;s2&quot;&gt;嵌入子组件的标签2&lt;/div&gt;
+    &lt;/ChildComponent&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+<p>子组件ChildComponent</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    &lt;slot name=&quot;s1&quot;&gt;&lt;/slot&gt;
+    &lt;div&gt;子组件&lt;/div&gt;
+    &lt;slot name=&quot;s2&quot;&gt;&lt;/slot&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+<p>最终页面</p>
+<pre><code class="lang-txt">slot的用法
+嵌入子组件的标签1
+子组件
+嵌入子组件的标签2
+</code></pre>
+<p>整理</p>
+<pre><code class="lang-txt">引用子组件, 内容中的标签, 配置slot=&quot;slot-name&quot;属性
+子组件中, 使用&lt;slot name=&quot;slot-name&quot;&gt;标签, 将父组件传入的内容带入子组件中
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

@@ -1,0 +1,131 @@
+
+
+<html><head><meta charset="UTF-8"><title>quasar fiber 例子 封装
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="quasar-fiber-">quasar fiber 例子 封装</h1>
+<p>pom.xml</p>
+<pre><code class="lang-xml">    &lt;dependencies&gt;
+        &lt;!-- https://mvnrepository.com/artifact/co.paralleluniverse/quasar-core --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;co.paralleluniverse&lt;/groupId&gt;
+            &lt;artifactId&gt;quasar-core&lt;/artifactId&gt;
+            &lt;version&gt;0.7.10&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+</code></pre>
+<p>Procedure.java</p>
+<pre><code class="lang-java">
+/**
+ * quasar fiber 协程 功能封装&amp;用法例子
+ */
+
+/**
+ * 调用api的代码段封装接口
+ * @param &lt;APICALLBACK&gt; api接口的回调类
+ */
+public interface Procedure&lt;APICALLBACK&gt; {
+    void process(APICALLBACK apiCallback);
+
+    /**
+     * 创建api接口的回调类, 可直接作为回调对象传给api
+     * 原理是动态代理, 拦截所有回调类的方法, 如果有参数, 参数为Throwable, 则通知fiber异步执行失败,
+     * 如果参数不是Throwable, 则通知fiber异步执行完成
+     * @param fiberAsync fiber对象, 将结果通知给这个对象, 通过asyncCompleted和asyncFailed方法
+     * @param apiCallbackClass api的回调类类型, 用于返回此类型的动态代理对象
+     * @param &lt;APICALLBACK&gt; api的回调类类型
+     * @return
+     */
+    static &lt;APICALLBACK&gt; APICALLBACK createApiCallback(FiberAsync fiberAsync, Class&lt;APICALLBACK&gt; apiCallbackClass) {
+        return (APICALLBACK) Proxy.newProxyInstance(apiCallbackClass.getClassLoader(), new Class[] { apiCallbackClass }, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                if (null != args) {
+                    if (args[0] instanceof Throwable) {
+                        Method proxyMethod = FiberAsync.class.getDeclaredMethod(&quot;asyncFailed&quot;, Throwable.class);
+                        proxyMethod.setAccessible(true);
+                        proxyMethod.invoke(fiberAsync, args[0]);
+                    } else {
+                        Method proxyMethod = FiberAsync.class.getDeclaredMethod(&quot;asyncCompleted&quot;, Object.class);
+                        proxyMethod.setAccessible(true);
+                        proxyMethod.invoke(fiberAsync, args[0]);
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
+    /**
+     * 创建异步调用, 用在fiber代码块中, 会抛出SuspendException中断执行
+     * @param apiResultClass api接口的返回类型, 返回类型是回调方法的参数
+     * @param apiCallbackClass api接口的回调类型
+     * @param procedure 调用api的代码段封装
+     * @param &lt;APIRESULT&gt; api接口的返回类型
+     * @param &lt;APICALLBACK&gt; api接口的回调类型
+     * @return 返回api调用结果
+     * @throws InterruptedException
+     * @throws SuspendExecution 中断执行, 直到api回调通知结果
+     */
+    static &lt;APIRESULT, APICALLBACK&gt; APIRESULT makeAsync(
+            Class&lt;APIRESULT&gt; apiResultClass,
+            Class&lt;APICALLBACK&gt; apiCallbackClass,
+            Procedure&lt;APICALLBACK&gt; procedure) throws InterruptedException, SuspendExecution {
+        return new FiberAsync&lt;APIRESULT, RuntimeException&gt;() {
+            @Override
+            protected void requestAsync() {
+                procedure.process(createApiCallback(this, apiCallbackClass));
+            }
+        }.run();
+    }
+
+    /**
+     * 例子, 用法
+     * VM Options: -javaagent:/path/to/quasar-core.jar
+     * @param args
+     * @throws InterruptedException
+     */
+    static void main(String[] args) throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        new Fiber&lt;Void&gt;(() -&gt; {
+            try {
+                AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open();
+                InetSocketAddress addr = new InetSocketAddress(&quot;www.baidu.com&quot;, 80);
+                makeAsync(Void.class, CompletionHandler.class, cb -&gt;
+                        socketChannel.connect(addr, null, cb));
+
+                Integer integer = makeAsync(Integer.class, CompletionHandler.class, cb -&gt;
+                        socketChannel.write(ByteBuffer.wrap(new byte[]{&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;\n&#39;, &#39;\n&#39;}), null, cb));
+
+                ByteBuffer byteBuffer = ByteBuffer.allocate(1024 * 1024 * 1);
+                makeAsync(Integer.class, CompletionHandler.class, cb -&gt;
+                        socketChannel.read(byteBuffer, null, cb));
+                System.out.println(new String(byteBuffer.array(), &quot;UTF-8&quot;).substring(0, 30));
+
+                latch.countDown();
+            } catch (IOException e) {
+            }
+        }).start();
+
+        latch.await();
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

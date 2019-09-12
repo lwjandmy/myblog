@@ -1,0 +1,100 @@
+
+
+<html><head><meta charset="UTF-8"><title>Vuex例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="vuex-">Vuex例子</h1>
+<p>Vuex例子</p>
+<p>src/store.js</p>
+<pre><code class="lang-js">import Vue from &#39;vue&#39;
+import Vuex from &#39;vuex&#39;
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {
+    count: 1
+  },
+  mutations: {
+    add(state, n) {
+      state.count = state.count + (n || 1); // 3. mutations中: 修改state
+    }
+  },
+  actions: {
+    action1(context, n) {
+      context.commit(&#39;add&#39;, n) // 2. action中: context.commit, 提交修改
+    }
+  },
+  getters: {
+    anotherCount(state) {
+      return state.count + 1
+    }
+  }
+})
+</code></pre>
+<p>src/views/View1.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    &lt;div @click=&quot;test&quot;&gt;view1: 点我 {{ this.$store.state.count }}&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &#39;View1&#39;,
+  methods: {
+    test () {
+      this.$store.dispatch(&#39;action1&#39;, 5) // 1. vue中: store.dispatch, 发送action
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+<p>src/views/View2.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    &lt;div @click=&quot;test&quot;&gt;view2: 点我 {{ count }} {{ anotherCount }}&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { mapState, mapActions, mapGetters } from &#39;vuex&#39;
+
+export default {
+  name: &#39;View2&#39;,
+  computed: {
+    ...mapState({
+      count: state =&gt; state.count // 4. vue中: state映射到组件computed属性
+    }),
+    ...mapGetters([
+      &#39;anotherCount&#39;
+    ])
+  },
+  methods: {
+    ...mapActions([
+      &#39;action1&#39;
+    ]),
+    test () {
+      this.action1(2)
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

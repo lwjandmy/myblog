@@ -1,0 +1,215 @@
+
+
+<html><head><meta charset="UTF-8"><title>spring cloud 动态配置例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="spring-cloud-">spring cloud 动态配置例子</h1>
+<p>pom.xml</p>
+<pre><code class="lang-xml">    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.1.6.RELEASE&lt;/version&gt;
+    &lt;/parent&gt;
+
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;ojdbc&lt;/groupId&gt;
+            &lt;artifactId&gt;ojdbc&lt;/artifactId&gt;
+            &lt;version&gt;6&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;
+            &lt;version&gt;2.1.3.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;dependencyManagement&gt;
+        &lt;dependencies&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+                &lt;version&gt;Finchley.RELEASE&lt;/version&gt;
+                &lt;type&gt;pom&lt;/type&gt;
+            &lt;/dependency&gt;
+        &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+</code></pre>
+<p>App.java</p>
+<pre><code class="lang-java">@SpringBootApplication
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}
+</code></pre>
+<p>AppConfig.java</p>
+<pre><code class="lang-java">@Configuration
+public class AppConfig {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    DataSource dataSource;
+
+    @Bean
+    @Scope(&quot;refresh&quot;)
+    public Map&lt;String, Object&gt; propsConfig() throws IOException {
+        Properties result = new Properties();
+        result.load(this.getClass().getResourceAsStream(&quot;/test-config.properties&quot;));
+        return (Map&lt;String, Object&gt;) (Map) result;
+    }
+
+    @Bean
+    @Scope(&quot;refresh&quot;)
+    public Map&lt;String, Object&gt; yamlConfig() {
+        Yaml yaml = new Yaml();
+        return yaml.loadAs(this.getClass().getResourceAsStream(&quot;/test-config.yaml&quot;), Map.class);
+    }
+
+    @Bean
+    @Scope(&quot;refresh&quot;)
+    public Map&lt;String, Object&gt; dbConfig() {
+        Map&lt;String, Object&gt; result = new LinkedHashMap&lt;String, Object&gt;();
+
+        List&lt;Map&lt;String, Object&gt;&gt; list = new JdbcTemplate(dataSource).queryForList(&quot;SELECT CODE, VALUE FROM PARAM&quot;);
+
+        for (Map item : list) {
+            if (result.containsKey(item.get(&quot;CODE&quot;))) {
+                logger.warn(&quot;数据库中参数key存在多个, 请去重. {}&quot;, item.get(&quot;CODE&quot;));
+            }
+            result.put(String.valueOf(item.get(&quot;CODE&quot;)), item.get(&quot;VALUE&quot;));
+        }
+
+        return result;
+    }
+
+}
+</code></pre>
+<p>TestController.java</p>
+<pre><code class="lang-java">@RestController
+@RequestMapping(&quot;/test&quot;)
+public class TestController {
+
+    @Autowired
+    TestService testService;
+
+    /**
+     * 读取配置信息
+     * 测试URL: http://localhost:9080/test/readConfig
+     */
+    @RequestMapping(&quot;/readConfig&quot;)
+    public Map&lt;String, Object&gt; readConfig() {
+        return testService.readConfig();
+    }
+
+    /**
+     * 刷新配置信息
+     * 测试URL: http://localhost:9080/test/refreshConfig
+     */
+    @RequestMapping(&quot;/refreshConfig&quot;)
+    public void refreshConfig() {
+        testService.refreshConfig();
+    }
+
+}
+</code></pre>
+<p>TestService.java</p>
+<pre><code class="lang-java">@Service
+public class TestService {
+
+    @Autowired
+    ConfigurableApplicationContext applicationContext;
+
+    @Autowired
+    ContextRefresher contextRefresher;
+
+    /**
+     * 解析Spel表达式, 从spring中获取数据
+     */
+    public String getConfig(String expression) {
+        BeanExpressionContext beanExpressionContext = new BeanExpressionContext(applicationContext.getBeanFactory(), null);
+        StandardBeanExpressionResolver beanExpressionResolver = new StandardBeanExpressionResolver();
+        Object result = beanExpressionResolver.evaluate(expression, beanExpressionContext);
+        return String.valueOf(result);
+    }
+
+    /**
+     * 读取配置信息
+     */
+    public Map&lt;String, Object&gt; readConfig() {
+        Map&lt;String, Object&gt; result = new LinkedHashMap&lt;String, Object&gt;();
+        result.put(&quot;propsConfig&quot;, getConfig(&quot;#{propsConfig.config}&quot;));
+        result.put(&quot;yamlConfig&quot;, getConfig(&quot;#{yamlConfig.config}&quot;));
+        result.put(&quot;dbConfig&quot;, getConfig(&quot;#{dbConfig[&#39;0006&#39;]}&quot;));
+
+        long beginTimeMillis = System.currentTimeMillis();
+        for (int i = 0; i != 100 * 100 * 100; ++i) {
+            getConfig(&quot;#{propsConfig.config}&quot;);
+        }
+        long endTimeMillis = System.currentTimeMillis();
+        result.put(&quot;总耗时&quot;, endTimeMillis - beginTimeMillis);
+        result.put(&quot;每次请求耗时&quot;, (double) (endTimeMillis - beginTimeMillis) / (100 * 100 * 100));
+
+        return result;
+    }
+
+    /**
+     * 刷新配置信息
+     */
+    public void refreshConfig() {
+        contextRefresher.refresh();
+    }
+}
+</code></pre>
+<p>application.properties</p>
+<pre><code class="lang-inf">server.port=9080
+
+spring.datasource.url=jdbc:oracle:thin:@192.168.102.14:1521:orcl
+spring.datasource.driverClassName=oracle.jdbc.OracleDriver
+spring.datasource.username=c##vue
+spring.datasource.password=xportal
+</code></pre>
+<p>test-config.properties
+config=props-config</p>
+<pre><code class="lang-inf">
+</code></pre>
+<p>test-config.yaml</p>
+<pre><code class="lang-yaml">config: yaml-config
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

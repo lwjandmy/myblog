@@ -1,0 +1,132 @@
+
+
+<html><head><meta charset="UTF-8"><title>javers demo
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="javers-demo">javers demo</h1>
+<pre><code class="lang-xml">
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.javers&lt;/groupId&gt;
+            &lt;artifactId&gt;javers-core&lt;/artifactId&gt;
+            &lt;version&gt;5.6.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.javers&lt;/groupId&gt;
+            &lt;artifactId&gt;javers-persistence-sql&lt;/artifactId&gt;
+            &lt;version&gt;5.6.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+            &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+            &lt;version&gt;1.2.3&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;ojdbc&lt;/groupId&gt;
+            &lt;artifactId&gt;ojdbc&lt;/artifactId&gt;
+            &lt;version&gt;6&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<pre><code class="lang-java">public class App {
+
+    static Javers javers;
+
+    static {
+        try {
+            Class driver = Class.forName(&quot;oracle.jdbc.OracleDriver&quot;);
+            DriverManager.registerDriver((Driver) driver.newInstance());
+            final Connection connection = DriverManager.getConnection(&quot;jdbc:oracle:thin:@ip:1521:orcl&quot;, 
+                    &quot;user&quot;, &quot;password&quot;);
+
+            JaversSqlRepository repository = SqlRepositoryBuilder.sqlRepository()
+                .withConnectionProvider(new ConnectionProvider() {
+                    @Override
+                    public Connection getConnection() throws SQLException {
+                        return connection;
+                    }
+                })
+                .withDialect(DialectName.ORACLE)
+                .withSchema(&quot;schema&quot;)
+                .build();
+
+            javers = JaversBuilder.javers()
+                    .registerJaversRepository(repository)
+                    .build();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        testDiff();
+        testAudit();
+
+    }
+
+    public static void testDiff() {
+
+//        Map&lt;String, String&gt; map1 = new LinkedHashMap&lt;String, String&gt;();
+//        map1.put(&quot;user&quot;, &quot;张三&quot;);
+//        
+//        Map&lt;String, String&gt; map2 = new LinkedHashMap&lt;String, String&gt;();
+//        map2.put(&quot;user&quot;, &quot;李四&quot;);
+//        
+//        Diff diff = javers.compare(map1, map2);
+//        System.out.println(diff);
+//        for (Change change : diff.getChanges())
+//            System.out.println(change);
+
+    }
+
+    static class Person {
+        @Id
+        public String id;
+        public String name;
+        @Override
+        public String toString() {
+            return &quot;Person [id=&quot; + id + &quot;, name=&quot; + name + &quot;]&quot;;
+        }
+    }
+
+    public static void testAudit() {
+
+//        Person p1 = new Person();
+//        p1.id = &quot;1&quot;;
+//        p1.name = &quot;张三&quot;;
+//        
+//        Person p2 = new Person();
+//        p2.id = &quot;1&quot;;
+//        p2.name = &quot;李四&quot;;
+//        
+//        javers.commit(&quot;admin&quot;, p1);
+//        javers.commit(&quot;admin&quot;, p2);
+
+
+        JqlQuery query = QueryBuilder.byInstanceId(&quot;1&quot;, Person.class).withCommitId(CommitId.valueOf(&quot;1.0&quot;)).build();
+
+        List&lt;Shadow&lt;Object&gt;&gt; shadows = javers.findShadows(query);
+        for (Shadow&lt;Object&gt; shadow : shadows) {
+            System.out.println(shadow.get());
+        }
+
+
+    }
+}
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

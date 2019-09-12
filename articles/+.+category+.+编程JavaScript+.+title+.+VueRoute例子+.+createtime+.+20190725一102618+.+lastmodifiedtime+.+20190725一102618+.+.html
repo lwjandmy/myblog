@@ -1,0 +1,128 @@
+
+
+<html><head><meta charset="UTF-8"><title>VueRoute例子
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="vueroute-">VueRoute例子</h1>
+<p>main.js</p>
+<pre><code class="lang-js">import Vue from &#39;vue&#39;
+import router from &#39;./router&#39;
+import App from &#39;./App.vue&#39;
+
+new Vue({
+  router,
+  render: h =&gt; h(App)
+}).$mount(&#39;#app&#39;)
+</code></pre>
+<p>router.js</p>
+<pre><code class="lang-js">import Vue from &#39;vue&#39;
+import Router from &#39;vue-router&#39;
+
+Vue.use(Router)
+
+export default new Router({
+  mode: &#39;hash&#39;,
+  routes: [{
+    path: &#39;/view1&#39;,
+    name: &#39;view1&#39;,
+    props: true,
+    component: () =&gt;
+      import( /* webpackChunkName: &quot;view1&quot; */ &#39;./views/View1.vue&#39;)
+  }, {
+    path: &#39;/view2&#39;,
+    name: &#39;view2&#39;,
+    props: true,
+    component: () =&gt;
+      import( /* webpackChunkName: &quot;view2&quot; */ &#39;./views/View2.vue&#39;)
+  }]
+})
+</code></pre>
+<p>App.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    &lt;div @click=&quot;onView1Click&quot; style=&quot;cursor: pointer&quot;&gt;查看页面1&lt;/div&gt;
+    &lt;div @click=&quot;onView2Click&quot; style=&quot;cursor: pointer&quot;&gt;查看页面2&lt;/div&gt;
+    &lt;div&gt;Router页面:&lt;/div&gt;
+    &lt;router-view/&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &#39;App&#39;,
+  methods: {
+    onView1Click: function () {
+      this.$router.push({
+        name: &#39;view1&#39;,
+        params: {
+          data: &quot;data1&quot;
+        }
+      })
+    },
+    onView2Click: function () {
+      this.$router.push({
+        name: &#39;view2&#39;,
+        params: {
+          data: &quot;data2&quot;
+        }
+      })
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+<p>View1.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    this is view1, data: {{ data }}
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &#39;View1&#39;,
+  props: {
+    data: {
+      type: [String],
+      default: &#39;default&#39;
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+<p>View2.vue</p>
+<pre><code class="lang-js">&lt;template&gt;
+  &lt;div&gt;
+    this is view2, data: {{ data }}
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &#39;View2&#39;,
+  props: {
+    data: {
+      type: [String],
+      default: &#39;default&#39;
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
