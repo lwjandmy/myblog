@@ -45,7 +45,7 @@ public interface Procedure&lt;APICALLBACK&gt; {
         return (APICALLBACK) Proxy.newProxyInstance(apiCallbackClass.getClassLoader(), new Class[] { apiCallbackClass }, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (null != args) {
+                if (null != args &amp;&amp; args.length &gt; 0) {
                     if (args[0] instanceof Throwable) {
                         Method proxyMethod = FiberAsync.class.getDeclaredMethod(&quot;asyncFailed&quot;, Throwable.class);
                         proxyMethod.setAccessible(true);
