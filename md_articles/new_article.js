@@ -1,5 +1,6 @@
 const process = require('process')
 const fs = require('fs')
+const child_process = require('child_process')
 
 if (process.argv.length != 4) {
 	console.log('用法: node test.js <标题> <分类>')
@@ -30,3 +31,5 @@ template_content = template_content.replace(/\[\[\[template_begin\[\[\[title\]\]
 
 fs.appendFileSync(filename, template_content);
 console.log(filename);
+
+child_process.exec(filename)
