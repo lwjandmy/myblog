@@ -1,0 +1,53 @@
+
+
+<html><head><meta charset="UTF-8"><title>babel_template_quickstart
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="babel_template_quickstart">babel_template_quickstart</h1>
+<h2 id="-">下载安装</h2>
+<pre><code class="lang-sh">yarn add --dev @babel/core
+yarn add --dev @babel/cli
+yarn add --dev @babel/node
+yarn add --dev @babel/preset-env
+yarn add --dev babel-plugin-auto-await
+</code></pre>
+<h2 id="-presets-plugins">配置presets和plugins</h2>
+<p>.babelrc</p>
+<pre><code class="lang-json">{
+    &quot;presets&quot;: [&quot;@babel/env&quot;],
+    &quot;plugins&quot;: [&quot;auto-await&quot;]
+}
+</code></pre>
+<h2 id="-js">编写测试js</h2>
+<p>test.js</p>
+<pre><code class="lang-js">async function delay(millis) {
+    return new Promise(resolve =&gt; setTimeout(resolve, millis))
+}
+
+(async () =&gt; {
+    const millis = 5000
+    console.log(`start delay ${millis}ms`)
+    delay(millis)
+    console.log(&#39;finish&#39;)
+})()
+</code></pre>
+<h2 id="-js">运行js</h2>
+<pre><code class="lang-bash">npx babel-node test.js
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
