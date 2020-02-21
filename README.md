@@ -1,3 +1,19 @@
+## 初始化说明
+
+```txt
+1. 新建gitpassword.txt文件, 记录git密码
+2. 安装git, expect
+3. 增加远程仓库:
+git remote add origin_oschina https://gitee.com/lwjandmy/myblog
+git remote add origin_github https://github.com/lwjandmy/myblog
+4. 拉取一次仓库, 获得仓库分支信息
+git fetch origin_oschina gh-pages
+git fetch origin_github gh-pages
+5. 提交代码
+运行sh auto_build_commit_push.sh, 自动编译markdown, 提交, 推送代码到github
+```
+
+
 ## 使用说明
 
 ```bash
