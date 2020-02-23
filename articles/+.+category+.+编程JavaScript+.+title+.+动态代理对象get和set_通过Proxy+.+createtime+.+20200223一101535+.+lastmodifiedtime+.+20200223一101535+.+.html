@@ -1,0 +1,48 @@
+
+
+<html><head><meta charset="UTF-8"><title>动态代理对象get和set_通过Proxy
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="-get-set_-proxy">动态代理对象get和set_通过Proxy</h1>
+<pre><code class="lang-js">const obj = {}
+
+const objProxied = new Proxy(obj, {
+    get: (target, key) =&gt; target[key], // 动态代理get
+    set: (target, key, value) =&gt; target[key] = value, // 动态代理set
+})
+
+objProxied.a = 1
+console.log(objProxied.a)
+</code></pre>
+<p>例子, 通过动态代理, 动态生成接口方法</p>
+<p>apis.js 接口方法, 动态代理生成各种接口方法</p>
+<pre><code class="lang-js">const curry = require(&#39;curry&#39;)
+
+function api(name, params) {...}
+
+module.exports = new Proxy({}, {
+    get: (target, apiName) =&gt; curry(api)(apiName)
+})
+</code></pre>
+<p>works.js 客户端 引入动态生成的接口方法并执行</p>
+<pre><code class="lang-js">const { api1 } = require(&#39;./apis&#39;)
+
+api1(params)
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+

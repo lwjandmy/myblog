@@ -9,14 +9,17 @@
 
 
 <h1 id="currying-">currying 柯里化 使方法未知参数越来越少</h1>
-<pre><code class="lang-xml">yarn add curry
+<pre><code class="lang-bash">yarn add curry
 </code></pre>
 <pre><code class="lang-js">import curry from &#39;curry&#39;
 
+// curry, 创建柯西化方法, 不断调用传参, 最终求解
 function test(a, b) { console.log(a, b) }
-const curried = curry.to(2, test)
-const curried2 = curried(&#39;a&#39;)
-curried2(&#39;b&#39;)
+curry(test)(&#39;a&#39;)(&#39;b&#39;)
+
+// curry.to, 明确指定参数个数为2
+function test2() { console.log(arguments[0], arguments[1]) }
+curry.to(2, test2)(&#39;a&#39;)(&#39;b&#39;)
 </code></pre>
 
 
