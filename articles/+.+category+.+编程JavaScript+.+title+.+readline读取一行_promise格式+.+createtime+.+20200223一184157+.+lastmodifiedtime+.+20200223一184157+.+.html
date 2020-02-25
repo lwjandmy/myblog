@@ -1,0 +1,41 @@
+
+
+<html><head><meta charset="UTF-8"><title>readline读取一行_promise格式
+</title><meta name="viewport" content="width=device-width, initial-scala=1.0"></head><body><div id="markdown">
+
+
+
+
+
+
+<h1 id="readline-_promise-">readline读取一行_promise格式</h1>
+<pre><code class="lang-js">async function readLine() {
+    return new Promise(resolve =&gt; {
+        const dataList = []
+        process.stdin.on(&#39;readable&#39;, () =&gt; {
+            let chunk
+            while ((chunk = process.stdin.read()) !== null) {
+                dataList.push(chunk)
+            }
+        })
+        process.stdin.on(&#39;end&#39;, () =&gt; {
+            resolve(dataList.join(&#39;&#39;))
+        })
+    })
+}
+</code></pre>
+<p>用法</p>
+<pre><code class="lang-js">const line = readline()
+</code></pre>
+
+
+</div>
+<script src="../js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="../css/highlight.min.css">
+<script src="../js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+jQuery(function ($) {
+});
+</script></body></html>
+
